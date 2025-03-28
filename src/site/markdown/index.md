@@ -49,14 +49,14 @@ java -jar --add-exports java.xml/com.sun.org.apache.xerces.internal.parsers --ad
 
 Use it as follows:
 ```Java
-package org.sentrysoftware.wbem;
+package org.metricshub.wbem;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.sentrysoftware.wbem.client.WbemClient;
-import org.sentrysoftware.wbem.client.WqlQuery;
-import org.sentrysoftware.wbem.javax.wbem.WBEMException;
-import org.sentrysoftware.wbem.utils.exceptions.WqlQuerySyntaxException;
+import org.metricshub.wbem.client.WbemClient;
+import org.metricshub.wbem.client.WqlQuery;
+import org.metricshub.wbem.client.exceptions.WqlQuerySyntaxException;
+import org.metricshub.wbem.javax.wbem.WBEMException;
 
 public class Main {
 
