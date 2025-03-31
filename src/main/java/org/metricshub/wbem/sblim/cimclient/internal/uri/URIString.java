@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * Class URIString is responsible for wrapping the WBEM-URI string. It has
  * methods which help in parsing.
  */
-public class URIString extends Object implements CharSequence {
+public class URIString implements CharSequence {
 
 	/**
 	 * Ctor.

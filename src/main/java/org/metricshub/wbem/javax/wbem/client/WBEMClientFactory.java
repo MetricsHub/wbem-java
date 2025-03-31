@@ -71,7 +71,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.wbem.WBEMClientCIMXML;
  * </pre>
  */
 
-public class WBEMClientFactory extends Object {
+public class WBEMClientFactory {
 	private static final String[] cProtocols = { WBEMClientConstants.PROTOCOL_CIMXML };
 
 	/**

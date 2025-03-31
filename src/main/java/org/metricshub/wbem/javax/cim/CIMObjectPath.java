@@ -116,7 +116,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * <li>
  * <code>CreationClassName=My_ComputerSystem</code></li> </ul>
  */
-public class CIMObjectPath extends Object implements Serializable {
+public class CIMObjectPath implements Serializable {
 	private static final long serialVersionUID = 4593259690658425064L;
 
 	private String iScheme, iHost, iPort, iNamespace, iObjectName, iXmlSchemaName;

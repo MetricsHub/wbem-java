@@ -69,7 +69,7 @@ import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
  *
  * @since 2.0.2
  */
-public class DiscovererSLP extends Object implements Discoverer {
+public class DiscovererSLP implements Discoverer {
 	private static final String SERVICE_WBEM = "service:wbem";
 
 	private static final ServiceType SERVICE_TYPE = new ServiceType(SERVICE_WBEM);

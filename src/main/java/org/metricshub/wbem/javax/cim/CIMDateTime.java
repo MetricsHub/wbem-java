@@ -80,7 +80,7 @@ import java.io.Serializable;
  * minutes, 12 seconds would be: 00000001132312.000000:000. A UTC offset of zero
  * is always used for interval properties.
  */
-public abstract class CIMDateTime extends Object implements Serializable, Comparable<CIMDateTime> {
+public abstract class CIMDateTime implements Serializable, Comparable<CIMDateTime> {
 	private static final long serialVersionUID = 3424668043014662166L;
 
 	/**

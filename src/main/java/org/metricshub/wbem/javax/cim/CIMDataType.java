@@ -135,7 +135,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * <caption>mapping of CIM data type to Java</caption>
  * </table>
  */
-public class CIMDataType extends Object implements Serializable {
+public class CIMDataType implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

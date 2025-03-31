@@ -53,7 +53,7 @@ import java.io.Serializable;
  * >DSP004</a>). CIM flavors specify overriding and inheritance rules. These
  * rules specify how qualifiers are transmitted from classes to derived classes.
  */
-public class CIMFlavor extends Object implements Serializable {
+public class CIMFlavor implements Serializable {
 	private static final long serialVersionUID = -4177389103635687939l;
 
 	/**

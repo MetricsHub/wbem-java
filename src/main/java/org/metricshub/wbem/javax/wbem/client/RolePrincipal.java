@@ -51,7 +51,7 @@ import java.security.Principal;
  * <code>RolePrincipal</code> includes the role and optionally the host
  * information for which the role is used to authenticate.
  */
-public class RolePrincipal extends Object implements Principal {
+public class RolePrincipal implements Principal {
 	private String iRole;
 
 	private String iHost;

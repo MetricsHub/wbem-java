@@ -54,7 +54,7 @@ package org.metricshub.wbem.javax.wbem.client;
  * password is used to authenticate the <code>UserPrincipal</code>.
  *
  */
-public class PasswordCredential extends Object {
+public class PasswordCredential {
 	private String iPw;
 
 	private String iHostname;

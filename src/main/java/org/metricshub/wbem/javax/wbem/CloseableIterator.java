@@ -65,7 +65,7 @@ public interface CloseableIterator<E> extends Iterator<E> {
 	 * implementation to do any cleanup and disconnect from any source that it
 	 * may be using.
 	 */
-	public void close();
+	void close();
 
 	/**
 	 * If <code>next()</code> or <code>hasNext()</code> throws a
@@ -74,5 +74,5 @@ public interface CloseableIterator<E> extends Iterator<E> {
 	 *
 	 * @return The <code>WBEMException</code> or null if one was not thrown.
 	 */
-	public WBEMException getWBEMException();
+	WBEMException getWBEMException();
 }

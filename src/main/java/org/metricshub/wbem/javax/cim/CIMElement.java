@@ -57,7 +57,7 @@ import java.io.Serializable;
  * href=http://www.dmtf.org/standards/published_documents/DSP0004V2.3_final.pdf
  * >DSP004</a>).
  */
-public abstract class CIMElement extends Object implements Serializable, Comparable<CIMElement> {
+public abstract class CIMElement implements Serializable, Comparable<CIMElement> {
 	private static final long serialVersionUID = -3310480832682118922L;
 
 	private String iName;

@@ -54,7 +54,7 @@ package org.metricshub.wbem.javax.wbem.client;
  * This should only be used when a client is assuming a role on a WBEM Server
  * that requires a password.
  */
-public class RoleCredential extends Object {
+public class RoleCredential {
 	private String iCredential;
 
 	private String iHostname;

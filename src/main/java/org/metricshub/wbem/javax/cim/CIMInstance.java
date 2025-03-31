@@ -64,7 +64,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.StringSorter;
  * href=http://www.dmtf.org/standards/published_documents/DSP0004V2.3_final.pdf
  * >DSP004</a>).
  */
-public class CIMInstance extends Object implements CIMNamedElementInterface, Serializable {
+public class CIMInstance implements CIMNamedElementInterface, Serializable {
 	private static final long serialVersionUID = -249160087013230559L;
 
 	private static final CIMProperty<?>[] EMPTY_PROP_A = new CIMProperty[0];

@@ -52,7 +52,7 @@ import java.io.Serializable;
  * >DSP004</a>). This class is used in a <code>CIMQualifierType</code> to define
  * what elements the qualifier can be applied to.
  */
-public class CIMScope extends Object implements Serializable {
+public class CIMScope implements Serializable {
 	private static final long serialVersionUID = -4563643521754840535l;
 
 	/**

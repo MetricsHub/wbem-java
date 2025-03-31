@@ -52,7 +52,7 @@ import java.security.Principal;
  * <code>UserPrincipal</code> includes the username and optionally the host
  * information for which the username is used to authenticate.
  */
-public class UserPrincipal extends Object implements Principal {
+public class UserPrincipal implements Principal {
 	private String iUserName;
 
 	private String iHostName;

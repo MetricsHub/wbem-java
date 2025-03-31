@@ -68,7 +68,7 @@ import org.metricshub.wbem.sblim.cimclient.WBEMListenerSBLIM;
  * int port = api.addListener(MyListener, 1234, protocol);
  * </pre>
  */
-public class WBEMListenerFactory extends Object {
+public class WBEMListenerFactory {
 	private static final String[] PROTOCOLS = { WBEMClientConstants.PROTOCOL_CIMXML };
 
 	/**
