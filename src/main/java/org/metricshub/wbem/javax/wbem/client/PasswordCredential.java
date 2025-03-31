@@ -52,17 +52,16 @@ package org.metricshub.wbem.javax.wbem.client;
  * is used with <code>UserPrincipal</code>. <code>PasswordCredential</code>
  * includes the password and optionally the host information for which the
  * password is used to authenticate the <code>UserPrincipal</code>.
- * 
+ *
  */
 public class PasswordCredential extends Object {
-
 	private String iPw;
 
 	private String iHostname;
 
 	/**
 	 * Creates a <code>PasswordCredential</code> using the supplied password.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The user login password in clear text.
 	 * @throws IllegalArgumentException
@@ -78,7 +77,7 @@ public class PasswordCredential extends Object {
 
 	/**
 	 * Creates a <code>PasswordCredential</code> using the supplied password.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The user login password in clear text.
 	 * @throws IllegalArgumentException
@@ -95,7 +94,7 @@ public class PasswordCredential extends Object {
 	/**
 	 * Creates a <code>PasswordCredential</code> using the supplied password and
 	 * host name.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The user login password in clear text.
 	 * @param pHostname
@@ -115,7 +114,7 @@ public class PasswordCredential extends Object {
 
 	/**
 	 * Get the host name for which the password is used to authenticate.
-	 * 
+	 *
 	 * @return The host name.
 	 */
 	public String getHostName() {
@@ -124,11 +123,10 @@ public class PasswordCredential extends Object {
 
 	/**
 	 * Return the user login password in clear text.
-	 * 
+	 *
 	 * @return The user login password.
 	 */
 	public char[] getUserPassword() {
 		return this.iPw.toCharArray();
 	}
-
 }

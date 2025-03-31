@@ -45,23 +45,21 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
  */
 
 import java.net.Socket;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.Messages;
 
 /**
  * Class HttpServerWorker forwards incoming connections to a handler
- * 
+ *
  */
 public class HttpServerWorker implements Runnable {
-
 	HttpConnectionHandler iHandler;
 
 	Socket iSocket;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHandler
 	 *            The handler
 	 * @param pSocket

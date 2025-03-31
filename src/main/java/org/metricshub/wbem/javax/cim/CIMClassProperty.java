@@ -62,20 +62,19 @@ import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInter
  * >DSP004</a>). This class is to be used for all <code>CIMClass</code>
  * properties. NOTE: For instance properties, use the class
  * <code>CIMProperty</code>.
- * 
+ *
  * @param <E>
  *            Type parameter.
- * 
+ *
  */
 public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedElementInterface {
-
 	private static final long serialVersionUID = -1455588144409014311L;
 
 	private CIMQualifiedElementInterfaceImpl iQualiImpl;
 
 	/**
 	 * This method constructs an instance of <code>CIMClassProperty</code>.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the property.
 	 * @param pType
@@ -93,8 +92,15 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 	 * @param pOriginClass
 	 *            The original class in which the property was defined.
 	 */
-	public CIMClassProperty(String pName, CIMDataType pType, E pValue,
-			CIMQualifier<?>[] pQualifiers, boolean pKey, boolean pPropagated, String pOriginClass) {
+	public CIMClassProperty(
+		String pName,
+		CIMDataType pType,
+		E pValue,
+		CIMQualifier<?>[] pQualifiers,
+		boolean pKey,
+		boolean pPropagated,
+		String pOriginClass
+	) {
 		super(pName, pType, pValue, pKey | hasKey(pQualifiers), pPropagated, pOriginClass);
 		this.iQualiImpl = new CIMQualifiedElementInterfaceImpl(pQualifiers, pKey, true);
 	}
@@ -104,7 +110,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 	 * <code>true</code> if and only if the argument is not null and is a
 	 * <code>CIMClassProperty</code> that represents the same name, type and
 	 * value as this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare with.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -119,7 +125,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Returns a <code>CIMClassProperty</code> filtered as specified.
-	 * 
+	 *
 	 * @param pIncludeQualifiers
 	 *            If <code>true</code> all qualifiers are returned; otherwise no
 	 *            qualifiers.
@@ -134,7 +140,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Returns a <code>CIMClassProperty</code> filtered as specified.
-	 * 
+	 *
 	 * @param pIncludeQualifiers
 	 *            If <code>true</code> all qualifiers are returned; otherwise no
 	 *            qualifiers.
@@ -146,17 +152,22 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 	 *            propagated will be included.
 	 * @return CIMClassProperty A filtered <code>CIMClassProperty</code>.
 	 */
-	public CIMClassProperty<E> filter(boolean pIncludeQualifiers, boolean pIncludeClassOrigin,
-			boolean pLocalOnly) {
+	public CIMClassProperty<E> filter(boolean pIncludeQualifiers, boolean pIncludeClassOrigin, boolean pLocalOnly) {
 		// FIXME: should key depend on pIncludeQualifiers?
-		return new CIMClassProperty<E>(getName(), getDataType(), getValue(),
-				pIncludeQualifiers ? this.iQualiImpl.getQualifiers(pLocalOnly) : null, isKey(),
-				isPropagated(), pIncludeClassOrigin ? getOriginClass() : null);
+		return new CIMClassProperty<E>(
+			getName(),
+			getDataType(),
+			getValue(),
+			pIncludeQualifiers ? this.iQualiImpl.getQualifiers(pLocalOnly) : null,
+			isKey(),
+			isPropagated(),
+			pIncludeClassOrigin ? getOriginClass() : null
+		);
 	}
 
 	/**
 	 * Get a qualifier by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the qualifier to retrieve.
 	 * @return The qualifier at the specified index.
@@ -168,7 +179,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Gets a qualifier by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return The qualifier requested or <code>null</code> if the qualifier
@@ -180,7 +191,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Get the number of qualifiers defined for this property.
-	 * 
+	 *
 	 * @return The number of qualifiers defined for this property.
 	 */
 	public int getQualifierCount() {
@@ -189,7 +200,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Returns the list of qualifiers for this property.
-	 * 
+	 *
 	 * @return Qualifiers for this property.
 	 */
 	public CIMQualifier<?>[] getQualifiers() {
@@ -198,7 +209,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Gets a qualifier value by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist or value is
@@ -212,7 +223,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 	/**
 	 * Checks whether the specified qualifier is one of the qualifiers defined
 	 * for this property.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @return <code>true</code> if the qualifier exists in this property,
@@ -227,7 +238,7 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 	 * for this property with the specified value. This method will return
 	 * <code>false</code> if the qualifier is not applied or if the value does
 	 * not match.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pValue
@@ -241,10 +252,10 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 
 	/**
 	 * Checks whether an array of qualifiers contains a key.
-	 * 
+	 *
 	 * @param pQualiA
 	 *            Array of qualifiers.
-	 * 
+	 *
 	 * @return <code>true</code> if at least one of the qualifiers is a key,
 	 *         <code>false</code> otherwise.
 	 */
@@ -253,9 +264,10 @@ public class CIMClassProperty<E> extends CIMProperty<E> implements CIMQualifiedE
 		Boolean trueBool = Boolean.TRUE;
 		for (int i = 0; i < pQualiA.length; i++) {
 			CIMQualifier<?> quali = pQualiA[i];
-			if ("key".equalsIgnoreCase(quali.getName())) { return trueBool.equals(quali.getValue()); }
+			if ("key".equalsIgnoreCase(quali.getName())) {
+				return trueBool.equals(quali.getValue());
+			}
 		}
 		return false;
 	}
-
 }

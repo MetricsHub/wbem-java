@@ -115,19 +115,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-
 import org.metricshub.wbem.sblim.cimclient.WBEMConfigurationProperties;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader.HeaderEntry;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
@@ -141,23 +139,21 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 
 /**
  * Class HttpClient implements a HTTP client
- * 
+ *
  */
 public class HttpClient implements HandshakeCompletedListener {
 
 	private static class HostPortPair {
-
 		String iHost;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param url
 		 *            The url
 		 */
 		public HostPortPair(URI url) {
-			this.iHost = url.getScheme().toLowerCase() + ':' + url.getHost().toLowerCase() + ':'
-					+ url.getPort();
+			this.iHost = url.getScheme().toLowerCase() + ':' + url.getHost().toLowerCase() + ':' + url.getPort();
 		}
 
 		@Override
@@ -179,7 +175,6 @@ public class HttpClient implements HandshakeCompletedListener {
 	}
 
 	private static class GetProperty implements PrivilegedAction<Object> {
-
 		String iPropertyName;
 
 		GetProperty(String propertyName) {
@@ -195,12 +190,15 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	static {
 		try {
-			iEncoding = (String) AccessController.doPrivileged(new PrivilegedAction<Object>() {
+			iEncoding =
+				(String) AccessController.doPrivileged(
+					new PrivilegedAction<Object>() {
 
-				public Object run() {
-					return System.getProperty("file.encoding", "ISO8859_1");
-				}
-			});
+						public Object run() {
+							return System.getProperty("file.encoding", "ISO8859_1");
+						}
+					}
+				);
 			if (!isASCIISuperset(iEncoding)) iEncoding = "ISO8859_1";
 		} catch (Exception exception) {
 			iEncoding = "ISO8859_1";
@@ -209,7 +207,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Converts a byte array to a String of hex digits
-	 * 
+	 *
 	 * @param digest
 	 *            The byte array
 	 * @return The hex string
@@ -228,7 +226,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns a client from a http client pool
-	 * 
+	 *
 	 * @param url
 	 *            The url to connect to
 	 * @param clientPool
@@ -237,21 +235,17 @@ public class HttpClient implements HandshakeCompletedListener {
 	 *            The authentication handler to use
 	 * @return A http client from the pool
 	 */
-	public static HttpClient getClient(URI url, HttpClientPool clientPool,
-			AuthorizationHandler auth_handler) {
-
+	public static HttpClient getClient(URI url, HttpClientPool clientPool, AuthorizationHandler auth_handler) {
 		return clientPool.retrieveAvailableConnectionFromPool(url, auth_handler);
 	}
 
 	protected static String dequote(String str) {
 		int len = str.length();
-		if (len > 1 && str.charAt(0) == '\"' && str.charAt(len - 1) == '\"') return str.substring(
-				1, len - 1);
+		if (len > 1 && str.charAt(0) == '\"' && str.charAt(len - 1) == '\"') return str.substring(1, len - 1);
 		return str;
 	}
 
-	protected static void handleRsp(String authInfo, AuthorizationInfo prevAuthInfo)
-			throws IOException {
+	protected static void handleRsp(String authInfo, AuthorizationInfo prevAuthInfo) throws IOException {
 		if (authInfo != null) {
 			HttpHeader params = HttpHeader.parse(authInfo);
 
@@ -266,8 +260,7 @@ public class HttpClient implements HandshakeCompletedListener {
 			if (qop != null) {
 				if (!"auth".equalsIgnoreCase(qop) && !"auth-int".equalsIgnoreCase(qop)) {
 					// TODO
-					throw new IOException(
-							"Authentication Digest with integrity check not supported");
+					throw new IOException("Authentication Digest with integrity check not supported");
 				}
 				byte[] rspauth;
 				String rspauthStr = dequote(params.getField("rspauth"));
@@ -275,13 +268,16 @@ public class HttpClient implements HandshakeCompletedListener {
 					rspauth = parseHex(rspauthStr);
 
 					String cnonce = dequote(params.getField("cnonce"));
-					if (cnonce != null && !cnonce.equals(prevAuthInfo.getCnonce())) { throw new IOException(
-							"Digest authentication: Invalid nonce counter"); }
+					if (cnonce != null && !cnonce.equals(prevAuthInfo.getCnonce())) {
+						throw new IOException("Digest authentication: Invalid nonce counter");
+					}
 					String ncStr = params.getField("nc");
 					if (ncStr != null) {
 						try {
 							long nc = Long.parseLong(ncStr, 16);
-							if (nc != prevAuthInfo.getNc()) { throw new IOException(); }
+							if (nc != prevAuthInfo.getNc()) {
+								throw new IOException();
+							}
 						} catch (Exception e) {
 							throw new IOException("Digest authentication: Invalid nonce counter");
 						}
@@ -312,17 +308,13 @@ public class HttpClient implements HandshakeCompletedListener {
 						HA2 = convertToHexString(md5.digest());
 
 						md5.reset();
-						md5.update((HA1 + ":" + nonce + ":" + ncStr + ":" + cnonce + ":" + qop
-								+ ":" + HA2).getBytes("UTF-8"));
+						md5.update((HA1 + ":" + nonce + ":" + ncStr + ":" + cnonce + ":" + qop + ":" + HA2).getBytes("UTF-8"));
 						String hsh = convertToHexString(md5.digest());
 						byte[] hash = parseHex(hsh);
 
-						if (!Arrays.equals(hash, rspauth)) throw new IOException(
-								"Digest Authentication failed!");
-
+						if (!Arrays.equals(hash, rspauth)) throw new IOException("Digest Authentication failed!");
 					} catch (NoSuchAlgorithmException e1) {
-						throw new IOException(
-								"Unable to validate Authentication response: NoSuchAlgorithmException");
+						throw new IOException("Unable to validate Authentication response: NoSuchAlgorithmException");
 					}
 				}
 			} else {
@@ -343,11 +335,89 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	private static boolean isASCIISuperset(String charset) throws Exception {
 		String asciiSuperSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_.!~*'();/?:@&=+$,";
-		byte abyte0[] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72,
-				73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99,
-				100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
-				116, 117, 118, 119, 120, 121, 122, 45, 95, 46, 33, 126, 42, 39, 40, 41, 59, 47, 63,
-				58, 64, 38, 61, 43, 36, 44 };
+		byte abyte0[] = {
+			48,
+			49,
+			50,
+			51,
+			52,
+			53,
+			54,
+			55,
+			56,
+			57,
+			65,
+			66,
+			67,
+			68,
+			69,
+			70,
+			71,
+			72,
+			73,
+			74,
+			75,
+			76,
+			77,
+			78,
+			79,
+			80,
+			81,
+			82,
+			83,
+			84,
+			85,
+			86,
+			87,
+			88,
+			89,
+			90,
+			97,
+			98,
+			99,
+			100,
+			101,
+			102,
+			103,
+			104,
+			105,
+			106,
+			107,
+			108,
+			109,
+			110,
+			111,
+			112,
+			113,
+			114,
+			115,
+			116,
+			117,
+			118,
+			119,
+			120,
+			121,
+			122,
+			45,
+			95,
+			46,
+			33,
+			126,
+			42,
+			39,
+			40,
+			41,
+			59,
+			47,
+			63,
+			58,
+			64,
+			38,
+			61,
+			43,
+			36,
+			44
+		};
 		byte convertedArray[] = asciiSuperSet.getBytes(charset);
 		return Arrays.equals(convertedArray, abyte0);
 	}
@@ -396,7 +466,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param url
 	 *            The url to connect to
 	 * @param clientPool
@@ -412,7 +482,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Connects to the http server
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void connect() throws IOException {
@@ -463,13 +533,12 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the http header field value for a given index
-	 * 
+	 *
 	 * @param index
 	 *            The index
 	 * @return The header field value
 	 */
 	public synchronized String getHeaderFieldValue(int index) {
-
 		if (index < 0) throw new IllegalArgumentException();
 		if (index == 0) return this.iResponse.toString();
 
@@ -483,7 +552,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the http header field for a given name
-	 * 
+	 *
 	 * @param name
 	 *            The name
 	 * @return The header field
@@ -494,7 +563,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Return the http header field name for a given index
-	 * 
+	 *
 	 * @param index
 	 *            The index
 	 * @return The name
@@ -513,20 +582,19 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the input stream of this http connection
-	 * 
+	 *
 	 * @return The input stream
 	 * @throws IOException
 	 */
 	public synchronized InputStream getInputStream() throws IOException {
 		if (getResponseCode() < 500 && this.iResponse != null && this.iServerInput != null) return this.iServerInput;
 
-		throw new IOException("Failed to open an input stream from server: HTTPResponse "
-				+ getResponseCode());
+		throw new IOException("Failed to open an input stream from server: HTTPResponse " + getResponseCode());
 	}
 
 	/**
 	 * Returns the output stream of this http connection
-	 * 
+	 *
 	 * @return The output stream
 	 */
 	public synchronized OutputStream getOutputStream() {
@@ -538,7 +606,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the request method
-	 * 
+	 *
 	 * @return The request method
 	 */
 	public String getRequestMethod() {
@@ -547,7 +615,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the request property for a given key
-	 * 
+	 *
 	 * @param key
 	 *            The key
 	 * @return The property
@@ -558,7 +626,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the response code
-	 * 
+	 *
 	 * @return The response code
 	 * @throws IOException
 	 */
@@ -573,24 +641,23 @@ public class HttpClient implements HandshakeCompletedListener {
 				int IoRetry = 1;
 				int AuthentificationRetry = 1;
 				do {
-					logger.trace(Level.FINER, "Attempting http request (retry counters:" + IoRetry
-							+ "/" + AuthentificationRetry + ")");
+					logger.trace(
+						Level.FINER,
+						"Attempting http request (retry counters:" + IoRetry + "/" + AuthentificationRetry + ")"
+					);
 					long RequestTime = System.currentTimeMillis();
 
 					if (this.iPreviousResponseTime != -1) {
 						long time = RequestTime - this.iPreviousResponseTime;
-						long maxTime = this.iHttpClientPool.getConfigurationContext()
-								.getSocketIdleTimeout();
+						long maxTime = this.iHttpClientPool.getConfigurationContext().getSocketIdleTimeout();
 						if (maxTime > 0 && time > maxTime) {
-							logger.trace(Level.FINER, "Closing socket after " + time
-									+ "ms of idle time");
+							logger.trace(Level.FINER, "Closing socket after " + time + "ms of idle time");
 
 							if (this.iSocket != null && !this.iSocket.isClosed()) {
 								try {
 									this.iSocket.close();
 								} catch (IOException e) {
-									logger.trace(Level.FINER,
-											"Exception caught while closing socket", e);
+									logger.trace(Level.FINER, "Exception caught while closing socket", e);
 								}
 							}
 							this.iSocket = null;
@@ -611,26 +678,34 @@ public class HttpClient implements HandshakeCompletedListener {
 						String query = this.iUrl.getQuery();
 						if (query != null) file = file + '?' + query;
 
-						this.iMethod = new HttpClientMethod(this.iRequestMethod, this.iUrl
-								.getPath(), 1, this.iUseHttp11 ? 1 : 0);
+						this.iMethod = new HttpClientMethod(this.iRequestMethod, this.iUrl.getPath(), 1, this.iUseHttp11 ? 1 : 0);
 						logger.trace(Level.FINER, "HTTP Operation= " + this.iMethod);
 
 						this.iMethod.write(out);
 
 						StringBuilder hostField = new StringBuilder(this.iUrl.getHost());
-						if (this.iUrl.getPort() > 0
-								&& ((WBEMConstants.HTTPS.equalsIgnoreCase(this.iUrl.getScheme()) && this.iUrl
-										.getPort() != WBEMConstants.DEFAULT_WBEM_SECURE_PORT) || (WBEMConstants.HTTP
-										.equalsIgnoreCase(this.iUrl.getScheme()) && this.iUrl
-										.getPort() != WBEMConstants.DEFAULT_WBEM_PORT))) {
+						if (
+							this.iUrl.getPort() > 0 &&
+							(
+								(
+									WBEMConstants.HTTPS.equalsIgnoreCase(this.iUrl.getScheme()) &&
+									this.iUrl.getPort() != WBEMConstants.DEFAULT_WBEM_SECURE_PORT
+								) ||
+								(
+									WBEMConstants.HTTP.equalsIgnoreCase(this.iUrl.getScheme()) &&
+									this.iUrl.getPort() != WBEMConstants.DEFAULT_WBEM_PORT
+								)
+							)
+						) {
 							hostField.append(':');
 							hostField.append(this.iUrl.getPort());
 						}
 						this.iRequestHeaders.addField("Host", hostField.toString());
 
 						if (this.iServerOutput != null) this.iRequestHeaders.addField(
-								"Content-length", "" + this.iServerOutput.size());
-						else this.iRequestHeaders.addField("Content-length", "0");
+								"Content-length",
+								"" + this.iServerOutput.size()
+							); else this.iRequestHeaders.addField("Content-length", "0");
 						if (this.iHttpClientPool.getConfigurationContext().isHttpChunked()) {
 							this.iRequestHeaders.addField("TE", "trailers");
 						}
@@ -641,53 +716,54 @@ public class HttpClient implements HandshakeCompletedListener {
 							// And may cause issues with EMC's VAPP appliances
 							// so we made the header available only when
 							// new strict mode is disabled
-							logger.trace(Level.INFO,
-							             "HTTP 1.1 protocol and 'Connection=Keep-alive' strict mode disabled, we add the header");
+							logger.trace(
+								Level.INFO,
+								"HTTP 1.1 protocol and 'Connection=Keep-alive' strict mode disabled, we add the header"
+							);
 							iRequestHeaders.addField("Connection", "Keep-alive");
 						}
 
 						if (this.iPrevAuthInfo == null) {
 							AuthorizationInfo authInfo = this.iAuth_handler.getAuthorizationInfo(0);
-							String authenticate = this.iHttpClientPool.getConfigurationContext()
-									.getHttpWwwAuthenticateInfo();
+							String authenticate = this.iHttpClientPool.getConfigurationContext().getHttpWwwAuthenticateInfo();
 
 							if (authInfo.isSentOnFirstRequest()) {
-								this.iRequestHeaders.addField(authInfo.getHeaderFieldName(),
-										authInfo.toString());
+								this.iRequestHeaders.addField(authInfo.getHeaderFieldName(), authInfo.toString());
 							} else if (authenticate != null) {
 								try {
-									this.iPrevAuthInfo = getAuthentication(false,
-											this.iPrevAuthInfo, authenticate);
+									this.iPrevAuthInfo = getAuthentication(false, this.iPrevAuthInfo, authenticate);
 									if (this.iPrevAuthInfo != null) {
-										this.iRequestHeaders.addField(this.iPrevAuthInfo
-												.getHeaderFieldName(), this.iPrevAuthInfo
-												.toString());
+										this.iRequestHeaders.addField(
+												this.iPrevAuthInfo.getHeaderFieldName(),
+												this.iPrevAuthInfo.toString()
+											);
 									}
 								} catch (NoSuchAlgorithmException e) {
 									logger.trace(Level.FINER, "Unable to find digest algorithm", e);
 								} catch (IllegalArgumentException e) {
-									logger
-											.trace(
-													Level.FINER,
-													WBEMConfigurationProperties.HTTP_WWW_AUTHENTICATE_INFO
-															+ " did not contain WWW-Authenticate information",
-													e);
+									logger.trace(
+										Level.FINER,
+										WBEMConfigurationProperties.HTTP_WWW_AUTHENTICATE_INFO +
+										" did not contain WWW-Authenticate information",
+										e
+									);
 								} catch (HttpParseException e) {
-									logger
-											.trace(
-													Level.FINER,
-													WBEMConfigurationProperties.HTTP_WWW_AUTHENTICATE_INFO
-															+ " did not contain valid WWW-Authenticate information",
-													e);
+									logger.trace(
+										Level.FINER,
+										WBEMConfigurationProperties.HTTP_WWW_AUTHENTICATE_INFO +
+										" did not contain valid WWW-Authenticate information",
+										e
+									);
 								}
 							}
 						} else {
-							this.iRequestHeaders.addField(this.iPrevAuthInfo.getHeaderFieldName(),
-									this.iPrevAuthInfo.toString());
+							this.iRequestHeaders.addField(this.iPrevAuthInfo.getHeaderFieldName(), this.iPrevAuthInfo.toString());
 						}
 
 						if (this.iPrevProxy != null) this.iRequestHeaders.addField(
-								"Proxy-authorization", this.iPrevProxy.toString());
+								"Proxy-authorization",
+								this.iPrevProxy.toString()
+							);
 
 						boolean isGzipped = false;
 						if (this.iHttpClientPool.getConfigurationContext().isGzipEncodingEnabled()) {
@@ -701,15 +777,12 @@ public class HttpClient implements HandshakeCompletedListener {
 
 						if (out.checkError() != null) {
 							delayedException = out.checkError();
-							logger.trace(Level.FINER,
-									"Exception caught while writing to the http output stream.",
-									delayedException);
+							logger.trace(Level.FINER, "Exception caught while writing to the http output stream.", delayedException);
 							if (this.iSocket != null && !this.iSocket.isClosed()) {
 								try {
 									this.iSocket.close();
 								} catch (IOException e) {
-									logger.trace(Level.FINER,
-											"Exception caught while closing socket", e);
+									logger.trace(Level.FINER, "Exception caught while closing socket", e);
 								}
 							}
 							this.iSocket = null;
@@ -732,7 +805,7 @@ public class HttpClient implements HandshakeCompletedListener {
 						// if (k < 0)
 						// break;
 						// }
-						//				
+						//
 						// if (header[0] != 72 // HTTP1.
 						// || header[1] != 84
 						// || header[2] != 84
@@ -746,7 +819,7 @@ public class HttpClient implements HandshakeCompletedListener {
 						// server. Header does not match HTTP header: "+new
 						// String(header));
 						// }
-						//						
+						//
 						// istream.reset();
 
 						this.iResponse = new HttpClientMethod(this.iIStream);
@@ -754,14 +827,13 @@ public class HttpClient implements HandshakeCompletedListener {
 						ResponseTime = System.currentTimeMillis();
 
 						this.iResponseHeaders = new HttpHeader(this.iIStream);
-						logger.trace(Level.FINER, "Response HTTP Headers= "
-								+ this.iResponseHeaders.toString());
+						logger.trace(Level.FINER, "Response HTTP Headers= " + this.iResponseHeaders.toString());
 						this.iKeepAlive = false;
-						if ("Keep-alive".equalsIgnoreCase(this.iResponseHeaders
-								.getField("Connection"))
-								|| (this.iResponse.getMajorVersion() == 1 && this.iResponse
-										.getMinorVersion() == 1)
-								|| this.iResponseHeaders.getField("Keep-alive") != null) {
+						if (
+							"Keep-alive".equalsIgnoreCase(this.iResponseHeaders.getField("Connection")) ||
+							(this.iResponse.getMajorVersion() == 1 && this.iResponse.getMinorVersion() == 1) ||
+							this.iResponseHeaders.getField("Keep-alive") != null
+						) {
 							this.iKeepAlive = true;
 						}
 
@@ -772,42 +844,33 @@ public class HttpClient implements HandshakeCompletedListener {
 						String contentLength = this.iResponseHeaders.getField("Content-length");
 						long length = -1;
 						try {
-							if (contentLength != null && contentLength.length() > 0) length = Long
-									.parseLong(contentLength);
+							if (contentLength != null && contentLength.length() > 0) length = Long.parseLong(contentLength);
 						} catch (Exception e) {
-							logger.trace(Level.FINER,
-									"Exception while parsing the content length of http response",
-									e);
+							logger.trace(Level.FINER, "Exception while parsing the content length of http response", e);
 						}
-						this.iKeepAlive = (length >= 0 || this.iResponse.getStatus() == 304 || this.iResponse
-								.getStatus() == 204);
+						this.iKeepAlive = (length >= 0 || this.iResponse.getStatus() == 304 || this.iResponse.getStatus() == 204);
 
 						if (isGzipped) {
-							String contentEncoding = this.iResponseHeaders
-									.getField("Content-Encoding");
-							if (contentEncoding != null
-									&& contentEncoding.toLowerCase().contains("gzip")) {
+							String contentEncoding = this.iResponseHeaders.getField("Content-Encoding");
+							if (contentEncoding != null && contentEncoding.toLowerCase().contains("gzip")) {
 								length = -1; // ignore Content-length
 								this.iServerInput = new GZIPInputStream(this.iServerInput);
 							}
 						}
 
-						String transferEncoding = this.iResponseHeaders
-								.getField("Transfer-encoding");
+						String transferEncoding = this.iResponseHeaders.getField("Transfer-encoding");
 						if (transferEncoding != null) {
 							length = -1; // ignore Content-length
 							if (transferEncoding.toLowerCase().endsWith("chunked")) {
-								this.iServerInput = new ChunkedInputStream(this.iServerInput,
-										this.iResponseHeaders.getField("Trailer"), "Response");
+								this.iServerInput =
+									new ChunkedInputStream(this.iServerInput, this.iResponseHeaders.getField("Trailer"), "Response");
 								this.iKeepAlive = true;
 							}
 						}
 
-						if (length >= 0) this.iServerInput = new BoundedInputStream(
-								this.iServerInput, length);
+						if (length >= 0) this.iServerInput = new BoundedInputStream(this.iServerInput, length);
 
-						logger.trace(Level.FINER, "KeepAlive="
-								+ (this.iKeepAlive ? "true" : "false"));
+						logger.trace(Level.FINER, "KeepAlive=" + (this.iKeepAlive ? "true" : "false"));
 
 						if (this.iKeepAlive) {
 							this.iServerInput = new KeepAliveInputStream(this.iServerInput, this);
@@ -815,11 +878,10 @@ public class HttpClient implements HandshakeCompletedListener {
 
 						switch (this.iResponse.getStatus()) {
 							case 100: {
-								continue;
-							}
+									continue;
+								}
 							case HttpURLConnection.HTTP_OK:
-								String authInfo = this.iResponseHeaders
-										.getField("Authentication-Info");
+								String authInfo = this.iResponseHeaders.getField("Authentication-Info");
 								handleRsp(authInfo, this.iPrevAuthInfo);
 
 								authInfo = this.iResponseHeaders.getField("Authentication-Proxy");
@@ -829,40 +891,28 @@ public class HttpClient implements HandshakeCompletedListener {
 
 								this.iPreviousResponseTime = ResponseTime;
 								return HttpURLConnection.HTTP_OK;
-
 							case HttpURLConnection.HTTP_UNAUTHORIZED:
 								--AuthentificationRetry;
-								String authenticate = this.iResponseHeaders
-										.getField("WWW-Authenticate");
+								String authenticate = this.iResponseHeaders.getField("WWW-Authenticate");
 								try {
-									this.iPrevAuthInfo = getAuthentication(false,
-											this.iPrevAuthInfo, authenticate);
+									this.iPrevAuthInfo = getAuthentication(false, this.iPrevAuthInfo, authenticate);
 									if (this.iPrevAuthInfo != null) {
-										this.iRequestHeaders.addField(this.iPrevAuthInfo
-												.getHeaderFieldName(), this.iPrevAuthInfo
-												.toString());
+										this.iRequestHeaders.addField(
+												this.iPrevAuthInfo.getHeaderFieldName(),
+												this.iPrevAuthInfo.toString()
+											);
 									}
 								} catch (NoSuchAlgorithmException e) {
 									logger.trace(Level.FINER, "Unable to find digest algorithm", e);
 								} catch (IllegalArgumentException e) {
-									logger
-											.trace(
-													Level.FINER,
-													"HTTP 401 response did not contain WWW-Authenticate information",
-													e);
+									logger.trace(Level.FINER, "HTTP 401 response did not contain WWW-Authenticate information", e);
 								} catch (HttpParseException e) {
-									logger
-											.trace(
-													Level.FINER,
-													"HTTP 401 response did not contain valid WWW-Authenticate information",
-													e);
+									logger.trace(Level.FINER, "HTTP 401 response did not contain valid WWW-Authenticate information", e);
 								}
 
 								if (!authFailed) {
 									authFailed = true;
-									logger
-											.trace(Level.FINER,
-													"Authorization failed, retrying with authorization info.");
+									logger.trace(Level.FINER, "Authorization failed, retrying with authorization info.");
 								}
 								if (this.iPrevAuthInfo != null && this.iPrevAuthInfo.isKeptAlive()) {
 									this.iKeepAlive = true;
@@ -882,23 +932,21 @@ public class HttpClient implements HandshakeCompletedListener {
 								 * requestHeaders.addField
 								 * ("Proxy-Authorization",
 								 * prevProxy.toString());
-								 * 
+								 *
 								 * while ((total = serverInput.available()) > 0)
 								 * { serverInput.skip(total); } break;
 								 */
 								break;
 							default:
 								int status = this.iResponse.getStatus();
-								if (!this.iKeepAlive) closeConnection();
-								else this.iServerInput.close();
+								if (!this.iKeepAlive) closeConnection(); else this.iServerInput.close();
 								this.iPreviousResponseTime = ResponseTime;
 								return status;
 						}
 					} catch (SocketTimeoutException e) {
 						throw e;
 					} catch (IOException e) {
-						logger.message(Messages.HTTP_CONNECTION_FAILED, new Object[] { this.iUrl,
-								e.getMessage() });
+						logger.message(Messages.HTTP_CONNECTION_FAILED, new Object[] { this.iUrl, e.getMessage() });
 						StringBuilder msg = new StringBuilder("Http connection failed ");
 						if (ResponseTime != -1) {
 							msg.append("after");
@@ -918,8 +966,7 @@ public class HttpClient implements HandshakeCompletedListener {
 							try {
 								this.iSocket.close();
 							} catch (IOException e2) {
-								logger.trace(Level.FINER, "Exception caught while closing socket",
-										e2);
+								logger.trace(Level.FINER, "Exception caught while closing socket", e2);
 							}
 						}
 						this.iSocket = null;
@@ -927,7 +974,6 @@ public class HttpClient implements HandshakeCompletedListener {
 						this.iResponse = null;
 						--IoRetry;
 					}
-
 				} while (AuthentificationRetry >= 0 && IoRetry >= 0);
 			}
 
@@ -936,8 +982,9 @@ public class HttpClient implements HandshakeCompletedListener {
 				if (ResponseTime != -1) this.iPreviousResponseTime = ResponseTime;
 				return this.iResponse.getStatus();
 			}
-			throw (IOException) (delayedException != null ? delayedException : new Exception(
-					"Unable to get response after maximum retries"));
+			throw (IOException) (
+				delayedException != null ? delayedException : new Exception("Unable to get response after maximum retries")
+			);
 		} finally {
 			logger.exit();
 		}
@@ -945,7 +992,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns the response message
-	 * 
+	 *
 	 * @return The response message
 	 */
 	public String getResponseMessage() {
@@ -970,7 +1017,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Sets the request method
-	 * 
+	 *
 	 * @param method
 	 *            The request method
 	 */
@@ -980,7 +1027,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Sets the request property
-	 * 
+	 *
 	 * @param key
 	 *            The property name
 	 * @param value
@@ -999,13 +1046,12 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Releases the client and returns it to the pool
-	 * 
+	 *
 	 * @param keep
 	 *            if <code>true</code> return to the pool, if <code>false</code>
 	 *            drop.
 	 */
 	public void streamFinished(boolean keep) {
-
 		LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
@@ -1023,7 +1069,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Enables/Disables use of http 1.1
-	 * 
+	 *
 	 * @param bool
 	 *            if <code>true</code> http 1.1 is enabled.
 	 */
@@ -1033,7 +1079,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns if a proxy is used
-	 * 
+	 *
 	 * @return <code>true</code> if a proxy is used
 	 */
 	public boolean usingProxy() {
@@ -1041,8 +1087,8 @@ public class HttpClient implements HandshakeCompletedListener {
 		return false;
 	}
 
-	protected AuthorizationInfo getAuthentication(boolean proxy, AuthorizationInfo prevAuthInfo,
-			String authenticate) throws HttpParseException, NoSuchAlgorithmException {
+	protected AuthorizationInfo getAuthentication(boolean proxy, AuthorizationInfo prevAuthInfo, String authenticate)
+		throws HttpParseException, NoSuchAlgorithmException {
 		Challenge[] challenges = Challenge.parseChallenge(authenticate);
 
 		// AuthorizationHandler auth_handler =
@@ -1056,14 +1102,19 @@ public class HttpClient implements HandshakeCompletedListener {
 			// HttpHeader headers = challenge.getParams();
 			// String stale = headers.getField("stale");
 			// }
-			prevAuthInfo = this.iAuth_handler.getAuthorizationInfo(this.iHttpClientPool
-					.getConfigurationContext().getHttpAuthenticationModule(), proxy ? Boolean.TRUE
-					: Boolean.FALSE, this.iUrl.getHost(), this.iUrl.getPort(), this.iUrl
-					.getScheme(), challenge.getRealm(), challenge.getScheme());
+			prevAuthInfo =
+				this.iAuth_handler.getAuthorizationInfo(
+						this.iHttpClientPool.getConfigurationContext().getHttpAuthenticationModule(),
+						proxy ? Boolean.TRUE : Boolean.FALSE,
+						this.iUrl.getHost(),
+						this.iUrl.getPort(),
+						this.iUrl.getScheme(),
+						challenge.getRealm(),
+						challenge.getScheme()
+					);
 
 			if (prevAuthInfo != null) {
-				prevAuthInfo.updateAuthenticationInfo(challenge, authenticate, this.iUrl,
-						this.iRequestMethod);
+				prevAuthInfo.updateAuthenticationInfo(challenge, authenticate, this.iUrl, this.iRequestMethod);
 				return prevAuthInfo;
 			}
 		}
@@ -1093,13 +1144,15 @@ public class HttpClient implements HandshakeCompletedListener {
 			as = null;
 		} else {
 			Vector<Object> vector = new Vector<Object>();
-			for (StringTokenizer stringtokenizer = new StringTokenizer(s, ","); stringtokenizer
-					.hasMoreElements(); vector.addElement(stringtokenizer.nextElement())) {
+			for (
+				StringTokenizer stringtokenizer = new StringTokenizer(s, ",");
+				stringtokenizer.hasMoreElements();
+				vector.addElement(stringtokenizer.nextElement())
+			) {
 				// add each token to vector
 			}
 			as = new String[vector.size()];
-			for (int i1 = 0; i1 < as.length; i1++)
-				as[i1] = (String) vector.elementAt(i1);
+			for (int i1 = 0; i1 < as.length; i1++) as[i1] = (String) vector.elementAt(i1);
 		}
 		return as;
 	}
@@ -1117,10 +1170,11 @@ public class HttpClient implements HandshakeCompletedListener {
 
 		if (this.iSocket == null) {
 			// Determine whether we need to connect with a timeout or not
-			boolean socketConnectWithTimeout = this.iHttpClientPool.getConfigurationContext()
-					.socketConnectWithTimeout();
-			logger.trace(Level.FINER, "Socket=null, creating http socket "
-					+ (socketConnectWithTimeout ? "with" : "without") + " timeout.");
+			boolean socketConnectWithTimeout = this.iHttpClientPool.getConfigurationContext().socketConnectWithTimeout();
+			logger.trace(
+				Level.FINER,
+				"Socket=null, creating http socket " + (socketConnectWithTimeout ? "with" : "without") + " timeout."
+			);
 
 			// On Java 5+ InetSocketAddress(String,int) constructor will call
 			// any security manager's checkConnect method
@@ -1131,45 +1185,41 @@ public class HttpClient implements HandshakeCompletedListener {
 				}
 			}
 
-			SocketFactory factory = this.iHttpClientPool.getConfigurationContext()
-					.getCustomSocketFactory();
+			SocketFactory factory = this.iHttpClientPool.getConfigurationContext().getCustomSocketFactory();
 			if (factory == null) {
-				factory = HttpSocketFactory
+				factory =
+					HttpSocketFactory
 						.getInstance()
 						.getClientSocketFactory(
-								WBEMConstants.HTTPS.equalsIgnoreCase(this.iUrl.getScheme()) ? this.iHttpClientPool
-										.getSslContext()
-										: null);
+							WBEMConstants.HTTPS.equalsIgnoreCase(this.iUrl.getScheme()) ? this.iHttpClientPool.getSslContext() : null
+						);
 				if (factory == null) {
 					logger.message(Messages.HTTP_NO_SOCKET_FACTORY, this.iUrl.getScheme());
-					throw new IllegalStateException("Unable to load socket factory:"
-							+ this.iUrl.getScheme());
+					throw new IllegalStateException("Unable to load socket factory:" + this.iUrl.getScheme());
 				}
 			}
 			logger.trace(Level.FINER, "Creating new http for url " + this.iUrl.toString());
 			if (socketConnectWithTimeout) {
-				int connectTimeout = this.iHttpClientPool.getConfigurationContext()
-						.getSocketConnectTimeout();
+				int connectTimeout = this.iHttpClientPool.getConfigurationContext().getSocketConnectTimeout();
 				logger.trace(Level.FINER, "Setting socket connect timeout=" + connectTimeout);
 
 				if (factory instanceof SSLSocketFactory) {
 					Socket sock = new Socket();
-					sock.connect(new InetSocketAddress(this.iUrl.getHost(), this.iUrl.getPort()),
-							connectTimeout);
-					this.iSocket = ((SSLSocketFactory) factory).createSocket(sock, this.iUrl
-							.getHost(), this.iUrl.getPort(), true);
-
+					sock.connect(new InetSocketAddress(this.iUrl.getHost(), this.iUrl.getPort()), connectTimeout);
+					this.iSocket =
+						((SSLSocketFactory) factory).createSocket(sock, this.iUrl.getHost(), this.iUrl.getPort(), true);
 				} else {
 					this.iSocket = factory.createSocket();
-					if (this.iSocket != null) this.iSocket.connect(new InetSocketAddress(this.iUrl
-							.getHost(), this.iUrl.getPort()), connectTimeout);
+					if (this.iSocket != null) this.iSocket.connect(
+							new InetSocketAddress(this.iUrl.getHost(), this.iUrl.getPort()),
+							connectTimeout
+						);
 				}
 			} else {
 				this.iSocket = factory.createSocket(this.iUrl.getHost(), this.iUrl.getPort());
 			}
 			if (this.iSocket == null) {
-				logger.trace(Level.WARNING, "Socket factory " + factory.getClass().getName()
-						+ " returned null socket");
+				logger.trace(Level.WARNING, "Socket factory " + factory.getClass().getName() + " returned null socket");
 				throw new IOException("Socket factory did not create socket");
 			}
 
@@ -1180,44 +1230,50 @@ public class HttpClient implements HandshakeCompletedListener {
 
 			if (this.iSocket instanceof SSLSocket) {
 				// Determine whether we need to perform SSL handshake or not
-				boolean performHandshake = this.iHttpClientPool.getConfigurationContext()
-						.performSslHandshake();
-				logger.trace(Level.FINER, "SSL socket created, handshake "
-						+ (performHandshake ? "will" : "will not") + " be performed.");
+				boolean performHandshake = this.iHttpClientPool.getConfigurationContext().performSslHandshake();
+				logger.trace(
+					Level.FINER,
+					"SSL socket created, handshake " + (performHandshake ? "will" : "will not") + " be performed."
+				);
 
 				if (performHandshake) {
 					SSLSocket sk = (SSLSocket) this.iSocket;
 
 					String protocols[] = parseProperty("https.protocols");
 					if (protocols != null) {
-						logger.trace(Level.FINER,
-								"Setting SSLSocket.setEnabledProtocols() from \"https.protocols\"="
-										+ String.valueOf(Arrays.asList(protocols)));
+						logger.trace(
+							Level.FINER,
+							"Setting SSLSocket.setEnabledProtocols() from \"https.protocols\"=" +
+							String.valueOf(Arrays.asList(protocols))
+						);
 						sk.setEnabledProtocols(protocols);
 					}
 
 					String ciphersuites[] = parseProperty("https.cipherSuites");
 					if (ciphersuites != null) {
-						logger.trace(Level.FINER,
-								"Setting SSLSocket.setEnableCipheSuites() from \"https.cipherSuites\"="
-										+ String.valueOf(Arrays.asList(ciphersuites)));
+						logger.trace(
+							Level.FINER,
+							"Setting SSLSocket.setEnableCipheSuites() from \"https.cipherSuites\"=" +
+							String.valueOf(Arrays.asList(ciphersuites))
+						);
 						sk.setEnabledCipherSuites(ciphersuites);
 					}
 
-					String disableCipherSuites = this.iHttpClientPool.getConfigurationContext()
-							.getSslClientCipherSuitesToDisable();
+					String disableCipherSuites =
+						this.iHttpClientPool.getConfigurationContext().getSslClientCipherSuitesToDisable();
 					if (disableCipherSuites != null) {
-						sk.setEnabledCipherSuites(this.iHttpClientPool.getUpdatedCipherSuites(sk
-								.getEnabledCipherSuites(), disableCipherSuites));
+						sk.setEnabledCipherSuites(
+							this.iHttpClientPool.getUpdatedCipherSuites(sk.getEnabledCipherSuites(), disableCipherSuites)
+						);
 					}
 
 					// Determine whether we need to perform synchronized SSL
 					// handshake or not
-					boolean synchronizedHandshake = this.iHttpClientPool.getConfigurationContext()
-							.synchronizedSslHandshake();
-					logger.trace(Level.FINER, "Starting "
-							+ (synchronizedHandshake ? "synchronized" : "unsynchronized")
-							+ " http handshake.");
+					boolean synchronizedHandshake = this.iHttpClientPool.getConfigurationContext().synchronizedSslHandshake();
+					logger.trace(
+						Level.FINER,
+						"Starting " + (synchronizedHandshake ? "synchronized" : "unsynchronized") + " http handshake."
+					);
 
 					sk.addHandshakeCompletedListener(this);
 					if (synchronizedHandshake) {
@@ -1231,8 +1287,8 @@ public class HttpClient implements HandshakeCompletedListener {
 			}
 
 			this.iIStream = new BufferedInputStream(this.iSocket.getInputStream());
-			this.iOStream = new ASCIIPrintStream(new BufferedOutputStream(this.iSocket
-					.getOutputStream(), 1024), false, iEncoding);
+			this.iOStream =
+				new ASCIIPrintStream(new BufferedOutputStream(this.iSocket.getOutputStream(), 1024), false, iEncoding);
 			this.iServerInput = null;
 		} else {
 			if (this.iServerInput != null && !(this.iServerInput instanceof KeepAliveInputStream)) {
@@ -1251,7 +1307,7 @@ public class HttpClient implements HandshakeCompletedListener {
 
 	/**
 	 * Returns connected
-	 * 
+	 *
 	 * @return The value of connected.
 	 */
 	public boolean isConnected() {

@@ -46,14 +46,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.LinkedList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
  * <pre>
- * 
+ *
  * ELEMENT IRETURNVALUE (
  *   CLASSNAME* | INSTANCENAME* | VALUE* | VALUE.OBJECTWITHPATH* | VALUE.OBJECTWITHLOCALPATH* |
  *   VALUE.OBJECT* | OBJECTPATH* | QUALIFIER.DECLARATION* | VALUE.ARRAY? | VALUE.REFERENCE? |
@@ -62,7 +61,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileIf {
-
 	private String iChildNameEnum;
 
 	private LinkedList<Object> iChildValueLL;
@@ -77,7 +75,9 @@ public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileI
 	/**
 	 * @param pChild
 	 */
-	public void addChild(Node pChild) { /* we don't need it here */}
+	public void addChild(Node pChild) {
+		/* we don't need it here */
+	}
 
 	/**
 	 * @param pAttribs
@@ -97,13 +97,26 @@ public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileI
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { CLASSNAME, INSTANCENAME, INSTANCEPATH,
-			VALUE, VALUE_OBJECTWITHPATH, VALUE_OBJECTWITHLOCALPATH, VALUE_OBJECT, OBJECTPATH,
-			QUALIFIER_DECLARATION, VALUE_ARRAY, VALUE_REFERENCE, CLASS, INSTANCE,
-			VALUE_NAMEDINSTANCE, VALUE_INSTANCEWITHPATH };
+	private static final String[] ALLOWED_CHILDREN = {
+		CLASSNAME,
+		INSTANCENAME,
+		INSTANCEPATH,
+		VALUE,
+		VALUE_OBJECTWITHPATH,
+		VALUE_OBJECTWITHLOCALPATH,
+		VALUE_OBJECT,
+		OBJECTPATH,
+		QUALIFIER_DECLARATION,
+		VALUE_ARRAY,
+		VALUE_REFERENCE,
+		CLASS,
+		INSTANCE,
+		VALUE_NAMEDINSTANCE,
+		VALUE_INSTANCEWITHPATH
+	};
 
 	// private static final String[] SINGLE_CHILDREN = { VALUE_ARRAY,
 	// VALUE_REFERENCE };
@@ -114,19 +127,23 @@ public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileI
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (this.iChildNameEnum != null) {
-			if (pNodeNameEnum != this.iChildNameEnum) throw new SAXException(getNodeName()
-					+ " node cannot have " + pNodeNameEnum + " child node, since it already has "
-					+ this.iChildNameEnum + " child node(s)!");
+			if (pNodeNameEnum != this.iChildNameEnum) throw new SAXException(
+				getNodeName() +
+				" node cannot have " +
+				pNodeNameEnum +
+				" child node, since it already has " +
+				this.iChildNameEnum +
+				" child node(s)!"
+			);
 			if (this.iChildNameEnum == VALUE_ARRAY || this.iChildNameEnum == VALUE_REFERENCE) throw new SAXException(
-					getNodeName() + " node can have only one " + this.iChildNameEnum
-							+ " child node!");
+				getNodeName() + " node can have only one " + this.iChildNameEnum + " child node!"
+			);
 		} else {
 			boolean found = false;
 			for (int i = 0; i < ALLOWED_CHILDREN.length; i++) {
 				if ((found = (pNodeNameEnum == ALLOWED_CHILDREN[i])) == true) break;
 			}
-			if (!found) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-					+ " child node!");
+			if (!found) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 		}
 	}
 
@@ -141,7 +158,7 @@ public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileI
 
 	@Override
 	public void testCompletness() {
-	// child nodes are optional
+		// child nodes are optional
 	}
 
 	public int getReturnValueCount() {
@@ -151,5 +168,4 @@ public class IReturnValueNode extends Node implements RetValPipeIf, NonVolatileI
 	public Object readReturnValue() {
 		return this.iChildValueLL == null ? null : this.iChildValueLL.removeFirst();
 	}
-
 }

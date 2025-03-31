@@ -61,8 +61,8 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import org.metricshub.wbem.javax.wbem.listener.IndicationListener;
+import org.metricshub.wbem.javax.wbem.listener.WBEMListener;
 import org.metricshub.wbem.javax.wbem.listener.WBEMListenerConstants;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpConnectionHandler;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpServerConnection;
@@ -70,22 +70,20 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.indications.CIMEventDispatcher;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.indications.CIMIndicationHandler;
-import org.metricshub.wbem.javax.wbem.listener.WBEMListener;
 
 /**
  * Class WBEMListenerSBLIM is the SBLIM implementation of the WBEMListener
  * interface.
- * 
+ *
  */
 public class WBEMListenerSBLIM implements WBEMListener {
 
 	/**
 	 * The real implementation of a listener that starts a HTTP server and
 	 * processes incoming indications
-	 * 
+	 *
 	 */
 	public class WBEMListenerImpl {
-
 		private EventListener iIndicationListener;
 
 		private HttpServerConnection iConnection;
@@ -96,7 +94,7 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pLocalAddress
 		 *            The local address to bind the port to. If null the port is
 		 *            bound to all local addresses. For use on multi-homed
@@ -114,9 +112,14 @@ public class WBEMListenerSBLIM implements WBEMListener {
 		 *            The configuration.
 		 * @throws IOException
 		 */
-		public WBEMListenerImpl(String pLocalAddress, int pPort, boolean pSSL,
-				EventListener pIndicationListener, Properties pProperties) throws IOException {
-
+		public WBEMListenerImpl(
+			String pLocalAddress,
+			int pPort,
+			boolean pSSL,
+			EventListener pIndicationListener,
+			Properties pProperties
+		)
+			throws IOException {
 			// Merge any properties passed via addListener
 			if (pProperties != null) {
 				for (Enumeration<Object> e = pProperties.keys(); e.hasMoreElements();) {
@@ -126,16 +129,20 @@ public class WBEMListenerSBLIM implements WBEMListener {
 				}
 			}
 			WBEMConfiguration config = WBEMListenerSBLIM.this.iConfiguration;
-			if (!(pIndicationListener instanceof IndicationListener)
-					&& !(pIndicationListener instanceof IndicationListenerSBLIM)) throw new IllegalArgumentException(
-					"Listener must be instance of IndicationListener or IndicationListenerSBLIM");
+			if (
+				!(pIndicationListener instanceof IndicationListener) &&
+				!(pIndicationListener instanceof IndicationListenerSBLIM)
+			) throw new IllegalArgumentException(
+				"Listener must be instance of IndicationListener or IndicationListenerSBLIM"
+			);
 			this.iIndicationListener = pIndicationListener;
-			CIMEventDispatcher eventDispatcher = new CIMEventDispatcher(this.iIndicationListener,
-					config.getListenerMaxQueuedEvents());
+			CIMEventDispatcher eventDispatcher = new CIMEventDispatcher(
+				this.iIndicationListener,
+				config.getListenerMaxQueuedEvents()
+			);
 			this.iIndicationHandler = new CIMIndicationHandler(eventDispatcher, config);
 			this.iConnectionHandler = new HttpConnectionHandler(this.iIndicationHandler, config);
-			this.iConnection = new HttpServerConnection(this.iConnectionHandler, pLocalAddress,
-					pPort, pSSL, config);
+			this.iConnection = new HttpServerConnection(this.iConnectionHandler, pLocalAddress, pPort, pSSL, config);
 		}
 
 		@Override
@@ -165,27 +172,29 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 		/**
 		 * Returns the listener we forward the indications to.
-		 * 
+		 *
 		 * @return The listener.
 		 */
 		public IndicationListener getIndicationListener() {
-			return (this.iIndicationListener instanceof IndicationListener) ? (IndicationListener) this.iIndicationListener
-					: null;
+			return (this.iIndicationListener instanceof IndicationListener)
+				? (IndicationListener) this.iIndicationListener
+				: null;
 		}
 
 		/**
 		 * Returns the listener we forward the indications to.
-		 * 
+		 *
 		 * @return The listener.
 		 */
 		public IndicationListenerSBLIM getIndicationListenerSBLIM() {
-			return (this.iIndicationListener instanceof IndicationListenerSBLIM) ? (IndicationListenerSBLIM) this.iIndicationListener
-					: null;
+			return (this.iIndicationListener instanceof IndicationListenerSBLIM)
+				? (IndicationListenerSBLIM) this.iIndicationListener
+				: null;
 		}
 
 		/**
 		 * Returns the listener port.
-		 * 
+		 *
 		 * @return The listener port.
 		 */
 		public int getListenerPort() {
@@ -194,7 +203,7 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 		/**
 		 * Get the IPs blocked by the listener.
-		 * 
+		 *
 		 * @return The comma-separated list of blocked IPs.
 		 */
 		public String getBlockedIPs() {
@@ -203,7 +212,7 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 		/**
 		 * Set the IPs to be blocked by the listener.
-		 * 
+		 *
 		 * @param pIPs
 		 *            The comma-separated list of blocked IPs.
 		 */
@@ -225,29 +234,28 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.metricshub.wbem.javax.wbem.listener.WBEMListener#addListener(javax.wbem.listener.
 	 * IndicationListener, int, java.lang.String)
 	 */
-	public int addListener(IndicationListener pListener, int pPort, String pTransport)
-			throws IOException {
+	public int addListener(IndicationListener pListener, int pPort, String pTransport) throws IOException {
 		return addListener((EventListener) pListener, pPort, pTransport, null, null);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.metricshub.wbem.javax.wbem.listener.WBEMListener#addListener(javax.wbem.listener.
 	 * IndicationListener, int, java.lang.String, java.lang.String)
 	 */
-	public int addListener(IndicationListener pListener, int pPort, String pTransport,
-			String pLocalAddr) throws IOException {
+	public int addListener(IndicationListener pListener, int pPort, String pTransport, String pLocalAddr)
+		throws IOException {
 		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr, null);
 	}
 
 	/**
 	 * Add a new listener using the specified port.
-	 * 
+	 *
 	 * @param pListener
 	 *            The Indication Listener that will be called when an indication
 	 *            is received.
@@ -265,16 +273,20 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	 * @throws IOException
 	 *             This exception is thrown when binding to pPort fails.
 	 */
-	public int addListener(IndicationListener pListener, int pPort, String pTransport,
-			String pLocalAddr, Properties pConfigurationProperties) throws IOException {
-
-		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr,
-				pConfigurationProperties);
+	public int addListener(
+		IndicationListener pListener,
+		int pPort,
+		String pTransport,
+		String pLocalAddr,
+		Properties pConfigurationProperties
+	)
+		throws IOException {
+		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr, pConfigurationProperties);
 	}
 
 	/**
 	 * Add a new listener using the specified port.
-	 * 
+	 *
 	 * @param pListener
 	 *            The SBLIM Indication Listener that will be called when an
 	 *            indication is received.
@@ -286,14 +298,13 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	 * @throws IOException
 	 *             This exception is thrown when binding to pPort fails.
 	 */
-	public int addListener(IndicationListenerSBLIM pListener, int pPort, String pTransport)
-			throws IOException {
+	public int addListener(IndicationListenerSBLIM pListener, int pPort, String pTransport) throws IOException {
 		return addListener((EventListener) pListener, pPort, pTransport, null, null);
 	}
 
 	/**
 	 * Add a new listener using the specified port and local address.
-	 * 
+	 *
 	 * @param pListener
 	 *            The SBLIM Indication Listener that will be called when an
 	 *            indication is received.
@@ -309,15 +320,15 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	 * @throws IOException
 	 *             This exception is thrown when binding to pPort fails.
 	 */
-	public int addListener(IndicationListenerSBLIM pListener, int pPort, String pTransport,
-			String pLocalAddr) throws IOException {
+	public int addListener(IndicationListenerSBLIM pListener, int pPort, String pTransport, String pLocalAddr)
+		throws IOException {
 		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr, null);
 	}
 
 	/**
 	 * Add a new listener using the specified port, local address and
 	 * properties.
-	 * 
+	 *
 	 * @param pListener
 	 *            The SBLIM Indication Listener that will be called when an
 	 *            indication is received.
@@ -335,18 +346,22 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	 * @throws IOException
 	 *             This exception is thrown when binding to pPort fails.
 	 */
-	public int addListener(IndicationListenerSBLIM pListener, int pPort, String pTransport,
-			String pLocalAddr, Properties pConfigurationProperties) throws IOException {
-
-		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr,
-				pConfigurationProperties);
+	public int addListener(
+		IndicationListenerSBLIM pListener,
+		int pPort,
+		String pTransport,
+		String pLocalAddr,
+		Properties pConfigurationProperties
+	)
+		throws IOException {
+		return addListener((EventListener) pListener, pPort, pTransport, pLocalAddr, pConfigurationProperties);
 	}
 
 	/**
 	 * Add a new listener using the specified port, local address and
 	 * properties. This is the worker routine for all public addListener
 	 * methods.
-	 * 
+	 *
 	 * @param pListener
 	 *            The indication listener (<code>IndicationListener</code> or
 	 *            <code>IndicationListenerSBLIM</code>) that will be called when
@@ -365,19 +380,25 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	 * @throws IOException
 	 *             This exception is thrown when binding to pPort fails.
 	 */
-	private synchronized int addListener(EventListener pListener, int pPort, String pTransport,
-			String pLocalAddr, Properties pConfigurationProperties) throws IOException {
-
-		if (pPort > 0 && this.iPortMap.containsKey(Integer.valueOf(pPort))) { throw new BindException(
-				"Port already in use."); }
+	private synchronized int addListener(
+		EventListener pListener,
+		int pPort,
+		String pTransport,
+		String pLocalAddr,
+		Properties pConfigurationProperties
+	)
+		throws IOException {
+		if (pPort > 0 && this.iPortMap.containsKey(Integer.valueOf(pPort))) {
+			throw new BindException("Port already in use.");
+		}
 		boolean ssl;
-		if (pTransport.equalsIgnoreCase(WBEMConstants.HTTP)) ssl = false;
-		else if (pTransport.equalsIgnoreCase(WBEMConstants.HTTPS)) ssl = true;
-		else throw new IllegalArgumentException("Unknown transport: " + pTransport
-				+ "! Valid values are http and https.");
+		if (pTransport.equalsIgnoreCase(WBEMConstants.HTTP)) ssl = false; else if (
+			pTransport.equalsIgnoreCase(WBEMConstants.HTTPS)
+		) ssl = true; else throw new IllegalArgumentException(
+			"Unknown transport: " + pTransport + "! Valid values are http and https."
+		);
 
-		WBEMListenerImpl listener = new WBEMListenerImpl(pLocalAddr, pPort, ssl, pListener,
-				pConfigurationProperties);
+		WBEMListenerImpl listener = new WBEMListenerImpl(pLocalAddr, pPort, ssl, pListener, pConfigurationProperties);
 		listener.start();
 
 		this.iPortMap.put(Integer.valueOf(listener.getListenerPort()), listener);
@@ -387,14 +408,15 @@ public class WBEMListenerSBLIM implements WBEMListener {
 
 	/**
 	 * Get the IPs blocked by the listener associated with the specified port.
-	 * 
+	 *
 	 * @param pPort
 	 *            The port.
 	 * @return The comma-separated list of blocked IPs.
 	 */
 	public String getBlockedIPs(int pPort) {
-		if (pPort <= 0 || !this.iPortMap.containsKey(Integer.valueOf(pPort))) { throw new IllegalArgumentException(
-				"Port not in use."); }
+		if (pPort <= 0 || !this.iPortMap.containsKey(Integer.valueOf(pPort))) {
+			throw new IllegalArgumentException("Port not in use.");
+		}
 		WBEMListenerImpl listener = this.iPortMap.get(Integer.valueOf(pPort));
 		return listener != null ? listener.getBlockedIPs() : null;
 	}
@@ -425,15 +447,16 @@ public class WBEMListenerSBLIM implements WBEMListener {
 	/**
 	 * Set the IPs to be blocked by the listener associated with the specified
 	 * port.
-	 * 
+	 *
 	 * @param pPort
 	 *            The port.
 	 * @param pIPs
 	 *            The comma-separated list of blocked IPs.
 	 */
 	public void setBlockedIPs(int pPort, String pIPs) {
-		if (pPort <= 0 || !this.iPortMap.containsKey(Integer.valueOf(pPort))) { throw new IllegalArgumentException(
-				"Port not in use."); }
+		if (pPort <= 0 || !this.iPortMap.containsKey(Integer.valueOf(pPort))) {
+			throw new IllegalArgumentException("Port not in use.");
+		}
 		WBEMListenerImpl listener = this.iPortMap.get(Integer.valueOf(pPort));
 		if (listener != null) {
 			listener.setBlockedIPs(pIPs);
@@ -444,14 +467,11 @@ public class WBEMListenerSBLIM implements WBEMListener {
 		if (pName.startsWith("javax.wbem.")) {
 			// Process JSR48 properties
 			if (pName.equals(WBEMListenerConstants.PROP_LISTENER_KEYSTORE)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PATH,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PATH, pValue);
 			} else if (pName.equals(WBEMListenerConstants.PROP_LISTENER_KEYSTORE_PASSWORD)) {
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.KEYSTORE_PASSWORD, pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PASSWORD, pValue);
 			} else if (pName.equals(WBEMListenerConstants.PROP_LISTENER_TRUSTSTORE)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.TRUSTSTORE_PATH,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.TRUSTSTORE_PATH, pValue);
 			} else {
 				throw new IllegalArgumentException(pName);
 			}

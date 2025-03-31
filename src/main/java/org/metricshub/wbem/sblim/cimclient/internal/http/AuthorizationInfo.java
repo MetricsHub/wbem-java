@@ -50,19 +50,17 @@ import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.Messages;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 
 /**
  * Abstract superclass for HTTP authorization information.
- * 
+ *
  * @see WwwAuthInfo
  * @see PegasusLocalAuthInfo
  */
 public abstract class AuthorizationInfo {
-
 	protected String iAddr;
 
 	protected int iPort;
@@ -97,7 +95,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Initialize
-	 * 
+	 *
 	 * @param pProxy
 	 *            Proxy authentication ?
 	 * @param pAddress
@@ -111,8 +109,7 @@ public abstract class AuthorizationInfo {
 	 * @param pScheme
 	 *            Scheme
 	 */
-	public void init(Boolean pProxy, String pAddress, int pPort, String pProtocol, String pRealm,
-			String pScheme) {
+	public void init(Boolean pProxy, String pAddress, int pPort, String pProtocol, String pRealm, String pScheme) {
 		this.iAddr = pAddress;
 		this.iPort = pPort;
 		this.iProtocol = pProtocol;
@@ -122,7 +119,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets opaque
-	 * 
+	 *
 	 * @param opaque
 	 *            new Value
 	 */
@@ -132,7 +129,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns opaque
-	 * 
+	 *
 	 * @return Opaque
 	 */
 	public String getOpaque() {
@@ -141,7 +138,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns Qop
-	 * 
+	 *
 	 * @return Qop
 	 */
 	public String getQop() {
@@ -150,7 +147,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets Qop
-	 * 
+	 *
 	 * @param qop
 	 *            New value
 	 */
@@ -160,7 +157,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns nc
-	 * 
+	 *
 	 * @return nc
 	 */
 	public long getNc() {
@@ -169,7 +166,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets nc
-	 * 
+	 *
 	 * @param nc
 	 *            New value
 	 */
@@ -179,7 +176,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets nonce
-	 * 
+	 *
 	 * @param nonce
 	 *            New Value
 	 */
@@ -189,7 +186,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns nonce
-	 * 
+	 *
 	 * @return nonce
 	 */
 	public String getNonce() {
@@ -198,7 +195,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Set cnonce
-	 * 
+	 *
 	 * @param cnonce
 	 *            New value
 	 */
@@ -208,7 +205,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns cnonce
-	 * 
+	 *
 	 * @return cnonce
 	 */
 	public String getCnonce() {
@@ -217,7 +214,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Set algorithm
-	 * 
+	 *
 	 * @param algorithm
 	 *            New value
 	 */
@@ -227,7 +224,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns algorithm
-	 * 
+	 *
 	 * @return algorithm
 	 */
 	public String getAlgorithm() {
@@ -236,7 +233,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns A1
-	 * 
+	 *
 	 * @return A1
 	 */
 	public String getA1() {
@@ -245,7 +242,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets A1
-	 * 
+	 *
 	 * @param A1
 	 *            New value
 	 */
@@ -255,7 +252,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets response
-	 * 
+	 *
 	 * @param response
 	 *            New value
 	 */
@@ -265,7 +262,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns response
-	 * 
+	 *
 	 * @return New value
 	 */
 	public String getResponse() {
@@ -274,7 +271,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns URI
-	 * 
+	 *
 	 * @return URI
 	 */
 	public String getURI() {
@@ -283,7 +280,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets URI
-	 * 
+	 *
 	 * @param uri
 	 *            New value
 	 */
@@ -293,7 +290,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets credentials
-	 * 
+	 *
 	 * @param credentials
 	 *            New value
 	 */
@@ -303,7 +300,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the address
-	 * 
+	 *
 	 * @return The server address
 	 */
 	public String getAddr() {
@@ -312,7 +309,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the port
-	 * 
+	 *
 	 * @return The server port
 	 */
 	public int getPort() {
@@ -321,7 +318,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the protocol
-	 * 
+	 *
 	 * @return The protocol
 	 */
 	public String getProtocol() {
@@ -330,7 +327,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the realm
-	 * 
+	 *
 	 * @return The realm
 	 */
 	public String getRealm() {
@@ -339,7 +336,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets the realm
-	 * 
+	 *
 	 * @param realm
 	 *            New value
 	 */
@@ -349,7 +346,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the scheme
-	 * 
+	 *
 	 * @return The scheme
 	 */
 	public String getScheme() {
@@ -358,7 +355,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Sets the scheme
-	 * 
+	 *
 	 * @param scheme
 	 *            New value
 	 */
@@ -368,7 +365,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Returns the credentials
-	 * 
+	 *
 	 * @return The credentials
 	 */
 	public PasswordAuthentication getCredentials() {
@@ -377,7 +374,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Compares two authorization informations.
-	 * 
+	 *
 	 * @param obj
 	 *            The other authorization information
 	 * @return <code>true</code> if type, realm, scheme, address, protocol and
@@ -391,21 +388,17 @@ public abstract class AuthorizationInfo {
 		boolean type = getClass().equals(that.getClass());
 		// boolean prxt = (iProxy == null || that.iProxy == null)?
 		// true:iProxy.equals(that.iProxy);
-		boolean prmpt = (this.iRealm == null || that.iRealm == null) ? true : this.iRealm
-				.equals(that.iRealm);
-		boolean schm = (this.iScheme == null || that.iScheme == null) ? true : this.iScheme
-				.equals(that.iScheme);
-		boolean adr = (this.iAddr == null || that.iAddr == null) ? true : this.iAddr
-				.equals(that.iAddr);
-		boolean prot = (this.iProtocol == null || that.iProtocol == null) ? true : this.iProtocol
-				.equals(that.iProtocol);
+		boolean prmpt = (this.iRealm == null || that.iRealm == null) ? true : this.iRealm.equals(that.iRealm);
+		boolean schm = (this.iScheme == null || that.iScheme == null) ? true : this.iScheme.equals(that.iScheme);
+		boolean adr = (this.iAddr == null || that.iAddr == null) ? true : this.iAddr.equals(that.iAddr);
+		boolean prot = (this.iProtocol == null || that.iProtocol == null) ? true : this.iProtocol.equals(that.iProtocol);
 		boolean prt = (this.iPort <= 0 || that.iPort <= 0) ? true : (this.iPort == that.iPort);
 		return (type && prmpt && schm && adr && prot && prt);
 	}
 
 	/**
 	 * Updates the authorization information according to a received challenge.
-	 * 
+	 *
 	 * @param challenge
 	 *            The received challenge
 	 * @param authenticate
@@ -416,12 +409,17 @@ public abstract class AuthorizationInfo {
 	 *            The HTTP request method (POST or MPOST)
 	 * @throws NoSuchAlgorithmException
 	 */
-	public abstract void updateAuthenticationInfo(Challenge challenge, String authenticate,
-			URI url, String requestMethod) throws NoSuchAlgorithmException;
+	public abstract void updateAuthenticationInfo(
+		Challenge challenge,
+		String authenticate,
+		URI url,
+		String requestMethod
+	)
+		throws NoSuchAlgorithmException;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -429,7 +427,7 @@ public abstract class AuthorizationInfo {
 
 	/**
 	 * Gets the HTTP header field name for this authentication information
-	 * 
+	 *
 	 * @return The field name
 	 */
 	public abstract String getHeaderFieldName();
@@ -437,7 +435,7 @@ public abstract class AuthorizationInfo {
 	/**
 	 * Determines if the authorization information is already sent on the very
 	 * first http request or after the "401 Unauthorized" response
-	 * 
+	 *
 	 * @return <code>true</code> or <code>false</code>
 	 */
 	public abstract boolean isSentOnFirstRequest();
@@ -445,7 +443,7 @@ public abstract class AuthorizationInfo {
 	/**
 	 * Determines if the connection is kept alive after the "401 Unauthorized"
 	 * response
-	 * 
+	 *
 	 * @return <code>true</code> or <code>false</code>
 	 */
 	public abstract boolean isKeptAlive();
@@ -453,7 +451,7 @@ public abstract class AuthorizationInfo {
 	/**
 	 * Factory method for AuthorizationInfo objects. Returns an instance of a
 	 * subclass according to the requested type.
-	 * 
+	 *
 	 * @param pModule
 	 *            The authorization info type to be constructed
 	 * @param pProxy
@@ -473,9 +471,15 @@ public abstract class AuthorizationInfo {
 	 * @see WwwAuthInfo
 	 * @see PegasusLocalAuthInfo
 	 */
-	public static AuthorizationInfo createAuthorizationInfo(String pModule, Boolean pProxy,
-			String pAddress, int pPort, String pProtocol, String pRealm, String pScheme) {
-
+	public static AuthorizationInfo createAuthorizationInfo(
+		String pModule,
+		Boolean pProxy,
+		String pAddress,
+		int pPort,
+		String pProtocol,
+		String pRealm,
+		String pScheme
+	) {
 		AuthorizationInfo info = createAuthorizationInfo(pModule);
 
 		if (info != null) {
@@ -483,29 +487,30 @@ public abstract class AuthorizationInfo {
 		}
 
 		return info;
-
 	}
 
 	/**
 	 * Factory method for AuthorizationInfo objects. Returns an instance of a
 	 * subclass according to the requested type.
-	 * 
+	 *
 	 * @param pModule
 	 *            The authorization info type to be constructed
 	 * @return An instance of a AuthorizationInfo subclass or <code>null</code>
 	 */
 	public static AuthorizationInfo createAuthorizationInfo(String pModule) {
-
-		if (WwwAuthInfo.class.getName().equals(pModule)) { return new WwwAuthInfo(); }
-		if (PegasusLocalAuthInfo.class.getName().equals(pModule)) { return new PegasusLocalAuthInfo(); }
+		if (WwwAuthInfo.class.getName().equals(pModule)) {
+			return new WwwAuthInfo();
+		}
+		if (PegasusLocalAuthInfo.class.getName().equals(pModule)) {
+			return new PegasusLocalAuthInfo();
+		}
 
 		try {
 			Class<?> module = Class.forName(pModule);
 			AuthorizationInfo info = (AuthorizationInfo) module.newInstance();
 			return info;
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"Exception while loading authentication module", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while loading authentication module", e);
 			LogAndTraceBroker.getBroker().message(Messages.HTTP_AUTH_MODULE_INVALID, pModule);
 		}
 		return null;

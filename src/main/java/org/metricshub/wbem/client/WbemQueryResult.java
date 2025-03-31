@@ -27,16 +27,13 @@ import java.util.List;
  *
  */
 public class WbemQueryResult {
-
 	/** List of the properties of the query. */
 	private final List<String> properties;
 
 	/** Query results. */
 	private final List<List<String>> values;
 
-	public WbemQueryResult(
-			final List<String> properties,
-			final List<List<String>> values) {
+	public WbemQueryResult(final List<String> properties, final List<List<String>> values) {
 		this.properties = properties;
 		this.values = values;
 	}

@@ -46,7 +46,7 @@ import java.util.Calendar;
 /**
  * Class TimeStamp is responsible for building uniform date/time strings for
  * logging and tracing.
- * 
+ *
  */
 public class TimeStamp {
 
@@ -56,17 +56,15 @@ public class TimeStamp {
 		char[] cA = new char[len];
 		int paddingDigits = pDigits - str.length();
 		int dIdx = 0;
-		while (dIdx < paddingDigits)
-			cA[dIdx++] = '0';
+		while (dIdx < paddingDigits) cA[dIdx++] = '0';
 		int sIdx = 0;
-		while (dIdx < len)
-			cA[dIdx++] = str.charAt(sIdx++);
+		while (dIdx < len) cA[dIdx++] = str.charAt(sIdx++);
 		return new String(cA);
 	}
 
 	/**
 	 * formatWorker
-	 * 
+	 *
 	 * @param pMillis
 	 *            - total milliseconds
 	 * @param pIncludeMillis
@@ -96,7 +94,7 @@ public class TimeStamp {
 
 	/**
 	 * format
-	 * 
+	 *
 	 * @param pMillis
 	 *            - total milliseconds
 	 * @return formatted date/time String. ( YYYY.MM.DD HH:mm:SS )
@@ -107,7 +105,7 @@ public class TimeStamp {
 
 	/**
 	 * formatWithMillis
-	 * 
+	 *
 	 * @param pMillis
 	 *            - total milliseconds
 	 * @return formatted date/time String. ( YYYY.MM.DD HH:mm:SS.sss )

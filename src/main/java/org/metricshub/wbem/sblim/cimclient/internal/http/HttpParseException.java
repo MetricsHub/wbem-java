@@ -45,10 +45,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
 
 /**
  * Class HttpParseException represents problems parsing http challenges
- * 
+ *
  */
 public class HttpParseException extends HttpException {
-
 	private static final long serialVersionUID = -6546559439537187479L;
 
 	/**
@@ -60,7 +59,7 @@ public class HttpParseException extends HttpException {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pReason
 	 *            The reason
 	 */

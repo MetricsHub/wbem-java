@@ -49,7 +49,6 @@ import java.util.regex.Pattern;
  * </pre>
  */
 public class NamespacePath {
-
 	private String iNamespaceType;
 
 	private NamespaceHandle iNamespaceHandle;
@@ -61,7 +60,7 @@ public class NamespacePath {
 
 	/**
 	 * Constructs a NamespacePath with namespace name only.
-	 * 
+	 *
 	 * @param pNamespaceName
 	 */
 	public NamespacePath(String pNamespaceName) {
@@ -70,7 +69,7 @@ public class NamespacePath {
 
 	/**
 	 * Tries to parse a namespace path from the passed <code>uriStr</code>.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return <code>NamespacePath</code> instance or <code>null</code> if
 	 *         failed.
@@ -85,7 +84,9 @@ public class NamespacePath {
 			if (!uriStr.cutStarting(':')) return null;
 		}
 		NamespaceHandle namespaceHandle = NamespaceHandle.parse(uriStr);
-		if (namespaceHandle == null) { return null; }
+		if (namespaceHandle == null) {
+			return null;
+		}
 		pUriStr.set(uriStr);
 		return new NamespacePath(namespaceType, namespaceHandle);
 	}
@@ -103,7 +104,7 @@ public class NamespacePath {
 
 	/**
 	 * getNamespaceType
-	 * 
+	 *
 	 * @return the namespace type String
 	 */
 	public String getNamespaceType() {
@@ -112,7 +113,7 @@ public class NamespacePath {
 
 	/**
 	 * getNamespaceName
-	 * 
+	 *
 	 * @return the namespace name String
 	 */
 	public String getNamespaceName() {
@@ -121,7 +122,7 @@ public class NamespacePath {
 
 	/**
 	 * getUserInfo
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getUserInfo() {
@@ -130,7 +131,7 @@ public class NamespacePath {
 
 	/**
 	 * getHost
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getHost() {
@@ -139,7 +140,7 @@ public class NamespacePath {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getPort() {
@@ -150,7 +151,7 @@ public class NamespacePath {
 
 	/**
 	 * namespaceType = ("http" ["s"]) / ("cimxml.wbem" ["s"])
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return the String containing the namespace type or <code>null</code> if
 	 *         failed.
@@ -159,5 +160,4 @@ public class NamespacePath {
 		if (!pUriStr.matchAndCut(TYPE_PAT, 1)) return null;
 		return pUriStr.group(1);
 	}
-
 }

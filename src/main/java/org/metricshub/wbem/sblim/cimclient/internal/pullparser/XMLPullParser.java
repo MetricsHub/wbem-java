@@ -63,14 +63,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.XMLDefaultHandlerImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.xml.sax.Attributes;
 
 /**
  * Class XMLPullParser is responsible for XML parsing.
- * 
+ *
  */
 public class XMLPullParser {
 
@@ -175,7 +174,6 @@ public class XMLPullParser {
 	}
 
 	class XMLAttributeValue {
-
 		int iCurrentPos;
 
 		int iBegin, iLen;
@@ -186,7 +184,7 @@ public class XMLPullParser {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param begin
 		 * @param len
 		 * @param translate
@@ -199,7 +197,7 @@ public class XMLPullParser {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param begin
 		 * @param len
 		 */
@@ -211,7 +209,7 @@ public class XMLPullParser {
 
 		/**
 		 * getText
-		 * 
+		 *
 		 * @return String
 		 */
 		public String getText() {
@@ -229,10 +227,8 @@ public class XMLPullParser {
 						// cnt++;
 						// }
 					} catch (Exception e) {
-						LogAndTraceBroker.getBroker().trace(Level.WARNING,
-								"exception while decoding CHARACTERS XML", e);
-						this.iText = new String(XMLPullParser.this.iBufferChar, this.iBegin,
-								this.iLen);
+						LogAndTraceBroker.getBroker().trace(Level.WARNING, "exception while decoding CHARACTERS XML", e);
+						this.iText = new String(XMLPullParser.this.iBufferChar, this.iBegin, this.iLen);
 					}
 				} else {
 					// Integer hashKey = new Integer(hash);
@@ -256,7 +252,7 @@ public class XMLPullParser {
 
 		/**
 		 * init
-		 * 
+		 *
 		 * @param begin
 		 * @param len
 		 */
@@ -268,7 +264,7 @@ public class XMLPullParser {
 
 		/**
 		 * setTranslate
-		 * 
+		 *
 		 * @param translate
 		 */
 		public void setTranslate(boolean translate) {
@@ -321,12 +317,13 @@ public class XMLPullParser {
 					int value = 0;
 					do {
 						ch1 = XMLPullParser.this.iBufferChar[this.iCurrentPos++];
-						if (ch1 >= '0' && ch1 <= '9') value = value * 16 + (ch1 - '0');
-						else if (ch1 >= 'A' && ch1 <= 'F' || ch1 >= 'a' && ch1 <= 'f') value = value
-								* 16 + (Character.toUpperCase(ch1) - 'A' + 10);
-						else if (ch1 == ';') break;
-						else throw new XMLPullParserException(
-								"invalid character while parsing hex encoded number " + escape(ch1));
+						if (ch1 >= '0' && ch1 <= '9') value = value * 16 + (ch1 - '0'); else if (
+							ch1 >= 'A' && ch1 <= 'F' || ch1 >= 'a' && ch1 <= 'f'
+						) value = value * 16 + (Character.toUpperCase(ch1) - 'A' + 10); else if (
+							ch1 == ';'
+						) break; else throw new XMLPullParserException(
+							"invalid character while parsing hex encoded number " + escape(ch1)
+						);
 					} while (true);
 					this.iCurrentPos--; // 18274
 					return (char) value;
@@ -337,10 +334,9 @@ public class XMLPullParser {
 						if (ch1 >= '0' && ch1 <= '9') {
 							value = value * 10 + (ch1 - '0');
 							ch1 = XMLPullParser.this.iBufferChar[this.iCurrentPos++];
-						} else if (ch1 == ';') break;
-						else throw new XMLPullParserException(
-								"invalid character while parsing decimal encoded number: "
-										+ escape(ch1));
+						} else if (ch1 == ';') break; else throw new XMLPullParserException(
+							"invalid character while parsing decimal encoded number: " + escape(ch1)
+						);
 					} while (true);
 					this.iCurrentPos--; // 18274
 					return (char) value;
@@ -353,11 +349,11 @@ public class XMLPullParser {
 					ch1 = XMLPullParser.this.iBufferChar[this.iCurrentPos++];
 					if (ch1 == ';') break;
 					if (!isValidElementNameChar(ch1)) throw new XMLPullParserException(
-							"invalid reference character " + escape(ch1));
+						"invalid reference character " + escape(ch1)
+					);
 				} while (true);
 			} else {
-				throw new XMLPullParserException(
-						"expected valid name start character for value reference");
+				throw new XMLPullParserException("expected valid name start character for value reference");
 			}
 			this.iCurrentPos--;
 			ch1 = XMLPullParser.this.iBufferChar[startPos];
@@ -370,7 +366,9 @@ public class XMLPullParser {
 				return '>';
 			} else {
 				char ch4 = XMLPullParser.this.iBufferChar[startPos + 3];
-				if (ch1 == 'a' && ch2 == 'm' && ch3 == 'p' && ch4 == ';') { return '&'; }
+				if (ch1 == 'a' && ch2 == 'm' && ch3 == 'p' && ch4 == ';') {
+					return '&';
+				}
 				char ch5 = XMLPullParser.this.iBufferChar[startPos + 4];
 				if (ch1 == 'a' && ch2 == 'p' && ch3 == 'o' && ch4 == 's' && ch5 == ';') {
 					return '\'';
@@ -466,31 +464,29 @@ public class XMLPullParser {
 
 	/**
 	 * main
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	// this did testing
+		// this did testing
 	}
 
 	// TODO: ebak: this function seems to be wrong, because "synchronizes" to
 	// IRETURNVALUE
 	/**
 	 * next
-	 * 
+	 *
 	 * @param reader
 	 * @param parserHdlr
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public static boolean next(XMLPullParser reader, XMLDefaultHandlerImpl parserHdlr)
-			throws Exception {
+	public static boolean next(XMLPullParser reader, XMLDefaultHandlerImpl parserHdlr) throws Exception {
 		while (reader.hasNext()) {
 			int event = reader.next();
 			switch (event) {
 				case START_ELEMENT:
-					parserHdlr.startElement(EMPTY, EMPTY, reader.getElementName(), reader
-							.getAttributes());
+					parserHdlr.startElement(EMPTY, EMPTY, reader.getElementName(), reader.getAttributes());
 					break;
 				case END_ELEMENT:
 					parserHdlr.endElement(EMPTY, EMPTY, reader.getElementName());
@@ -501,7 +497,9 @@ public class XMLPullParser {
 						lastElementName = elementNames.get(elementNames.size() - 1);
 					}
 
-					if (lastElementName != null && lastElementName.equalsIgnoreCase("IRETURNVALUE")) { return true; }
+					if (lastElementName != null && lastElementName.equalsIgnoreCase("IRETURNVALUE")) {
+						return true;
+					}
 					break;
 				case CHARACTERS:
 					char[] buf = reader.getText().toCharArray();
@@ -559,7 +557,7 @@ public class XMLPullParser {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param in
 	 */
 	public XMLPullParser(Reader in) {
@@ -569,7 +567,7 @@ public class XMLPullParser {
 
 	/**
 	 * close
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void close() throws IOException {
@@ -580,7 +578,7 @@ public class XMLPullParser {
 
 	/**
 	 * getAttributes
-	 * 
+	 *
 	 * @return Attributes
 	 */
 	public Attributes getAttributes() {
@@ -594,7 +592,7 @@ public class XMLPullParser {
 
 	/**
 	 * getElementName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getElementName() {
@@ -603,7 +601,7 @@ public class XMLPullParser {
 
 	/**
 	 * getElementNames
-	 * 
+	 *
 	 * @return Vector
 	 */
 	public ArrayList<String> getElementNames() {
@@ -612,7 +610,7 @@ public class XMLPullParser {
 
 	/**
 	 * getLevel
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getLevel() {
@@ -621,19 +619,20 @@ public class XMLPullParser {
 
 	/**
 	 * getText
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getText() {
 		String result = null;
-		if (this.iCurrentState == CHARACTERS && this.iCharacters != null) { return this.iCharacters
-				.getText(); }
+		if (this.iCurrentState == CHARACTERS && this.iCharacters != null) {
+			return this.iCharacters.getText();
+		}
 		return result;
 	}
 
 	/**
 	 * hasNext
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasNext() {
@@ -642,7 +641,7 @@ public class XMLPullParser {
 
 	/**
 	 * next
-	 * 
+	 *
 	 * @return int
 	 * @throws IOException
 	 */
@@ -661,14 +660,16 @@ public class XMLPullParser {
 			if (ch == '<') {
 				ch = (char) getNextChar();
 				if (ch == '?') {
-					if (this.iSeenProlog) { throw new XMLPullParserException(
-							"The processing instruction target matching \"[xX][mM][lL]\" is not allowed."); }
+					if (this.iSeenProlog) {
+						throw new XMLPullParserException(
+							"The processing instruction target matching \"[xX][mM][lL]\" is not allowed."
+						);
+					}
 					this.iSeenProlog = true;
 					parsePI();
 					ch = (char) getNextChar();
 					ch = skipOptionalSpaces(ch);
-					if (ch != '<') throw new XMLPullParserException(this,
-							"Content is not allowed in prolog.");
+					if (ch != '<') throw new XMLPullParserException(this, "Content is not allowed in prolog.");
 					goBack();
 
 					this.iCurrentState = START_DOCUMENT;
@@ -716,17 +717,19 @@ public class XMLPullParser {
 
 					ch = (char) getNextCharCheckingEOF();
 					if (ch == (char) -1) {
-						if (this.iElementNames.size() != 0) throw new XMLPullParserException(this,
-								"unexpected EOF ");
+						if (this.iElementNames.size() != 0) throw new XMLPullParserException(this, "unexpected EOF ");
 
 						this.iCurrentState = END_DOCUMENT;
 						return this.iCurrentState;
-					} else if (ch == '\r' || ch == '\n') { /* :) */} else {
+					} else if (ch == '\r' || ch == '\n') {
+						/* :) */
+					} else {
 						if (!isSpace(ch) && ch != '<' && this.iElementNames.size() == 0) {
-							if (!this.iSeenProlog) throw new XMLPullParserException(this,
-									"Content is not allowed in trailing section.");
-							throw new XMLPullParserException(this,
-									"Content is not allowed in trailing section.");
+							if (!this.iSeenProlog) throw new XMLPullParserException(
+								this,
+								"Content is not allowed in trailing section."
+							);
+							throw new XMLPullParserException(this, "Content is not allowed in trailing section.");
 						}
 					}
 					amp = false;
@@ -739,11 +742,9 @@ public class XMLPullParser {
 				this.iEndCharacters = this.iCurrentPosition;
 				goBack();
 				if (this.iElementNames.size() > 0) {
-					if (this.iCharacters == null) this.iCharacters = new XMLAttributeValue(
-							this.iStartCharacters, this.iEndCharacters - this.iStartCharacters - 1);
-					else {
-						this.iCharacters.init(this.iStartCharacters, this.iEndCharacters
-								- this.iStartCharacters - 1);
+					if (this.iCharacters == null) this.iCharacters =
+						new XMLAttributeValue(this.iStartCharacters, this.iEndCharacters - this.iStartCharacters - 1); else {
+						this.iCharacters.init(this.iStartCharacters, this.iEndCharacters - this.iStartCharacters - 1);
 						this.iCharacters.setTranslate(true);
 					}
 
@@ -781,30 +782,30 @@ public class XMLPullParser {
 	public String toString() {
 		switch (this.iCurrentState) {
 			case START_ELEMENT: {
-				StringBuilder sb = new StringBuilder("START ELEM: <");
-				sb.append(this.iElementName);
-				if (this.iAttributeNames.size() > 0) {
-					sb.append(" ");
-					for (int i = 0; i < this.iAttributeNames.size(); i++) {
-						sb.append(this.iAttributeNames.get(i));
-						sb.append("=\"");
-						sb.append(this.iAttributeValues.get(i));
-						sb.append("\" ");
+					StringBuilder sb = new StringBuilder("START ELEM: <");
+					sb.append(this.iElementName);
+					if (this.iAttributeNames.size() > 0) {
+						sb.append(" ");
+						for (int i = 0; i < this.iAttributeNames.size(); i++) {
+							sb.append(this.iAttributeNames.get(i));
+							sb.append("=\"");
+							sb.append(this.iAttributeValues.get(i));
+							sb.append("\" ");
+						}
 					}
+					sb.append(">");
+					return sb.toString();
 				}
-				sb.append(">");
-				return sb.toString();
-			}
 			case END_ELEMENT: {
-				String s = "END ELEM: </" + this.iElementName + ">";
-				return s;
-			}
+					String s = "END ELEM: </" + this.iElementName + ">";
+					return s;
+				}
 			case CHARACTERS: {
-				return "CHARACTERS: \"" + getText(); // .replaceAll("\n",
-				// "\\\\n").replaceAll("\r",
-				// "\\\\r").replaceAll("\t",
-				// "\\\\t")+"\"";
-			}
+					return "CHARACTERS: \"" + getText(); // .replaceAll("\n",
+					// "\\\\n").replaceAll("\r",
+					// "\\\\r").replaceAll("\t",
+					// "\\\\t")+"\"";
+				}
 		}
 		return "UNKOWN";
 	}
@@ -835,8 +836,13 @@ public class XMLPullParser {
 		if (this.iBufferChar == null) this.iBufferChar = new char[1024];
 
 		if (this.iCurrentPosition >= (8 * this.iBufferChar.length) / 10) {
-			System.arraycopy(this.iBufferChar, this.iCurrentPosition, this.iBufferChar, 0,
-					this.iFinishChar - this.iCurrentPosition);
+			System.arraycopy(
+				this.iBufferChar,
+				this.iCurrentPosition,
+				this.iBufferChar,
+				0,
+				this.iFinishChar - this.iCurrentPosition
+			);
 			this.iFinishChar -= this.iCurrentPosition;
 			this.iCurrentPosition = 0;
 		}
@@ -848,8 +854,7 @@ public class XMLPullParser {
 		if (ch == '\r') result = "\'\\r\'";
 		if (ch == '\t') result = "\'\\t\'";
 		if (ch == '\'') result = "\'\\'\'";
-		if (ch > '\177' || ch < ' ') result = "\'\\u" + Integer.toHexString(ch) + "\'";
-		else result = "\'" + ch + "\'";
+		if (ch > '\177' || ch < ' ') result = "\'\\u" + Integer.toHexString(ch) + "\'"; else result = "\'" + ch + "\'";
 		return result;
 	}
 
@@ -863,10 +868,11 @@ public class XMLPullParser {
 				System.arraycopy(tmp, 0, this.iBufferChar, 0, tmp.length);
 			}
 
-			int total = this.iInstream.read(this.iBufferChar, this.iFinishChar,
-					this.iBufferChar.length - this.iFinishChar);
+			int total = this.iInstream.read(this.iBufferChar, this.iFinishChar, this.iBufferChar.length - this.iFinishChar);
 
-			if (total <= 0) { return -1; }
+			if (total <= 0) {
+				return -1;
+			}
 			this.iFinishChar += total;
 		}
 		return this.iBufferChar[this.iCurrentPosition++];
@@ -915,17 +921,36 @@ public class XMLPullParser {
 	}
 
 	protected boolean isValidElementNameChar(char ch) {
-		return (ch < 256 && (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch == '_'
-				|| ch == ':' || ch == '-' || ch == '.' || ch >= '0' && ch <= '9' || ch == '\267'))
-				|| ch >= '\300'
-				&& ch <= '\u02FF'
-				|| ch >= '\u0370'
-				&& ch <= '\u037D'
-				|| ch >= '\u0300'
-				&& ch <= '\u036F'
-				|| ch >= '\u037F'
-				&& ch <= '\u2027'
-				|| ch >= '\u202A' && ch <= '\u218F' || ch >= '\u2800' && ch <= '\uFFEF';
+		return (
+			(
+				ch < 256 &&
+				(
+					ch >= 'A' &&
+					ch <= 'Z' ||
+					ch >= 'a' &&
+					ch <= 'z' ||
+					ch == '_' ||
+					ch == ':' ||
+					ch == '-' ||
+					ch == '.' ||
+					ch >= '0' &&
+					ch <= '9' ||
+					ch == '\267'
+				)
+			) ||
+			ch >= '\300' &&
+			ch <= '\u02FF' ||
+			ch >= '\u0370' &&
+			ch <= '\u037D' ||
+			ch >= '\u0300' &&
+			ch <= '\u036F' ||
+			ch >= '\u037F' &&
+			ch <= '\u2027' ||
+			ch >= '\u202A' &&
+			ch <= '\u218F' ||
+			ch >= '\u2800' &&
+			ch <= '\uFFEF'
+		);
 		// return isValidStartElementNameChar(ch)
 		// || (ch < 256 && (ch == '-'
 		// || ch == '.'
@@ -938,10 +963,23 @@ public class XMLPullParser {
 	}
 
 	protected boolean isValidStartElementNameChar(char ch) {
-		return (ch < 256 && (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch == '_' || ch == ':'))
-				|| (ch >= '\300' && ch <= '\u02FF' || ch >= '\u0370' && ch <= '\u037D'
-						|| ch >= '\u037F' && ch <= '\u0400' || ch >= '\u0400' && ch <= '\u2027'
-						|| ch >= '\u202A' && ch <= '\u218F' || ch >= '\u2800' && ch <= '\uFFEF');
+		return (
+			(ch < 256 && (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch == '_' || ch == ':')) ||
+			(
+				ch >= '\300' &&
+				ch <= '\u02FF' ||
+				ch >= '\u0370' &&
+				ch <= '\u037D' ||
+				ch >= '\u037F' &&
+				ch <= '\u0400' ||
+				ch >= '\u0400' &&
+				ch <= '\u2027' ||
+				ch >= '\u202A' &&
+				ch <= '\u218F' ||
+				ch >= '\u2800' &&
+				ch <= '\uFFEF'
+			)
+		);
 	}
 
 	protected void parseAttribute(char ch) throws IOException {
@@ -962,15 +1000,19 @@ public class XMLPullParser {
 
 		ch = skipOptionalSpaces(ch);
 
-		if (ch != '=') throw new XMLPullParserException(this, "missing character \'=\'instead "
-				+ escape(ch) + " was found ");
+		if (ch != '=') throw new XMLPullParserException(
+			this,
+			"missing character \'=\'instead " + escape(ch) + " was found "
+		);
 
 		ch = (char) getNextChar();
 		ch = skipOptionalSpaces(ch);
 
 		char delimiter;
-		if (ch != '\"' && ch != '\'') throw new XMLPullParserException(this,
-				"missing character \'\"\' or \'\'\' instead " + escape(ch) + " was found ");
+		if (ch != '\"' && ch != '\'') throw new XMLPullParserException(
+			this,
+			"missing character \'\"\' or \'\'\' instead " + escape(ch) + " was found "
+		);
 		delimiter = ch;
 
 		// StringBuffer attributeValue = new StringBuffer();
@@ -983,15 +1025,14 @@ public class XMLPullParser {
 			// hashvalue = hashvalue *primes[n] +ch;
 
 			ch = (char) getNextChar();
-			if (ch == delimiter) break;
-			else if (ch == '<' || ch == '>') throw new XMLPullParserException(this,
-					"illegal character " + escape(ch));
-			else if (ch == '&') {
+			if (ch == delimiter) break; else if (ch == '<' || ch == '>') throw new XMLPullParserException(
+				this,
+				"illegal character " + escape(ch)
+			); else if (ch == '&') {
 				int ref = parseReference();
 				ch = (char) (ref & 0xffff);
 				// attributeValue.append((char)ref);
 			} else if (ch == '\t' || ch == '\r' || ch == '\n') {
-
 				if (ch != '\n' || prevCh != '\r') {
 					// attributeValue.append(' ');
 				}
@@ -1002,8 +1043,12 @@ public class XMLPullParser {
 		} while (true);
 		int endAttributeValue = this.iCurrentPosition;
 		// attributeValues.add(attributeValue.toString());
-		addAttribute(startAttributeName, endAttributeName - startAttributeName - 1,
-				startAttributeValue, endAttributeValue - startAttributeValue - 1);
+		addAttribute(
+			startAttributeName,
+			endAttributeName - startAttributeName - 1,
+			startAttributeValue,
+			endAttributeValue - startAttributeValue - 1
+		);
 
 		return;
 	}
@@ -1011,10 +1056,14 @@ public class XMLPullParser {
 	protected int parseCDATA() throws IOException {
 		char ch;
 
-		if ((char) getNextChar() != 'C' || (char) getNextChar() != 'D'
-				|| (char) getNextChar() != 'A' || (char) getNextChar() != 'T'
-				|| (char) getNextChar() != 'A' || (char) getNextChar() != '[') throw new XMLPullParserException(
-				"CDATA must start with \"<![CDATA[\".");
+		if (
+			(char) getNextChar() != 'C' ||
+			(char) getNextChar() != 'D' ||
+			(char) getNextChar() != 'A' ||
+			(char) getNextChar() != 'T' ||
+			(char) getNextChar() != 'A' ||
+			(char) getNextChar() != '['
+		) throw new XMLPullParserException("CDATA must start with \"<![CDATA[\".");
 		boolean braketFound = false;
 		boolean doubleBraket = false;
 		int startCharacter = this.iCurrentPosition;
@@ -1030,7 +1079,8 @@ public class XMLPullParser {
 				doubleBraket = false;
 			}
 			if (ch == (char) -1) throw new XMLPullParserException(
-					"XML document structures must start and end within the same entity.");
+				"XML document structures must start and end within the same entity."
+			);
 		} while (true);
 
 		int endCharacter = this.iCurrentPosition - 3;
@@ -1059,7 +1109,8 @@ public class XMLPullParser {
 				doubleDash = false;
 			}
 			if (ch == (char) -1) throw new XMLPullParserException(
-					"XML document structures must start and end within the same entity.");
+				"XML document structures must start and end within the same entity."
+			);
 		} while (true);
 
 		// if (!seenProlog) {
@@ -1082,18 +1133,22 @@ public class XMLPullParser {
 		} while (isValidElementNameChar(ch));
 
 		endElementName = this.iCurrentPosition;
-		this.iElementName = new String(this.iBufferChar, startElementName, endElementName
-				- startElementName - 1);
+		this.iElementName = new String(this.iBufferChar, startElementName, endElementName - startElementName - 1);
 
-		if (!this.iElementNames.get(this.iElementNames.size() - 1).equals(
-				this.iElementName.toUpperCase())) throw new XMLPullParserException(this,
-				"The content of elements must consist of well-formed character data or markup.");
+		if (
+			!this.iElementNames.get(this.iElementNames.size() - 1).equals(this.iElementName.toUpperCase())
+		) throw new XMLPullParserException(
+			this,
+			"The content of elements must consist of well-formed character data or markup."
+		);
 
 		this.iElementNames.remove(this.iElementNames.size() - 1);
 
 		ch = skipOptionalSpaces(ch);
-		if (ch != '>') throw new XMLPullParserException(this, "\'=\' was expected, but \'"
-				+ escape(ch) + "\' was found instead");
+		if (ch != '>') throw new XMLPullParserException(
+			this,
+			"\'=\' was expected, but \'" + escape(ch) + "\' was found instead"
+		);
 
 		if (this.iElementNames.size() == 0) this.iSeenEpilog = true;
 	}
@@ -1112,7 +1167,8 @@ public class XMLPullParser {
 				dashFound = false;
 			}
 			if (ch == (char) -1) throw new XMLPullParserException(
-					"XML document structures must start and end within the same entity.");
+				"XML document structures must start and end within the same entity."
+			);
 		} while (true);
 
 		return -1;
@@ -1126,12 +1182,14 @@ public class XMLPullParser {
 				int value = 0;
 				do {
 					ch1 = (char) getNextChar();
-					if (ch1 >= '0' && ch1 <= '9') value = value * 16 + (ch1 - '0');
-					else if (ch1 >= 'A' && ch1 <= 'F' || ch1 >= 'a' && ch1 <= 'f') value = value
-							* 16 + (Character.toUpperCase(ch1) - 'A' + 10);
-					else if (ch1 == ';') break;
-					else throw new XMLPullParserException(this,
-							"invalid character while parsing hex encoded number " + escape(ch1));
+					if (ch1 >= '0' && ch1 <= '9') value = value * 16 + (ch1 - '0'); else if (
+						ch1 >= 'A' && ch1 <= 'F' || ch1 >= 'a' && ch1 <= 'f'
+					) value = value * 16 + (Character.toUpperCase(ch1) - 'A' + 10); else if (
+						ch1 == ';'
+					) break; else throw new XMLPullParserException(
+						this,
+						"invalid character while parsing hex encoded number " + escape(ch1)
+					);
 				} while (true);
 				return (char) value;
 			}
@@ -1141,10 +1199,10 @@ public class XMLPullParser {
 					if (ch1 >= '0' && ch1 <= '9') {
 						value = value * 10 + (ch1 - '0');
 						ch1 = (char) getNextChar();
-					} else if (ch1 == ';') break;
-					else throw new XMLPullParserException(this,
-							"invalid character while parsing decimal encoded number: "
-									+ escape(ch1));
+					} else if (ch1 == ';') break; else throw new XMLPullParserException(
+						this,
+						"invalid character while parsing decimal encoded number: " + escape(ch1)
+					);
 				} while (true);
 				return (char) value;
 			}
@@ -1156,11 +1214,11 @@ public class XMLPullParser {
 				ch1 = (char) getNextChar();
 				if (ch1 == ';') break;
 				if (!isValidElementNameChar(ch1)) throw new XMLPullParserException(
-						"invalid reference character " + escape(ch1));
+					"invalid reference character " + escape(ch1)
+				);
 			} while (true);
 		} else {
-			throw new XMLPullParserException(this,
-					"expected valid name start character for value reference");
+			throw new XMLPullParserException(this, "expected valid name start character for value reference");
 		}
 		goBack();
 		ch1 = this.iBufferChar[startPos];
@@ -1173,7 +1231,9 @@ public class XMLPullParser {
 			return '>';
 		} else {
 			char ch4 = this.iBufferChar[startPos + 3];
-			if (ch1 == 'a' && ch2 == 'm' && ch3 == 'p' && ch4 == ';') { return '&'; }
+			if (ch1 == 'a' && ch2 == 'm' && ch3 == 'p' && ch4 == ';') {
+				return '&';
+			}
 			char ch5 = this.iBufferChar[startPos + 4];
 			if (ch1 == 'a' && ch2 == 'p' && ch3 == 'o' && ch4 == 's' && ch5 == ';') {
 				return '\'';
@@ -1206,8 +1266,7 @@ public class XMLPullParser {
 		// elementName = (String)stringTable.get(hashKey);
 		// elementName = null;
 		// if (elementName == null) {
-		this.iElementName = new String(this.iBufferChar, startElementName, endElementName
-				- startElementName - 1);
+		this.iElementName = new String(this.iBufferChar, startElementName, endElementName - startElementName - 1);
 		// stringTable.put(hashKey, elementName);
 		// } else {
 		// // System.out.println("Found: "+elementName);
@@ -1221,15 +1280,17 @@ public class XMLPullParser {
 				break;
 			} else if (ch == '/') {
 				ch = (char) getNextChar();
-				if (ch != '>') { throw new XMLPullParserException(this,
-						"\'=\' was expected, but \'" + escape(ch) + "\' was found instead"); }
+				if (ch != '>') {
+					throw new XMLPullParserException(this, "\'=\' was expected, but \'" + escape(ch) + "\' was found instead");
+				}
 				this.iClosingElementNamePending = true;
 			} else if (isValidStartElementNameChar(ch)) {
 				parseAttribute(ch);
 				ch = (char) getNextChar();
-			} else throw new XMLPullParserException(this,
-					"Element type \"CIM\" must be followed by either attribute specifications, \">\" or \"/>\".");
-
+			} else throw new XMLPullParserException(
+				this,
+				"Element type \"CIM\" must be followed by either attribute specifications, \">\" or \"/>\"."
+			);
 		} while (true);
 		return -1;
 	}
@@ -1238,8 +1299,7 @@ public class XMLPullParser {
 		char ch;
 		do {
 			ch = (char) getNextChar();
-			if (ch == '<') throw new XMLPullParserException(
-					"\'>\' was expected, but \'<\' was found instead.");
+			if (ch == '<') throw new XMLPullParserException("\'>\' was expected, but \'<\' was found instead.");
 		} while (ch != '>');
 	}
 
@@ -1266,5 +1326,4 @@ public class XMLPullParser {
 		} while (isSpace(ch));
 		return ch;
 	}
-
 }

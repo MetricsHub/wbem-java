@@ -48,26 +48,24 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.XMLDefaultHandlerImpl;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractSimpleRspNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.CIMNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.MessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.pullparser.XMLPullParser;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.xml.sax.SAXException;
 
 /**
  * CloseableIterator implementation for PULL parser.
  */
 public class CloseableIteratorPULL implements CloseableIterator<Object> {
-
 	private XMLPullParser iParser;
 
 	private XMLDefaultHandlerImpl iHandler;
@@ -88,19 +86,18 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 * @param pPath
 	 * @throws RuntimeException
 	 */
-	public CloseableIteratorPULL(InputStreamReader pStream, CIMObjectPath pPath)
-			throws RuntimeException {
+	public CloseableIteratorPULL(InputStreamReader pStream, CIMObjectPath pPath) throws RuntimeException {
 		this(new XMLPullParser(pStream), new XMLDefaultHandlerImpl(pPath));
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pParser
 	 * @param pHandler
 	 */
@@ -127,8 +124,7 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 			this.iWBEMException = e.getWBEMException();
 			throw new RuntimeException(this.iWBEMException);
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker().trace(Level.SEVERE,
-					"Exception occurred during XML parsing!", e);
+			LogAndTraceBroker.getBroker().trace(Level.SEVERE, "Exception occurred during XML parsing!", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -153,8 +149,7 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 			int event = this.iParser.next();
 			switch (event) {
 				case XMLPullParser.START_ELEMENT:
-					this.iHandler.startElement(EMPTY, EMPTY, this.iParser.getElementName(),
-							this.iParser.getAttributes());
+					this.iHandler.startElement(EMPTY, EMPTY, this.iParser.getElementName(), this.iParser.getAttributes());
 					break;
 				case XMLPullParser.CHARACTERS:
 					char[] buf = this.iParser.getText().toCharArray();
@@ -174,8 +169,11 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 							this.iCIMArgAL = absSimpRspNode.getCIMArguments();
 
 							CIMError cimErr = absSimpRspNode.getCIMError();
-							if (cimErr != null) throw new WBEMException(cimErr.getCode(), cimErr
-									.getDescription(), cimErr.getCIMInstances());
+							if (cimErr != null) throw new WBEMException(
+								cimErr.getCode(),
+								cimErr.getDescription(),
+								cimErr.getCIMInstances()
+							);
 							return false;
 						}
 					}
@@ -201,7 +199,8 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 		AbstractMessageNode absMsgNode = this.iMsgNode.getAbstractMessageNode();
 		if (absMsgNode == null) return null;
 		if (!(absMsgNode instanceof AbstractSimpleRspNode)) throw new SAXException(
-				"Simple response child node expected for MESSAGE node!");
+			"Simple response child node expected for MESSAGE node!"
+		);
 		this.iAbsSimpRspNode = (AbstractSimpleRspNode) absMsgNode;
 		this.iMsgNode = null;
 		this.iCIMNode = null; // needed no more
@@ -209,10 +208,10 @@ public class CloseableIteratorPULL implements CloseableIterator<Object> {
 	}
 
 	/**
-	 * 
+	 *
 	 * getCIMArguments : returns the array of parsed parameters and their values
 	 * : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return CIMArgument&lt;?&gt;[]
 	 */
 

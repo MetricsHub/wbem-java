@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * IPvFuture  = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )<br>
  * IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet<br>
  * reg-name    = *( unreserved / pct-encoded / sub-delims )<br><br>
- * 
+ *
  * IPv6address =   (                           6( h16 ":" ) ls32<br>
  *                /                       "::" 5( h16 ":" ) ls32<br>
  *                / [               h16 ] "::" 4( h16 ":" ) ls32<br>
@@ -69,24 +69,22 @@ import java.util.regex.Pattern;
  *                / [ *4( h16 ":" ) h16 ] "::"              ls32<br>
  *                / [ *5( h16 ":" ) h16 ] "::"              h16<br>
  *                / [ *6( h16 ":" ) h16 ] "::" ) Zone-index<br><br>
- * 
+ *
  *    ls32        = ( h16 ":" h16 ) / IPv4address<br>
  *                ; least-significant 32 bits of address<br><br>
- * 
+ *
  *    h16         = 1*4HEXDIG<br>
  *                ; 16 bits of address represented in hexadecimal<br>
  * </code>
  */
 public class Authority {
-
 	private static final String PCTENCODED = "%[0-9A-Fa-f]{2}";
 
 	private static final String UNRESERVED = "A-Za-z0-9\\-\\._~";
 
 	private static final String SUBDELIMS = "!\\$&'\\(\\)\\*\\+,;=";
 
-	private static final String REGNAMEREG = "([" + UNRESERVED + SUBDELIMS + "]|" + PCTENCODED
-			+ ")+";
+	private static final String REGNAMEREG = "([" + UNRESERVED + SUBDELIMS + "]|" + PCTENCODED + ")+";
 
 	private static final String ZONEINDEX = "(%[" + UNRESERVED + "]+)?";
 
@@ -97,41 +95,97 @@ public class Authority {
 	private static final String LS32 = "((" + H16 + ":" + H16 + ")" + "|(" + IPV4 + "))";
 
 	private static final String IPV6 =
-	// 6( h16 ":" ) ls32
-	"(((" + H16 + ":){6}" + LS32 + ")|" +
-	// "::" 5( h16 ":" )
-			"(::(" + H16 + ":){5}" + LS32 + ")|" +
-			// [ h16 ] "::" 4( h16 ":" ) ls32
-			"((" + H16 + ")?::" + "(" + H16 + ":){4}" + LS32 + ")|" +
-			// [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
-			"(((" + H16 + ":){0,1}" + H16 + ")?::(" + H16 + ":){3}" + LS32 + ")|" +
-			// [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
-			"(((" + H16 + ":){0,2}" + H16 + ")?::(" + H16 + ":){2}" + LS32 + ")|" +
-			// [ *3( h16 ":" ) h16 ] "::" h16 ":" ls32
-			"(((" + H16 + ":){0,3}" + H16 + ")?::" + H16 + ":" + LS32 + ")|" +
-			// [ *4( h16 ":" ) h16 ] "::" ls32
-			"(((" + H16 + ":){0,4}" + H16 + ")?::" + LS32 + ")|" +
-			// [ *5( h16 ":" ) h16 ] "::" h16
-			"(((" + H16 + ":){0,5}" + H16 + ")?::" + H16 + ")|" +
-			// [ *6( h16 ":" ) h16 ] "::"
-			"(((" + H16 + ":){0,6}" + H16 + ")?::))" + ZONEINDEX;
+		// 6( h16 ":" ) ls32
+		"(((" +
+		H16 +
+		":){6}" +
+		LS32 +
+		")|" +
+		// "::" 5( h16 ":" )
+		"(::(" +
+		H16 +
+		":){5}" +
+		LS32 +
+		")|" +
+		// [ h16 ] "::" 4( h16 ":" ) ls32
+		"((" +
+		H16 +
+		")?::" +
+		"(" +
+		H16 +
+		":){4}" +
+		LS32 +
+		")|" +
+		// [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+		"(((" +
+		H16 +
+		":){0,1}" +
+		H16 +
+		")?::(" +
+		H16 +
+		":){3}" +
+		LS32 +
+		")|" +
+		// [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+		"(((" +
+		H16 +
+		":){0,2}" +
+		H16 +
+		")?::(" +
+		H16 +
+		":){2}" +
+		LS32 +
+		")|" +
+		// [ *3( h16 ":" ) h16 ] "::" h16 ":" ls32
+		"(((" +
+		H16 +
+		":){0,3}" +
+		H16 +
+		")?::" +
+		H16 +
+		":" +
+		LS32 +
+		")|" +
+		// [ *4( h16 ":" ) h16 ] "::" ls32
+		"(((" +
+		H16 +
+		":){0,4}" +
+		H16 +
+		")?::" +
+		LS32 +
+		")|" +
+		// [ *5( h16 ":" ) h16 ] "::" h16
+		"(((" +
+		H16 +
+		":){0,5}" +
+		H16 +
+		")?::" +
+		H16 +
+		")|" +
+		// [ *6( h16 ":" ) h16 ] "::"
+		"(((" +
+		H16 +
+		":){0,6}" +
+		H16 +
+		")?::))" +
+		ZONEINDEX;
 
 	// IPvFuture = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
 	private static final String IPVFUTURE = "v[0-9A-Fa-f]+\\.([" + UNRESERVED + SUBDELIMS + "]|:)+";
 
 	private static final String IPLITERAL = "\\[(" + IPV6 + "|" + IPVFUTURE + ")\\]";
 
-	private static Pattern USERINFOPAT = Pattern.compile("^((([" + UNRESERVED + SUBDELIMS + ":]|("
-			+ PCTENCODED + "))*)@).*");
+	private static Pattern USERINFOPAT = Pattern.compile(
+		"^((([" + UNRESERVED + SUBDELIMS + ":]|(" + PCTENCODED + "))*)@).*"
+	);
 
-	private static Pattern HOSTPAT = Pattern.compile("^((" + IPV4 + ")|(" + REGNAMEREG + ")|("
-			+ IPLITERAL + ")).*");
+	private static Pattern HOSTPAT = Pattern.compile("^((" + IPV4 + ")|(" + REGNAMEREG + ")|(" + IPLITERAL + ")).*");
 
 	private static Pattern PORTPAT = Pattern.compile("^([0-9]+).*");
 
 	/**
 	 * Parses userInfo, host and port
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return the parsed Authority
 	 */
@@ -144,7 +198,9 @@ public class Authority {
 		} else {
 			userInfo = null;
 		}
-		if (!uriStr.matchAndCut(HOSTPAT, 1)) { return null; }
+		if (!uriStr.matchAndCut(HOSTPAT, 1)) {
+			return null;
+		}
 		String host = uriStr.group(1);
 		String port = null;
 		if (uriStr.cutStarting(':')) {
@@ -173,18 +229,19 @@ public class Authority {
 
 	/**
 	 * str
-	 * 
+	 *
 	 * @return a String
 	 */
 	@Override
 	public String toString() {
-		return (this.iUserInfo == null ? "" : this.iUserInfo + "@") + this.iHost
-				+ (this.iPort == null ? "" : ":" + this.iPort);
+		return (
+			(this.iUserInfo == null ? "" : this.iUserInfo + "@") + this.iHost + (this.iPort == null ? "" : ":" + this.iPort)
+		);
 	}
 
 	/**
 	 * getUserInfo
-	 * 
+	 *
 	 * @return the userInfo String
 	 */
 	public String getUserInfo() {
@@ -193,7 +250,7 @@ public class Authority {
 
 	/**
 	 * getHost
-	 * 
+	 *
 	 * @return the host String
 	 */
 	public String getHost() {
@@ -202,11 +259,10 @@ public class Authority {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return the port String
 	 */
 	public String getPort() {
 		return this.iPort;
 	}
-
 }

@@ -56,7 +56,6 @@ import java.util.Locale;
  * Class WBEMConstants contains global constants of the CIM client.
  */
 public interface WBEMConstants {
-
 	/**
 	 * The HTTP protocol
 	 */
@@ -189,5 +188,6 @@ public interface WBEMConstants {
 	/**
 	 * Exception message for indication sender potential DoS
 	 */
-	public static final String INDICATION_DOS_EXCEPTION_MESSAGE = "Indication sender taking too long, possible DoS underway?";
+	public static final String INDICATION_DOS_EXCEPTION_MESSAGE =
+		"Indication sender taking too long, possible DoS underway?";
 }

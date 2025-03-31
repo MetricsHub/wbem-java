@@ -55,7 +55,6 @@ import org.xml.sax.SAXException;
  * For non-standard CIMOMs the TYPE and PARAMTYPE attributes are supported.
  */
 public class ValueNode extends AbstractScalarValueNode {
-
 	private CIMDataType iType;
 
 	private String iData;
@@ -96,12 +95,12 @@ public class ValueNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child
+		// no child
 	}
 
 	@Override
 	public void testCompletness() {
-	// no child nodes
+		// no child nodes
 	}
 
 	/**
@@ -127,5 +126,4 @@ public class ValueNode extends AbstractScalarValueNode {
 	public CIMDataType getType() {
 		return this.iType;
 	}
-
 }

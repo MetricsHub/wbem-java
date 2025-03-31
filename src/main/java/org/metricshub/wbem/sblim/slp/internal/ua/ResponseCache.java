@@ -50,19 +50,18 @@ import java.util.HashSet;
 /**
  * ResponseCache intends to eliminate the processing of SLP responses with the
  * same content.
- * 
+ *
  */
 public class ResponseCache {
 
 	private static class Entry {
-
 		private byte[] iData;
 
 		private int iHashCode;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pData
 		 * @param pOffset
 		 * @param pLength
@@ -78,7 +77,7 @@ public class ResponseCache {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pPacket
 		 */
 		public Entry(DatagramPacket pPacket) {
@@ -97,14 +96,13 @@ public class ResponseCache {
 			Entry that = (Entry) pObj;
 			return this.iHashCode == that.iHashCode && Arrays.equals(this.iData, that.iData);
 		}
-
 	}
 
 	private HashSet<Entry> iResponseSet = new HashSet<Entry>();
 
 	/**
 	 * add
-	 * 
+	 *
 	 * @param pPacket
 	 */
 	public void add(DatagramPacket pPacket) {
@@ -113,12 +111,11 @@ public class ResponseCache {
 
 	/**
 	 * contains
-	 * 
+	 *
 	 * @param pPacket
 	 * @return boolean
 	 */
 	public boolean contains(DatagramPacket pPacket) {
 		return this.iResponseSet.contains(new Entry(pPacket));
 	}
-
 }

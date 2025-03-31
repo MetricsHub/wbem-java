@@ -44,12 +44,11 @@ package org.metricshub.wbem.sblim.slp.internal;
 
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 
 /**
  * AttributeHandler
- * 
+ *
  */
 public class AttributeHandler {
 
@@ -77,8 +76,7 @@ public class AttributeHandler {
 			Iterator<?> itr = valVec.iterator();
 			boolean first = true;
 			while (itr.hasNext()) {
-				if (first) first = false;
-				else buf.append(',');
+				if (first) first = false; else buf.append(',');
 				buf.append(AttributeHandler.escapeValue(itr.next()));
 			}
 			buf.append(')');
@@ -88,7 +86,7 @@ public class AttributeHandler {
 
 	/**
 	 * escapeValue
-	 * 
+	 *
 	 * @param pValue
 	 * @return String
 	 */
@@ -101,14 +99,15 @@ public class AttributeHandler {
 			return ((Boolean) pValue).toString();
 		} else if (pValue instanceof byte[]) {
 			return AttributeHandler.mkOpaqueStr((byte[]) pValue);
-		} else if (pValue == null) { return ""; }
-		throw new IllegalArgumentException("Type: " + pValue.getClass().getName()
-				+ " cannot be an attribute value!");
+		} else if (pValue == null) {
+			return "";
+		}
+		throw new IllegalArgumentException("Type: " + pValue.getClass().getName() + " cannot be an attribute value!");
 	}
 
 	/**
 	 * mkOpaqueStr
-	 * 
+	 *
 	 * @param pBytes
 	 * @return String
 	 */
@@ -123,5 +122,4 @@ public class AttributeHandler {
 		}
 		return buf.toString();
 	}
-
 }

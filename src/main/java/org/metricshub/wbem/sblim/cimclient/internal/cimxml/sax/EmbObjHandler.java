@@ -67,7 +67,6 @@ import org.xml.sax.SAXException;
  */
 
 public class EmbObjHandler {
-
 	private String iNodeName;
 
 	private CIMDataType iRawType;
@@ -86,7 +85,7 @@ public class EmbObjHandler {
 
 	/**
 	 * Generic initialization.
-	 * 
+	 *
 	 * @param pHandler
 	 * @param pNodeName
 	 * @param pAttribs
@@ -96,21 +95,27 @@ public class EmbObjHandler {
 	 * @return EmbObjHandler
 	 * @throws SAXException
 	 */
-	public static EmbObjHandler init(EmbObjHandler pHandler, String pNodeName, Attributes pAttribs,
-			SAXSession pSession, QualifiedNodeHandler pQNodeHandler, boolean pCheckEmbObjAttrib)
-			throws SAXException {
+	public static EmbObjHandler init(
+		EmbObjHandler pHandler,
+		String pNodeName,
+		Attributes pAttribs,
+		SAXSession pSession,
+		QualifiedNodeHandler pQNodeHandler,
+		boolean pCheckEmbObjAttrib
+	)
+		throws SAXException {
 		if (pHandler == null) pHandler = new EmbObjHandler();
 		pHandler.initInst(pNodeName, pAttribs, pSession, pQNodeHandler, pCheckEmbObjAttrib);
 		return pHandler;
 	}
 
 	private EmbObjHandler() {
-	// init() used for instantiation
+		// init() used for instantiation
 	}
 
 	/**
 	 * Generic instance initialization.
-	 * 
+	 *
 	 * @param pNodeName
 	 * @param pAttribs
 	 * @param pSession
@@ -118,8 +123,14 @@ public class EmbObjHandler {
 	 * @param pCheckEmbObjAttrib
 	 * @throws SAXException
 	 */
-	public void initInst(String pNodeName, Attributes pAttribs, SAXSession pSession,
-			QualifiedNodeHandler pQNodeHandler, boolean pCheckEmbObjAttrib) throws SAXException {
+	public void initInst(
+		String pNodeName,
+		Attributes pAttribs,
+		SAXSession pSession,
+		QualifiedNodeHandler pQNodeHandler,
+		boolean pCheckEmbObjAttrib
+	)
+		throws SAXException {
 		this.iSession = pSession;
 		this.iNodeName = pNodeName;
 		this.iQualiHandler = pQNodeHandler;
@@ -156,8 +167,8 @@ public class EmbObjHandler {
 				this.iHasEmbObjAttr = true;
 			} else {
 				throw new SAXException(
-						"EmbeddedObject attribute's value must be \"object\" or \"instance\". "
-								+ embObjStr + " is invalid!");
+					"EmbeddedObject attribute's value must be \"object\" or \"instance\". " + embObjStr + " is invalid!"
+				);
 			}
 		} else {
 			this.iHasEmbInstAttr = this.iHasEmbObjAttr = false;
@@ -167,39 +178,38 @@ public class EmbObjHandler {
 	/**
 	 * isEmbeddedObject For this function Object means CLASS or INSTANCE. Object
 	 * can have other meanings at different places !!! :(
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private boolean isEmbeddedObject() {
-		return this.iHasEmbInstAttr
-				|| this.iHasEmbObjAttr
-				|| (this.iQualiHandler != null && (this.iQualiHandler.isEmbeddedObject() || this.iQualiHandler
-						.isEmbeddedInstance()));
+		return (
+			this.iHasEmbInstAttr ||
+			this.iHasEmbObjAttr ||
+			(this.iQualiHandler != null && (this.iQualiHandler.isEmbeddedObject() || this.iQualiHandler.isEmbeddedInstance()))
+		);
 	}
 
 	/**
 	 * isEmbeddedClass
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private boolean isEmbeddedClass() {
-		return this.iHasEmbObjAttr
-				|| (this.iQualiHandler != null && this.iQualiHandler.isEmbeddedObject());
+		return this.iHasEmbObjAttr || (this.iQualiHandler != null && this.iQualiHandler.isEmbeddedObject());
 	}
 
 	/**
 	 * isEmbeddedInstance
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private boolean isEmbeddedInstance() {
-		return this.iHasEmbInstAttr
-				|| (this.iQualiHandler != null && this.iQualiHandler.isEmbeddedInstance());
+		return this.iHasEmbInstAttr || (this.iQualiHandler != null && this.iQualiHandler.isEmbeddedInstance());
 	}
 
 	/**
 	 * getValue
-	 * 
+	 *
 	 * @return Object
 	 * @throws SAXException
 	 */
@@ -210,7 +220,7 @@ public class EmbObjHandler {
 
 	/**
 	 * getType
-	 * 
+	 *
 	 * @return Object
 	 * @throws SAXException
 	 */
@@ -221,7 +231,7 @@ public class EmbObjHandler {
 
 	/**
 	 * getRawType
-	 * 
+	 *
 	 * @return the type which is retrieved from the XML attributes
 	 */
 	public CIMDataType getRawType() {
@@ -230,27 +240,30 @@ public class EmbObjHandler {
 
 	/**
 	 * getArrayType useful e.g. for PROPERTY.ARRAY
-	 * 
+	 *
 	 * @return CIMDataType
 	 * @throws SAXException
 	 */
 	public CIMDataType getArrayType() throws SAXException {
 		transform();
-		return this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType
-				.getType());
+		return this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType.getType());
 	}
 
 	/**
 	 * addValueNode
-	 * 
+	 *
 	 * @param pValueNode
 	 *            - can be ValueNode ore ValueArrayNode for Embedded Objects
 	 */
 	public void addValueNode(AbstractValueNode pValueNode) {
-		if (isEmbeddedObject()
-				&& !(pValueNode == null || pValueNode instanceof ValueNode || pValueNode instanceof ValueArrayNode)) throw new IllegalArgumentException(
-				"pValueNode's type can be ValueNode or ValueArrayNode or it can be null. "
-						+ pValueNode.getClass().getName() + " is an invalid type!");
+		if (
+			isEmbeddedObject() &&
+			!(pValueNode == null || pValueNode instanceof ValueNode || pValueNode instanceof ValueArrayNode)
+		) throw new IllegalArgumentException(
+			"pValueNode's type can be ValueNode or ValueArrayNode or it can be null. " +
+			pValueNode.getClass().getName() +
+			" is an invalid type!"
+		);
 		this.iAbsValNode = pValueNode;
 	}
 
@@ -259,8 +272,8 @@ public class EmbObjHandler {
 		if (this.iAbsValNode == null) {
 			if (isEmbeddedObject()) {
 				if (this.iRawType != CIMDataType.STRING_T) throw new SAXException(
-						"Embedded Object CIM-XML element's type must be string. " + this.iRawType
-								+ " is invalid!");
+					"Embedded Object CIM-XML element's type must be string. " + this.iRawType + " is invalid!"
+				);
 				if (this.iSession.strictEmbObjParsing()) {
 					/*
 					 * Here the assumption is that Object = CLASS, Instance =
@@ -296,17 +309,17 @@ public class EmbObjHandler {
 			this.iValue = CIMObjectFactory.getEmbeddedObj(this.iRawType, valueStr, this.iSession);
 			this.iType = CIMObjectFactory.getCIMObjScalarType(this.iValue);
 		} else { // ValueArrayNode
-			this.iValue = CIMObjectFactory.getEmbeddedObjA(this.iRawType,
-					(ValueArrayNode) this.iAbsValNode, this.iSession);
+			this.iValue = CIMObjectFactory.getEmbeddedObjA(this.iRawType, (ValueArrayNode) this.iAbsValNode, this.iSession);
 			this.iType = CIMObjectFactory.getCIMObjArrayType(this.iValue);
 		}
 		if (isEmbeddedInstance() && this.iType.getType() != CIMDataType.OBJECT) throw new SAXException(
-				this.iNodeName + " element is an EmbeddedInstance with non INSTANCE value. "
-						+ "It's not valid!");
-		if (isEmbeddedClass() && this.iType.getType() != CIMDataType.CLASS
-				&& this.iType.getType() != CIMDataType.OBJECT) throw new SAXException(
-				this.iNodeName
-						+ " element is an EmbeddedObject with non CLASS/INSTANCE value. It's not valid!");
+			this.iNodeName + " element is an EmbeddedInstance with non INSTANCE value. " + "It's not valid!"
+		);
+		if (
+			isEmbeddedClass() && this.iType.getType() != CIMDataType.CLASS && this.iType.getType() != CIMDataType.OBJECT
+		) throw new SAXException(
+			this.iNodeName + " element is an EmbeddedObject with non CLASS/INSTANCE value. It's not valid!"
+		);
 	}
 
 	private void transformNormObj() throws SAXException {
@@ -315,8 +328,7 @@ public class EmbObjHandler {
 			this.iValue = CIMObjectFactory.getObject(this.iType, (ValueNode) this.iAbsValNode);
 		} else if (this.iAbsValNode instanceof ValueArrayNode) {
 			this.iType = CIMHelper.UnboundedArrayDataType(this.iRawType.getType());
-			this.iValue = CIMObjectFactory.getObject(this.iRawType,
-					(ValueArrayNode) this.iAbsValNode);
+			this.iValue = CIMObjectFactory.getObject(this.iRawType, (ValueArrayNode) this.iAbsValNode);
 		} else {
 			this.iValue = this.iAbsValNode.getValue();
 			if (this.iAbsValNode instanceof ArrayIf) {
@@ -335,14 +347,13 @@ public class EmbObjHandler {
 	 * Required to handle the output XML of some non-standard CIMOMs like SVC
 	 * which adds the TYPE attribute to the sub VALUE or VALUE.ARRAY XML
 	 * element.
-	 * 
+	 *
 	 * @throws SAXException
 	 */
 	private void setType() throws SAXException {
 		if (this.iType != null || this.iRawType != null) return;
 		this.iRawType = this.iAbsValNode.getType();
-		if (this.iRawType == null) this.iRawType = (this.iAbsValNode instanceof ArrayIf ? CIMDataType.STRING_ARRAY_T
-				: CIMDataType.STRING_T);
+		if (this.iRawType == null) this.iRawType =
+			(this.iAbsValNode instanceof ArrayIf ? CIMDataType.STRING_ARRAY_T : CIMDataType.STRING_T);
 	}
-
 }

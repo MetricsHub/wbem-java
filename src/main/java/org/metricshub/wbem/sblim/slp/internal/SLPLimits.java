@@ -44,10 +44,9 @@ package org.metricshub.wbem.sblim.slp.internal;
 
 /**
  * SLPLimits
- * 
+ *
  */
 public interface SLPLimits {
-
 	/**
 	 * MAX_DISCOVERY_GRANULARITY
 	 */
@@ -117,5 +116,4 @@ public interface SLPLimits {
 	 * MIN_TCP_TIMEOUT
 	 */
 	public static final int MIN_TCP_TIMEOUT = 100;
-
 }

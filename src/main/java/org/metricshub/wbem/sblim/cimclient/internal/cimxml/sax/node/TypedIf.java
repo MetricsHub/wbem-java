@@ -45,10 +45,9 @@ import org.metricshub.wbem.javax.cim.CIMDataType;
  * TypedIf is implemented by those classes which can provide a CIMDataType.
  */
 public interface TypedIf {
-
 	/**
 	 * getType
-	 * 
+	 *
 	 * @return <code>null</code> if the type is unknown
 	 */
 	public CIMDataType getType();

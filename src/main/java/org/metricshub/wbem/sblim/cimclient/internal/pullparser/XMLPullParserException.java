@@ -48,15 +48,14 @@ import java.io.IOException;
 
 /**
  * Class XMLPullParserException is thrown by the PULL parser.
- * 
+ *
  */
 public class XMLPullParserException extends IOException {
-
 	private static final long serialVersionUID = 8136106792375541159L;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param str
 	 */
 	public XMLPullParserException(String str) {
@@ -65,7 +64,7 @@ public class XMLPullParserException extends IOException {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param parser
 	 * @param str
 	 */

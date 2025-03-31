@@ -45,7 +45,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -54,7 +53,6 @@ import org.xml.sax.SAXException;
  * ELEMENT MULTIREQ (SIMPLEREQ, SIMPLEREQ+)
  */
 public class MultiReqNode extends AbstractMessageNode {
-
 	private ArrayList<Node> iSimpleReqAList;
 
 	/**
@@ -84,29 +82,29 @@ public class MultiReqNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum != SIMPLEREQ) throw new SAXException(
-				"MULTIREQ node can have SIMPLEREQ child nodes only! " + pNodeNameEnum
-						+ " child node is invalid!");
+			"MULTIREQ node can have SIMPLEREQ child nodes only! " + pNodeNameEnum + " child node is invalid!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iSimpleReqAList == null || this.iSimpleReqAList.size() < 2) throw new SAXException(
-				"MULTIREQ node must have at least 2 SIMPLEREQ child nodes!");
+			"MULTIREQ node must have at least 2 SIMPLEREQ child nodes!"
+		);
 	}
 
 	/**
 	 * size
-	 * 
+	 *
 	 * @return int
 	 */
 	public int size() {
 		return this.iSimpleReqAList == null ? 0 : this.iSimpleReqAList.size();
 	}
-
 }

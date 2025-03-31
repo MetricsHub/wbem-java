@@ -46,10 +46,9 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
-import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.TRC;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -62,28 +61,26 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |# of
  * AttrAuths | Attribute Authentication Block (if present) \
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
+ *
  */
 
 /**
  * AttributeReply message
- * 
+ *
  */
 public class AttributeReply extends ReplyMessage {
-
 	private List<ServiceLocationAttribute> iAttrList;
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		AttributeReply reply = new AttributeReply(pHdr, pInStr.read16(), pInStr.readAttributeList());
 		if (pInStr.readAuthBlockList() != null) TRC.warning("Non empty auth block!");
 		return reply;
@@ -91,7 +88,7 @@ public class AttributeReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 * @param pAttrList
 	 *            - list of ServiceLocationAttributes
@@ -103,7 +100,7 @@ public class AttributeReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pErrorCode
 	 * @param pAttrList
@@ -116,14 +113,13 @@ public class AttributeReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 * @param pAttrList
 	 *            - list of ServiceLocationAttributes
 	 */
-	public AttributeReply(MsgHeader pHeader, int pErrorCode,
-			List<ServiceLocationAttribute> pAttrList) {
+	public AttributeReply(MsgHeader pHeader, int pErrorCode, List<ServiceLocationAttribute> pAttrList) {
 		super(pHeader, pErrorCode);
 		this.iAttrList = pAttrList;
 	}
@@ -138,8 +134,9 @@ public class AttributeReply extends ReplyMessage {
 	 */
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
-		return pOutStr.write16(getErrorCode()) && pOutStr.writeAttributeList(this.iAttrList)
-				&& pOutStr.writeAuthBlockList(null);
+		return (
+			pOutStr.write16(getErrorCode()) && pOutStr.writeAttributeList(this.iAttrList) && pOutStr.writeAuthBlockList(null)
+		);
 	}
 
 	@Override
@@ -147,5 +144,4 @@ public class AttributeReply extends ReplyMessage {
 		// this message doesn't have exception table
 		return null;
 	}
-
 }

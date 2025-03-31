@@ -48,32 +48,31 @@ package org.metricshub.wbem.sblim.cimclient.internal.cim;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
-import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.cim.UnsignedInteger16;
 import org.metricshub.wbem.javax.cim.UnsignedInteger32;
 import org.metricshub.wbem.javax.cim.UnsignedInteger64;
 import org.metricshub.wbem.javax.cim.UnsignedInteger8;
+import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 
 /**
  * Class CIMHelper provides convenience methods that are missing from the
  * official JSR48 API
- * 
+ *
  */
 public abstract class CIMHelper {
 
 	private CIMHelper() {
-	// no instances
+		// no instances
 	}
 
 	/**
 	 * Creates a URI of a CIMOM from a given CIM object path, adding default
 	 * port if port not parsable.
-	 * 
+	 *
 	 * @param pPath
 	 *            The CIM object path.
 	 * @return The URI.
@@ -94,7 +93,7 @@ public abstract class CIMHelper {
 	/**
 	 * Creates a URI of a CIMOM from a given URI, adding default port if port
 	 * not specified.
-	 * 
+	 *
 	 * @param pUri
 	 *            The URI.
 	 * @return The URI.
@@ -112,30 +111,31 @@ public abstract class CIMHelper {
 	}
 
 	private static CIMDataType CIMScalarDataTypes[] = {
-	/* 00 */CIMDataType.UINT8_T,
-	/* 01 */CIMDataType.SINT8_T,
-	/* 02 */CIMDataType.UINT16_T,
-	/* 03 */CIMDataType.SINT16_T,
-	/* 04 */CIMDataType.UINT32_T,
-	/* 05 */CIMDataType.SINT32_T,
-	/* 06 */CIMDataType.UINT64_T,
-	/* 07 */CIMDataType.SINT64_T,
-	/* 08 */CIMDataType.STRING_T,
-	/* 09 */CIMDataType.BOOLEAN_T,
-	/* 10 */CIMDataType.REAL32_T,
-	/* 11 */CIMDataType.REAL64_T,
-	/* 12 */CIMDataType.DATETIME_T,
-	/* 13 */CIMDataType.CHAR16_T,
-	/* 14 */new CIMDataType(""),
-	/* 15 */CIMDataType.OBJECT_T,
-	/* 16 */null,
-	/* 17 */CIMDataType.CLASS_T };
+		/* 00 */CIMDataType.UINT8_T,
+		/* 01 */CIMDataType.SINT8_T,
+		/* 02 */CIMDataType.UINT16_T,
+		/* 03 */CIMDataType.SINT16_T,
+		/* 04 */CIMDataType.UINT32_T,
+		/* 05 */CIMDataType.SINT32_T,
+		/* 06 */CIMDataType.UINT64_T,
+		/* 07 */CIMDataType.SINT64_T,
+		/* 08 */CIMDataType.STRING_T,
+		/* 09 */CIMDataType.BOOLEAN_T,
+		/* 10 */CIMDataType.REAL32_T,
+		/* 11 */CIMDataType.REAL64_T,
+		/* 12 */CIMDataType.DATETIME_T,
+		/* 13 */CIMDataType.CHAR16_T,
+		/* 14 */new CIMDataType(""),
+		/* 15 */CIMDataType.OBJECT_T,
+		/* 16 */null,
+		/* 17 */CIMDataType.CLASS_T
+	};
 
 	/**
 	 * Returns the CIMDataType of a scalar of the specified data type. This
 	 * should be used in lieu of "new CIMDataType(pType)" which is not supported
 	 * by the JSR48 standard.
-	 * 
+	 *
 	 * @param pType
 	 *            Data type.
 	 * @return CIMDataType corresponding to data type.
@@ -146,30 +146,31 @@ public abstract class CIMHelper {
 	}
 
 	private static CIMDataType CIMArrayDataTypes[] = {
-	/* 00 */CIMDataType.UINT8_ARRAY_T,
-	/* 01 */CIMDataType.SINT8_ARRAY_T,
-	/* 02 */CIMDataType.UINT16_ARRAY_T,
-	/* 03 */CIMDataType.SINT16_ARRAY_T,
-	/* 04 */CIMDataType.UINT32_ARRAY_T,
-	/* 05 */CIMDataType.SINT32_ARRAY_T,
-	/* 06 */CIMDataType.UINT64_ARRAY_T,
-	/* 07 */CIMDataType.SINT64_ARRAY_T,
-	/* 08 */CIMDataType.STRING_ARRAY_T,
-	/* 09 */CIMDataType.BOOLEAN_ARRAY_T,
-	/* 10 */CIMDataType.REAL32_ARRAY_T,
-	/* 11 */CIMDataType.REAL64_ARRAY_T,
-	/* 12 */CIMDataType.DATETIME_ARRAY_T,
-	/* 13 */CIMDataType.CHAR16_ARRAY_T,
-	/* 14 */new CIMDataType("", 0),
-	/* 15 */CIMDataType.OBJECT_ARRAY_T,
-	/* 16 */null,
-	/* 17 */CIMDataType.CLASS_ARRAY_T };
+		/* 00 */CIMDataType.UINT8_ARRAY_T,
+		/* 01 */CIMDataType.SINT8_ARRAY_T,
+		/* 02 */CIMDataType.UINT16_ARRAY_T,
+		/* 03 */CIMDataType.SINT16_ARRAY_T,
+		/* 04 */CIMDataType.UINT32_ARRAY_T,
+		/* 05 */CIMDataType.SINT32_ARRAY_T,
+		/* 06 */CIMDataType.UINT64_ARRAY_T,
+		/* 07 */CIMDataType.SINT64_ARRAY_T,
+		/* 08 */CIMDataType.STRING_ARRAY_T,
+		/* 09 */CIMDataType.BOOLEAN_ARRAY_T,
+		/* 10 */CIMDataType.REAL32_ARRAY_T,
+		/* 11 */CIMDataType.REAL64_ARRAY_T,
+		/* 12 */CIMDataType.DATETIME_ARRAY_T,
+		/* 13 */CIMDataType.CHAR16_ARRAY_T,
+		/* 14 */new CIMDataType("", 0),
+		/* 15 */CIMDataType.OBJECT_ARRAY_T,
+		/* 16 */null,
+		/* 17 */CIMDataType.CLASS_ARRAY_T
+	};
 
 	/**
 	 * Returns the CIMDataType of an unbounded array of the specified data type.
 	 * This should be used in lieu of "new CIMDataType(pType,0)" which is not
 	 * supported by the JSR48 standard.
-	 * 
+	 *
 	 * @param pType
 	 *            Data type.
 	 * @return CIMDataType corresponding to data type.
@@ -184,7 +185,7 @@ public abstract class CIMHelper {
 	 * <code>CIMInstance</code> where the data types of all numeric keys in the
 	 * <code>CIMObjectPath</code> match those of the corresponding keys within
 	 * the <code>CIMProperty[]</code>.
-	 * 
+	 *
 	 * The need for this conversion mechanism arises from a deficiency in the
 	 * CIM-XML specs, where the TYPE (sint8, uint8, etc.) is required for
 	 * PROPERTY but not for KEYVALUE. If a CIMOM sends a KEYVALUE of
@@ -192,7 +193,7 @@ public abstract class CIMHelper {
 	 * sint64, uint64 or real64. This can cause problems (i.e.
 	 * ClassCastException) down the line if the TYPE of the corresponding
 	 * PROPERTY is different.
-	 * 
+	 *
 	 * @param pObjectPath
 	 *            Instance object path.
 	 * @param pProps
@@ -200,7 +201,9 @@ public abstract class CIMHelper {
 	 * @return CIMInstance with numeric key data types synchronized.
 	 */
 	public static CIMInstance CIMInstanceWithSynchonizedNumericKeyDataTypes(
-			CIMObjectPath pObjectPath, CIMProperty<?>[] pProps) {
+		CIMObjectPath pObjectPath,
+		CIMProperty<?>[] pProps
+	) {
 		CIMInstance inst = new CIMInstance(pObjectPath, pProps);
 		CIMProperty<?>[] oldKeys = inst.getKeys();
 		CIMProperty<?>[] newKeys = new CIMProperty<?>[oldKeys.length];
@@ -209,21 +212,43 @@ public abstract class CIMHelper {
 		for (int i = 0; i < oldKeys.length; i++) {
 			CIMDataType oldType = oldKeys[i].getDataType();
 			CIMProperty<?> prop = inst.getProperty(oldKeys[i].getName());
-			if (oldType != null && prop != null && prop.getDataType() != null
-					&& !prop.getDataType().equals(oldType) && isNumericObject(oldType)
-					&& isNumericObject(prop.getDataType())) {
+			if (
+				oldType != null &&
+				prop != null &&
+				prop.getDataType() != null &&
+				!prop.getDataType().equals(oldType) &&
+				isNumericObject(oldType) &&
+				isNumericObject(prop.getDataType())
+			) {
 				update = true;
-				newKeys[i] = new CIMProperty<Object>(oldKeys[i].getName(), prop.getDataType(),
+				newKeys[i] =
+					new CIMProperty<Object>(
+						oldKeys[i].getName(),
+						prop.getDataType(),
 						translateNumericObject(oldKeys[i].getValue(), oldType, prop.getDataType()),
-						oldKeys[i].isKey(), oldKeys[i].isPropagated(), oldKeys[i].getOriginClass());
+						oldKeys[i].isKey(),
+						oldKeys[i].isPropagated(),
+						oldKeys[i].getOriginClass()
+					);
 			} else {
 				newKeys[i] = oldKeys[i];
 			}
 		}
 
-		return (update ? inst.deriveInstance(new CIMObjectPath(pObjectPath.getScheme(), pObjectPath
-				.getHost(), pObjectPath.getPort(), pObjectPath.getNamespace(), pObjectPath
-				.getObjectName(), newKeys)) : inst);
+		return (
+			update
+				? inst.deriveInstance(
+					new CIMObjectPath(
+						pObjectPath.getScheme(),
+						pObjectPath.getHost(),
+						pObjectPath.getPort(),
+						pObjectPath.getNamespace(),
+						pObjectPath.getObjectName(),
+						newKeys
+					)
+				)
+				: inst
+		);
 	}
 
 	private static boolean isNumericObject(CIMDataType type) {
@@ -243,8 +268,7 @@ public abstract class CIMHelper {
 		return false;
 	}
 
-	private static Object translateNumericObject(Object oldValue, CIMDataType oldType,
-			CIMDataType newType) {
+	private static Object translateNumericObject(Object oldValue, CIMDataType oldType, CIMDataType newType) {
 		if (oldValue == null) return null;
 
 		int from = oldType.getType(), to = newType.getType();

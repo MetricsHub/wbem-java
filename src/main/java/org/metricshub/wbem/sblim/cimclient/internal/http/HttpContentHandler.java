@@ -50,13 +50,13 @@ import java.net.InetAddress;
 /**
  * Class HttpContentHandler is responsible for handling the content of an http
  * connection.
- * 
+ *
  */
 public abstract class HttpContentHandler {
 
 	/**
 	 * Handles the content of a given connection
-	 * 
+	 *
 	 * @param pMessageReader
 	 *            The reader of the connection
 	 * @param pMessageWriter
@@ -68,8 +68,13 @@ public abstract class HttpContentHandler {
 	 * @throws HttpException
 	 * @throws IOException
 	 */
-	public abstract void handleContent(MessageReader pMessageReader, MessageWriter pMessageWriter,
-			InetAddress pInetAddress, String pLocalAddress) throws HttpException, IOException;
+	public abstract void handleContent(
+		MessageReader pMessageReader,
+		MessageWriter pMessageWriter,
+		InetAddress pInetAddress,
+		String pLocalAddress
+	)
+		throws HttpException, IOException;
 
 	/**
 	 * Closes the handler

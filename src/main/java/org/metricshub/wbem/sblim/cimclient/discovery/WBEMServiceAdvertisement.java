@@ -43,11 +43,9 @@ package org.metricshub.wbem.sblim.cimclient.discovery;
  */
 
 import java.util.Locale;
-import java.util.Set;
 import java.util.Map.Entry;
-
+import java.util.Set;
 import javax.security.auth.Subject;
-
 import org.metricshub.wbem.javax.wbem.client.WBEMClient;
 
 /**
@@ -58,13 +56,12 @@ import org.metricshub.wbem.javax.wbem.client.WBEMClient;
  * attribute by name. This design was chosen because the set of attributes might
  * be extended by DMTF and vendor implementations. It's also unclear if upcoming
  * new discovery protocols will have the same set of attributes as SLP.
- * 
+ *
  * Immutable
  * This class is thread-safe
  * @since 2.0.2
  */
 public interface WBEMServiceAdvertisement {
-
 	/**
 	 * template-type (string): The scheme name of the service scheme. The scheme
 	 * name consists of the service type name and an optional naming authority
@@ -249,13 +246,13 @@ public interface WBEMServiceAdvertisement {
 	 * MUST be the CIM_RegisteredProfile.RegisteredName property value when it
 	 * is used as a Dependent in the CIM_SubProfileRequiresProfile association
 	 * for the specified Profile Name (used as the antecedent).
-	 * 
+	 *
 	 */
 	public static final String REG_PROF_SUPP = "RegisteredProfilesSupported";
 
 	/**
 	 * Gets the URL of the directory from which this advertisement was received
-	 * 
+	 *
 	 * @return The directory URL
 	 */
 	public abstract String getDirectory();
@@ -264,28 +261,28 @@ public interface WBEMServiceAdvertisement {
 	 * Returns the concrete service type. E.g. for the SLP advertised service
 	 * <code>service:wbem:https</code> this method would return
 	 * <code>https</code>.
-	 * 
+	 *
 	 * @return The concrete service type
 	 */
 	public abstract String getConcreteServiceType();
 
 	/**
 	 * Returns the interop namespaces
-	 * 
+	 *
 	 * @return The interop namespaces
 	 */
 	public abstract String[] getInteropNamespaces();
 
 	/**
 	 * Returns the service url, e.g. http://9.155.62.79:5988
-	 * 
+	 *
 	 * @return The service url
 	 */
 	public abstract String getServiceUrl();
 
 	/**
 	 * Return the attribute value for a given attribute name
-	 * 
+	 *
 	 * @param pAttributeName
 	 *            The attribute name
 	 * @return The value
@@ -294,7 +291,7 @@ public interface WBEMServiceAdvertisement {
 
 	/**
 	 * Return the set of attributes of this advertisement
-	 * 
+	 *
 	 * @return A Set&lt;Map.Entry&lt;String, String&gt;&gt; containing the name
 	 *         value pairs of the attributes.
 	 */
@@ -302,14 +299,14 @@ public interface WBEMServiceAdvertisement {
 
 	/**
 	 * Returns the service id
-	 * 
+	 *
 	 * @return The service id
 	 */
 	public abstract String getServiceId();
 
 	/**
 	 * Returns the expiration state of the advertisement.
-	 * 
+	 *
 	 * @return <code>true</code> when advertisement is expired.
 	 */
 	public abstract boolean isExpired();
@@ -319,7 +316,7 @@ public interface WBEMServiceAdvertisement {
 	 * application to mark an advertisement as expired, e.g. when it's no longer
 	 * reported by the corresponding directory. Used for this purpose by
 	 * AdvertisementCatalog.
-	 * 
+	 *
 	 * @param pExpired
 	 *            The new value
 	 */
@@ -330,7 +327,7 @@ public interface WBEMServiceAdvertisement {
 	 * that is subject of this advertisement. On every call to this method a new
 	 * client will be created. The client is not stored or cached anywhere in
 	 * this class.
-	 * 
+	 *
 	 * @param pSubject
 	 *            The credential for authenticating with the service
 	 * @param pLocales

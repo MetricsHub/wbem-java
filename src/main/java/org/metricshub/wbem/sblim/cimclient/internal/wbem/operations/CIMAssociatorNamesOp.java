@@ -48,12 +48,11 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * @author Roberto
- * 
+ *
  *         To change the template for this generated type comment go to
  *         Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class CIMAssociatorNamesOp extends CIMOperation {
-
 	protected String iAssociationClass;
 
 	protected String iResultClass;
@@ -64,16 +63,20 @@ public class CIMAssociatorNamesOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pAssociationClass
 	 * @param pResultClass
 	 * @param pRole
 	 * @param pResultRole
 	 */
-	public CIMAssociatorNamesOp(CIMObjectPath pObjectName, String pAssociationClass,
-			String pResultClass, String pRole, String pResultRole) {
-
+	public CIMAssociatorNamesOp(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole
+	) {
 		this.iMethodCall = "AssociatorNames";
 		this.iObjectName = pObjectName;
 		this.iAssociationClass = pAssociationClass;
@@ -83,7 +86,7 @@ public class CIMAssociatorNamesOp extends CIMOperation {
 
 	/**
 	 * Returns the association class name
-	 * 
+	 *
 	 * @return The association class name
 	 */
 	public String getAssocClass() {
@@ -92,7 +95,7 @@ public class CIMAssociatorNamesOp extends CIMOperation {
 
 	/**
 	 * Returns the result class name
-	 * 
+	 *
 	 * @return The result class name
 	 */
 	public String getResultClass() {
@@ -101,7 +104,7 @@ public class CIMAssociatorNamesOp extends CIMOperation {
 
 	/**
 	 * Returns the result role
-	 * 
+	 *
 	 * @return The result role
 	 */
 	public String getResultRole() {
@@ -110,11 +113,10 @@ public class CIMAssociatorNamesOp extends CIMOperation {
 
 	/**
 	 * Returns the role
-	 * 
+	 *
 	 * @return The role
 	 */
 	public String getRole() {
 		return this.iRole;
 	}
-
 }

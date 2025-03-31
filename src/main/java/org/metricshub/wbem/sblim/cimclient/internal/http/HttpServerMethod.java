@@ -47,15 +47,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
 
 /**
  * Class HttpServerMethod is responsible for
- * 
+ *
  */
 public class HttpServerMethod extends HttpMethod {
-
 	private String iMethodName;
 
 	private String iFile;
@@ -70,7 +68,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pMajor
 	 *            Major version
 	 * @param pMinor
@@ -89,7 +87,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pReader
 	 *            Inputstream
 	 * @throws IOException
@@ -130,7 +128,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Returns the major version
-	 * 
+	 *
 	 * @return The major version
 	 */
 	public int getMajorVersion() {
@@ -139,7 +137,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Returns the minor version
-	 * 
+	 *
 	 * @return The minor version
 	 */
 	public int getMinorVersion() {
@@ -148,7 +146,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Returns the method name
-	 * 
+	 *
 	 * @return The method name
 	 */
 	public String getMethodName() {
@@ -157,7 +155,7 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Returns the file
-	 * 
+	 *
 	 * @return The file
 	 */
 	public String getFile() {
@@ -166,12 +164,11 @@ public class HttpServerMethod extends HttpMethod {
 
 	/**
 	 * Write to a given output stream
-	 * 
+	 *
 	 * @param pStream
 	 *            the output stream
 	 */
 	public void write(ASCIIPrintStream pStream) {
-		pStream.print("HTTP/" + this.iMajor + "." + this.iMinor + " " + this.iStatus + " "
-				+ this.iReason + "\r\n");
+		pStream.print("HTTP/" + this.iMajor + "." + this.iMinor + " " + this.iStatus + " " + this.iReason + "\r\n");
 	}
 }

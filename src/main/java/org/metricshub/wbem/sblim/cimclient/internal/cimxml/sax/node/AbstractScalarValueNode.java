@@ -50,11 +50,10 @@ public abstract class AbstractScalarValueNode extends AbstractValueNode {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractScalarValueNode(String pNameEnum) {
 		super(pNameEnum);
 	}
-
 }

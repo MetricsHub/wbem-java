@@ -48,17 +48,16 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMExecQueryOp
- * 
+ *
  */
 public class CIMExecQueryOp extends CIMOperation {
-
 	protected String iQuery;
 
 	protected String iQueryLanguage;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param query
 	 * @param queryLanguage
@@ -72,7 +71,7 @@ public class CIMExecQueryOp extends CIMOperation {
 
 	/**
 	 * Returns query
-	 * 
+	 *
 	 * @return The value of query.
 	 */
 	public String getQuery() {
@@ -81,11 +80,10 @@ public class CIMExecQueryOp extends CIMOperation {
 
 	/**
 	 * Returns queryLanguage
-	 * 
+	 *
 	 * @return The value of queryLanguage.
 	 */
 	public String getQueryLanguage() {
 		return this.iQueryLanguage;
 	}
-
 }

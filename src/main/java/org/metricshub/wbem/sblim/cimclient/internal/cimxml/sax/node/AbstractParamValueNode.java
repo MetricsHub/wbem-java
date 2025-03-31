@@ -51,7 +51,7 @@ public abstract class AbstractParamValueNode extends Node implements TypedIf, Va
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractParamValueNode(String pNameEnum) {
@@ -60,9 +60,8 @@ public abstract class AbstractParamValueNode extends Node implements TypedIf, Va
 
 	/**
 	 * getCIMArgument
-	 * 
+	 *
 	 * @return CIMArgument
 	 */
 	public abstract CIMArgument<?> getCIMArgument();
-
 }

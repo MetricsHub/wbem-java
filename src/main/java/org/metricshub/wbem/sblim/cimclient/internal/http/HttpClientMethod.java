@@ -48,15 +48,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
 
 /**
  * Class HttpClientMethod encapsulates a http client method
- * 
+ *
  */
 public class HttpClientMethod extends HttpMethod {
-
 	private boolean iIncomming = true;
 
 	private String iHttpHeader;
@@ -73,7 +71,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Ctor. Creates an outgoing http method
-	 * 
+	 *
 	 * @param pMethod
 	 *            The method
 	 * @param pRequest
@@ -93,7 +91,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Ctor. Parses an incoming http method from a given input stream
-	 * 
+	 *
 	 * @param pReader
 	 *            The input stream
 	 * @throws IOException
@@ -137,7 +135,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Returns the major version
-	 * 
+	 *
 	 * @return The major version
 	 */
 	public int getMajorVersion() {
@@ -146,7 +144,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Returns the minor version
-	 * 
+	 *
 	 * @return The minor version
 	 */
 	public int getMinorVersion() {
@@ -155,7 +153,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Returns the method name
-	 * 
+	 *
 	 * @return The method name
 	 */
 	public String getMethodName() {
@@ -164,7 +162,7 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Return the status
-	 * 
+	 *
 	 * @return The status
 	 */
 	public int getStatus() {
@@ -173,18 +171,17 @@ public class HttpClientMethod extends HttpMethod {
 
 	/**
 	 * Writes the method to a given stream
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream
 	 */
 	public void write(ASCIIPrintStream pStream) {
-		pStream.print(this.iMethod + " " + this.iRequest + " HTTP/" + this.iMajor + "."
-				+ this.iMinor + "\r\n");
+		pStream.print(this.iMethod + " " + this.iRequest + " HTTP/" + this.iMajor + "." + this.iMinor + "\r\n");
 	}
 
 	/**
 	 * Returns the response message
-	 * 
+	 *
 	 * @return The response message
 	 */
 	public String getResponseMessage() {
@@ -193,7 +190,9 @@ public class HttpClientMethod extends HttpMethod {
 
 	@Override
 	public String toString() {
-		if (this.iIncomming) { return this.iHttpHeader + " " + this.iStatus + " " + this.iResponse; }
+		if (this.iIncomming) {
+			return this.iHttpHeader + " " + this.iStatus + " " + this.iResponse;
+		}
 		return this.iMethod + " " + this.iRequest + " HTTP/" + this.iMajor + "." + this.iMinor;
 	}
 }

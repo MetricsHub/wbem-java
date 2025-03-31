@@ -41,9 +41,7 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
@@ -54,16 +52,15 @@ import org.xml.sax.SAXException;
 /**
  * Class EnumerateResponsePULL is responsible for all helper functions of PULL
  * parser related with EnumerateResponse.
- * 
+ *
  * @param <T>
  */
 public class EnumerateResponsePULL<T> {
-
 	private EnumerateResponse<T> enumResponse;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            Input stream to be parsed
 	 * @param pPath
@@ -75,8 +72,7 @@ public class EnumerateResponsePULL<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public EnumerateResponsePULL(InputStreamReader pStream, CIMObjectPath pPath)
-			throws IOException, SAXException, ParserConfigurationException, WBEMException {
-
+		throws IOException, SAXException, ParserConfigurationException, WBEMException {
 		String enumContext = null;
 		Boolean endOfSequence = null;
 		ArrayList<T> list = new ArrayList<T>();
@@ -85,51 +81,55 @@ public class EnumerateResponsePULL<T> {
 
 		// iterate through 'iter' for getCIMArguments to populate
 		try {
-			while (iter.hasNext())
-				list.add((T) iter.next());
+			while (iter.hasNext()) list.add((T) iter.next());
 		} catch (RuntimeException e) {
 			iter.close();
-			if (e.getCause() != null && e.getCause() instanceof WBEMException) { throw (WBEMException) e
-					.getCause(); }
+			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
+				throw (WBEMException) e.getCause();
+			}
 			throw e;
 		}
 
 		// pOutArgA can never be null
 		CIMArgument<?>[] pOutArgA = ((CloseableIteratorPULL) iter).getCIMArguments();
-		if (pOutArgA == null) { throw new IllegalArgumentException(
-				"Output auguments not found during CIM-XML PULL parser"); }
+		if (pOutArgA == null) {
+			throw new IllegalArgumentException("Output auguments not found during CIM-XML PULL parser");
+		}
 
 		for (int i = 0; i < pOutArgA.length; i++) {
-			if (pOutArgA[i].getName().equals("EnumerationContext")) enumContext = (String) pOutArgA[i]
-					.getValue();
-			else if (pOutArgA[i].getName().equals("EndOfSequence")) endOfSequence = (Boolean) pOutArgA[i]
-					.getValue();
-			else throw new IllegalArgumentException(
-					"Invalid argument : only EnumerationContext and EndOfSequence are allowed");
+			if (pOutArgA[i].getName().equals("EnumerationContext")) enumContext = (String) pOutArgA[i].getValue(); else if (
+				pOutArgA[i].getName().equals("EndOfSequence")
+			) endOfSequence = (Boolean) pOutArgA[i].getValue(); else throw new IllegalArgumentException(
+				"Invalid argument : only EnumerationContext and EndOfSequence are allowed"
+			);
 		}
 		// EndOfSequence can never be null
-		if (endOfSequence == null) { throw new IllegalArgumentException(
-				"Invalid argument : EndOfSequence can never be null"); }
+		if (endOfSequence == null) {
+			throw new IllegalArgumentException("Invalid argument : EndOfSequence can never be null");
+		}
 
 		// EnumerationContext can't be null if there is more data available
-		if ((endOfSequence.booleanValue() == false) && (enumContext == null)) { throw new IllegalArgumentException(
-				"Invalid argument : EnumerationContext cannot be null if there is more data available"); }
+		if ((endOfSequence.booleanValue() == false) && (enumContext == null)) {
+			throw new IllegalArgumentException(
+				"Invalid argument : EnumerationContext cannot be null if there is more data available"
+			);
+		}
 
 		// create new closeableIterator as we cannot reuse 'iter'
-		CloseableIterator<T> iterPull = (CloseableIterator<T>) new CloseableIteratorGeneric<T>(list
-				.iterator(), iter.getWBEMException());
+		CloseableIterator<T> iterPull = (CloseableIterator<T>) new CloseableIteratorGeneric<T>(
+			list.iterator(),
+			iter.getWBEMException()
+		);
 
-		this.enumResponse = new EnumerateResponse<T>(enumContext, iterPull, endOfSequence
-				.booleanValue());
+		this.enumResponse = new EnumerateResponse<T>(enumContext, iterPull, endOfSequence.booleanValue());
 	}
 
 	/**
 	 * Returns enumResponse
-	 * 
+	 *
 	 * @return The value of enumResponse.
 	 */
 	public EnumerateResponse<T> getEnumResponse() {
 		return this.enumResponse;
 	}
-
 }

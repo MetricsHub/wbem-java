@@ -46,9 +46,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.LocalPathBuilder;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * ELEMENT LOCALINSTANCEPATH (LOCALNAMESPACEPATH, INSTANCENAME)
  */
 public class LocalInstancePathNode extends AbstractObjectPathNode {
-
 	// LOCALNAMESPACEPATH
 	private boolean iHasLocalNameSpacePath;
 
@@ -96,19 +95,20 @@ public class LocalInstancePathNode extends AbstractObjectPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == LOCALNAMESPACEPATH) {
-			if (this.iHasLocalNameSpacePath) throw new SAXException(getNodeName()
-					+ " node can have only one LOCALNAMESPACEPATH child node!");
+			if (this.iHasLocalNameSpacePath) throw new SAXException(
+				getNodeName() + " node can have only one LOCALNAMESPACEPATH child node!"
+			);
 		} else if (pNodeNameEnum == INSTANCENAME) {
-			if (this.iHasInstanceName) throw new SAXException(getNodeName()
-					+ " node can have only one INSTANCENAME child node!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasInstanceName) throw new SAXException(
+				getNodeName() + " node can have only one INSTANCENAME child node!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -126,17 +126,15 @@ public class LocalInstancePathNode extends AbstractObjectPathNode {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasLocalNameSpacePath) throw new SAXException(getNodeName()
-				+ " node must have a LOCALNAMESPACEPATH child node!");
-		if (!this.iHasInstanceName) throw new SAXException(getNodeName()
-				+ " node must have a INSTANCENAME child node!");
+		if (!this.iHasLocalNameSpacePath) throw new SAXException(
+			getNodeName() + " node must have a LOCALNAMESPACEPATH child node!"
+		);
+		if (!this.iHasInstanceName) throw new SAXException(getNodeName() + " node must have a INSTANCENAME child node!");
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
 		// CIMObjectPath(String objectName, String namespace, CIMProperty[]
 		// keys)
-		return LocalPathBuilder.build(this.iLocalPath, this.iClassNameStr, this.iNameSpaceStr,
-				this.iKeys);
+		return LocalPathBuilder.build(this.iLocalPath, this.iClassNameStr, this.iNameSpaceStr, this.iKeys);
 	}
-
 }

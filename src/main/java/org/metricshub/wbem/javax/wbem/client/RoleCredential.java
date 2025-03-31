@@ -55,14 +55,13 @@ package org.metricshub.wbem.javax.wbem.client;
  * that requires a password.
  */
 public class RoleCredential extends Object {
-
 	private String iCredential;
 
 	private String iHostname;
 
 	/**
 	 * Creates a role credential using the supplied credential.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The role credential in clear text.
 	 * @throws IllegalArgumentException
@@ -75,7 +74,7 @@ public class RoleCredential extends Object {
 
 	/**
 	 * Creates a role credential using the supplied credential.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The role credential in clear text.
 	 * @throws IllegalArgumentException
@@ -88,7 +87,7 @@ public class RoleCredential extends Object {
 
 	/**
 	 * Creates a role credential using the supplied credential and host name.
-	 * 
+	 *
 	 * @param pCredential
 	 *            The role credential in clear text.
 	 * @param pHostname
@@ -104,7 +103,7 @@ public class RoleCredential extends Object {
 
 	/**
 	 * Return the role credential in clear text.
-	 * 
+	 *
 	 * @return The role credential.
 	 */
 	public char[] getCredential() {
@@ -113,11 +112,10 @@ public class RoleCredential extends Object {
 
 	/**
 	 * Get the host name for which the password is used to authenticate.
-	 * 
+	 *
 	 * @return The host name.
 	 */
 	public String getHostName() {
 		return this.iHostname;
 	}
-
 }

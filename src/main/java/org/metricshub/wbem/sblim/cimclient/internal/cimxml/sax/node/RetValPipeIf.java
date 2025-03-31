@@ -43,19 +43,17 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  * RetValPipeIf is a FIFO interface which helps PULL parsing.
  */
 public interface RetValPipeIf {
-
 	/**
 	 * getReturnValueCount
-	 * 
+	 *
 	 * @return the currently available return values
 	 */
 	public abstract int getReturnValueCount();
 
 	/**
 	 * readReturnValue
-	 * 
+	 *
 	 * @return a return value Object from a FIFO
 	 */
 	public abstract Object readReturnValue();
-
 }

@@ -47,12 +47,11 @@ import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
  * Class AbstractSimpleRspNode is the superclass of SimpleExpRspNode and
  * SimpleRspNode classes.
  */
-public abstract class AbstractSimpleRspNode extends AbstractResponseNode implements ErrorIf,
-		RetValPipeIf {
+public abstract class AbstractSimpleRspNode extends AbstractResponseNode implements ErrorIf, RetValPipeIf {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractSimpleRspNode(String pNameEnum) {
@@ -63,9 +62,8 @@ public abstract class AbstractSimpleRspNode extends AbstractResponseNode impleme
 
 	/**
 	 * getCIMArguments
-	 * 
+	 *
 	 * @return CIMArgument[]
 	 */
 	public abstract CIMArgument<?>[] getCIMArguments();
-
 }

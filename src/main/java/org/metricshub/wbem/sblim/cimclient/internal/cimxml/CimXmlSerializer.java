@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -58,35 +57,33 @@ import org.w3c.dom.Node;
  * Class CimXmlSerializer implements a XML serializer for DOM documents that is
  * specialized for CIM-XML. It might not be used as a general purpose serializer
  * since it doesn't support any DOM or XML features not required by CIM-XML.
- * 
+ *
  */
 public class CimXmlSerializer {
 
 	/**
 	 * Class XmlWriter implements a writer on an output stream that escapes XML
 	 * values according to the CIM-XML requirements.
-	 * 
+	 *
 	 */
 	private static class XmlWriter {
-
 		private BufferedWriter iWriter;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pOut
 		 *            The output stream the serialized document is written to
 		 * @param pCharsetName
 		 *            The encoding the use for the output stream
 		 */
 		public XmlWriter(OutputStream pOut, String pCharsetName) {
-			this.iWriter = new BufferedWriter(new OutputStreamWriter(pOut, Charset.forName(
-					pCharsetName).newEncoder()));
+			this.iWriter = new BufferedWriter(new OutputStreamWriter(pOut, Charset.forName(pCharsetName).newEncoder()));
 		}
 
 		/**
 		 * Writes text to the stream
-		 * 
+		 *
 		 * @param pText
 		 *            The text
 		 * @throws IOException
@@ -97,7 +94,7 @@ public class CimXmlSerializer {
 
 		/**
 		 * Closes the stream
-		 * 
+		 *
 		 * @throws IOException
 		 */
 		public void close() throws IOException {
@@ -106,7 +103,7 @@ public class CimXmlSerializer {
 
 		/**
 		 * Flushes the buffer to the stream
-		 * 
+		 *
 		 * @throws IOException
 		 */
 		public void flush() throws IOException {
@@ -160,23 +157,25 @@ public class CimXmlSerializer {
 		 * </tr>
 		 * </tr>
 		 * </table>
-		 * 
+		 *
 		 * @param pText
 		 *            The text
 		 * @throws IOException
 		 */
 		public void writeValue(final String pText) throws IOException {
-			if (pText == null) { return; }
+			if (pText == null) {
+				return;
+			}
 			boolean escapeSpace = true;
 			final int oneBeforeLast = pText.length() - 2;
 			for (int i = 0; i < pText.length(); ++i) {
-
 				char currentChar = pText.charAt(i);
 				boolean isSpace = false;
 
 				if (isHighSurrogate(currentChar)) {
-					if (i > oneBeforeLast || !isLowSurrogate(pText.charAt(i + 1))) { throw new IOException(
-							"Illegal Unicode character"); }
+					if (i > oneBeforeLast || !isLowSurrogate(pText.charAt(i + 1))) {
+						throw new IOException("Illegal Unicode character");
+					}
 					this.iWriter.write(pText, i++, 2);
 				} else if (currentChar < ' ') {
 					writeAsHex(currentChar);
@@ -220,15 +219,12 @@ public class CimXmlSerializer {
 		}
 
 		private boolean isHighSurrogate(char pChar) {
-			return pChar >= WBEMConstants.UTF16_MIN_HIGH_SURROGATE
-					&& pChar <= WBEMConstants.UTF16_MAX_HIGH_SURROGATE;
+			return pChar >= WBEMConstants.UTF16_MIN_HIGH_SURROGATE && pChar <= WBEMConstants.UTF16_MAX_HIGH_SURROGATE;
 		}
 
 		private boolean isLowSurrogate(char pChar) {
-			return pChar >= WBEMConstants.UTF16_MIN_LOW_SURROGATE
-					&& pChar <= WBEMConstants.UTF16_MAX_LOW_SURROGATE;
+			return pChar >= WBEMConstants.UTF16_MIN_LOW_SURROGATE && pChar <= WBEMConstants.UTF16_MAX_LOW_SURROGATE;
 		}
-
 	}
 
 	private boolean iPretty;
@@ -252,7 +248,7 @@ public class CimXmlSerializer {
 	 * and then serializes the document node. If you want to suppress this
 	 * header just call {@link #serialize(OutputStream, Node, boolean)} on the
 	 * document node.
-	 * 
+	 *
 	 * @param pOS
 	 *            The output stream
 	 * @param pDoc
@@ -263,9 +259,7 @@ public class CimXmlSerializer {
 	 * @throws IOException
 	 *             Whenever something goes wrong
 	 */
-	public static void serialize(OutputStream pOS, Document pDoc, boolean pPretty)
-			throws IOException {
-
+	public static void serialize(OutputStream pOS, Document pDoc, boolean pPretty) throws IOException {
 		try {
 			XmlWriter writer = new XmlWriter(pOS, WBEMConstants.UTF8);
 			writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -280,7 +274,7 @@ public class CimXmlSerializer {
 
 	/**
 	 * Serializes a given DOM node as (CIM-)XML to a given output stream
-	 * 
+	 *
 	 * @param pOS
 	 *            The output stream
 	 * @param pNode
@@ -292,7 +286,6 @@ public class CimXmlSerializer {
 	 *             Whenever something goes wrong
 	 */
 	public static void serialize(OutputStream pOS, Node pNode, boolean pPretty) throws IOException {
-
 		try {
 			XmlWriter writer = new XmlWriter(pOS, WBEMConstants.UTF8);
 			new CimXmlSerializer(pPretty).serializeNode(writer, pNode);
@@ -369,7 +362,9 @@ public class CimXmlSerializer {
 						int end = value.indexOf(this.CDATA_END, idx);
 
 						// invalid CDATA
-						if (end == -1) { throw new IOException("CDATA section not closed: " + value); }
+						if (end == -1) {
+							throw new IOException("CDATA section not closed: " + value);
+						}
 
 						// write CDATA (not escaped)
 						pWriter.write(value.substring(idx, end + this.CDATA_END.length()));
@@ -380,7 +375,9 @@ public class CimXmlSerializer {
 	}
 
 	private String indent() {
-		if (!this.iPretty) { return ""; }
+		if (!this.iPretty) {
+			return "";
+		}
 		StringBuffer result = new StringBuffer();
 		result.append('\n');
 		for (int i = 0; i < this.iIndent; ++i) {

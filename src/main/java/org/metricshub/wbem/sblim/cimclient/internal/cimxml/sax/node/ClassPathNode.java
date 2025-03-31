@@ -55,7 +55,6 @@ import org.xml.sax.SAXException;
  * ELEMENT CLASSPATH (NAMESPACEPATH, CLASSNAME)
  */
 public class ClassPathNode extends AbstractObjectPathNode {
-
 	// child nodes:
 	private boolean iHasNameSpacePath, iHasClassName;
 
@@ -89,19 +88,21 @@ public class ClassPathNode extends AbstractObjectPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == NAMESPACEPATH) {
-			if (this.iHasNameSpacePath) throw new SAXException(
-					"CLASSPATH node already has a NAMESPACEPATH child node!");
+			if (this.iHasNameSpacePath) throw new SAXException("CLASSPATH node already has a NAMESPACEPATH child node!");
 		} else if (pNodeNameEnum == CLASSNAME) {
-			if (this.iHasClassName) throw new SAXException(
-					"CLASSPATH node already has a CLASSNAME child node!");
-		} else throw new SAXException("CLASSPATH node cannot have " + pNodeNameEnum
-				+ " child node!" + " It can have NAMESPACEPATH and CLASSNAME child nodes only!");
+			if (this.iHasClassName) throw new SAXException("CLASSPATH node already has a CLASSNAME child node!");
+		} else throw new SAXException(
+			"CLASSPATH node cannot have " +
+			pNodeNameEnum +
+			" child node!" +
+			" It can have NAMESPACEPATH and CLASSNAME child nodes only!"
+		);
 	}
 
 	@Override
@@ -119,10 +120,8 @@ public class ClassPathNode extends AbstractObjectPathNode {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasNameSpacePath) throw new SAXException(
-				"NAMESPACEPATH child node is mandatory for CLASSPATH node!");
-		if (!this.iHasClassName) throw new SAXException(
-				"CLASSNAME child node is mandatory for CLASSPATH node!");
+		if (!this.iHasNameSpacePath) throw new SAXException("NAMESPACEPATH child node is mandatory for CLASSPATH node!");
+		if (!this.iHasClassName) throw new SAXException("CLASSNAME child node is mandatory for CLASSPATH node!");
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
@@ -130,8 +129,13 @@ public class ClassPathNode extends AbstractObjectPathNode {
 		 * CIMObjectPath( String scheme, String host, String port, String
 		 * namespace, String objectName, CIMProperty[] keys )
 		 */
-		return new CIMObjectPath(this.iHostStr.getProtocol(), this.iHostStr.getHost(),
-				this.iHostStr.getPort(), this.iLocalNameSpacePathStr, this.iClassNameStr, null);
+		return new CIMObjectPath(
+			this.iHostStr.getProtocol(),
+			this.iHostStr.getHost(),
+			this.iHostStr.getPort(),
+			this.iLocalNameSpacePathStr,
+			this.iClassNameStr,
+			null
+		);
 	}
-
 }

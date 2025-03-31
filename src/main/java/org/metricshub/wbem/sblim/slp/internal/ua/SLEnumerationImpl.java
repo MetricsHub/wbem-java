@@ -52,22 +52,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationEnumeration;
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.DADescriptor;
 import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRequest;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * SLEnumerationImpl
- * 
+ *
  */
 public class SLEnumerationImpl implements ServiceLocationEnumeration {
-
 	private RequestMessage iReqMsg;
 
 	private ResultTable iResultTable;
@@ -82,7 +80,7 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pReqMsg
 	 * @param pDAList
 	 */
@@ -96,7 +94,7 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 	/**
 	 * This implementation can throw RuntimeExceptions. They can be ignored or
 	 * used for analysis.
-	 * 
+	 *
 	 * @see ServiceLocationEnumeration#next()
 	 */
 	public Object next() throws NoSuchElementException {
@@ -113,11 +111,11 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 	/**
 	 * @return next Object in Exception table
 	 * @throws NoSuchElementException
-	 * 
+	 *
 	 *             This in internal implementation to get list of all exceptions
 	 *             thrown/caught by parser This can throw RuntimeExceptions.
 	 *             They can be ignored or used for analysis.
-	 * 
+	 *
 	 *             use hasNextException to check whether there exists another
 	 *             element in Exception table
 	 */
@@ -127,7 +125,7 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 
 	/**
 	 * @return true if there exists another element in Exception table
-	 * 
+	 *
 	 */
 	public boolean hasMoreExceptions() {
 		return this.iResultTable.hasMoreExceptions();
@@ -148,8 +146,7 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 				try {
 					daList = getDAList(this.iReqMsg.getScopeList());
 				} catch (Exception e) {
-					throw new RuntimeException(new ServiceLocationException(
-							ServiceLocationException.INTERNAL_ERROR, e));
+					throw new RuntimeException(new ServiceLocationException(ServiceLocationException.INTERNAL_ERROR, e));
 				}
 			}
 			try {
@@ -172,7 +169,7 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 
 	/**
 	 * For diagnostic only!
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getPort() {
@@ -190,16 +187,14 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 	 * @return List of DA address InetAddresses
 	 * @throws UnknownHostException
 	 */
-	private List<InetAddress> getDAList(List<String> pScopes) throws UnknownHostException,
-			IOException {
+	private List<InetAddress> getDAList(List<String> pScopes) throws UnknownHostException, IOException {
 		if (this.iDAList != null && this.iDAList.size() > 0) return this.iDAList;
 
 		// return cached DA list from previous discovery
 		List<String> scopes = DACache.getDiscoverableScopeList(pScopes);
 		if (scopes != null) {
 			ResultTable resultTable = new ResultTable();
-			ServiceRequest srvReq = new ServiceRequest(null, SLPDefaults.DA_SERVICE_TYPE, scopes,
-					null, null);
+			ServiceRequest srvReq = new ServiceRequest(null, SLPDefaults.DA_SERVICE_TYPE, scopes, null, null);
 			// multicast DA discovery
 			DatagramRequester requester = new DatagramRequester(srvReq, resultTable);
 			requester.start(false);
@@ -251,5 +246,4 @@ public class SLEnumerationImpl implements ServiceLocationEnumeration {
 			throw new ServiceLocationException(ServiceLocationException.NETWORK_ERROR, e);
 		}
 	}
-
 }

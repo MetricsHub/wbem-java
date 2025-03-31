@@ -61,7 +61,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ReturnValueNode extends Node implements TypedIf, ValueIf {
-
 	private EmbObjHandler iEmbObjHandler;
 
 	private CIMDataType iType;
@@ -82,8 +81,7 @@ public class ReturnValueNode extends Node implements TypedIf, ValueIf {
 	public void init(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iType = null;
 		this.iValue = null;
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				pSession, null, true);
+		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, pSession, null, true);
 		this.iHasValue = false;
 	}
 
@@ -92,16 +90,14 @@ public class ReturnValueNode extends Node implements TypedIf, ValueIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == VALUE || pNodeNameEnum == VALUE_REFERENCE) {
-			if (this.iHasValue) throw new SAXException(getNodeName()
-					+ " node can have only one child node!");
-		} else throw new SAXException(pNodeNameEnum + " cannot be the child node of "
-				+ getNodeName() + " node!");
+			if (this.iHasValue) throw new SAXException(getNodeName() + " node can have only one child node!");
+		} else throw new SAXException(pNodeNameEnum + " cannot be the child node of " + getNodeName() + " node!");
 	}
 
 	@Override
@@ -109,8 +105,12 @@ public class ReturnValueNode extends Node implements TypedIf, ValueIf {
 		AbstractValueNode valNode = (AbstractValueNode) pChild;
 		if (valNode instanceof ValueReferenceNode) {
 			if (this.iType != null && this.iType.getType() != CIMDataType.REFERENCE) throw new SAXException(
-					getNodeName() + " node's child node is VALUE.REFERENCE "
-							+ "but its type based on PARAMTYPE attribute is " + this.iType + "!");
+				getNodeName() +
+				" node's child node is VALUE.REFERENCE " +
+				"but its type based on PARAMTYPE attribute is " +
+				this.iType +
+				"!"
+			);
 			ValueReferenceNode valRefNode = (ValueReferenceNode) valNode;
 			this.iValue = valRefNode.getCIMObjectPath();
 			this.iType = valRefNode.getType();
@@ -138,5 +138,4 @@ public class ReturnValueNode extends Node implements TypedIf, ValueIf {
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

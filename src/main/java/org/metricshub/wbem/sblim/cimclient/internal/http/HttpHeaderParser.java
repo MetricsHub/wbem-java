@@ -50,17 +50,16 @@ import java.util.Vector;
 
 /**
  * Class HttpHeaderParser parses http headers
- * 
+ *
  */
 public class HttpHeaderParser {
-
 	String iRaw;
 
 	Vector<String[]> iNameValuePair;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 *            The header block
 	 */
@@ -79,8 +78,7 @@ public class HttpHeaderParser {
 			do {
 				char c = charArray[currentPos];
 				if (c == '=') {
-					nvp[0] = (new String(charArray, startPosValue, currentPos - startPosValue))
-							.toLowerCase();
+					nvp[0] = (new String(charArray, startPosValue, currentPos - startPosValue)).toLowerCase();
 					isName = false;
 					startPosValue = ++currentPos;
 				} else if (c == '"') {
@@ -89,8 +87,10 @@ public class HttpHeaderParser {
 						this.iNameValuePair.add(nvp);
 						nvp = new String[2];
 						withinQuote = false;
-						while (++currentPos < len
-								&& (charArray[currentPos] == ' ' || charArray[currentPos] == ',' || charArray[currentPos] == ';')) {
+						while (
+							++currentPos < len &&
+							(charArray[currentPos] == ' ' || charArray[currentPos] == ',' || charArray[currentPos] == ';')
+						) {
 							// ignore spaces and preceding comma
 						}
 						isName = true;
@@ -104,19 +104,19 @@ public class HttpHeaderParser {
 						currentPos++;
 					} else {
 						if (isName) {
-							nvp[0] = (new String(charArray, startPosValue, currentPos
-									- startPosValue)).toLowerCase();
+							nvp[0] = (new String(charArray, startPosValue, currentPos - startPosValue)).toLowerCase();
 							this.iNameValuePair.add(nvp);
 							nvp = new String[2];
 						} else {
-							nvp[1] = new String(charArray, startPosValue, currentPos
-									- startPosValue);
+							nvp[1] = new String(charArray, startPosValue, currentPos - startPosValue);
 							this.iNameValuePair.add(nvp);
 							nvp = new String[2];
 						}
 
-						while (++currentPos < len
-								&& (charArray[currentPos] == ' ' || charArray[currentPos] == ',' || charArray[currentPos] == ';')) {
+						while (
+							++currentPos < len &&
+							(charArray[currentPos] == ' ' || charArray[currentPos] == ',' || charArray[currentPos] == ';')
+						) {
 							// ignore spaces and preceding comma
 						}
 						isName = true;
@@ -134,14 +134,12 @@ public class HttpHeaderParser {
 						this.iNameValuePair.add(nvp);
 						nvp = new String[2];
 					} else {
-						nvp[1] = new String(charArray, startPosValue,
-								(currentPos - startPosValue) + 1);
+						nvp[1] = new String(charArray, startPosValue, (currentPos - startPosValue) + 1);
 						this.iNameValuePair.add(nvp);
 						nvp = new String[2];
 					}
 				} else {
-					nvp[0] = (new String(charArray, startPosValue, (currentPos - startPosValue) + 1))
-							.toLowerCase();
+					nvp[0] = (new String(charArray, startPosValue, (currentPos - startPosValue) + 1)).toLowerCase();
 				}
 				this.iNameValuePair.add(nvp);
 			} else if (currentPos == startPosValue) {
@@ -165,7 +163,7 @@ public class HttpHeaderParser {
 
 	/**
 	 * Returns the header field at a given index
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index
 	 * @return The field name
@@ -177,7 +175,7 @@ public class HttpHeaderParser {
 
 	/**
 	 * Returns the value of a header field at a given index
-	 * 
+	 *
 	 * @param pIndex
 	 * @return The value
 	 */
@@ -188,7 +186,7 @@ public class HttpHeaderParser {
 
 	/**
 	 * Returns the value of a header field for a given name
-	 * 
+	 *
 	 * @param pName
 	 *            The name
 	 * @return The value
@@ -200,7 +198,7 @@ public class HttpHeaderParser {
 	/**
 	 * Returns the value of a header field for a given name specifying a
 	 * default.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the header field
 	 * @param pDefault
@@ -212,8 +210,7 @@ public class HttpHeaderParser {
 		pName = pName.toLowerCase();
 		for (int i = 0; i < this.iNameValuePair.size(); i++) {
 			if (this.iNameValuePair.elementAt(i)[0] == null) return pDefault;
-			if (pName.equals(this.iNameValuePair.elementAt(i)[0])) return this.iNameValuePair
-					.elementAt(i)[1];
+			if (pName.equals(this.iNameValuePair.elementAt(i)[0])) return this.iNameValuePair.elementAt(i)[1];
 		}
 		return pDefault;
 	}
@@ -221,7 +218,7 @@ public class HttpHeaderParser {
 	/**
 	 * Returns the value of a numeric header field for a given name specifying a
 	 * default.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the header field
 	 * @param pDefault

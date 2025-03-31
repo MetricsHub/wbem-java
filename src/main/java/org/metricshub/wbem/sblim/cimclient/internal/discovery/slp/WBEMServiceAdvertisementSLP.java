@@ -46,14 +46,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.security.auth.Subject;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.client.WBEMClient;
 import org.metricshub.wbem.javax.wbem.client.WBEMClientFactory;
@@ -64,12 +62,11 @@ import org.metricshub.wbem.sblim.slp.ServiceURL;
 /**
  * Class WBEMServiceAdvertisementSLP is the SLP specific implementation if the
  * WBEMServiceAdvertisement interface.
- * 
- * 
+ *
+ *
  * @since 2.0.2
  */
 public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
-
 	private static final Pattern ATTR_PATTERN = Pattern.compile("[(]?(.+)=([^)]+)[)]?");
 
 	private String iDA;
@@ -82,7 +79,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pDA
 	 *            The Directory Agent from which this advertisement was received
 	 * @param pUrl
@@ -93,12 +90,10 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 	 *            <code>(key=value)</code>.
 	 */
 	public WBEMServiceAdvertisementSLP(String pDA, ServiceURL pUrl, List<String> pAttributes) {
-		if (pDA == null || pUrl == null) throw new IllegalArgumentException(
-				"Directory and URL must not be null");
+		if (pDA == null || pUrl == null) throw new IllegalArgumentException("Directory and URL must not be null");
 		this.iDA = pDA;
 		this.iServiceUrl = pUrl;
 		parseAttributes(pAttributes);
-
 	}
 
 	private void parseAttributes(List<String> pAttributes) {
@@ -112,15 +107,14 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 				String value = matcher.group(2).trim();
 				this.iAttributeMap.put(key, value);
 			} else {
-				LogAndTraceBroker.getBroker().trace(Level.FINE,
-						"SLP discovery returned invalid attribute: " + attribute);
+				LogAndTraceBroker.getBroker().trace(Level.FINE, "SLP discovery returned invalid attribute: " + attribute);
 			}
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.discovery.WbemService#getAttribute(java.lang.String)
 	 */
@@ -130,7 +124,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.cimclient.discovery.WbemService#getAttributes()
 	 */
 	public Set<Entry<String, String>> getAttributes() {
@@ -139,7 +133,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.cimclient.discovery.WbemService#getConcreteServiceType()
 	 */
 	public String getConcreteServiceType() {
@@ -148,17 +142,18 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.cimclient.discovery.WbemService#getServiceUrl()
 	 */
 	public String getServiceUrl() {
-		return getConcreteServiceType() + "://" + this.iServiceUrl.getHost() + ":"
-				+ String.valueOf(this.iServiceUrl.getPort());
+		return (
+			getConcreteServiceType() + "://" + this.iServiceUrl.getHost() + ":" + String.valueOf(this.iServiceUrl.getPort())
+		);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.discovery.WBEMServiceAdvertisement#createClient(javax
 	 * .security.auth.Subject, java.util.Locale[])
@@ -169,9 +164,14 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 			communication = getAttribute(OTHER_COMM_MECHN_DESC);
 		}
 		WBEMClient client = WBEMClientFactory.getClient(communication);
-		CIMObjectPath path = new CIMObjectPath(this.iServiceUrl.getServiceType()
-				.getConcreteTypeName(), this.iServiceUrl.getHost(), String.valueOf(this.iServiceUrl
-				.getPort()), null, null, null);
+		CIMObjectPath path = new CIMObjectPath(
+			this.iServiceUrl.getServiceType().getConcreteTypeName(),
+			this.iServiceUrl.getHost(),
+			String.valueOf(this.iServiceUrl.getPort()),
+			null,
+			null,
+			null
+		);
 		client.initialize(path, pSubject, pLocales);
 		return client;
 	}
@@ -182,7 +182,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -237,7 +237,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.discovery.WBEMServiceAdvertisement#getServiceId()
 	 */
@@ -247,7 +247,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.cimclient.discovery.WBEMServiceAdvertisement#isExpired()
 	 */
 	public boolean isExpired() {
@@ -256,7 +256,7 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.discovery.WBEMServiceAdvertisement#setExpired(boolean
 	 * )
@@ -267,23 +267,24 @@ public class WBEMServiceAdvertisementSLP implements WBEMServiceAdvertisement {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object pObj) {
-		if (pObj == this) { return true; }
+		if (pObj == this) {
+			return true;
+		}
 		if (pObj != null && pObj instanceof WBEMServiceAdvertisement) {
 			WBEMServiceAdvertisement that = (WBEMServiceAdvertisement) pObj;
-			return getServiceUrl().equals(that.getServiceUrl())
-					&& getDirectory().equals(that.getDirectory());
+			return getServiceUrl().equals(that.getServiceUrl()) && getDirectory().equals(that.getDirectory());
 		}
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

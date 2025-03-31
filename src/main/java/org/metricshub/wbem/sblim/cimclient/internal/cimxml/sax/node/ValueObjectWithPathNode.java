@@ -46,9 +46,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
 
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
-import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * ELEMENT VALUE.OBJECTWITHPATH ((CLASSPATH, CLASS) | (INSTANCEPATH, INSTANCE))
  */
 public class ValueObjectWithPathNode extends AbstractScalarValueNode {
-
 	// ObjectPath element
 	private String iPathNodeNameEnum;
 
@@ -91,7 +90,7 @@ public class ValueObjectWithPathNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
@@ -108,9 +107,7 @@ public class ValueObjectWithPathNode extends AbstractScalarValueNode {
 		} else if (pNodeNameEnum == INSTANCE) {
 			if (this.iObjNodeNameEnum != null) duplicatedNode(this.iObjNodeNameEnum, INSTANCE);
 			if (this.iPathNodeNameEnum == CLASSPATH) illegalChildNodePair(CLASSPATH, INSTANCE);
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child!");
-
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child!");
 	}
 
 	@Override
@@ -121,8 +118,9 @@ public class ValueObjectWithPathNode extends AbstractScalarValueNode {
 		} else { // ClassNode or InstanceNode, iObjPath must be available
 			// here
 			this.iObjNodeNameEnum = pChild.getNodeName();
-			if (this.iPathNodeNameEnum == null) throw new SAXException(getNodeName()
-					+ " first child should contain an object path!");
+			if (this.iPathNodeNameEnum == null) throw new SAXException(
+				getNodeName() + " first child should contain an object path!"
+			);
 			if (pChild instanceof ClassNode) {
 				this.iCIMObj = ((ClassNode) pChild).getCIMClass(this.iObjPath);
 			} else {
@@ -133,10 +131,12 @@ public class ValueObjectWithPathNode extends AbstractScalarValueNode {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iPathNodeNameEnum == null) throw new SAXException(getNodeName()
-				+ " node must have a CLASSPATH or a INSTANCEPATH child node!");
-		if (this.iObjNodeNameEnum == null) throw new SAXException(getNodeName()
-				+ " node must have a CLASS or INSTANCE child node!");
+		if (this.iPathNodeNameEnum == null) throw new SAXException(
+			getNodeName() + " node must have a CLASSPATH or a INSTANCEPATH child node!"
+		);
+		if (this.iObjNodeNameEnum == null) throw new SAXException(
+			getNodeName() + " node must have a CLASS or INSTANCE child node!"
+		);
 	}
 
 	/**
@@ -151,5 +151,4 @@ public class ValueObjectWithPathNode extends AbstractScalarValueNode {
 		if (this.iCIMObj instanceof CIMClass) return CIMDataType.CLASS_T;
 		return CIMDataType.OBJECT_T;
 	}
-
 }

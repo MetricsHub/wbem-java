@@ -48,15 +48,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem.indications;
  */
 
 import java.net.InetAddress;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 
 /**
  * Class CIMEvent is required for indication handling.
- * 
+ *
  */
 public class CIMEvent {
-
 	protected CIMInstance iIndication;
 
 	protected String iID;
@@ -65,7 +63,7 @@ public class CIMEvent {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pIndication
 	 */
 	public CIMEvent(CIMInstance pIndication) {
@@ -74,7 +72,7 @@ public class CIMEvent {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pIndication
 	 * @param id
 	 */
@@ -86,7 +84,7 @@ public class CIMEvent {
 	/**
 	 * Constructor that takes the CIMInstance of the indication, the id as well
 	 * as the InetAddress of the remote machine.
-	 * 
+	 *
 	 * @param pIndication
 	 *            The indication instance
 	 * @param pId
@@ -104,7 +102,7 @@ public class CIMEvent {
 	 * This method returns the InetAddress of the machine that hosts the CIM
 	 * Agent that sent the indication. Be aware the remote machine could have
 	 * multiple network adapters - thus the result can be ambiguous.
-	 * 
+	 *
 	 * @return The InetAddress of the remote machine
 	 */
 	public InetAddress getInetAddress() {
@@ -113,7 +111,7 @@ public class CIMEvent {
 
 	/**
 	 * getIndication
-	 * 
+	 *
 	 * @return CIMInstance
 	 */
 	public CIMInstance getIndication() {
@@ -122,7 +120,7 @@ public class CIMEvent {
 
 	/**
 	 * getID
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getID() {

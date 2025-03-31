@@ -48,21 +48,20 @@ import java.util.Vector;
 
 /**
  * Class Challenge holds a http authentication challenge
- * 
+ *
  */
 public class Challenge {
-
 	private String iScheme;
 
 	private HttpHeader iParams;
 
 	private Challenge() {
-	// hidden ctor
+		// hidden ctor
 	}
 
 	/**
 	 * Returns the parameters
-	 * 
+	 *
 	 * @return The parameters
 	 */
 	public HttpHeader getParams() {
@@ -71,7 +70,7 @@ public class Challenge {
 
 	/**
 	 * Returns the scheme
-	 * 
+	 *
 	 * @return The scheme
 	 */
 	public String getScheme() {
@@ -80,7 +79,7 @@ public class Challenge {
 
 	/**
 	 * Returns the realm
-	 * 
+	 *
 	 * @return The realm
 	 */
 	public String getRealm() {
@@ -90,13 +89,13 @@ public class Challenge {
 	/**
 	 * Parses the challenge as received from the host. RFC 2617 defines the
 	 * following syntax for a challenge:
-	 * 
+	 *
 	 * <pre>
-	 * challenge = auth-scheme 1*SP 1#auth-param 
-	 * auth-scheme = token 
+	 * challenge = auth-scheme 1*SP 1#auth-param
+	 * auth-scheme = token
 	 * auth-param = token &quot;=&quot; ( token | quoted-string )
 	 * </pre>
-	 * 
+	 *
 	 * @param pLine
 	 *            The challenge string
 	 * @return The parsed challenge
@@ -104,8 +103,7 @@ public class Challenge {
 	 *             If the challenge string is ill-formed
 	 */
 	public static Challenge[] parseChallenge(String pLine) throws HttpParseException {
-		if (pLine == null || pLine.length() == 0) throw new IllegalArgumentException(
-				"Invalid challenge, empty");
+		if (pLine == null || pLine.length() == 0) throw new IllegalArgumentException("Invalid challenge, empty");
 		pLine = pLine.trim();
 		if (pLine.length() == 0) throw new IllegalArgumentException("Invalid challenge, empty");
 
@@ -120,8 +118,7 @@ public class Challenge {
 				tokensBetweenCommas.add(removeWhitespace(pLine.substring(start, end)));
 				start = end + 1;
 			}
-			if (start < pLine.length()) tokensBetweenCommas.add(removeWhitespace(pLine
-					.substring(start)));
+			if (start < pLine.length()) tokensBetweenCommas.add(removeWhitespace(pLine.substring(start)));
 
 			// Break up tokens into auth-scheme and auth-param
 			Vector<String> tokens = new Vector<String>();
@@ -154,8 +151,7 @@ public class Challenge {
 							tokens.add(token.substring(start));
 						}
 					} else {
-						throw new HttpParseException("Invalid challenge, too many tokens in "
-								+ token);
+						throw new HttpParseException("Invalid challenge, too many tokens in " + token);
 					}
 				}
 			}
@@ -169,17 +165,14 @@ public class Challenge {
 
 				int equalSign = indexOfOutsideQuotedString(token, '=', 0);
 				if (equalSign == 0) {
-					throw new HttpParseException(
-							"Invalid challenge, no token before equal sign in " + token);
+					throw new HttpParseException("Invalid challenge, no token before equal sign in " + token);
 				} else if (equalSign > 0) {
 					// param
-					if (challenge.iScheme == null) throw new HttpParseException(
-							"Invalid challenge, param without scheme");
+					if (challenge.iScheme == null) throw new HttpParseException("Invalid challenge, param without scheme");
 					String name = token.substring(0, equalSign);
 					String value = token.substring(equalSign + 1);
 					if (value.length() == 0) {
-						throw new HttpParseException(
-								"Invalid challenge, no token after equal sign in " + token);
+						throw new HttpParseException("Invalid challenge, no token after equal sign in " + token);
 					} else if (value.startsWith("\"") && value.endsWith("\"") && value.length() > 1) {
 						challenge.iParams.addField(name, value.substring(1, value.length() - 1));
 					} else {
@@ -208,7 +201,6 @@ public class Challenge {
 		}
 
 		return challenges.toArray(new Challenge[challenges.size()]);
-
 	}
 
 	/*
@@ -223,20 +215,19 @@ public class Challenge {
 		for (int inIdx = 0; inIdx < inBuf.length; inIdx++) {
 			if (inQuotes || !Character.isSpaceChar(inBuf[inIdx])) {
 				if (inBuf[inIdx] == '=' && outStr.length() == 0) throw new HttpParseException(
-						"Invalid challenge, no token before equal sign in " + str);
+					"Invalid challenge, no token before equal sign in " + str
+				);
 
 				outStr.append(inBuf[inIdx]);
 			} else {
 				// Whitespace not within quoted string
 				int i = skipSpaces(inBuf, inIdx + 1);
-				if (i >= inBuf.length) throw new HttpParseException(
-						"Invalid challenge, no token after space in " + str);
+				if (i >= inBuf.length) throw new HttpParseException("Invalid challenge, no token after space in " + str);
 
 				if (inBuf[i] == '=') {
 					// auth-param, remove all whitespace up to next token
 					i = skipSpaces(inBuf, i + 1);
-					if (i >= inBuf.length) throw new HttpParseException(
-							"Invalid challenge, no token after equal sign in " + str);
+					if (i >= inBuf.length) throw new HttpParseException("Invalid challenge, no token after equal sign in " + str);
 					outStr.append('=');
 				} else {
 					// another token, combine all whitespace up to next token
@@ -248,19 +239,16 @@ public class Challenge {
 			}
 			if (inBuf[inIdx] == '\"') inQuotes = !inQuotes;
 		}
-		if (inQuotes) throw new HttpParseException(
-				"Invalid challenge, quoted string not terminated in " + str);
+		if (inQuotes) throw new HttpParseException("Invalid challenge, quoted string not terminated in " + str);
 		return outStr.toString();
 	}
 
 	private static int skipSpaces(char[] buf, int pos) {
-		while (pos < buf.length && Character.isSpaceChar(buf[pos]))
-			pos++;
+		while (pos < buf.length && Character.isSpaceChar(buf[pos])) pos++;
 		return pos;
 	}
 
-	private static int indexOfOutsideQuotedString(String str, int ch, int pos)
-			throws HttpParseException {
+	private static int indexOfOutsideQuotedString(String str, int ch, int pos) throws HttpParseException {
 		int len = str.length();
 		boolean inQuotes = false;
 
@@ -272,9 +260,7 @@ public class Challenge {
 			}
 			pos++;
 		}
-		if (inQuotes) throw new HttpParseException(
-				"Invalid callenge, quoted string not terminated in " + str);
+		if (inQuotes) throw new HttpParseException("Invalid callenge, quoted string not terminated in " + str);
 		return -1;
 	}
-
 }

@@ -50,15 +50,14 @@ import org.metricshub.wbem.javax.cim.CIMQualifierType;
 
 /**
  * CIMSetQualifierTypeOp
- * 
+ *
  */
 public class CIMSetQualifierTypeOp extends CIMOperation {
-
 	protected CIMQualifierType<?> iQualifierType;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param qualifierType
 	 */
@@ -70,11 +69,10 @@ public class CIMSetQualifierTypeOp extends CIMOperation {
 
 	/**
 	 * Returns qualifierType
-	 * 
+	 *
 	 * @return The value of qualifierType.
 	 */
 	public CIMQualifierType<?> getQualifierType() {
 		return this.iQualifierType;
 	}
-
 }

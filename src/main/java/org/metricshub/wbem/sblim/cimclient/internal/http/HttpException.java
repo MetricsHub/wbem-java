@@ -47,10 +47,9 @@ import java.io.IOException;
 
 /**
  * Class HttpException represents HTTP related problems
- * 
+ *
  */
 public class HttpException extends IOException {
-
 	private static final long serialVersionUID = 934925248736106630L;
 
 	int iStatus;
@@ -64,7 +63,7 @@ public class HttpException extends IOException {
 
 	/**
 	 * Ctor. Equivalent to <code>HttpException(-1, reason, null)</code>
-	 * 
+	 *
 	 * @param reason
 	 *            The reason
 	 */
@@ -74,7 +73,7 @@ public class HttpException extends IOException {
 
 	/**
 	 * Ctor. Equivalent to <code>HttpException(-1, reason, null)</code>
-	 * 
+	 *
 	 * @param status
 	 *            The status
 	 * @param reason
@@ -86,7 +85,7 @@ public class HttpException extends IOException {
 
 	/**
 	 * Ctor. Equivalent to <code>HttpException(-1, reason, null)</code>
-	 * 
+	 *
 	 * @param status
 	 *            The status
 	 * @param reason
@@ -101,7 +100,7 @@ public class HttpException extends IOException {
 
 	/**
 	 * Returns the status
-	 * 
+	 *
 	 * @return The status
 	 */
 	public int getStatus() {

@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
  * ELEMENT HOST (#PCDATA)
  */
 public class HostNode extends Node {
-
 	private String iHost;
 
 	/**
@@ -89,23 +88,21 @@ public class HostNode extends Node {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child node
+		// no child node
 
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iHost == null) throw new SAXException(
-				"HOST node must contain the host name as #PCDATA!");
+		if (this.iHost == null) throw new SAXException("HOST node must contain the host name as #PCDATA!");
 	}
 
 	/**
 	 * getHostStr
-	 * 
+	 *
 	 * @return String which may contain the protocol, host and port
 	 */
 	public String getHostStr() {
 		return this.iHost;
 	}
-
 }

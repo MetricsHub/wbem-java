@@ -47,13 +47,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem.operations;
 
 /**
  * CIMEnumNameSpaceOp
- * 
+ *
  */
 public class CIMEnumNameSpaceOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNamespace
 	 */
 	public CIMEnumNameSpaceOp(String pNamespace) {

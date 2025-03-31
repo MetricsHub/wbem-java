@@ -54,7 +54,6 @@ import java.io.Serializable;
  * rules specify how qualifiers are transmitted from classes to derived classes.
  */
 public class CIMFlavor extends Object implements Serializable {
-
 	private static final long serialVersionUID = -4177389103635687939l;
 
 	/**
@@ -77,11 +76,10 @@ public class CIMFlavor extends Object implements Serializable {
 
 	/**
 	 * Returns an array of possible flavors.
-	 * 
+	 *
 	 * @return All possible flavors.
 	 */
 	public static int[] getFlavors() {
 		return flavors;
 	}
-
 }

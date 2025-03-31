@@ -48,17 +48,14 @@ import java.util.logging.Level;
 /**
  * Class MessageLoader encapsulates the access to the resource file containing
  * log messages.
- * 
+ *
  */
 public final class MessageLoader {
-
 	private static final String BUNDLE_NAME = "org.sblim.cimclient.internal.logging.messages"; //$NON-NLS-1$
 
-	private static final ResourceBundle RESOURCE_BUNDLE_LOCAL
-	/* = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault()) */;
+	private static final ResourceBundle RESOURCE_BUNDLE_LOCAL/* = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault()) */;
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME,
-			Locale.ENGLISH);
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
 
 	/*
 	 * Use English if default locale not supported (doing it here handles
@@ -75,12 +72,12 @@ public final class MessageLoader {
 	}
 
 	private MessageLoader() {
-	// prevent instantiation
+		// prevent instantiation
 	}
 
 	/**
 	 * Returns the English message for a given key.
-	 * 
+	 *
 	 * @param pKey
 	 *            The key
 	 * @return The message
@@ -95,7 +92,7 @@ public final class MessageLoader {
 
 	/**
 	 * Returns the localized message for a given key.
-	 * 
+	 *
 	 * @param pKey
 	 *            The key
 	 * @return The message
@@ -115,7 +112,7 @@ public final class MessageLoader {
 	 * <code>CIM1234S</code>. Valid level tokens are <code>S, W, I</code> and
 	 * <code>C</code> for <code>SEVERE, WARNING, INFO</code> and
 	 * <code>CONFIG</code> respectively.
-	 * 
+	 *
 	 * @param pKey
 	 *            The message id
 	 * @return The level

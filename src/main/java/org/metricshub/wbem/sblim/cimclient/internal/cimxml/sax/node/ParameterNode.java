@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
  * ELEMENT PARAMETER (QUALIFIER*) ATTLIST PARAMETER %CIMName; %CIMType;
  */
 public class ParameterNode extends AbstractParameterNode {
-
 	private CIMDataType iType;
 
 	private EmbObjHandler iEmbObjHandler;
@@ -65,21 +64,18 @@ public class ParameterNode extends AbstractParameterNode {
 
 	@Override
 	protected void specificInit(Attributes pAttribs) throws SAXException {
-		if (getCIMType(pAttribs, true) == null) throw new SAXException(
-				"PARAMETER element missing TYPE attribute!");
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				this.iSession, this.iQualiHandler, true);
+		if (getCIMType(pAttribs, true) == null) throw new SAXException("PARAMETER element missing TYPE attribute!");
+		this.iEmbObjHandler =
+			EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, this.iSession, this.iQualiHandler, true);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		this.iType = this.iEmbObjHandler.getType();
-		if (this.iType.isArray()) throw new SAXException(
-				"PARAMETER node's TYPE attribute cannot be an array!");
+		if (this.iType.isArray()) throw new SAXException("PARAMETER node's TYPE attribute cannot be an array!");
 	}
 
 	public CIMDataType getType() {
 		return this.iType;
 	}
-
 }

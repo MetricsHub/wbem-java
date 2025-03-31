@@ -58,28 +58,26 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.internal.Convert;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * Helps the parsing of the bytes of SLP messages.
- * 
+ *
  */
 public class SLPInputStream {
-
 	private InputStream iInStr;
 
 	private final byte[] iBBuf = new byte[4];
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pBytes
 	 */
 	public SLPInputStream(byte[] pBytes) {
@@ -88,7 +86,7 @@ public class SLPInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pSock
 	 * @throws IOException
 	 */
@@ -98,7 +96,7 @@ public class SLPInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pInStr
 	 */
 	public SLPInputStream(InputStream pInStr) {
@@ -107,7 +105,7 @@ public class SLPInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pPacket
 	 */
 	public SLPInputStream(DatagramPacket pPacket) {
@@ -116,7 +114,7 @@ public class SLPInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pBytes
 	 * @param pOffset
 	 * @param pLength
@@ -127,7 +125,7 @@ public class SLPInputStream {
 
 	/**
 	 * readString
-	 * 
+	 *
 	 * @return String
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -138,7 +136,7 @@ public class SLPInputStream {
 
 	/**
 	 * readStringSet
-	 * 
+	 *
 	 * @return SortedSet of Strings
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -151,7 +149,7 @@ public class SLPInputStream {
 
 	/**
 	 * readStringList
-	 * 
+	 *
 	 * @return List of Strings
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -164,7 +162,7 @@ public class SLPInputStream {
 
 	/**
 	 * readAttribute
-	 * 
+	 *
 	 * @return ServiceLocationAttribute
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -176,20 +174,19 @@ public class SLPInputStream {
 
 	/**
 	 * readAttributeList
-	 * 
+	 *
 	 * @return List of ServiceLocationAttributes
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public List<ServiceLocationAttribute> readAttributeList() throws ServiceLocationException,
-			IOException {
+	public List<ServiceLocationAttribute> readAttributeList() throws ServiceLocationException, IOException {
 		String str = readRawString();
 		return str == null ? null : new AttrListParser(str).getList();
 	}
 
 	/**
 	 * # of AttrAuths |(if present) Attribute Authentication Blocks...
-	 * 
+	 *
 	 * @return null
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -199,8 +196,9 @@ public class SLPInputStream {
 		if (blockCntInt == null) return null;
 		int blockCnt = blockCntInt.intValue();
 		if (blockCnt != 0) throw new ServiceLocationException(
-				ServiceLocationException.NOT_IMPLEMENTED,
-				"Handling of authentication blocks is not implemented! blockCount = " + blockCnt);
+			ServiceLocationException.NOT_IMPLEMENTED,
+			"Handling of authentication blocks is not implemented! blockCount = " + blockCnt
+		);
 		return null;
 	}
 
@@ -238,18 +236,17 @@ public class SLPInputStream {
 
 	/**
 	 * readUrlList
-	 * 
+	 *
 	 * @param pURLExceptions
 	 * @return List of valid ServiceURLs
 	 * @throws ServiceLocationException
 	 * @throws IOException
-	 * 
+	 *
 	 *             Add URL to list only if it is valid URL i.e. no exception is
 	 *             thrown by parser
-	 * 
+	 *
 	 */
-	public List<ServiceURL> readUrlList(List<Exception> pURLExceptions)
-			throws ServiceLocationException, IOException {
+	public List<ServiceURL> readUrlList(List<Exception> pURLExceptions) throws ServiceLocationException, IOException {
 		Integer cntInt = doRead16();
 		if (cntInt == null) return null;
 		int cnt = cntInt.intValue();
@@ -270,7 +267,7 @@ public class SLPInputStream {
 
 	/**
 	 * readServiceType
-	 * 
+	 *
 	 * @return ServiceType
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -282,7 +279,7 @@ public class SLPInputStream {
 
 	/**
 	 * readServTypeList
-	 * 
+	 *
 	 * @return List of ServiceTypes
 	 * @throws ServiceLocationException
 	 * @throws IOException
@@ -298,57 +295,65 @@ public class SLPInputStream {
 
 	/**
 	 * read8
-	 * 
+	 *
 	 * @return int
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
 	public int read8() throws ServiceLocationException, IOException {
 		Integer res = doRead8();
-		if (res == null) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-				"Failed to read byte field!");
+		if (res == null) throw new ServiceLocationException(
+			ServiceLocationException.PARSE_ERROR,
+			"Failed to read byte field!"
+		);
 		return res.intValue();
 	}
 
 	/**
 	 * read16
-	 * 
+	 *
 	 * @return int
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
 	public int read16() throws ServiceLocationException, IOException {
 		Integer res = doRead16();
-		if (res == null) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-				"Failed to read 2-byte-long field!");
+		if (res == null) throw new ServiceLocationException(
+			ServiceLocationException.PARSE_ERROR,
+			"Failed to read 2-byte-long field!"
+		);
 		return res.intValue();
 	}
 
 	/**
 	 * read24
-	 * 
+	 *
 	 * @return int
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
 	public int read24() throws ServiceLocationException, IOException {
 		Integer res = doRead24();
-		if (res == null) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-				"Failed to read 3-byte-long field!");
+		if (res == null) throw new ServiceLocationException(
+			ServiceLocationException.PARSE_ERROR,
+			"Failed to read 3-byte-long field!"
+		);
 		return res.intValue();
 	}
 
 	/**
 	 * read32
-	 * 
+	 *
 	 * @return long
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
 	public long read32() throws ServiceLocationException, IOException {
 		Long res = doRead32();
-		if (res == null) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-				"Failed to read 4-byte-long field!");
+		if (res == null) throw new ServiceLocationException(
+			ServiceLocationException.PARSE_ERROR,
+			"Failed to read 4-byte-long field!"
+		);
 		return res.longValue();
 	}
 
@@ -366,8 +371,7 @@ public class SLPInputStream {
 	private Integer doRead24() throws IOException {
 		int cnt = this.iInStr.read(this.iBBuf, 0, 3);
 		if (cnt != 3) return null;
-		return Integer.valueOf((this.iBBuf[0] & 0xff) << 16 | (this.iBBuf[1] & 0xff) << 8
-				| this.iBBuf[2] & 0xff);
+		return Integer.valueOf((this.iBBuf[0] & 0xff) << 16 | (this.iBBuf[1] & 0xff) << 8 | this.iBBuf[2] & 0xff);
 	}
 
 	private Long doRead32() throws IOException {
@@ -395,17 +399,14 @@ public class SLPInputStream {
 		}
 	}
 
-	private void readStringCollection(Collection<String> pCol) throws ServiceLocationException,
-			IOException {
+	private void readStringCollection(Collection<String> pCol) throws ServiceLocationException, IOException {
 		String rawListStr = readRawString();
 		if (rawListStr == null) return;
 		StringTokenizer tokenizer = new StringTokenizer(rawListStr, ",");
-		while (tokenizer.hasMoreElements())
-			pCol.add(Convert.unescape(tokenizer.nextToken()));
+		while (tokenizer.hasMoreElements()) pCol.add(Convert.unescape(tokenizer.nextToken()));
 	}
 
 	private static class AttrListParser {
-
 		private int iPos = 0;
 
 		private String iAttrListStr;
@@ -414,7 +415,7 @@ public class SLPInputStream {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pAttrListStr
 		 * @throws ServiceLocationException
 		 */
@@ -430,7 +431,7 @@ public class SLPInputStream {
 
 		/**
 		 * getList
-		 * 
+		 *
 		 * @return List of ServiceLocationAttributes
 		 */
 		public List<ServiceLocationAttribute> getList() {
@@ -451,17 +452,17 @@ public class SLPInputStream {
 				char ch = this.iAttrListStr.charAt(this.iPos);
 				if (ch == '(') {
 					if (inBlock || this.iPos != startPos) throw new ServiceLocationException(
-							ServiceLocationException.PARSE_ERROR, invalidChar('('));
+						ServiceLocationException.PARSE_ERROR,
+						invalidChar('(')
+					);
 					inBlock = true;
 				} else if (ch == ')') {
-					if (!inBlock) throw new ServiceLocationException(
-							ServiceLocationException.PARSE_ERROR, invalidChar(')'));
+					if (!inBlock) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR, invalidChar(')'));
 					if (this.iPos == lastIdx) return this.iAttrListStr.substring(startPos);
 					inBlock = false;
 				} else {
 					if (inBlock) {
-						if (this.iPos == lastIdx)
-						/*
+						if (this.iPos == lastIdx) /*
 						 * throw new ServiceLocationException(
 						 * ServiceLocationException.PARSE_ERROR, "There is no
 						 * ')' for '(' !" );
@@ -472,12 +473,15 @@ public class SLPInputStream {
 							++this.iPos;
 							return this.iAttrListStr.substring(startPos, this.iPos - 1);
 						}
-						if (this.iPos == lastIdx) { return this.iAttrListStr.substring(startPos); }
+						if (this.iPos == lastIdx) {
+							return this.iAttrListStr.substring(startPos);
+						}
 					}
 				}
 				if (this.iPos == lastIdx) throw new ServiceLocationException(
-						ServiceLocationException.PARSE_ERROR, "Unexpected end of Attribute list:\n"
-								+ this.iAttrListStr);
+					ServiceLocationException.PARSE_ERROR,
+					"Unexpected end of Attribute list:\n" + this.iAttrListStr
+				);
 				++this.iPos;
 			}
 		}
@@ -486,17 +490,14 @@ public class SLPInputStream {
 		 * @param ch
 		 */
 		private String invalidChar(char ch) {
-			return "Invalid '(' character in Attribute list:\n" + this.iAttrListStr
-					+ "\nat position: " + this.iPos;
+			return "Invalid '(' character in Attribute list:\n" + this.iAttrListStr + "\nat position: " + this.iPos;
 		}
-
 	}
 
 	/**
 	 * @param pMsg
 	 */
 	static void debug(String pMsg) {
-	// System.out.println(pMsg);
+		// System.out.println(pMsg);
 	}
-
 }

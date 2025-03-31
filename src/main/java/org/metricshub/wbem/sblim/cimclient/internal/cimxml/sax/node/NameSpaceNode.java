@@ -50,10 +50,9 @@ import org.xml.sax.SAXException;
 
 /**
  * ELEMENT NAMESPACE EMPTY ATTRLIST NAMESPACE %CIMName;
- * 
+ *
  */
 public class NameSpaceNode extends Node {
-
 	private String iNameSpaceValue;
 
 	/**
@@ -76,7 +75,7 @@ public class NameSpaceNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
@@ -92,21 +91,20 @@ public class NameSpaceNode extends Node {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child
+		// no child
 	}
 
 	@Override
 	public void testCompletness() {
-	// no child
+		// no child
 	}
 
 	/**
 	 * getNameSpace
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getNameSpace() {
 		return this.iNameSpaceValue;
 	}
-
 }

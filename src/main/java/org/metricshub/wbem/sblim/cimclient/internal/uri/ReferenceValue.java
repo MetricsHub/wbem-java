@@ -46,12 +46,11 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
  * Class UntypedReferenceValue encapsulates an untyped reference value.
  */
 public class ReferenceValue extends Value implements QuotedValue {
-
 	private URI iRef;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pRef
 	 */
 	public ReferenceValue(URI pRef) {
@@ -75,7 +74,7 @@ public class ReferenceValue extends Value implements QuotedValue {
 
 	/**
 	 * getRef
-	 * 
+	 *
 	 * @return <code>URI</code>
 	 */
 	public URI getRef() {
@@ -89,5 +88,4 @@ public class ReferenceValue extends Value implements QuotedValue {
 	public String getTypeInfo() {
 		return MOF.REFERENCE;
 	}
-
 }

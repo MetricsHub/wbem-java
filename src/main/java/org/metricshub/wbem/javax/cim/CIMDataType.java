@@ -51,7 +51,6 @@ package org.metricshub.wbem.javax.cim;
  */
 
 import java.io.Serializable;
-
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 
 //Sync'd against JSR48 1.0.0 javadoc (version 1.7.0_02) on Sun Apr 22 15:31:53 EDT 2012
@@ -137,47 +136,46 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * </table>
  */
 public class CIMDataType extends Object implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Boolean
-	 * 
+	 *
 	 * @see Boolean
 	 */
 	public static final int BOOLEAN = 9;
 
 	/**
 	 * Boolean unbounded array data type
-	 * 
+	 *
 	 * @see Boolean
 	 */
 	public static final CIMDataType BOOLEAN_ARRAY_T = new CIMDataType(BOOLEAN, true);
 
 	/**
 	 * Boolean data type
-	 * 
+	 *
 	 * @see Boolean
 	 */
 	public static final CIMDataType BOOLEAN_T = new CIMDataType(BOOLEAN, false);
 
 	/**
 	 * 16-bit UCS-2 character
-	 * 
+	 *
 	 * @see Character
 	 */
 	public static final int CHAR16 = 13;
 
 	/**
 	 * 16-bit UCS-2 character unbounded Array type
-	 * 
+	 *
 	 * @see Character
 	 */
 	public static final CIMDataType CHAR16_ARRAY_T = new CIMDataType(CHAR16, true);
 
 	/**
 	 * 16-bit UCS-2 character data type
-	 * 
+	 *
 	 * @see Character
 	 */
 	public static final CIMDataType CHAR16_T = new CIMDataType(CHAR16, false);
@@ -189,35 +187,35 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * CIMClass unbounded Array type
-	 * 
+	 *
 	 * @see CIMClass
 	 */
 	public static final CIMDataType CLASS_ARRAY_T = new CIMDataType(CLASS, true);
 
 	/**
 	 * CIMClass type
-	 * 
+	 *
 	 * @see CIMClass
 	 */
 	public static final CIMDataType CLASS_T = new CIMDataType(CLASS, false);
 
 	/**
 	 * A string containing the date-time
-	 * 
+	 *
 	 * @see CIMDateTimeInterval CIMDateTimeAbsolute
 	 */
 	public static final int DATETIME = 12;
 
 	/**
 	 * A date-time unbounded array data type
-	 * 
+	 *
 	 * @see CIMDateTimeInterval CIMDateTimeAbsolute
 	 */
 	public static final CIMDataType DATETIME_ARRAY_T = new CIMDataType(DATETIME, true);
 
 	/**
 	 * A date-time data type
-	 * 
+	 *
 	 * @see CIMDateTimeInterval CIMDateTimeAbsolute
 	 */
 	public static final CIMDataType DATETIME_T = new CIMDataType(DATETIME, false);
@@ -239,14 +237,14 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * CIMInstance type
-	 * 
+	 *
 	 * @see CIMInstance
 	 */
 	public static final int OBJECT = 15;
 
 	/**
 	 * CIMInstance unbounded Array type
-	 * 
+	 *
 	 * @see CIMInstance
 	 */
 	public static final CIMDataType OBJECT_ARRAY_T = new CIMDataType(OBJECT, true);
@@ -254,98 +252,98 @@ public class CIMDataType extends Object implements Serializable {
 	/**
 	 * CIMInstance type data type (Note: For CIMV2, this can only be used when
 	 * the property has either an EmbeddedInstance or EmbeddedObject qualifier)
-	 * 
+	 *
 	 * @see CIMInstance
 	 */
 	public static final CIMDataType OBJECT_T = new CIMDataType(OBJECT, false);
 
 	/**
 	 * IEEE 4-byte floating-point
-	 * 
+	 *
 	 * @see Float
 	 */
 	public static final int REAL32 = 10;
 
 	/**
 	 * IEEE 4-byte floating-point unbounded array data type
-	 * 
+	 *
 	 * @see Float
 	 */
 	public static final CIMDataType REAL32_ARRAY_T = new CIMDataType(REAL32, true);
 
 	/**
 	 * IEEE 4-byte floating-point data type
-	 * 
+	 *
 	 * @see Float
 	 */
 	public static final CIMDataType REAL32_T = new CIMDataType(REAL32, false);
 
 	/**
 	 * IEEE 8-byte floating-point
-	 * 
+	 *
 	 * @see Double
 	 */
 	public static final int REAL64 = 11;
 
 	/**
 	 * IEEE 8-byte floating-point unbounded array data type
-	 * 
+	 *
 	 * @see Double
 	 */
 	public static final CIMDataType REAL64_ARRAY_T = new CIMDataType(REAL64, true);
 
 	/**
 	 * IEEE 8-byte floating-point data type
-	 * 
+	 *
 	 * @see Double
 	 */
 	public static final CIMDataType REAL64_T = new CIMDataType(REAL64, false);
 
 	/**
 	 * Reference type
-	 * 
+	 *
 	 * @see CIMObjectPath
 	 */
 	public static final int REFERENCE = 14;
 
 	/**
 	 * Signed 16-bit integer
-	 * 
+	 *
 	 * @see Short
 	 */
 	public static final int SINT16 = 3;
 
 	/**
 	 * Signed 16-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see Short
 	 */
 	public static final CIMDataType SINT16_ARRAY_T = new CIMDataType(SINT16, true);
 
 	/**
 	 * Signed 16-bit integer data type
-	 * 
+	 *
 	 * @see Short
 	 */
 	public static final CIMDataType SINT16_T = new CIMDataType(SINT16, false);
 
 	/**
 	 * Signed 32-bit integer
-	 * 
+	 *
 	 * @see Integer
 	 */
 	public static final int SINT32 = 5;
 
 	/**
 	 * Signed 32-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see Integer
 	 */
 	public static final CIMDataType SINT32_ARRAY_T = new CIMDataType(SINT32, true);
 
 	/**
 	 * Signed 32-bit integer data type
-	 * 
+	 *
 	 * @see Integer
 	 */
 	public static final CIMDataType SINT32_T = new CIMDataType(SINT32, false);
@@ -357,140 +355,140 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Signed 64-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see Long
 	 */
 	public static final CIMDataType SINT64_ARRAY_T = new CIMDataType(SINT64, true);
 
 	/**
 	 * Signed 64-bit integer data type
-	 * 
+	 *
 	 * @see Long
 	 */
 	public static final CIMDataType SINT64_T = new CIMDataType(SINT64, false);
 
 	/**
 	 * Signed 8-bit integer
-	 * 
+	 *
 	 * @see Byte
 	 */
 	public static final int SINT8 = 1;
 
 	/**
 	 * Signed 8-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see Byte
 	 */
 	public static final CIMDataType SINT8_ARRAY_T = new CIMDataType(SINT8, true);
 
 	/**
 	 * Signed 8-bit integer data type
-	 * 
+	 *
 	 * @see Byte
 	 */
 	public static final CIMDataType SINT8_T = new CIMDataType(SINT8, false);
 
 	/**
 	 * UCS-2 string
-	 * 
+	 *
 	 * @see String
 	 */
 	public static final int STRING = 8;
 
 	/**
 	 * UCS-2 string unbounded array data type
-	 * 
+	 *
 	 * @see String
 	 */
 	public static final CIMDataType STRING_ARRAY_T = new CIMDataType(STRING, true);
 
 	/**
 	 * UCS-2 string data type
-	 * 
+	 *
 	 * @see String
 	 */
 	public static final CIMDataType STRING_T = new CIMDataType(STRING, false);
 
 	/**
 	 * Unsigned 16-bit integer
-	 * 
+	 *
 	 * @see UnsignedInteger16
 	 */
 	public static final int UINT16 = 2;
 
 	/**
 	 * Unsigned 16-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see UnsignedInteger16
 	 */
 	public static final CIMDataType UINT16_ARRAY_T = new CIMDataType(UINT16, true);
 
 	/**
 	 * Unsigned 16-bit integer data type
-	 * 
+	 *
 	 * @see UnsignedInteger16
 	 */
 	public static final CIMDataType UINT16_T = new CIMDataType(UINT16, false);
 
 	/**
 	 * Unsigned 32-bit integer
-	 * 
+	 *
 	 * @see UnsignedInteger32
 	 */
 	public static final int UINT32 = 4;
 
 	/**
 	 * Unsigned 32-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see UnsignedInteger32
 	 */
 	public static final CIMDataType UINT32_ARRAY_T = new CIMDataType(UINT32, true);
 
 	/**
 	 * Unsigned 32-bit integer data type
-	 * 
+	 *
 	 * @see UnsignedInteger32
 	 */
 	public static final CIMDataType UINT32_T = new CIMDataType(UINT32, false);
 
 	/**
 	 * Unsigned 64-bit integer
-	 * 
+	 *
 	 * @see UnsignedInteger64
 	 */
 	public static final int UINT64 = 6;
 
 	/**
 	 * Unsigned 64-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see UnsignedInteger64
 	 */
 	public static final CIMDataType UINT64_ARRAY_T = new CIMDataType(UINT64, true);
 
 	/**
 	 * Unsigned 64-bit integer data type
-	 * 
+	 *
 	 * @see UnsignedInteger64
 	 */
 	public static final CIMDataType UINT64_T = new CIMDataType(UINT64, false);
 
 	/**
 	 * Unsigned 8-bit integer
-	 * 
+	 *
 	 * @see UnsignedInteger8
 	 */
 	public static final int UINT8 = 0;
 
 	/**
 	 * Unsigned 8-bit integer unbounded array data type
-	 * 
+	 *
 	 * @see UnsignedInteger8
 	 */
 	public static final CIMDataType UINT8_ARRAY_T = new CIMDataType(UINT8, true);
 
 	/**
 	 * Unsigned 8-bit integer data type
-	 * 
+	 *
 	 * @see UnsignedInteger8
 	 */
 	public static final CIMDataType UINT8_T = new CIMDataType(UINT8, false);
@@ -508,7 +506,7 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Sets the data type (non-array).
-	 * 
+	 *
 	 * @param pType
 	 *            The data type of the class.
 	 */
@@ -519,12 +517,12 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Sets the data type (array).
-	 * 
+	 *
 	 * @param pType
 	 *            The data type of the class.
 	 * @param pBound
 	 *            Array bounds or unbounded if zero.
-	 * 
+	 *
 	 */
 	private void setType(int pType, int pBound) {
 		this.iTypeCode = pType;
@@ -533,7 +531,7 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Constructs a <code>CIMDataType</code>.
-	 * 
+	 *
 	 * @param pType
 	 *            The data type as defined in the CIM class.
 	 * @param pIsArray
@@ -553,7 +551,7 @@ public class CIMDataType extends Object implements Serializable {
 	 * Constructs a <code>CIMDataType</code> array object of the specified type
 	 * and size. This should only be used when the size is being limited/defined
 	 * as part of the data type.
-	 * 
+	 *
 	 * @param pType
 	 *            The data type as defined in the CIM class.
 	 * @param pSize
@@ -563,15 +561,14 @@ public class CIMDataType extends Object implements Serializable {
 	 *             integer.
 	 */
 	public CIMDataType(int pType, int pSize) throws IllegalArgumentException {
-		if (pSize <= 0) throw new IllegalArgumentException(
-				"Maximum number of elements must be positive integer!");
+		if (pSize <= 0) throw new IllegalArgumentException("Maximum number of elements must be positive integer!");
 		setType(pType, pSize);
 	}
 
 	/**
 	 * Creates a new CIM REFERENCE data type object with the specified class
 	 * reference.
-	 * 
+	 *
 	 * @param pClassName
 	 *            The CIM class reference name.
 	 * @throws IllegalArgumentException
@@ -586,7 +583,7 @@ public class CIMDataType extends Object implements Serializable {
 	/**
 	 * Creates a new CIM REFERENCE array data type object with the specified
 	 * class reference.
-	 * 
+	 *
 	 * @param pClassName
 	 *            The CIM class reference name.
 	 * @param pSize
@@ -596,8 +593,7 @@ public class CIMDataType extends Object implements Serializable {
 	 */
 	public CIMDataType(String pClassName, int pSize) {
 		if (pClassName == null) throw new IllegalArgumentException("Class name must not be null!");
-		if (pSize < 0) throw new IllegalArgumentException(
-				"Maximum number of elements cannot be negative integer!");
+		if (pSize < 0) throw new IllegalArgumentException("Maximum number of elements cannot be negative integer!");
 		setType(REFERENCE, pSize);
 		this.iRefClassName = pClassName;
 	}
@@ -605,7 +601,7 @@ public class CIMDataType extends Object implements Serializable {
 	/**
 	 * Checks that the specified <code>CIMDataType</code> is equal to this
 	 * <code>CIMDataType</code>.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the specified object is equal to this
@@ -617,14 +613,13 @@ public class CIMDataType extends Object implements Serializable {
 		if (!(pObj instanceof CIMDataType)) return false;
 		CIMDataType that = (CIMDataType) pObj;
 		if (this.iRefClassName == null && that.iRefClassName != null) return false;
-		boolean refMatch = (this.iRefClassName == null ? true : this.iRefClassName
-				.equals(that.iRefClassName));
+		boolean refMatch = (this.iRefClassName == null ? true : this.iRefClassName.equals(that.iRefClassName));
 		return (this.iTypeCode == that.iTypeCode && isArray() == that.isArray() && refMatch);
 	}
 
 	/**
 	 * Get the data type of an object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object whose data type is to be returned.
 	 * @return The data type of the specified object.
@@ -632,46 +627,109 @@ public class CIMDataType extends Object implements Serializable {
 	 *             If <code>pObj</code> is not a valid CIM Type.
 	 */
 	public static final CIMDataType getDataType(Object pObj) throws IllegalArgumentException {
-		if (pObj instanceof Byte) { return SINT8_T; }
-		if (pObj instanceof Byte[]) { return SINT8_ARRAY_T; }
-		if (pObj instanceof Short) { return SINT16_T; }
-		if (pObj instanceof Short[]) { return SINT16_ARRAY_T; }
-		if (pObj instanceof Integer) { return SINT32_T; }
-		if (pObj instanceof Integer[]) { return SINT32_ARRAY_T; }
-		if (pObj instanceof Long) { return SINT64_T; }
-		if (pObj instanceof Long[]) { return SINT64_ARRAY_T; }
-		if (pObj instanceof UnsignedInteger8) { return UINT8_T; }
-		if (pObj instanceof UnsignedInteger8[]) { return UINT8_ARRAY_T; }
-		if (pObj instanceof UnsignedInteger16) { return UINT16_T; }
-		if (pObj instanceof UnsignedInteger16[]) { return UINT16_ARRAY_T; }
-		if (pObj instanceof UnsignedInteger32) { return UINT32_T; }
-		if (pObj instanceof UnsignedInteger32[]) { return UINT32_ARRAY_T; }
-		if (pObj instanceof UnsignedInteger64) { return UINT64_T; }
-		if (pObj instanceof UnsignedInteger64[]) { return UINT64_ARRAY_T; }
-		if (pObj instanceof Boolean) { return BOOLEAN_T; }
-		if (pObj instanceof Boolean[]) { return BOOLEAN_ARRAY_T; }
-		if (pObj instanceof Character) { return CHAR16_T; }
-		if (pObj instanceof Character[]) { return CHAR16_ARRAY_T; }
-		if (pObj instanceof String) { return STRING_T; }
-		if (pObj instanceof String[]) { return STRING_ARRAY_T; }
-		if (pObj instanceof Float) { return REAL32_T; }
-		if (pObj instanceof Float[]) { return REAL32_ARRAY_T; }
-		if (pObj instanceof Double) { return REAL64_T; }
-		if (pObj instanceof Double[]) { return REAL64_ARRAY_T; }
-		if (pObj instanceof CIMDateTime) { return DATETIME_T; }
-		if (pObj instanceof CIMDateTime[]) { return DATETIME_ARRAY_T; }
-		if (pObj instanceof CIMClass) { return CLASS_T; }
-		if (pObj instanceof CIMClass[]) { return CLASS_ARRAY_T; }
-		if (pObj instanceof CIMInstance) { return OBJECT_T; }
-		if (pObj instanceof CIMInstance[]) { return OBJECT_ARRAY_T; }
+		if (pObj instanceof Byte) {
+			return SINT8_T;
+		}
+		if (pObj instanceof Byte[]) {
+			return SINT8_ARRAY_T;
+		}
+		if (pObj instanceof Short) {
+			return SINT16_T;
+		}
+		if (pObj instanceof Short[]) {
+			return SINT16_ARRAY_T;
+		}
+		if (pObj instanceof Integer) {
+			return SINT32_T;
+		}
+		if (pObj instanceof Integer[]) {
+			return SINT32_ARRAY_T;
+		}
+		if (pObj instanceof Long) {
+			return SINT64_T;
+		}
+		if (pObj instanceof Long[]) {
+			return SINT64_ARRAY_T;
+		}
+		if (pObj instanceof UnsignedInteger8) {
+			return UINT8_T;
+		}
+		if (pObj instanceof UnsignedInteger8[]) {
+			return UINT8_ARRAY_T;
+		}
+		if (pObj instanceof UnsignedInteger16) {
+			return UINT16_T;
+		}
+		if (pObj instanceof UnsignedInteger16[]) {
+			return UINT16_ARRAY_T;
+		}
+		if (pObj instanceof UnsignedInteger32) {
+			return UINT32_T;
+		}
+		if (pObj instanceof UnsignedInteger32[]) {
+			return UINT32_ARRAY_T;
+		}
+		if (pObj instanceof UnsignedInteger64) {
+			return UINT64_T;
+		}
+		if (pObj instanceof UnsignedInteger64[]) {
+			return UINT64_ARRAY_T;
+		}
+		if (pObj instanceof Boolean) {
+			return BOOLEAN_T;
+		}
+		if (pObj instanceof Boolean[]) {
+			return BOOLEAN_ARRAY_T;
+		}
+		if (pObj instanceof Character) {
+			return CHAR16_T;
+		}
+		if (pObj instanceof Character[]) {
+			return CHAR16_ARRAY_T;
+		}
+		if (pObj instanceof String) {
+			return STRING_T;
+		}
+		if (pObj instanceof String[]) {
+			return STRING_ARRAY_T;
+		}
+		if (pObj instanceof Float) {
+			return REAL32_T;
+		}
+		if (pObj instanceof Float[]) {
+			return REAL32_ARRAY_T;
+		}
+		if (pObj instanceof Double) {
+			return REAL64_T;
+		}
+		if (pObj instanceof Double[]) {
+			return REAL64_ARRAY_T;
+		}
+		if (pObj instanceof CIMDateTime) {
+			return DATETIME_T;
+		}
+		if (pObj instanceof CIMDateTime[]) {
+			return DATETIME_ARRAY_T;
+		}
+		if (pObj instanceof CIMClass) {
+			return CLASS_T;
+		}
+		if (pObj instanceof CIMClass[]) {
+			return CLASS_ARRAY_T;
+		}
+		if (pObj instanceof CIMInstance) {
+			return OBJECT_T;
+		}
+		if (pObj instanceof CIMInstance[]) {
+			return OBJECT_ARRAY_T;
+		}
 		if (pObj instanceof CIMObjectPath) {
 			CIMObjectPath op = (CIMObjectPath) pObj;
 			return new CIMDataType(op.getObjectName());
 		}
 		if (pObj instanceof CIMObjectPath[]) {
 			CIMObjectPath[] ops = (CIMObjectPath[]) pObj;
-			for (int i = 0; i < ops.length; i++)
-				if (ops[i] != null) return new CIMDataType(ops[i].getObjectName(), 0);
+			for (int i = 0; i < ops.length; i++) if (ops[i] != null) return new CIMDataType(ops[i].getObjectName(), 0);
 		}
 		// TODO: tracing
 		/*
@@ -683,7 +741,7 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Returns the class name of the CIM REFERENCE data type.
-	 * 
+	 *
 	 * @return The CIM REFERENCE class name.
 	 */
 	public String getRefClassName() {
@@ -693,7 +751,7 @@ public class CIMDataType extends Object implements Serializable {
 	/**
 	 * Returns the size of the maximum number of elements an array data type may
 	 * hold.
-	 * 
+	 *
 	 * @return The maximum size of the array data type.
 	 */
 	public int getSize() {
@@ -702,7 +760,7 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Returns the data type.
-	 * 
+	 *
 	 * @return The data type.
 	 */
 	public int getType() {
@@ -711,7 +769,7 @@ public class CIMDataType extends Object implements Serializable {
 
 	/**
 	 * Checks if the data type is an array type.
-	 * 
+	 *
 	 * @return <code>true</code> if the data type is an array type,
 	 *         <code>false</code> otherwise.
 	 */
@@ -725,7 +783,7 @@ public class CIMDataType extends Object implements Serializable {
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return A string representation of this data type.
 	 */
 	@Override

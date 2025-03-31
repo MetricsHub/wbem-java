@@ -49,14 +49,12 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml;
 
 import java.util.List;
 import java.util.Vector;
-
 import org.metricshub.wbem.javax.wbem.WBEMException;
 
 /**
  * Represent a CIMReponse message.
  */
 public class CIMResponse extends CIMMessage {
-
 	protected Vector<CIMResponse> iResponses = new Vector<CIMResponse>(0);
 
 	protected WBEMException iError = null;
@@ -67,14 +65,16 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * Constructs a CIMResponse object.
-	 * 
+	 *
 	 */
-	public CIMResponse() { /**/}
+	public CIMResponse() {
+		/**/
+	}
 
 	/**
 	 * Constructs a CIMResponse object with the specified CIMVersion, DTDVersion
 	 * and method.
-	 * 
+	 *
 	 * @param pCimVersion
 	 * @param pDtdVersion
 	 * @param pId
@@ -86,7 +86,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * Constructs a CIM Response message from a given CIM Request.
-	 * 
+	 *
 	 * @param request
 	 */
 	public CIMResponse(CIMRequest request) {
@@ -97,7 +97,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * addParamValue
-	 * 
+	 *
 	 * @param o
 	 */
 	public void addParamValue(Object o) {
@@ -106,7 +106,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * addParamValue
-	 * 
+	 *
 	 * @param v
 	 */
 	public void addParamValue(Vector<Object> v) {
@@ -115,7 +115,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * addResponse
-	 * 
+	 *
 	 * @param response
 	 */
 	public void addResponse(CIMResponse response) {
@@ -124,7 +124,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * addReturnValue
-	 * 
+	 *
 	 * @param o
 	 */
 	public void addReturnValue(Object o) {
@@ -133,7 +133,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * Verify the status code for this CIMResponse.
-	 * 
+	 *
 	 * @throws WBEMException
 	 *             if the status code is other than success.
 	 */
@@ -143,7 +143,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * getAllResponses
-	 * 
+	 *
 	 * @return List
 	 */
 	public List<CIMResponse> getAllResponses() {
@@ -152,7 +152,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * getException
-	 * 
+	 *
 	 * @return WBEMException
 	 */
 	public WBEMException getException() {
@@ -161,7 +161,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * isSuccessful
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isSuccessful() {
@@ -170,18 +170,17 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * getFirstResponse
-	 * 
+	 *
 	 * @return CIMResponse
 	 */
 	public CIMResponse getFirstResponse() {
-		if (this.iResponses != null && this.iResponses.size() > 0) return this.iResponses
-				.elementAt(0);
+		if (this.iResponses != null && this.iResponses.size() > 0) return this.iResponses.elementAt(0);
 		return null;
 	}
 
 	/**
 	 * getParamValues
-	 * 
+	 *
 	 * @return List
 	 */
 	public List<Object> getParamValues() {
@@ -190,7 +189,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * getFirstReturnValue
-	 * 
+	 *
 	 * @return List
 	 */
 	public List<Object> getFirstReturnValue() {
@@ -199,7 +198,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * setError
-	 * 
+	 *
 	 * @param error
 	 */
 	public void setError(WBEMException error) {
@@ -208,7 +207,7 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * setParamValue
-	 * 
+	 *
 	 * @param paramValue
 	 */
 	public void setParamValue(Vector<Object> paramValue) {
@@ -217,11 +216,10 @@ public class CIMResponse extends CIMMessage {
 
 	/**
 	 * setReturnValue
-	 * 
+	 *
 	 * @param returnValue
 	 */
 	public void setReturnValue(Vector<Object> returnValue) {
 		this.iReturnValue = returnValue;
 	}
-
 }

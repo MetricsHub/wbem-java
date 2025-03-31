@@ -49,30 +49,35 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
  * Pegasus CIMOM.
  */
 public class TrailerException extends RuntimeException {
-
 	private static final long serialVersionUID = 4355341648542585509L;
 
 	private WBEMException iWBEMException;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pException
 	 *            The contained WBEMException
 	 */
 	public TrailerException(WBEMException pException) {
-		super(WBEMConstants.HTTP_TRAILER_STATUS_CODE + ":" + pException.getID() + " "
-				+ WBEMConstants.HTTP_TRAILER_STATUS_DESCRIPTION + ":" + pException.getMessage());
+		super(
+			WBEMConstants.HTTP_TRAILER_STATUS_CODE +
+			":" +
+			pException.getID() +
+			" " +
+			WBEMConstants.HTTP_TRAILER_STATUS_DESCRIPTION +
+			":" +
+			pException.getMessage()
+		);
 		this.iWBEMException = pException;
 	}
 
 	/**
 	 * getWBEMException
-	 * 
+	 *
 	 * @return WBEMException
 	 */
 	public WBEMException getWBEMException() {
 		return this.iWBEMException;
 	}
-
 }

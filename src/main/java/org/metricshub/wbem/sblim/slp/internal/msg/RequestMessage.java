@@ -47,38 +47,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
 
 /**
  * RequestMessage
- * 
+ *
  */
 public abstract class RequestMessage extends SLPMessage {
-
 	private SortedSet<String> iPrevResponderSet;
 
 	private List<String> iScopeList;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 * @param pPrevResponderSet
 	 *            - set of address strings
 	 * @param pScopeList
 	 *            - list of scope strings
 	 */
-	public RequestMessage(int pFunctionID, SortedSet<String> pPrevResponderSet,
-			List<String> pScopeList) {
+	public RequestMessage(int pFunctionID, SortedSet<String> pPrevResponderSet, List<String> pScopeList) {
 		super(pFunctionID);
 		init(pPrevResponderSet, pScopeList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 * @param pLangTag
 	 * @param pPrevResponderSet
@@ -86,30 +83,33 @@ public abstract class RequestMessage extends SLPMessage {
 	 * @param pScopeList
 	 *            - list of scope strings
 	 */
-	public RequestMessage(int pFunctionID, String pLangTag, SortedSet<String> pPrevResponderSet,
-			List<String> pScopeList) {
+	public RequestMessage(
+		int pFunctionID,
+		String pLangTag,
+		SortedSet<String> pPrevResponderSet,
+		List<String> pScopeList
+	) {
 		super(pFunctionID, pLangTag);
 		init(pPrevResponderSet, pScopeList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pPrevResponderSet
 	 *            - set of address strings
 	 * @param pScopeList
 	 *            - list of scope strings
 	 */
-	public RequestMessage(MsgHeader pHeader, SortedSet<String> pPrevResponderSet,
-			List<String> pScopeList) {
+	public RequestMessage(MsgHeader pHeader, SortedSet<String> pPrevResponderSet, List<String> pScopeList) {
 		super(pHeader);
 		init(pPrevResponderSet, pScopeList);
 	}
 
 	/**
 	 * getPrevResponderSet
-	 * 
+	 *
 	 * @return SortedSet
 	 */
 	public SortedSet<String> getPrevResponderSet() {
@@ -118,7 +118,7 @@ public abstract class RequestMessage extends SLPMessage {
 
 	/**
 	 * getPrevRespondersItr
-	 * 
+	 *
 	 * @return Iterator
 	 */
 	public Iterator<String> getPrevRespondersItr() {
@@ -127,7 +127,7 @@ public abstract class RequestMessage extends SLPMessage {
 
 	/**
 	 * updatePrevResponders
-	 * 
+	 *
 	 * @param pResponder
 	 * @return boolean
 	 */
@@ -138,7 +138,7 @@ public abstract class RequestMessage extends SLPMessage {
 
 	/**
 	 * getScopeList
-	 * 
+	 *
 	 * @return List of scope strings
 	 */
 	public List<String> getScopeList() {
@@ -147,7 +147,7 @@ public abstract class RequestMessage extends SLPMessage {
 
 	/**
 	 * isAllowedResponseType
-	 * 
+	 *
 	 * @param pRspMsg
 	 * @return boolean
 	 */
@@ -156,37 +156,37 @@ public abstract class RequestMessage extends SLPMessage {
 		int id = pRspMsg.getFunctionID();
 		int[] rspIDs = getAllowedResponseIDs();
 		if (rspIDs == null) return true;
-		for (int i = 0; i < rspIDs.length; i++)
-			if (id == rspIDs[i]) return true;
+		for (int i = 0; i < rspIDs.length; i++) if (id == rspIDs[i]) return true;
 		return false;
 	}
 
 	/**
 	 * serializeWithoutResponders
-	 * 
+	 *
 	 * @param pSetMulticastFlag
 	 * @param pDatagramLimited
 	 * @param pKeepXID
 	 * @return byte[]
 	 * @throws ServiceLocationException
 	 */
-	public byte[] serializeWithoutResponders(boolean pSetMulticastFlag, boolean pDatagramLimited,
-			boolean pKeepXID) throws ServiceLocationException {
-
+	public byte[] serializeWithoutResponders(boolean pSetMulticastFlag, boolean pDatagramLimited, boolean pKeepXID)
+		throws ServiceLocationException {
 		return serialize(pSetMulticastFlag, pDatagramLimited, pKeepXID, new SkipResponders());
 	}
 
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pSkipResponders)
-			throws ServiceLocationException {
-		if (!pOutStr.writeStringList(pSkipResponders == null ? getPrevRespondersItr() : null)) throw new ServiceLocationException(
-				ServiceLocationException.PREVIOUS_RESPONDER_OVERFLOW,
-				"Previous responder list has overflowed!");
+		throws ServiceLocationException {
+		if (
+			!pOutStr.writeStringList(pSkipResponders == null ? getPrevRespondersItr() : null)
+		) throw new ServiceLocationException(
+			ServiceLocationException.PREVIOUS_RESPONDER_OVERFLOW,
+			"Previous responder list has overflowed!"
+		);
 		return serializeRequestBody(pOutStr);
 	}
 
-	protected abstract boolean serializeRequestBody(SLPOutputStream pOutStr)
-			throws ServiceLocationException;
+	protected abstract boolean serializeRequestBody(SLPOutputStream pOutStr) throws ServiceLocationException;
 
 	protected abstract int[] getAllowedResponseIDs();
 
@@ -201,5 +201,4 @@ public abstract class RequestMessage extends SLPMessage {
 		 * serialization have to be skipped
 		 */
 	}
-
 }

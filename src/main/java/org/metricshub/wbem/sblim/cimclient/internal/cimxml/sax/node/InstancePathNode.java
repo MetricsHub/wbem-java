@@ -46,9 +46,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.util.XMLHostStr;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * ELEMENT INSTANCEPATH (NAMESPACEPATH, INSTANCENAME)
  */
 public class InstancePathNode extends AbstractObjectPathNode {
-
 	// INSTANCEPATH
 	private boolean iHasInstancePath;
 
@@ -94,12 +93,11 @@ public class InstancePathNode extends AbstractObjectPathNode {
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == NAMESPACEPATH) {
 			if (this.iHasInstancePath) throw new SAXException(
-					"INSTANCEPATH node can have only one NAMESPACEPATH child node!");
+				"INSTANCEPATH node can have only one NAMESPACEPATH child node!"
+			);
 		} else if (pNodeNameEnum == INSTANCENAME) {
-			if (this.iHasInstanceName) throw new SAXException(
-					"INSTANCEPATH node can have only one INSTANCENAME child node!");
-		} else throw new SAXException("INSTANCEPATH node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasInstanceName) throw new SAXException("INSTANCEPATH node can have only one INSTANCENAME child node!");
+		} else throw new SAXException("INSTANCEPATH node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	/**
@@ -107,7 +105,7 @@ public class InstancePathNode extends AbstractObjectPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
@@ -127,10 +125,8 @@ public class InstancePathNode extends AbstractObjectPathNode {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasInstancePath) throw new SAXException(
-				"INSTANCEPATH node must have a NAMESPACEPATH child node!");
-		if (!this.iHasInstanceName) throw new SAXException(
-				"INSTANCEPATH node must have an INSTANCENAME child node!");
+		if (!this.iHasInstancePath) throw new SAXException("INSTANCEPATH node must have a NAMESPACEPATH child node!");
+		if (!this.iHasInstanceName) throw new SAXException("INSTANCEPATH node must have an INSTANCENAME child node!");
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
@@ -138,9 +134,13 @@ public class InstancePathNode extends AbstractObjectPathNode {
 		 * CIMObjectPath( String scheme, String host, String port, String
 		 * namespace, String objectName, CIMProperty[] keys )
 		 */
-		return new CIMObjectPath(this.iHostStr.getProtocol(), this.iHostStr.getHost(),
-				this.iHostStr.getPort(), this.iLocalNameSpacePathStr, this.iClassNameStr,
-				this.iKeys);
+		return new CIMObjectPath(
+			this.iHostStr.getProtocol(),
+			this.iHostStr.getHost(),
+			this.iHostStr.getPort(),
+			this.iLocalNameSpacePathStr,
+			this.iClassNameStr,
+			this.iKeys
+		);
 	}
-
 }

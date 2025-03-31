@@ -58,17 +58,16 @@ package org.metricshub.wbem.javax.wbem.client;
  */
 
 import java.util.Locale;
-
+import javax.security.auth.Subject;
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMQualifierType;
-import org.metricshub.wbem.javax.wbem.CloseableIterator;
-import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.javax.cim.UnsignedInteger32;
 import org.metricshub.wbem.javax.cim.UnsignedInteger64;
-import javax.security.auth.Subject;
+import org.metricshub.wbem.javax.wbem.CloseableIterator;
+import org.metricshub.wbem.javax.wbem.WBEMException;
 
 //Sync'd against JSR48 1.0.0 javadoc (version 1.7.0_03) on Tue Dec 10 07:02:50 EST 2013
 /**
@@ -76,15 +75,14 @@ import javax.security.auth.Subject;
  * against a WBEM Server. A <code>WBEMClient</code> implementation can be
  * retrieved from the <code>WBEMClientFactory</code> specifying the protocol to
  * be used.
- * 
+ *
  * @see WBEMClientFactory
  */
 public interface WBEMClient {
-
 	/**
 	 * Enumerates CIM classes that are associated to a specified source CIM
 	 * class.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM Class whose
 	 *            associated classes are to be returned. The
@@ -146,24 +144,31 @@ public interface WBEMClient {
 	 *             If unsuccessful, one of the following status codes shall be
 	 *             returned along with zero or more instances of
 	 *             <code>CIM_Error</code>. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMClass> associatorClasses(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException;
+	public CloseableIterator<CIMClass> associatorClasses(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerates CIM Instances associated to a specified source CIM Instance.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM Instance
 	 *            whose associated instances are to be returned. The
@@ -223,19 +228,26 @@ public interface WBEMClient {
 	 *             If unsuccessful, one of the following status codes shall be
 	 *             returned along with zero or more instances of
 	 *             <code>CIM_Error</code>. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMInstance> associatorInstances(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException;
+	public CloseableIterator<CIMInstance> associatorInstances(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerates the <code>CIMObjectPath</code>s of CIM Objects that are
@@ -246,7 +258,7 @@ public interface WBEMClient {
 	 * <code>CloseableIterator</code> of <code>CIMObjectPath</code>s of the
 	 * <code>CIMInstance</code> objects associated to the source Object is
 	 * returned.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM Object
 	 *            whose associated Objects are to be returned. This argument may
@@ -287,26 +299,31 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMObjectPath> associatorNames(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole)
-			throws WBEMException;
+	public CloseableIterator<CIMObjectPath> associatorNames(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>associatorPaths</code> shall start an enumeration session for
 	 * traversing associations starting from the instance defined in the
 	 * <code>pInstancePath</code> parameter using any specified filtering
 	 * criteria and return zero or more <code>CIMObjectPath</code> objects.
-	 * 
+	 *
 	 * @param pInstancePath
 	 *            The <code>CIMObjectPath</code> for the instance for which the
 	 *            enumeration is to be performed.
@@ -420,8 +437,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -434,19 +451,28 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMObjectPath> associatorPaths(CIMObjectPath pInstancePath,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMObjectPath> associatorPaths(
+		CIMObjectPath pInstancePath,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>associators</code> shall start an enumeration session for
 	 * traversing associations starting from the instance defined in the
 	 * <code>pInstancePath</code> parameter using any specified filtering
 	 * criteria and return zero or more <code>CIMInstance</code> objects.
-	 * 
+	 *
 	 * @param pInstancePath
 	 *            The <code>CIMObjectPath</code> for the instance for which the
 	 *            enumeration is to be performed.
@@ -580,8 +606,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -594,13 +620,23 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (Some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> associators(CIMObjectPath pInstancePath,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList, String pFilterQueryLanguage,
-			String pFilterQuery, UnsignedInteger32 pTimeout, boolean pContinueOnError,
-			UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMInstance> associators(
+		CIMObjectPath pInstancePath,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * Closes the <code>WBEMClient</code> session.
@@ -615,7 +651,7 @@ public interface WBEMClient {
 	 * session and retrieves all the results until the
 	 * <code>EnumerationResponse.isEnd()</code> is true, this method shall not
 	 * be called.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> representing the namespace to
 	 *            be used.
@@ -628,7 +664,7 @@ public interface WBEMClient {
 	/**
 	 * Create a CIM class. The namespace from the
 	 * <code>CIMClass.getObjectPath()</code> shall be used.
-	 * 
+	 *
 	 * @param pClass
 	 *            The <code>CIMClass</code> to be created.
 	 * @throws UnsupportedOperationException
@@ -637,8 +673,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -648,7 +684,7 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_SUPERCLASS (the putative CIM Class declares a
 	 *            non-existent superclass)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void createClass(CIMClass pClass) throws WBEMException;
 
@@ -661,15 +697,15 @@ public interface WBEMClient {
 	 * <code>null</code> and the provider can fill them in. This is
 	 * implementation specific unless specified by a CIM Schema or in a DMTF
 	 * Profile.
-	 * 
+	 *
 	 * @param pInstance
 	 *            The <code>CIMInstance</code> to be created.
 	 * @return <code>CIMObjectPath</code> of the instance created.
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -677,13 +713,13 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_CLASS (in this namespace)
 	 *      CIM_ERR_ALREADY_EXISTS
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public CIMObjectPath createInstance(CIMInstance pInstance) throws WBEMException;
 
 	/**
 	 * Deletes the CIM class for the object specified by the CIM object path.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> identifying the namespace and
 	 *            class name to delete.
@@ -693,12 +729,12 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_NOT_FOUND (the CIM Class to be deleted does not exist)
 	 *      CIM_ERR_CLASS_HAS_CHILDREN (the CIM Class has one or more subclasses
@@ -706,21 +742,21 @@ public interface WBEMClient {
 	 *      CIM_ERR_CLASS_HAS_INSTANCES (the CIM Class has one or more instances
 	 *            which cannot be deleted)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void deleteClass(CIMObjectPath pPath) throws WBEMException;
 
 	/**
 	 * Delete the CIM instance specified by the CIM object path.
-	 * 
+	 *
 	 * @param pPath
 	 *            The object path of the instance to be deleted. It must include
 	 *            all of the keys.
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -728,13 +764,13 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_CLASS (in this namespace)
 	 *      CIM_ERR_NOT_FOUND (if the instance does not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void deleteInstance(CIMObjectPath pPath) throws WBEMException;
 
 	/**
 	 * Delete a CIM Qualifier type.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> identifying the name and
 	 *            namespace of the CIM qualifier type to delete.
@@ -744,21 +780,21 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (for this method)
 	 *      CIM_ERR_NOT_FOUND (the Qualifier did not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void deleteQualifierType(CIMObjectPath pPath) throws WBEMException;
 
 	/**
 	 * Enumerate CIM Classes.
-	 * 
+	 *
 	 * @param pPath
 	 *            The object path of the class to be enumerated. Only the
 	 *            namespace and object name should be populated. If the object
@@ -791,25 +827,30 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_INVALID_CLASS (the CIM Class that is the basis for this
 	 *            enumeration does not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMClass> enumerateClasses(CIMObjectPath pPath, boolean pDeep,
-			boolean pLocalOnly, boolean pIncludeQualifiers, boolean pIncludeClassOrigin)
-			throws WBEMException;
+	public CloseableIterator<CIMClass> enumerateClasses(
+		CIMObjectPath pPath,
+		boolean pDeep,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerate the names of CIM Classes.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> identifying the class to be
 	 *            enumerated. If the class name in the object path specified is
@@ -829,25 +870,24 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_INVALID_CLASS (the CIM Class that is the basis for this
 	 *            enumeration does not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMObjectPath> enumerateClassNames(CIMObjectPath pPath, boolean pDeep)
-			throws WBEMException;
+	public CloseableIterator<CIMObjectPath> enumerateClassNames(CIMObjectPath pPath, boolean pDeep) throws WBEMException;
 
 	/**
 	 * Enumerate the names of the instances for a specified class. The names of
 	 * all subclass instances are returned.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> identifying the class whose
 	 *            instances are to be enumerated. Only the namespace and class
@@ -857,24 +897,23 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (for this method)
 	 *      CIM_ERR_INVALID_CLASS (in this namespace)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMObjectPath> enumerateInstanceNames(CIMObjectPath pPath)
-			throws WBEMException;
+	public CloseableIterator<CIMObjectPath> enumerateInstanceNames(CIMObjectPath pPath) throws WBEMException;
 
 	/**
 	 * <code>enumerateInstancePaths</code> shall enumerate the instances of the
 	 * specified class in <code>pClassPath</code> and return zero or more
 	 * <code>CIMObjectPath</code>s.
-	 * 
+	 *
 	 * @param pClassPath
 	 *            The <code>CIMObjectPath</code> for the class for which the
 	 *            enumeration is to be performed.
@@ -959,8 +998,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -973,16 +1012,22 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMObjectPath> enumerateInstancePaths(CIMObjectPath pClassPath,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMObjectPath> enumerateInstancePaths(
+		CIMObjectPath pClassPath,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerate the instances of a class. The instances of all subclasses are
 	 * also returned.
-	 * 
+	 *
 	 * @param pPath
 	 *            The object path of the class to be enumerated. Only the
 	 *            namespace and class name components are used. Any other
@@ -1018,25 +1063,30 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (for this method)
 	 *      CIM_ERR_INVALID_CLASS (in this namespace)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMInstance> enumerateInstances(CIMObjectPath pPath, boolean pDeep,
-			boolean pLocalOnly, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException;
+	public CloseableIterator<CIMInstance> enumerateInstances(
+		CIMObjectPath pPath,
+		boolean pDeep,
+		boolean pLocalOnly,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>enumerateInstances</code> shall enumerate the instances of the
 	 * specified class in <code>pClassPath</code> and return zero or more
 	 * <code>CIMInstance</code>s.
-	 * 
+	 *
 	 * @param pClassPath
 	 *            The <code>CIMObjectPath</code> for the class for which the
 	 *            enumeration is to be performed.
@@ -1145,9 +1195,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1160,16 +1210,24 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> enumerateInstances(CIMObjectPath pClassPath,
-			boolean pDeepInheritance, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMInstance> enumerateInstances(
+		CIMObjectPath pClassPath,
+		boolean pDeepInheritance,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerates the CIM Qualifier types for a specific namespace.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> identifying the namespace whose
 	 *            qualifier types are to be enumerated.
@@ -1181,24 +1239,23 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMQualifierType<?>> enumerateQualifierTypes(CIMObjectPath pPath)
-			throws WBEMException;
+	public CloseableIterator<CIMQualifierType<?>> enumerateQualifierTypes(CIMObjectPath pPath) throws WBEMException;
 
 	/**
 	 * <code>enumerationCount</code> provides an estimated count of the total
 	 * number of objects in an open enumeration session represented by an
 	 * enumeration context.
-	 * 
+	 *
 	 * @param pPath
 	 *            The namespace for the enumeration context.
 	 * @param pEnumerationContext
@@ -1208,9 +1265,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1219,15 +1276,14 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_ENUMERATION_CONTEXT
 	 *      CIM_ERR_SERVER_LIMITS_EXCEEDED
 	 *      CIM_ERR_FAILED
-	 * 
-	 * 
+	 *
+	 *
 	 */
-	public UnsignedInteger64 enumerationCount(CIMObjectPath pPath, String pEnumerationContext)
-			throws WBEMException;
+	public UnsignedInteger64 enumerationCount(CIMObjectPath pPath, String pEnumerationContext) throws WBEMException;
 
 	/**
 	 * <code>execQuery</code> shall execute a query to retrieve objects.
-	 * 
+	 *
 	 * @param pPath
 	 *            <code>CIMObjectPath</code> identifying the class to query.
 	 *            Only the namespace and class name components are used. All
@@ -1241,8 +1297,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -1253,15 +1309,15 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_QUERY (the query is not a valid query in the specified
 	 *            query language)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMInstance> execQuery(CIMObjectPath pPath, String pQuery,
-			String pQueryLanguage) throws WBEMException;
+	public CloseableIterator<CIMInstance> execQuery(CIMObjectPath pPath, String pQuery, String pQueryLanguage)
+		throws WBEMException;
 
 	/**
 	 * <code>execQueryInstances</code> shall execute a query to retrieve
 	 * instances.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            The <code>CIMObjectPath</code> representing the namespace to
 	 *            be used.
@@ -1366,8 +1422,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1378,22 +1434,29 @@ public interface WBEMClient {
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED (the requested filter query
 	 *            language is not recognized)
-	 *      CIM_ERR_INVALID_QUERY (the filter query is not a valid query in the 
+	 *      CIM_ERR_INVALID_QUERY (the filter query is not a valid query in the
 	 *            specified filter query language)
-	 *      CIM_ERR_QUERY_FEATURE_NOT_SUPPORTED (the query requires support for 
+	 *      CIM_ERR_QUERY_FEATURE_NOT_SUPPORTED (the query requires support for
 	 *            features that are not supported)
 	 *      CIM_ERR_FAILED (Some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> execQueryInstances(CIMObjectPath pObjectName,
-			String pFilterQuery, String pFilterQueryLanguage, boolean pReturnQueryResultClass,
-			UnsignedInteger32 pTimeout, boolean pContinueOnError, UnsignedInteger32 pMaxObjects,
-			CIMClass pQueryResultClass) throws WBEMException;
+	public EnumerateResponse<CIMInstance> execQueryInstances(
+		CIMObjectPath pObjectName,
+		String pFilterQuery,
+		String pFilterQueryLanguage,
+		boolean pReturnQueryResultClass,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects,
+		CIMClass pQueryResultClass
+	)
+		throws WBEMException;
 
 	/**
 	 * Returns the <code>CIMClass</code> for the specified
 	 * <code>CIMObjectPath</code>.
-	 * 
+	 *
 	 * @param pName
 	 *            The object path of the class to be returned. Only the name
 	 *            space and class name components are used. All other
@@ -1430,23 +1493,29 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_NOT_FOUND (the requested CIM Class does not exist in the
 	 *            specified namespace)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CIMClass getClass(CIMObjectPath pName, boolean pLocalOnly, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException;
+	public CIMClass getClass(
+		CIMObjectPath pName,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * Get a <code>CIMInstance</code>.
-	 * 
+	 *
 	 * @param pName
 	 *            The object path of the instance to be returned. The Keys in
 	 *            this <code>CIMObjectPath</code> must be populated.
@@ -1477,8 +1546,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -1486,15 +1555,20 @@ public interface WBEMClient {
 	 *      CIM_ERR_INVALID_CLASS (in this namespace)
 	 *      CIM_ERR_NOT_FOUND (if instance does not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CIMInstance getInstance(CIMObjectPath pName, boolean pLocalOnly,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException;
+	public CIMInstance getInstance(
+		CIMObjectPath pName,
+		boolean pLocalOnly,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>getInstancePaths</code> shall get the <code>CIMObjectPath</code>s
 	 * using an enumeration context.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> representing the namespace to
 	 *            be used.
@@ -1514,9 +1588,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1526,15 +1600,19 @@ public interface WBEMClient {
 	 *      CIM_ERR_SERVER_LIMITS_EXCEEDED
 	 *      CIM_ERR_PULL_HAS_BEEN_ABANDONED
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMObjectPath> getInstancePaths(CIMObjectPath pPath, String pContext,
-			UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMObjectPath> getInstancePaths(
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>getInstances</code> shall get the instances from an enumeration
 	 * session started by <code>execQueryInstances</code>.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> representing the namespace to
 	 *            be used.
@@ -1556,9 +1634,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1568,15 +1646,19 @@ public interface WBEMClient {
 	 *      CIM_ERR_SERVER_LIMITS_EXCEEDED
 	 *      CIM_ERR_PULL_HAS_BEEN_ABANDONED
 	 *      CIM_ERR_FAILED
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> getInstances(CIMObjectPath pPath, String pContext,
-			UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMInstance> getInstances(
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>getInstancesWithPath</code> shall use the enumeration context
 	 * provided to get the next set of instances for the enumeration session.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> representing the namespace to
 	 *            be used.
@@ -1596,9 +1678,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -1608,15 +1690,19 @@ public interface WBEMClient {
 	 *      CIM_ERR_SERVER_LIMITS_EXCEEDED
 	 *      CIM_ERR_PULL_HAS_BEEN_ABANDONED
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> getInstancesWithPath(CIMObjectPath pPath,
-			String pContext, UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMInstance> getInstancesWithPath(
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * Get property values. See <code>WBEMClientConstants</code> for a list of
 	 * standard properties.
-	 * 
+	 *
 	 * @param pKey
 	 *            The name of the property.
 	 * @return The value of the property.
@@ -1626,7 +1712,7 @@ public interface WBEMClient {
 
 	/**
 	 * Get a <code>CIMQualifierType</code>.
-	 * 
+	 *
 	 * @param pName
 	 *            <code>CIMObjectPath</code> that identifies the
 	 *            <code>CIMQualifierType</code> to return.
@@ -1637,23 +1723,23 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_NOT_FOUND (the requested Qualifier declaration did not exist)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public CIMQualifierType<?> getQualifierType(CIMObjectPath pName) throws WBEMException;
 
 	/**
 	 * Initialize the client connection. This must be called before any
 	 * operations. This must only be called once.
-	 * 
+	 *
 	 * @param pName
 	 *            The protocol and host to use (e.g. http://192.168.1.128/). Any
 	 *            other fields shall be ignored.
@@ -1668,11 +1754,11 @@ public interface WBEMClient {
 	 *             If the protocol adapter or security cannot be initialized.
 	 */
 	public void initialize(CIMObjectPath pName, Subject pSubject, Locale[] pLocales)
-			throws IllegalArgumentException, WBEMException;
+		throws IllegalArgumentException, WBEMException;
 
 	/**
 	 * Executes the specified method on the specified object.
-	 * 
+	 *
 	 * @param pName
 	 *            CIM object path of the object whose method must be invoked. It
 	 *            must include all of the keys.
@@ -1689,10 +1775,10 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
-	 *      CIM_ERR_NOT_SUPPORTED (implementation DOES NOT support ANY 
+	 *      CIM_ERR_NOT_SUPPORTED (implementation DOES NOT support ANY
 	 *            Extrinsic Method Invocation)
 	 *      CIM_ERR_INVALID_NAMESPACE
 	 *      CIM_ERR_INVALID_PARAMETER (for this method)
@@ -1700,15 +1786,19 @@ public interface WBEMClient {
 	 *      CIM_ERR_METHOD_NOT_FOUND
 	 *      CIM_ERR_METHOD_NOT_AVAILABLE
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public Object invokeMethod(CIMObjectPath pName, String pMethodName,
-			CIMArgument<?>[] pInputArguments, CIMArgument<?>[] pOutputArguments)
-			throws WBEMException;
+	public Object invokeMethod(
+		CIMObjectPath pName,
+		String pMethodName,
+		CIMArgument<?>[] pInputArguments,
+		CIMArgument<?>[] pOutputArguments
+	)
+		throws WBEMException;
 
 	/**
 	 * Modify the <code>CIMClass</code>.
-	 * 
+	 *
 	 * @param pClass
 	 *            <code>CIMClass</code> to be modified.
 	 * @throws UnsupportedOperationException
@@ -1717,12 +1807,12 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_INVALID_SUPERCLASS (the putative CIM Class declares a
 	 *            non-existent superclass)
@@ -1733,14 +1823,14 @@ public interface WBEMClient {
 	 *            because it was not possible to update the instances of the Class in
 	 *            a consistent fashion)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void modifyClass(CIMClass pClass) throws WBEMException;
 
 	/**
 	 * Modify some or all of the properties of the specified
 	 * <code>CIMInstance</code>.
-	 * 
+	 *
 	 * @param pInstance
 	 *            <code>CIMInstance</code> to be modified. All Keys must be
 	 *            populated.
@@ -1758,8 +1848,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED (provider does not support this method)
 	 *      CIM_ERR_INVALID_NAMESPACE
@@ -1768,14 +1858,14 @@ public interface WBEMClient {
 	 *      CIM_ERR_NOT_FOUND (if instance does not exist)
 	 *      CIM_ERR_NO_SUCH_PROPERTY (in this instance)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void modifyInstance(CIMInstance pInstance, String[] pPropertyList) throws WBEMException;
 
 	/**
 	 * Enumerates the Association classes that refer to a specified source CIM
 	 * Class.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM class whose
 	 *            referring classes are to be returned. <code>pObjectName</code>
@@ -1823,25 +1913,31 @@ public interface WBEMClient {
 	 *             If unsuccessful, one of the following status codes shall be
 	 *             returned along with zero or more instance of
 	 *             <code>CIM_Error</code>. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 
-	CloseableIterator<CIMClass> referenceClasses(CIMObjectPath pObjectName, String pResultClass,
-			String pRole, boolean pIncludeQualifiers, boolean pIncludeClassOrigin,
-			String[] pPropertyList) throws WBEMException;
+	CloseableIterator<CIMClass> referenceClasses(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerates the Association instances that refer to a specified source CIM
 	 * Instance.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM Instance
 	 *            whose referring instances are to be returned. The
@@ -1882,19 +1978,24 @@ public interface WBEMClient {
 	 *             If unsuccessful, one of the following status codes shall be
 	 *             returned along with zero or more <code>CIM_Error</code>
 	 *             instances. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	CloseableIterator<CIMInstance> referenceInstances(CIMObjectPath pObjectName,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException;
+	CloseableIterator<CIMInstance> referenceInstances(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException;
 
 	/**
 	 * Enumerates the <code>CIMObjectPath</code>s of Association Objects that
@@ -1905,7 +2006,7 @@ public interface WBEMClient {
 	 * <code>CloseableIterator</code> of <code>CIMObjectPath</code>s of the
 	 * <code>CIMInstance</code> objects that refer to the source Object is
 	 * returned.
-	 * 
+	 *
 	 * @param pObjectName
 	 *            <code>CIMObjectPath</code> defining the source CIM Object
 	 *            whose referring Objects are to be returned. This argument may
@@ -1928,25 +2029,25 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public CloseableIterator<CIMObjectPath> referenceNames(CIMObjectPath pObjectName,
-			String pResultClass, String pRole) throws WBEMException;
+	public CloseableIterator<CIMObjectPath> referenceNames(CIMObjectPath pObjectName, String pResultClass, String pRole)
+		throws WBEMException;
 
 	/**
 	 * <code>referencePaths</code> shall start an enumeration session for
 	 * association instances that have references that refer to the instance
 	 * defined in the <code>pInstancePath</code> parameter and return zero or
 	 * more <code>CIMObjectPath</code> objects.
-	 * 
+	 *
 	 * @param pInstancePath
 	 *            The <code>CIMObjectPath</code> for the instance for which the
 	 *            enumeration is to be performed.
@@ -2042,9 +2143,9 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
-	 * 
+	 *
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -2057,19 +2158,26 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMObjectPath> referencePaths(CIMObjectPath pInstancePath,
-			String pResultClass, String pRole, String pFilterQueryLanguage, String pFilterQuery,
-			UnsignedInteger32 pTimeout, boolean pContinueOnError, UnsignedInteger32 pMaxObjects)
-			throws WBEMException;
+	public EnumerateResponse<CIMObjectPath> referencePaths(
+		CIMObjectPath pInstancePath,
+		String pResultClass,
+		String pRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * <code>references</code> shall start an enumeration session for
 	 * association instances that have references that refer to the instance
 	 * defined in the <code>pInstancePath</code> parameter and return zero or
 	 * more <code>CIMInstance</code> objects.
-	 * 
+	 *
 	 * @param pInstancePath
 	 *            The <code>CIMObjectPath</code> for the instance for which the
 	 *            enumeration is to be performed.
@@ -2182,8 +2290,8 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_SERVER_IS_SHUTTING_DOWN
 	 *      CIM_ERR_NOT_SUPPORTED
@@ -2196,16 +2304,25 @@ public interface WBEMClient {
 	 *      CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_QUERY
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
-	public EnumerateResponse<CIMInstance> references(CIMObjectPath pInstancePath,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException;
+	public EnumerateResponse<CIMInstance> references(
+		CIMObjectPath pInstancePath,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException;
 
 	/**
 	 * Change the locales that were provided during initialization.
-	 * 
+	 *
 	 * @param pLocales
 	 *            An array of locales in order of priority of preference.
 	 */
@@ -2214,7 +2331,7 @@ public interface WBEMClient {
 	/**
 	 * Set properties that enable options or protocol specific properties. See
 	 * <code>WBEMClientConstants</code> for a list of standard properties.
-	 * 
+	 *
 	 * @param pKey
 	 *            The name of the property.
 	 * @param pValue
@@ -2229,7 +2346,7 @@ public interface WBEMClient {
 	 * Add a <code>CIMQualifierType</code> to the specified namespace if it does
 	 * not already exist. Otherwise, it modifies the qualifier type to the value
 	 * specified.
-	 * 
+	 *
 	 * @param pQualifierType
 	 *            The CIM qualifier type to be added.
 	 * @throws UnsupportedOperationException
@@ -2238,15 +2355,15 @@ public interface WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
-	 *             
+	 *
+	 *
 	 *      CIM_ERR_ACCESS_DENIED
 	 *      CIM_ERR_NOT_SUPPORTED
 	 *      CIM_ERR_INVALID_NAMESPACE
-	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized 
+	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
-	 * 
+	 *
 	 */
 	public void setQualifierType(CIMQualifierType<?> pQualifierType) throws WBEMException;
 }

@@ -48,15 +48,13 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
  * CIM-XML SAX parsing session.
  */
 public class SAXSession {
-
 	private CIMObjectPath iDefLocalPath;
 
-	private boolean iStrictEmbObjParsing = WBEMConfiguration.getGlobalConfiguration()
-			.strictEmbObjTypes();
+	private boolean iStrictEmbObjParsing = WBEMConfiguration.getGlobalConfiguration().strictEmbObjTypes();
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pDefLocalPath
 	 */
 	public SAXSession(CIMObjectPath pDefLocalPath) {
@@ -65,7 +63,7 @@ public class SAXSession {
 
 	/**
 	 * getDefLocalPath
-	 * 
+	 *
 	 * @return CIMObjectPath
 	 */
 	public CIMObjectPath getDefLocalPath() {
@@ -74,11 +72,10 @@ public class SAXSession {
 
 	/**
 	 * strictEmbObjParsing
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean strictEmbObjParsing() {
 		return this.iStrictEmbObjParsing;
 	}
-
 }

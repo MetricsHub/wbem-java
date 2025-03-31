@@ -43,19 +43,17 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax;
  */
 
 import java.io.InputStreamReader;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.WBEMException;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.CIMNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.MessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.SimpleRspNode;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.xml.sax.InputSource;
 
 /**
@@ -66,15 +64,19 @@ public class SAXHelper {
 
 	/**
 	 * parseInvokeMethodResponse
-	 * 
+	 *
 	 * @param pIs
 	 * @param pOutArgs
 	 * @param pDefPath
 	 * @return Object, any kind of JSR48 value class
 	 * @throws Exception
 	 */
-	public static Object parseInvokeMethodResponse(InputStreamReader pIs,
-			CIMArgument<?>[] pOutArgs, CIMObjectPath pDefPath) throws Exception {
+	public static Object parseInvokeMethodResponse(
+		InputStreamReader pIs,
+		CIMArgument<?>[] pOutArgs,
+		CIMObjectPath pDefPath
+	)
+		throws Exception {
 		XMLDefaultHandlerImpl hndlr = new XMLDefaultHandlerImpl(pDefPath);
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
@@ -89,15 +91,12 @@ public class SAXHelper {
 		AbstractMessageNode absMsgNode = msgNode.getAbstractMessageNode();
 		SimpleRspNode simpRspNode = (SimpleRspNode) absMsgNode;
 		CIMError cimErr = simpRspNode.getCIMError();
-		if (cimErr != null) throw new WBEMException(cimErr.getCode(), cimErr.getDescription(),
-				cimErr.getCIMInstances());
+		if (cimErr != null) throw new WBEMException(cimErr.getCode(), cimErr.getDescription(), cimErr.getCIMInstances());
 		CIMArgument<?>[] outArgs = simpRspNode.getCIMArguments();
 		if (pOutArgs != null && outArgs != null) {
 			int len = Math.min(pOutArgs.length, outArgs.length);
-			for (int i = 0; i < len; i++)
-				pOutArgs[i] = outArgs[i];
+			for (int i = 0; i < len; i++) pOutArgs[i] = outArgs[i];
 		}
 		return simpRspNode.getReturnValueCount() == 0 ? null : simpRspNode.readReturnValue();
 	}
-
 }

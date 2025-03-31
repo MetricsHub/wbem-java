@@ -57,23 +57,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.internal.IPv6MulticastAddressFactory;
+import org.metricshub.wbem.sblim.slp.internal.Net;
 import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.MsgFactory;
-import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
-import org.metricshub.wbem.sblim.slp.internal.Net;
 import org.metricshub.wbem.sblim.slp.internal.msg.ReplyMessage;
+import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
 
 /**
  * DatagramRequester
- * 
+ *
  */
 public class DatagramRequester implements Runnable {
-
 	RequestMessage iReqMsg;
 
 	private Thread iThread;
@@ -86,9 +84,8 @@ public class DatagramRequester implements Runnable {
 
 	private int iPort = SLPConfig.getGlobalCfg().getPort();
 
-	private boolean iUseV4 = Net.hasIPv4() && SLPConfig.getGlobalCfg().useIPv4(), iUseV6 = Net
-			.hasIPv6()
-			&& SLPConfig.getGlobalCfg().useIPv6();
+	private boolean iUseV4 = Net.hasIPv4() && SLPConfig.getGlobalCfg().useIPv4(), iUseV6 =
+		Net.hasIPv6() && SLPConfig.getGlobalCfg().useIPv6();
 
 	private List<TCPRequester> iTCPRequesters;
 
@@ -107,14 +104,13 @@ public class DatagramRequester implements Runnable {
 
 	/**
 	 * Constructor used for unicast requests
-	 * 
+	 *
 	 * @param pRqstMsg
 	 * @param pResTable
 	 * @param pDst
 	 * @throws IOException
 	 */
-	public DatagramRequester(RequestMessage pRqstMsg, ResultTable pResTable, InetAddress pDst)
-			throws IOException {
+	public DatagramRequester(RequestMessage pRqstMsg, ResultTable pResTable, InetAddress pDst) throws IOException {
 		this.iReqMsg = pRqstMsg;
 		this.iResTable = pResTable;
 		this.iDst0 = pDst;
@@ -124,7 +120,7 @@ public class DatagramRequester implements Runnable {
 
 	/**
 	 * Constructor used for multicast requests
-	 * 
+	 *
 	 * @param pRqstMsg
 	 * @param pResTable
 	 * @throws IOException
@@ -137,14 +133,12 @@ public class DatagramRequester implements Runnable {
 		MulticastSocket mcastSocket = new MulticastSocket();
 		this.iDGramSocket = mcastSocket;
 		if (this.iUseV6) {
-			this.iDst0 = IPv6MulticastAddressFactory
-					.get(SLPDefaults.IPV6_MULTICAST_SCOPE, pRqstMsg);
+			this.iDst0 = IPv6MulticastAddressFactory.get(SLPDefaults.IPV6_MULTICAST_SCOPE, pRqstMsg);
 			try {
 				mcastSocket.joinGroup(this.iDst0);
 			} catch (IOException ioe) {
 				// some kernels can't handle IPv6 mcast
-				TRC.warning("IOException caught during join, disabling IPv6: " + ioe.getMessage(),
-						ioe);
+				TRC.warning("IOException caught during join, disabling IPv6: " + ioe.getMessage(), ioe);
 				this.iDst0 = null;
 			}
 		}
@@ -156,7 +150,7 @@ public class DatagramRequester implements Runnable {
 
 	/**
 	 * start
-	 * 
+	 *
 	 * @param pAsThread
 	 */
 	public void start(boolean pAsThread) {
@@ -172,7 +166,7 @@ public class DatagramRequester implements Runnable {
 
 	/**
 	 * For diagnostic only.
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getPort() {
@@ -208,14 +202,13 @@ public class DatagramRequester implements Runnable {
 	}
 
 	class MCastLoopController {
-
 		private long iStartTime = getMillis();
 
 		private int iTimeOutIdx = 0;
 
 		/**
 		 * getTimeOut
-		 * 
+		 *
 		 * @return int
 		 */
 		public int getTimeOut() {
@@ -235,28 +228,31 @@ public class DatagramRequester implements Runnable {
 
 		/**
 		 * hasNext
-		 * 
+		 *
 		 * @return boolean
 		 */
 		public boolean hasNext() {
-			return DatagramRequester.this.iResTable.getTotalResponses() < DatagramRequester.this.iMaxResults
-					&& getMillis() - this.iStartTime < DatagramRequester.this.iTotalTimeOut
-					&& hasNextTimeOut();
+			return (
+				DatagramRequester.this.iResTable.getTotalResponses() < DatagramRequester.this.iMaxResults &&
+				getMillis() - this.iStartTime < DatagramRequester.this.iTotalTimeOut &&
+				hasNextTimeOut()
+			);
 		}
-
 	}
 
 	private void mcastNegotiate() throws Exception {
 		byte[] reqBytes = this.iReqMsg.serialize(true, true, false);
-		DatagramPacket outPacket0 = this.iDst0 == null ? null : new DatagramPacket(reqBytes,
-				reqBytes.length, this.iDst0, this.iPort);
-		DatagramPacket outPacket1 = this.iDst1 == null ? null : new DatagramPacket(reqBytes,
-				reqBytes.length, this.iDst1, this.iPort);
+		DatagramPacket outPacket0 = this.iDst0 == null
+			? null
+			: new DatagramPacket(reqBytes, reqBytes.length, this.iDst0, this.iPort);
+		DatagramPacket outPacket1 = this.iDst1 == null
+			? null
+			: new DatagramPacket(reqBytes, reqBytes.length, this.iDst1, this.iPort);
 		DatagramPacket inPacket = new DatagramPacket(this.iInBuf, this.iInBuf.length);
 		MCastLoopController ctrl = new MCastLoopController();
 		boolean respondersUpdated = false;
 		ResponseCache rspCache = new ResponseCache();
-		sendLoop: while (ctrl.hasNext()) {
+		sendLoop:while (ctrl.hasNext()) {
 			if (respondersUpdated) {
 				byte[] msg = this.iReqMsg.serialize(true, true, true);
 				if (outPacket0 != null) outPacket0.setData(msg);
@@ -270,8 +266,7 @@ public class DatagramRequester implements Runnable {
 				if (outPacket0 != null) this.iDGramSocket.send(outPacket0);
 			} catch (IOException ioe) {
 				// some back level kernels can't handle sending IPv6 mcast
-				TRC.warning("IOException caught during send, disabling IPv6: " + ioe.getMessage(),
-						ioe);
+				TRC.warning("IOException caught during send, disabling IPv6: " + ioe.getMessage(), ioe);
 				outPacket0 = null;
 				this.iDst0 = null;
 			}
@@ -317,8 +312,7 @@ public class DatagramRequester implements Runnable {
 
 	private void ucastNegotiate() throws Exception {
 		byte[] reqBytes = this.iReqMsg.serialize(false, true, false);
-		DatagramPacket outPacket = new DatagramPacket(reqBytes, reqBytes.length, this.iDst0,
-				this.iPort);
+		DatagramPacket outPacket = new DatagramPacket(reqBytes, reqBytes.length, this.iDst0, this.iPort);
 		DatagramPacket inPacket = new DatagramPacket(this.iInBuf, this.iInBuf.length);
 		int timeOutIdx = 0;
 		int timeOut = this.iTimeOuts[timeOutIdx];
@@ -346,8 +340,7 @@ public class DatagramRequester implements Runnable {
 				continue;
 			}
 			if (replyMsg.overflows()) {
-				TCPRequester tcpRequester = new TCPRequester(this.iResTable, responderAddress,
-						this.iReqMsg, true);
+				TCPRequester tcpRequester = new TCPRequester(this.iResTable, responderAddress, this.iReqMsg, true);
 				tcpRequester.waitFor();
 			}
 			/*
@@ -361,10 +354,10 @@ public class DatagramRequester implements Runnable {
 	 * Tries to parse the content of the packet as a ReplyMessage. If parsing is
 	 * successful ReplyMessage is placed into the ResultTable, otherwise the
 	 * Exception is placed there.
-	 * 
+	 *
 	 * @param pPacket
 	 * @return the ReplyMessage or null in case of
-	 * 
+	 *
 	 *         Add all invalid URL exceptions thrown by parser into exception
 	 *         table
 	 */
@@ -373,8 +366,7 @@ public class DatagramRequester implements Runnable {
 		try {
 			replyMsg = (ReplyMessage) MsgFactory.parse(pPacket);
 			TRC.debug("expected: " + this.iReqMsg.getXID() + ", received: " + replyMsg);
-			if (this.iReqMsg.getXID() != replyMsg.getXID()
-					|| !this.iReqMsg.isAllowedResponseType(replyMsg)) {
+			if (this.iReqMsg.getXID() != replyMsg.getXID() || !this.iReqMsg.isAllowedResponseType(replyMsg)) {
 				TRC.debug("expected: " + this.iReqMsg.getXID() + ", ignoring: " + replyMsg);
 				return null;
 			}
@@ -409,9 +401,7 @@ public class DatagramRequester implements Runnable {
 	private void waitForTCPRequesters() {
 		if (this.iTCPRequesters == null) return;
 		Iterator<TCPRequester> itr = this.iTCPRequesters.iterator();
-		while (itr.hasNext())
-			itr.next().waitFor();
+		while (itr.hasNext()) itr.next().waitFor();
 		this.iTCPRequesters.clear();
 	}
-
 }

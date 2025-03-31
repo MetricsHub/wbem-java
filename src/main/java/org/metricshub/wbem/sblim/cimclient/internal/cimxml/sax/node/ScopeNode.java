@@ -22,8 +22,6 @@
 
 package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
 
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
-
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -45,6 +43,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
  */
 
 import org.metricshub.wbem.javax.cim.CIMScope;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -62,7 +61,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ScopeNode extends Node {
-
 	private int iScope;
 
 	/**
@@ -74,7 +72,7 @@ public class ScopeNode extends Node {
 
 	/**
 	 * getScope
-	 * 
+	 *
 	 * @return int - set of CIMScope bits
 	 */
 	public int getScope() {
@@ -101,7 +99,7 @@ public class ScopeNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
@@ -117,12 +115,11 @@ public class ScopeNode extends Node {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child
+		// no child
 	}
 
 	@Override
 	public void testCompletness() {
-	// Nothing to test, since it doesn't have any child node.
+		// Nothing to test, since it doesn't have any child node.
 	}
-
 }

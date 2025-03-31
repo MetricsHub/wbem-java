@@ -51,16 +51,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.TimeStamp;
 
 /**
  * Class DebugInputStream is for debugging purposes
- * 
+ *
  */
 public class DebugInputStream extends FilterInputStream {
-
 	private byte[] iBuf;
 
 	private boolean iBuffered;
@@ -75,7 +73,7 @@ public class DebugInputStream extends FilterInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param is
 	 * @param os
 	 */
@@ -85,7 +83,7 @@ public class DebugInputStream extends FilterInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param is
 	 * @param os
 	 * @param pOrigin
@@ -131,7 +129,8 @@ public class DebugInputStream extends FilterInputStream {
 		outStr.append(" end ----->\n");
 		if (this.iStream != null) this.iStream.write(outStr.toString().getBytes());
 		if (LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) LogAndTraceBroker
-				.getBroker().traceCIMXML(Level.FINEST, outStr.toString(), false);
+			.getBroker()
+			.traceCIMXML(Level.FINEST, outStr.toString(), false);
 	}
 
 	@Override
@@ -146,13 +145,16 @@ public class DebugInputStream extends FilterInputStream {
 	public synchronized int read(byte b[], int off, int len) throws IOException {
 		if (b == null) {
 			throw new NullPointerException();
-		} else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length)
-				|| ((off + len) < 0)) {
+		} else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
 			throw new IndexOutOfBoundsException();
-		} else if (len == 0) { return 0; }
+		} else if (len == 0) {
+			return 0;
+		}
 
 		int c = read();
-		if (c == -1) { return -1; }
+		if (c == -1) {
+			return -1;
+		}
 		b[off] = (byte) c;
 
 		int i = 1;

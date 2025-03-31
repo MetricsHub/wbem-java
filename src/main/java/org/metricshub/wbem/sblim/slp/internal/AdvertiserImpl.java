@@ -23,15 +23,15 @@
 
 package org.metricshub.wbem.sblim.slp.internal;
 
-import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
-import org.metricshub.wbem.sblim.slp.ServiceURL;
-import org.metricshub.wbem.sblim.slp.internal.msg.MsgFactory;
-import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
-import org.metricshub.wbem.sblim.slp.internal.msg.ServiceAcknowledgment;
-import org.metricshub.wbem.sblim.slp.internal.msg.ServiceDeregistration;
-import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRegistration;
-import org.metricshub.wbem.sblim.slp.internal.msg.Util;
-
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -53,26 +53,21 @@ import org.metricshub.wbem.sblim.slp.internal.msg.Util;
  */
 
 import org.metricshub.wbem.sblim.slp.Advertiser;
+import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Vector;
-
-
+import org.metricshub.wbem.sblim.slp.ServiceURL;
+import org.metricshub.wbem.sblim.slp.internal.msg.MsgFactory;
+import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
+import org.metricshub.wbem.sblim.slp.internal.msg.ServiceAcknowledgment;
+import org.metricshub.wbem.sblim.slp.internal.msg.ServiceDeregistration;
+import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRegistration;
+import org.metricshub.wbem.sblim.slp.internal.msg.Util;
 
 /**
  * AdvertiserImpl
- * 
+ *
  */
 public class AdvertiserImpl implements Advertiser {
-
 	private Locale iLocale;
 
 	private String iLangTag;
@@ -89,7 +84,7 @@ public class AdvertiserImpl implements Advertiser {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLocale
 	 */
 	public AdvertiserImpl(Locale pLocale) {
@@ -105,7 +100,7 @@ public class AdvertiserImpl implements Advertiser {
 	 * @throws ServiceLocationException
 	 */
 	public void addAttributes(ServiceURL pURL, Vector<ServiceLocationAttribute> pAttributes)
-	throws ServiceLocationException {
+		throws ServiceLocationException {
 		throw new ServiceLocationException(ServiceLocationException.NOT_IMPLEMENTED);
 	}
 
@@ -114,8 +109,7 @@ public class AdvertiserImpl implements Advertiser {
 	 * @param pAttributeIds
 	 * @throws ServiceLocationException
 	 */
-	public void deleteAttributes(ServiceURL pURL, Vector<String> pAttributeIds)
-			throws ServiceLocationException {
+	public void deleteAttributes(ServiceURL pURL, Vector<String> pAttributeIds) throws ServiceLocationException {
 		throw new ServiceLocationException(ServiceLocationException.NOT_IMPLEMENTED);
 	}
 
@@ -127,11 +121,8 @@ public class AdvertiserImpl implements Advertiser {
 		return this.iLocale;
 	}
 
-	public void register(ServiceURL pURL, Vector<ServiceLocationAttribute> pAttributes)
-			throws ServiceLocationException {
-		sendMessage(new ServiceRegistration(this.iLangTag, pURL, this.iDefScopeList, pAttributes,
-		                                    null));
-
+	public void register(ServiceURL pURL, Vector<ServiceLocationAttribute> pAttributes) throws ServiceLocationException {
+		sendMessage(new ServiceRegistration(this.iLangTag, pURL, this.iDefScopeList, pAttributes, null));
 	}
 
 	private void sendMessage(SLPMessage pMsg) throws ServiceLocationException {
@@ -148,12 +139,15 @@ public class AdvertiserImpl implements Advertiser {
 		DatagramSocket dgSocket = new DatagramSocket();
 		try {
 			byte[] reqBytes = pMsg.serialize(false, true, false);
-			InetAddress loopback = this.iUseV6 ? SLPConfig.getLoopbackV6() : SLPConfig
-					.getLoopbackV4();
+			InetAddress loopback = this.iUseV6 ? SLPConfig.getLoopbackV6() : SLPConfig.getLoopbackV4();
 			TRC.debug("loopback:" + loopback);
 
-			DatagramPacket outPacket = new DatagramPacket(reqBytes, reqBytes.length, loopback,
-					SLPConfig.getGlobalCfg().getPort());
+			DatagramPacket outPacket = new DatagramPacket(
+				reqBytes,
+				reqBytes.length,
+				loopback,
+				SLPConfig.getGlobalCfg().getPort()
+			);
 			DatagramPacket inPacket = new DatagramPacket(this.iInBuf, this.iInBuf.length);
 
 			int timeOutIdx = 0;
@@ -181,5 +175,4 @@ public class AdvertiserImpl implements Advertiser {
 		TRC.warning("registration failed");
 		return ServiceLocationException.INVALID_REGISTRATION;
 	}
-
 }

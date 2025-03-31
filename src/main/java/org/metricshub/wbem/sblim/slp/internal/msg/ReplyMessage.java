@@ -46,15 +46,14 @@ import java.util.Iterator;
 
 /**
  * ReplyMessage
- * 
+ *
  */
 public abstract class ReplyMessage extends SLPMessage {
-
 	private int iErrorCode;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 * @param pErrorCode
 	 */
@@ -65,7 +64,7 @@ public abstract class ReplyMessage extends SLPMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 * @param pLangTag
 	 * @param pErrorCode
@@ -77,7 +76,7 @@ public abstract class ReplyMessage extends SLPMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 */
@@ -88,7 +87,7 @@ public abstract class ReplyMessage extends SLPMessage {
 
 	/**
 	 * getErrorCode
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getErrorCode() {
@@ -97,16 +96,15 @@ public abstract class ReplyMessage extends SLPMessage {
 
 	/**
 	 * getResultIterator
-	 * 
+	 *
 	 * @return Iterator
 	 */
 	public abstract Iterator<?> getResultIterator();
 
 	/**
 	 * getExceptionIterator
-	 * 
+	 *
 	 * @return Iterator
 	 */
 	public abstract Iterator<?> getExceptionIterator();
-
 }

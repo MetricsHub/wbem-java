@@ -48,16 +48,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
-
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.ReplyMessage;
 
 /**
  * ResultTable
- * 
+ *
  */
 public class ResultTable implements Iterator<Object> {
-
 	private ArrayList<DatagramRequester> iRequesters = new ArrayList<DatagramRequester>();
 
 	private ArrayList<Exception> iExceptions = new ArrayList<Exception>();
@@ -73,20 +71,19 @@ public class ResultTable implements Iterator<Object> {
 	/**
 	 * ResultTable has to know which Requesters provide results. Requester have
 	 * to be registered before hasNext() is called.
-	 * 
+	 *
 	 * @see #unregisterRequester(DatagramRequester)
 	 * @param pReq
 	 */
 	public synchronized void registerRequester(DatagramRequester pReq) {
-		for (int i = 0; i < this.iRequesters.size(); i++)
-			if (pReq == this.iRequesters.get(i)) return;
+		for (int i = 0; i < this.iRequesters.size(); i++) if (pReq == this.iRequesters.get(i)) return;
 		this.iRequesters.add(pReq);
 	}
 
 	/**
 	 * If the Requester's sequence is completed, Requester has to be
 	 * unregistered otherwise hasNext() will block.
-	 * 
+	 *
 	 * @param pReq
 	 */
 	public synchronized void unregisterRequester(DatagramRequester pReq) {
@@ -101,7 +98,7 @@ public class ResultTable implements Iterator<Object> {
 
 	/**
 	 * addResults
-	 * 
+	 *
 	 * @param pReplyMsg
 	 */
 	public void addResults(ReplyMessage pReplyMsg) {
@@ -110,20 +107,19 @@ public class ResultTable implements Iterator<Object> {
 
 	/**
 	 * addResults
-	 * 
+	 *
 	 * @param pResItr
 	 */
 	public synchronized void addResults(Iterator<?> pResItr) {
 		if (pResItr == null) return;
-		while (pResItr.hasNext())
-			addResult(pResItr.next());
+		while (pResItr.hasNext()) addResult(pResItr.next());
 		// waking up hasNext()
 		if (this.iInSet.size() > 0) wakeUp();
 	}
 
 	/**
 	 * addExceptions
-	 * 
+	 *
 	 * @param pReplyMsg
 	 */
 	public synchronized void addExceptions(ReplyMessage pReplyMsg) {
@@ -132,18 +128,17 @@ public class ResultTable implements Iterator<Object> {
 
 	/**
 	 * addExceptions
-	 * 
+	 *
 	 * @param pExceptionItr
 	 */
 	public synchronized void addExceptions(Iterator<?> pExceptionItr) {
 		if (pExceptionItr == null) return;
-		while (pExceptionItr.hasNext())
-			addException((Exception) pExceptionItr.next());
+		while (pExceptionItr.hasNext()) addException((Exception) pExceptionItr.next());
 	}
 
 	/**
 	 * addException
-	 * 
+	 *
 	 * @param pE
 	 */
 	public synchronized void addException(Exception pE) {
@@ -153,7 +148,7 @@ public class ResultTable implements Iterator<Object> {
 
 	/**
 	 * getTotalResponses
-	 * 
+	 *
 	 * @return int
 	 */
 	public synchronized int getTotalResponses() {
@@ -229,5 +224,4 @@ public class ResultTable implements Iterator<Object> {
 	private boolean hasData() {
 		return this.iInSet.size() > 0;
 	}
-
 }

@@ -77,10 +77,9 @@ package org.metricshub.wbem.sblim.cimclient;
 /**
  * The interface WBEMConfigurationProperties contains the names of all
  * configuration properties that are recognized by the CIM Client.
- * 
+ *
  */
 public interface WBEMConfigurationProperties {
-
 	/**
 	 * A URL string giving the location of the CIM client config file. <br />
 	 * <br />
@@ -300,7 +299,7 @@ public interface WBEMConfigurationProperties {
 	 * Type: <code>String</code><br />
 	 * Recognition: <code>On next authentication</code><br />
 	 * Range:
-	 * 
+	 *
 	 * <code>org.sblim.cimclient.internal.http.WwwAuthInfo, org.sblim.cimclient.internal.http.PegasusLocalAuthInfo or any self-written subclass of org.sblim.cimclient.internal.http.AuthorizationInfo</code>
 	 * <br />
 	 * Default: <code>org.sblim.cimclient.internal.http.WwwAuthInfo</code><br />
@@ -315,12 +314,12 @@ public interface WBEMConfigurationProperties {
 	 * WWW-Authenticate field of an HTTP 401 response when authentication<br />
 	 * fails. The following two strings are examples:<br />
 	 * <br />
-	 * 
-	 * 
+	 *
+	 *
 	 * Basic realm=&quot;Secure Area&quot;
 	 * Digest realm=&quot;testrealm@host.com&quot;,qop=&quot;auth,auth-int&quot;,nonce=&quot;dcd98b7102dd2f0e8b11d0f600bfb0c093&quot;,opaque=&quot;5ccc069c403ebaf9f0171e9517f40e41&quot;
-	 * 
-	 * 
+	 *
+	 *
 	 * Type: <code>String</code><br />
 	 * Recognition: <code>On next authentication</code><br />
 	 * Range: <code>Basic, Digest</code><br />
@@ -632,19 +631,19 @@ public interface WBEMConfigurationProperties {
 	 * event the application does not set one via the LogAndTraceManager class.
 	 * This stream can either be standard output (System.out), standard error
 	 * output (System.err) or a filename to be opened by the client.
-	 * 
+	 *
 	 * Note: This property has no effect unless sblim.wbem.cimxmlTracing is set
 	 * to true.
-	 * 
+	 *
 	 * Note: This property has no effect if the application already set the
 	 * stream prior to client initialization. If the application sets the stream
 	 * after client initialization, the stream specified by this property is
 	 * overridden.
-	 * 
+	 *
 	 * Note: If a filename is specified, it is opened and all CIM-XML
 	 * communication is written to it - no checks are made for an existing file
 	 * or for filling up the disk. USE WITH CAUTION.
-	 * 
+	 *
 	 * Type: <code>String</code><br />
 	 * Recognition: <code>Startup</code><br />
 	 * Range: <code>System.out, System.err, filename</code><br />
@@ -653,7 +652,7 @@ public interface WBEMConfigurationProperties {
 	public static final String CIMXML_TRACE_STREAM = "sblim.wbem.cimxmlTraceStream";
 
 	/**
-	 * 
+	 *
 	 * Tells the XML builder how to sign embedded objects. This is necessary due to
 	 * the non-consequent handling of embedded objects on different CIMOMs.
 	 * &quot;AttribOnly&quot;       - only the EmbeddedObject=&quot;instance/object&quot; is used
@@ -663,101 +662,102 @@ public interface WBEMConfigurationProperties {
 	 * &quot;EmbObjAndEmbInstQuali&quot; -
 	 *                      on qualified CIM-XML elements the EmbeddedObject qualifier is used
 	 *                      for embedded classes and the EmbeddedInstance=&quot;className&quot; qualifier
-	 *                      is used for embedded instances 
+	 *                      is used for embedded instances
 	 * Type: String
 	 * Recognition: Anytime
 	 * Range: AttribOnly, EmbObjQuali, EmbObjAndEmbInstQuali
 	 * Default: AttribOnly
-	 * 
+	 *
 	 */
 	public static final String CIMXML_EMBOBJBUILDER = "sblim.wbem.cimxmlEmbObjBuilder";
 
 	/**
-	 * 
+	 *
 	 * If set the type of valueless EmbeddedObjects are mapped to CLASS_T. It should work well
 	 * with OpenPegasus-2.7.0.
-	 * If unset no type mapping is done for valuless EmbeddedObjects.  
-	 * 
+	 * If unset no type mapping is done for valuless EmbeddedObjects.
+	 *
 	 * Type: Boolean
 	 * Default: true
-	 * 
+	 *
 	 */
 	public static final String CIMXML_PARSER_STRICT_EMBOBJ_TYPES = "sblim.wbem.cimxmlParser.strictEmbObjTypes";
 
 	/**
-	 * 
+	 *
 	 * If set to false, the embedded object entity in all requests is in mixed case
 	 * (EmbeddedObject) per DSP0203.  If set to true, the embedded object entity is in
-	 * upper case (EMBEDDEDOBJECT) - this works with some older CIMOMs, such as OpenPegasus 
+	 * upper case (EMBEDDEDOBJECT) - this works with some older CIMOMs, such as OpenPegasus
 	 * 2.6.1 and 2.7.0.
-	 * 
+	 *
 	 * &lt;!ENTITY % EmbeddedObject &quot;EmbeddedObject (object|instance) #IMPLIED&quot;&gt;
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Startup
 	 * Range: true, false
 	 * Default: true
-	 * 
+	 *
 	 */
-	public static final String CIMXML_BUILDER_UPPERCASE_EMBOBJ_ENTITIES = "sblim.wbem.cimxmlBuilder.upperCaseEmbObjEntities";
+	public static final String CIMXML_BUILDER_UPPERCASE_EMBOBJ_ENTITIES =
+		"sblim.wbem.cimxmlBuilder.upperCaseEmbObjEntities";
 
 	/**
-	 * 
+	 *
 	 * If set to true, SSL handshakes are performed after an SSL socket is created by the
 	 * socket factory.  If set to false, handshakes are not performed, which is useful if
 	 * if the handshake has already taken place.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Anytime
 	 * Default: true
-	 * 
+	 *
 	 */
 	public static final String PERFORM_SSL_HANDSHAKE = "sblim.wbem.performSslHandshake";
 
 	/**
-	 * 
+	 *
 	 * If set to false, SSL handshakes are not synchronized.  If set to true, SSL handshakes
 	 * are synchronized as a workaround for an IBMJSSE1 problem with thread-safe handshakes.
-	 * 
-	 * Note: This property has no affect unless sblim.wbem.performSslHandshake is set to 
+	 *
+	 * Note: This property has no affect unless sblim.wbem.performSslHandshake is set to
 	 * true.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Anytime
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String SYNCHRONIZED_SSL_HANDSHAKE = "sblim.wbem.synchronizedSslHandshake";
 
 	/**
-	 * 
-	 * If set to true, socket connections are attempted with the timeout value defined by 
+	 *
+	 * If set to true, socket connections are attempted with the timeout value defined by
 	 * sblim.wbem.socketConnectTimeout.  If set to false, socket connections are attempted
 	 * without a timeout.  Using a timeout for socket connections is the preferred method
-	 * but may introduce intermittent, significant performance impacts during the connection 
-	 * process in Java 5+ (see Sun bug 5092063).   
-	 * 
+	 * but may introduce intermittent, significant performance impacts during the connection
+	 * process in Java 5+ (see Sun bug 5092063).
+	 *
 	 * Type: Boolean
 	 * Recognition: Anytime
 	 * Default: true
-	 * 
+	 *
 	 */
 	public static final String SOCKET_CONNECT_WITH_TIMEOUT = "sblim.wbem.socketConnectWithTimeout";
 
 	/**
-	 * 
+	 *
 	 * The timeout for socket connect requests. A timeout of zero is interpreted
 	 * as infinite timeout.
-	 * 
+	 *
 	 * Note: This property has no effect unless socket connection with timeout is
 	 * enabled (see the sblim.wbem.socketConnectWithTimeout property).
-	 * 
+	 *
 	 * Type: Integer
 	 * Unit: Milliseconds
 	 * Recognition: Anytime
 	 * Range: 0 .. Integer.MAX_VALUE
 	 * Default: 0
-	 * 
+	 *
 	 */
 	public static final String SOCKET_CONNECT_TIMEOUT = "sblim.wbem.socketConnectTimeout";
 
@@ -774,47 +774,47 @@ public interface WBEMConfigurationProperties {
 	public static final String SOCKET_IDLE_TIMEOUT = "sblim.wbem.socketIdleTimeout";
 
 	/**
-	 * 
+	 *
 	 * Turn on/off usage of the default user/password, which can be used
 	 * if the CIMOM requires a &quot;garbage&quot; credential.  If set to false,
 	 * user-supplied credentials will be applied.  If set to true,
 	 * default credentials will be applied when both the user-supplied
 	 * principal and credential are null/empty.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Startup
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String KEY_CREDENTIALS_DEFAULT_ENABLED = "sblim.wbem.default.authorization.enabled";
 
 	/**
-	 * 
+	 *
 	 * The name of the user for the &quot;garbage&quot; credential.
-	 * 
+	 *
 	 * Note: This property has no effect unless default authorization is
 	 * enabled (see the sblim.wbem.default.authorization.enabled property)
 	 * AND both the user-supplied principal and credential are null/empty.
-	 * 
+	 *
 	 * Type: String
 	 * Recognition: Startup
 	 * Default: &quot;default&quot;
-	 * 
+	 *
 	 */
 	public static final String KEY_DEFAULT_PRINCIPAL = "sblim.wbem.default.principal";
 
 	/**
-	 * 
+	 *
 	 * The credential of the user for the &quot;garbage&quot; credential.
-	 * 
+	 *
 	 * Note: This property has no effect unless default authorization is
 	 * enabled (see the sblim.wbem.default.authorization.enabled property)
 	 * AND both the user-supplied principal and credential are null/empty.
-	 * 
+	 *
 	 * Type: String
 	 * Recognition: Startup
 	 * Default: &quot;default&quot;
-	 * 
+	 *
 	 */
 	public static final String KEY_DEFAULT_CREDENTIAL = "sblim.wbem.default.credential";
 
@@ -942,191 +942,192 @@ public interface WBEMConfigurationProperties {
 	public static final String LISTENER_MAX_QUEUED_EVENTS = "sblim.wbem.listenerMaxQueuedEvents";
 
 	/**
-	 * 
+	 *
 	 * If set to true, reliable indication support is enabled and indications
-	 * are processed accordingly.  If set to false, reliable indication 
+	 * are processed accordingly.  If set to false, reliable indication
 	 * support is disabled and indications are passed directly to listener.
-	 * 
+	 *
 	 * If reliable indication support is enabled, incoming indications are
-	 * handled as documented in DSP1054 which includes queuing unexpected 
-	 * indications, caching all indications for the duration of their sequence 
-	 * identifier lifetime, and logging missing, duplicate and out-of-order 
+	 * handled as documented in DSP1054 which includes queuing unexpected
+	 * indications, caching all indications for the duration of their sequence
+	 * identifier lifetime, and logging missing, duplicate and out-of-order
 	 * indications.
-	 * 
+	 *
 	 * The sequence identifier lifetime is defined as:
 	 *   DeliveryRetryAttempts * DeliveryRetryInterval * 10
 	 * These values can be set by the sblim.wbem.listenerDeliveryRetryAttempts
 	 * and sblim.wbem.listenerDeliveryRetryInterval properties below.
-	 * 
+	 *
 	 * Unexpected indications are queued in either a linked list or a hash
 	 * table based on the sblim.wbem.listenerReliableIndicationHashtableCapacity
-	 * property below.  The linked list is better suited for a small number of 
-	 * listener destinations per WBEMListener while the hash table is better 
+	 * property below.  The linked list is better suited for a small number of
+	 * listener destinations per WBEMListener while the hash table is better
 	 * suited for a large number.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: On next creation of a WBEMListener
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String LISTENER_ENABLE_RELIABLE_INDICATIONS = "sblim.wbem.listenerEnableReliableIndications";
 
 	/**
-	 * 
+	 *
 	 * The default value to use for the CIM_IndicationService DeliveryRetryAttempts
 	 * property.  See DSP1054 for details on reliable indications.
-	 * 
+	 *
 	 * Note: This property has no effect unless reliable indication support is
 	 * enabled.  See the sblim.wbem.listenerEnableReliableIndications property.
-	 * 
+	 *
 	 * Type: Long
 	 * Unit: Count
 	 * Recognition: On next creation of a WBEMListener
 	 * Range: 1 .. 1000
 	 * Default: 3
-	 * 
+	 *
 	 */
 	public static final String LISTENER_DELIVERY_RETRY_ATTEMPTS = "sblim.wbem.listenerDeliveryRetryAttempts";
 
 	/**
-	 * 
+	 *
 	 * The default value to use for the CIM_IndicationService DeliveryRetryInterval
 	 * property.  See DSP1054 for details on reliable indications.
-	 * 
+	 *
 	 * Note: This property has no effect unless reliable indication support is
 	 * enabled.  See the sblim.wbem.listenerEnableReliableIndications property.
-	 * 
+	 *
 	 * Type: Long
 	 * Unit: Seconds
 	 * Recognition: On next creation of a WBEMListener
 	 * Range: 1 .. 86400
 	 * Default: 20
-	 * 
+	 *
 	 */
 	public static final String LISTENER_DELIVERY_RETRY_INTERVAL = "sblim.wbem.listenerDeliveryRetryInterval";
 
 	/**
-	 * 
+	 *
 	 * The default value to use for the reliable indication handler's initial
 	 * hash table capacity.  A value of 0 indicates use a linked list instead.
 	 * Linked lists are better suited for a small number of listener destinations
 	 * per WBEMListener while hash tables are better suited for a large number.
-	 * 
+	 *
 	 * Note: This property has no effect unless reliable indication support is
 	 * enabled.  See the sblim.wbem.listenerEnableReliableIndications property.
-	 * 
+	 *
 	 * Type: Integer
 	 * Unit: Count
 	 * Recognition: On next creation of a WBEMListener
 	 * Range: 0 .. 25000
 	 * Default: 0
-	 * 
+	 *
 	 */
-	public static final String LISTENER_RELIABLE_INDICATION_HASHTABLE_CAPACITY = "sblim.wbem.listenerReliableIndicationHashtableCapacity";
+	public static final String LISTENER_RELIABLE_INDICATION_HASHTABLE_CAPACITY =
+		"sblim.wbem.listenerReliableIndicationHashtableCapacity";
 
 	/**
-	 * 
+	 *
 	 * The filter to use for tracing of incoming indications at the FINE level.
-	 * 
+	 *
 	 * If string is empty, no tracing of incoming indications will occur.  If
 	 * string is not empty, it identifies one or more properties to be included
 	 * in the trace of all incoming indications.  An optional class can be used
 	 * to filter the output to include only those indications that contain the
 	 * substring.  For example, to trace the SequenceContext and SequenceNumber
 	 * properties of all alerts, use the following:
-	 * 
+	 *
 	 *    alert:sequencecontext,sequencenumber
-	 * 
+	 *
 	 * To trace the IndicationTime of all indications, use the following:
-	 * 
+	 *
 	 *    indicationtime
-	 * 
+	 *
 	 * Note: This property has no effect unless tracing is enabled.  See the
 	 * sblim.wbem.traceFileLevel property.
-	 * 
+	 *
 	 * Type: String
 	 * Recognition: On next creation of WBEMListener
 	 * Format: [class:]property[,property]*
-	 * 
+	 *
 	 */
 	public static final String LISTENER_INDICATION_TRACE_FILTER = "sblim.wbem.listenerIndicationTraceFilter";
 
 	/**
-	 * 
+	 *
 	 * If set to true, a property will be added to all indications that identifies
 	 * the sender's IP address.  If set to false, the property will not be added.
-	 * 
+	 *
 	 * The property is a CIMProperty with:
 	 *   name = &quot;SBLIMJCC_SenderIPAddress&quot;
 	 *   data type = CIMDataType.STRING_T
 	 *   value = String returned by InetAddress.getHostAddress() (i.e. 1.2.3.4)
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: On next creation of a WBEMListener
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String LISTENER_ADD_SENDER_IP_ADDRESS = "sblim.wbem.listenerAddSenderIPAddress";
 
 	/**
-	 * 
+	 *
 	 * If set to true, numeric string values passed to the java.lang.Double
 	 * constructor or its parseDouble method will be checked to make sure they
 	 * are not in the range that hangs Java 6- (see Sun bug 4421494).  If
 	 * set to false, the string values will not be checked.
-	 * 
+	 *
 	 * Note: This property should only be set to true if running on Java 5 or
 	 * Java 6 prior to update 24.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Startup
 	 * Default: true
-	 * 
+	 *
 	 */
 	public static final String VERIFY_JAVA_LANG_DOUBLE_STRINGS = "sblim.wbem.verifyJavaLangDoubleStrings";
 
 	/**
-	 * 
+	 *
 	 * If set to true, numeric key data types in a CIMInstance's CIMObjectPath
 	 * will be synchronized to match those of the corresponding keys within
 	 * the CIMInstance's CIMProperty[].  If set to false, the numeric key data
-	 * types will not be synchronized. 
-	 * 
+	 * types will not be synchronized.
+	 *
 	 * Note: Only numeric key data types in CIMInstances from CIMOM responses
 	 * are synchronized, application calls to the CIMInstance constructor are
 	 * not affected.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Startup
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String SYNCHRONIZE_NUMERIC_KEY_DATA_TYPES = "sblim.wbem.synchronizeNumericKeyDataTypes";
 
 	/**
-	 * 
+	 *
 	 * If set to true, gzip encoding is enabled.  If set to false, gzip encoding
 	 * is not enabled.  When enabled, outgoing requests include the HTTP header
 	 * &quot;Accept-Encoding: gzip&quot; to indicate to the CIMOM that the client handles
 	 * message bodies compressed with gzip.  If the incoming response includes
 	 * &quot;Content-Encoding: gzip&quot; the message body will be decompressed with gzip
 	 * before being processed.
-	 * 
+	 *
 	 * Note: This property does not affect indications or outgoing requests.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Anytime
 	 * Default: false
-	 * 
+	 *
 	 */
 	public static final String ENABLE_GZIP_ENCODING = "sblim.wbem.enableGzipEncoding";
 
 	/**
-	 * 
+	 *
 	 * If set to true, the CIM-XML parser will allow empty LOCALNAMESPACEPATH
 	 * elements in incoming responses.  If set to false, the parser will not
 	 * allow empty LOCALNAMESPACEPATH elements.
-	 * 
+	 *
 	 * Note: Some older CIMOMs sent empty LOCALNAMESPACEPATHs, relying on the
 	 * client to provide the local namespace path.  This is a violation of
 	 * DSP0201, which dictates that LOCALNAMESPACEPATH must contain at least
@@ -1134,14 +1135,15 @@ public interface WBEMConfigurationProperties {
 	 * client can adhere to the CIM-XML specifications.  Set this property to
 	 * true if &quot;LOCALNAMESPACEPATH requires NAMESPACE&quot; exceptions occur while
 	 * interacting with one of these older CIMOMs.
-	 * 
+	 *
 	 * Type: Boolean
 	 * Recognition: Anytime
 	 * Default: false
-	 * 
+	 *
 	 */
-	public static final String CIMXML_PARSER_ALLOW_EMPTY_LOCALNAMESPACEPATH = "sblim.wbem.cimxmlParser.allowEmptyLocalNameSpacePath";
-	
+	public static final String CIMXML_PARSER_ALLOW_EMPTY_LOCALNAMESPACEPATH =
+		"sblim.wbem.cimxmlParser.allowEmptyLocalNameSpacePath";
+
 	/**
 	 * AMMO-863
 	 * <p>

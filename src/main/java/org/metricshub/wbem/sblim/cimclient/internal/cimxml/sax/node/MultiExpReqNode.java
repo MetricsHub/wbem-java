@@ -45,7 +45,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -54,7 +53,6 @@ import org.xml.sax.SAXException;
  * ELEMENT MULTIEXPREQ (SIMPLEEXPREQ, SIMPLEEXPREQ+)
  */
 public class MultiExpReqNode extends AbstractMessageNode {
-
 	private ArrayList<Node> iSimpleExpReqAList;
 
 	/**
@@ -84,20 +82,20 @@ public class MultiExpReqNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum != SIMPLEEXPREQ) throw new SAXException(
-				"MULTIEXPREQ node can have SIMPLEEXPREQ child nodes only! " + pNodeNameEnum
-						+ " child node is invalid!");
+			"MULTIEXPREQ node can have SIMPLEEXPREQ child nodes only! " + pNodeNameEnum + " child node is invalid!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iSimpleExpReqAList == null || this.iSimpleExpReqAList.size() < 2) throw new SAXException(
-				"MULTIEXPREQ node must have at least two SIMPLEEXPREQ child nodes!");
+			"MULTIEXPREQ node must have at least two SIMPLEEXPREQ child nodes!"
+		);
 	}
-
 }

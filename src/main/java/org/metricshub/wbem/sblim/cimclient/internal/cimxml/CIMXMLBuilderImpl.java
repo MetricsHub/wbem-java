@@ -80,17 +80,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMClassProperty;
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMMethod;
+import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMParameter;
+import org.metricshub.wbem.javax.cim.CIMProperty;
+import org.metricshub.wbem.javax.cim.CIMQualifiedElementInterface;
 import org.metricshub.wbem.javax.cim.CIMQualifier;
 import org.metricshub.wbem.javax.cim.CIMQualifierType;
+import org.metricshub.wbem.javax.cim.CIMScope;
 import org.metricshub.wbem.javax.cim.CIMTypedElement;
 import org.metricshub.wbem.javax.cim.CIMValuedElement;
 import org.metricshub.wbem.javax.wbem.WBEMException;
@@ -98,16 +105,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInter
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
-import org.metricshub.wbem.javax.cim.CIMFlavor;
-import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
-import org.metricshub.wbem.javax.cim.CIMProperty;
-import org.metricshub.wbem.javax.cim.CIMQualifiedElementInterface;
-import org.metricshub.wbem.javax.cim.CIMScope;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -116,7 +113,6 @@ import org.w3c.dom.Text;
  * Class CIMXMLBuilderImpl is the core class for building CIM-XML documents.
  */
 public class CIMXMLBuilderImpl {
-
 	private static final int MAJOR_CIM_VERSION = 2;
 
 	private static final int MINOR_CIM_VERSION = 0;
@@ -127,7 +123,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createCIM
-	 * 
+	 *
 	 * @param pDoc
 	 * @return Element
 	 */
@@ -149,7 +145,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -164,7 +160,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pValue
@@ -182,7 +178,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pValue
@@ -194,7 +190,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEARRAY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -208,7 +204,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEREFERENCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -223,7 +219,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEREFARRAY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -240,7 +236,7 @@ public class CIMXMLBuilderImpl {
 	// ////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * createPROPERTY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -265,15 +261,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPROPERTYARRAY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
 	 * @param pType
 	 * @return Element
 	 */
-	public static Element createPROPERTYARRAY(Document pDoc, Element pParentE, String pName,
-			String pType) {
+	public static Element createPROPERTYARRAY(Document pDoc, Element pParentE, String pName, String pType) {
 		// <!ELEMENT PROPERTY.ARRAY (QUALIFIER*,VALUE.ARRAY?)>
 		// <!ATTLIST PROPERTY.ARRAY
 		// %CIMName;
@@ -292,15 +287,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPROPERTYREFERENCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
 	 * @param pReferenceclass
 	 * @return Element
 	 */
-	public static Element createPROPERTYREFERENCE(Document pDoc, Element pParentE, String pName,
-			String pReferenceclass) {
+	public static Element createPROPERTYREFERENCE(Document pDoc, Element pParentE, String pName, String pReferenceclass) {
 		// <!ELEMENT PROPERTY.REFERENCE (QUALIFIER*,VALUE.REFERENCE?)>
 		// <!ATTLIST PROPERTY.REFERENCE
 		// %CIMName;
@@ -310,8 +304,7 @@ public class CIMXMLBuilderImpl {
 
 		Element e = pDoc.createElement("PROPERTY.REFERENCE");
 		if (pName != null) e.setAttribute("NAME", pName);
-		if (pReferenceclass != null && pReferenceclass.length() > 0) e.setAttribute(
-				"REFERENCECLASS", pReferenceclass);
+		if (pReferenceclass != null && pReferenceclass.length() > 0) e.setAttribute("REFERENCECLASS", pReferenceclass);
 		pParentE.appendChild(e);
 		return e;
 	}
@@ -322,7 +315,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createNAMESPACE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -341,7 +334,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createLOCALINSTANCEPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -355,7 +348,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createCLASSNAME
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -375,25 +368,22 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createCLASS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
 	 * @param pSuperClass
 	 * @return Element
 	 */
-	public static Element createCLASS(Document pDoc, Element pParentE, String pName,
-			String pSuperClass) {
+	public static Element createCLASS(Document pDoc, Element pParentE, String pName, String pSuperClass) {
 		// <!ELEMENT CLASSNAME EMPTY>
 		// <!ATTLIST CLASSNAME %NAME;>
 		Element e = pDoc.createElement("CLASS");
 		if (pName != null) {
 			e.setAttribute("NAME", pName);
-
 		}
 		if (pSuperClass != null && pSuperClass.length() > 0) {
 			e.setAttribute("SUPERCLASS", pSuperClass);
-
 		}
 		if (pParentE != null) pParentE.appendChild(e);
 		return e;
@@ -401,7 +391,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createINSTANCENAME
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pClassName
@@ -420,7 +410,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createKEYBINDING
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -437,18 +427,16 @@ public class CIMXMLBuilderImpl {
 		return e;
 	}
 
-	private static final Pattern NUM_PAT = Pattern.compile("^[su]int(8|16|32|64)$",
-			Pattern.CASE_INSENSITIVE);
+	private static final Pattern NUM_PAT = Pattern.compile("^[su]int(8|16|32|64)$", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <!ATTLIST KEYVALUE VALUETYPE (string|boolean|numeric) 'string')>
 	 * getValueTypeStr
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @return String
 	 */
 	private static String getValueTypeStr(String pTypeStr) {
-
 		if (pTypeStr == null || MOF.DT_STR.equalsIgnoreCase(pTypeStr)) return MOF.DT_STR;
 		if (MOF.DT_BOOL.equalsIgnoreCase(pTypeStr)) return MOF.DT_BOOL;
 		Matcher m = NUM_PAT.matcher(pTypeStr);
@@ -458,15 +446,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createKEYVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pValueType
 	 * @param pValue
 	 * @return KEYVALUE
 	 */
-	public static Element createKEYVALUE(Document pDoc, Element pParentE, String pValueType,
-			String pValue) {
+	public static Element createKEYVALUE(Document pDoc, Element pParentE, String pValueType, String pValue) {
 		/*
 		 * <!ELEMENT KEYVALUE (#PCDATA)> <!ATTLIST KEYVALUE VALUETYPE
 		 * (string|boolean|numeric) 'string') %CIMType; #IMPLIED>
@@ -489,7 +476,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createINSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pClassName
@@ -510,15 +497,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createQUALIFIER
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
 	 * @param pType
 	 * @return Element
 	 */
-	public static Element createQUALIFIER(Document pDoc, Element pParentE, String pName,
-			String pType) {
+	public static Element createQUALIFIER(Document pDoc, Element pParentE, String pName, String pType) {
 		// <!ELEMENT QUALIFIER (VALUE|VALUE.ARRAY)>
 		// <!ATTLIST QUALIFIER
 		// %CIMName;
@@ -542,15 +528,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMESSAGE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pId
 	 * @param pProtocolVersion
 	 * @return Element
 	 */
-	public static Element createMESSAGE(Document pDoc, Element pParentE, String pId,
-			String pProtocolVersion) {
+	public static Element createMESSAGE(Document pDoc, Element pParentE, String pId, String pProtocolVersion) {
 		// <!ELEMENT MESSAGE
 		// (SIMPLEREQ|MULTIREQ|SIMPLERSP|MULTIRSP|SIMPLEEXPREQ|MULTIEXPREQ|SIMPLEEXPRSP|MULTIEXPRSP)>
 		// <!ATTLIST MESSAGE %ID;%PROTOCOLVERSION;>
@@ -563,7 +548,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createSIMPLEREQ
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -577,7 +562,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createSIMPLEREQ
-	 * 
+	 *
 	 * @param pDoc
 	 * @return Element
 	 */
@@ -589,7 +574,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMULTIREQ
-	 * 
+	 *
 	 * @param pDoc
 	 * @return Element
 	 */
@@ -601,7 +586,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMETHODCALL
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -621,15 +606,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPARAMVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pArg
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createPARAMVALUE(Document pDoc, Element pParentE, CIMArgument<?> pArg)
-			throws WBEMException {
+	public static Element createPARAMVALUE(Document pDoc, Element pParentE, CIMArgument<?> pArg) throws WBEMException {
 		// <!ELEMENT PARAMVALUE
 		// (VALUE|VALUE.REFERENCE|VALUE.ARRAY|VALUE.REFARRAY)?>)
 		// <!ATTLIST PARAMTYPE %NAME;%PARAMTYPE%>
@@ -648,7 +632,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createSIMPLERSP
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -663,7 +647,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createSIMPLEEXPRSP
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -678,7 +662,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMETHODRESPONSE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -700,7 +684,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIMETHODRESPONSE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -721,7 +705,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createEXPMETHODRESPONSE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -741,7 +725,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @return Element
@@ -762,17 +746,16 @@ public class CIMXMLBuilderImpl {
 	 * !ATTLIST RETURNVALUE
 	 * %ParamType;       #IMPLIED
 	 * </pre>
-	 * 
+	 *
 	 * createRETURNVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pValue
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createRETURNVALUE(Document pDoc, Element pParentE, Object pValue)
-			throws WBEMException {
+	public static Element createRETURNVALUE(Document pDoc, Element pParentE, Object pValue) throws WBEMException {
 		Element retValE = pDoc.createElement("RETURNVALUE");
 		CIMDataType type = CIMDataType.getDataType(pValue);
 		retValE.setAttribute("PARAMTYPE", getTypeStr(type));
@@ -783,7 +766,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIMETHODCALL
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -802,7 +785,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIPARAMVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -823,7 +806,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createERROR
-	 * 
+	 *
 	 * @param doc
 	 * @param parentE
 	 * @param error
@@ -852,7 +835,7 @@ public class CIMXMLBuilderImpl {
 	 * ENTITY % QualifierFlavor "OVERRIDABLE (true|false) 'true' TOSUBCLASS
 	 * (true|false) 'true' TOINSTANCE (true|false) 'false' TRANSLATABLE
 	 * (true|false) 'false'"
-	 * 
+	 *
 	 * @param pElement
 	 * @param pFlavors
 	 */
@@ -874,15 +857,19 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createQUALIFIER_DECLARATION
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pQualifierType
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createQUALIFIER_DECLARATION(Document pDoc, Element pParentE,
-			CIMQualifierType<?> pQualifierType) throws WBEMException {
+	public static Element createQUALIFIER_DECLARATION(
+		Document pDoc,
+		Element pParentE,
+		CIMQualifierType<?> pQualifierType
+	)
+		throws WBEMException {
 		// <!ELEMENT QUALIFIER.DECLARATION (SCOPE?,(VALUE|VALUE.ARRAY)?)>
 		// <!ATTLIST QUALIFIER.DECLARATION
 		// %CIMName;
@@ -895,8 +882,7 @@ public class CIMXMLBuilderImpl {
 		Element qualifierdeclarationE = pDoc.createElement("QUALIFIER.DECLARATION");
 		qualifierdeclarationE.setAttribute("NAME", pQualifierType.getName());
 		qualifierdeclarationE.setAttribute("TYPE", pValueTypeStr);
-		qualifierdeclarationE.setAttribute("ISARRAY",
-				pQualifierType.getDataType().isArray() ? MOF.TRUE : MOF.FALSE);
+		qualifierdeclarationE.setAttribute("ISARRAY", pQualifierType.getDataType().isArray() ? MOF.TRUE : MOF.FALSE);
 
 		setFlavors(qualifierdeclarationE, pQualifierType.getFlavor());
 
@@ -921,15 +907,15 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createQUALIFIER
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pQualifier
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createQUALIFIER(Document pDoc, Element pParentE,
-			CIMQualifier<?> pQualifier) throws WBEMException {
+	public static Element createQUALIFIER(Document pDoc, Element pParentE, CIMQualifier<?> pQualifier)
+		throws WBEMException {
 		// <!ELEMENT QUALIFIER (VALUE|VALUE.ARRAY)>
 		// <!ATTLIST QUALIFIER
 		// %CIMName;
@@ -940,8 +926,7 @@ public class CIMXMLBuilderImpl {
 		Object value = pQualifier.getValue();
 		if (value == null) return null;
 
-		Element qualifierE = createQUALIFIER(pDoc, pParentE, pQualifier.getName(),
-				getTypeStr(pQualifier.getDataType()));
+		Element qualifierE = createQUALIFIER(pDoc, pParentE, pQualifier.getName(), getTypeStr(pQualifier.getDataType()));
 
 		if (pQualifier.isPropagated()) {
 			qualifierE.setAttribute("PROPAGATED", "true");
@@ -956,14 +941,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createQUALIFIERS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pQualifiersA
 	 * @throws WBEMException
 	 */
-	public static void createQUALIFIERS(Document pDoc, Element pParentE,
-			CIMQualifier<?>[] pQualifiersA) throws WBEMException {
+	public static void createQUALIFIERS(Document pDoc, Element pParentE, CIMQualifier<?>[] pQualifiersA)
+		throws WBEMException {
 		if (pQualifiersA == null) return;
 		for (int i = 0; i < pQualifiersA.length; i++) {
 			createQUALIFIER(pDoc, pParentE, pQualifiersA[i]);
@@ -972,14 +957,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPROPERTIES
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pProperties
 	 * @throws WBEMException
 	 */
-	public static void createPROPERTIES(Document pDoc, Element pParentE,
-			CIMProperty<?>[] pProperties) throws WBEMException {
+	public static void createPROPERTIES(Document pDoc, Element pParentE, CIMProperty<?>[] pProperties)
+		throws WBEMException {
 		if (pProperties == null) return;
 		for (int i = 0; i < pProperties.length; i++) {
 			createPROPERTY(pDoc, pParentE, pProperties[i]);
@@ -987,16 +972,22 @@ public class CIMXMLBuilderImpl {
 	}
 
 	private static final CIMQualifiedElementInterfaceImpl KEYQUALIFIERS_IMPL = new CIMQualifiedElementInterfaceImpl(
-			null, true);
+		null,
+		true
+	);
 
-	static final CIMQualifier<Boolean> EMB_OBJ_QUALI = new CIMQualifier<Boolean>("EmbeddedObject",
-			CIMDataType.BOOLEAN_T, Boolean.TRUE, CIMFlavor.DISABLEOVERRIDE);
+	static final CIMQualifier<Boolean> EMB_OBJ_QUALI = new CIMQualifier<Boolean>(
+		"EmbeddedObject",
+		CIMDataType.BOOLEAN_T,
+		Boolean.TRUE,
+		CIMFlavor.DISABLEOVERRIDE
+	);
 
 	// ebak: embedded object: CLASS_T or INSTANCE_T?
 
 	/**
 	 * isCIMObject
-	 * 
+	 *
 	 * @param typeCode
 	 * @return boolean
 	 */
@@ -1006,7 +997,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * isCIMObject
-	 * 
+	 *
 	 * @param pType
 	 * @return boolean
 	 */
@@ -1016,7 +1007,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * getEmbObjTypeStr
-	 * 
+	 *
 	 * @param pType
 	 * @return String
 	 */
@@ -1036,7 +1027,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * cimObjectToXMLString - for embedded object support
-	 * 
+	 *
 	 * @param pObj
 	 * @return String
 	 * @throws WBEMException
@@ -1052,36 +1043,38 @@ public class CIMXMLBuilderImpl {
 			doc = getDoc();
 			e = createINSTANCE(doc, null, (CIMInstance) pObj);
 		} else {
-			throw new WBEMException(WBEMException.CIM_ERR_FAILED, pObj.getClass().getName()
-					+ " parameter is not suitable for this method!");
+			throw new WBEMException(
+				WBEMException.CIM_ERR_FAILED,
+				pObj.getClass().getName() + " parameter is not suitable for this method!"
+			);
 		}
 		doc.appendChild(e);
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
 			CimXmlSerializer.serialize(os, doc.getDocumentElement(), false);
 		} catch (IOException ex) {
-			throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-					"XML serialization failed with IOException!", null, ex);
+			throw new WBEMException(WBEMException.CIM_ERR_FAILED, "XML serialization failed with IOException!", null, ex);
 		}
 		return os.toString();
 	}
 
 	/**
 	 * cimObjectArrayToXMLString - for embedded object support
-	 * 
+	 *
 	 * @param pObj
 	 * @return String[]
 	 * @throws WBEMException
 	 */
 	public static String[] cimObjectArrayToXMLString(Object pObj) throws WBEMException {
 		if (pObj == null) return null;
-		if (!(pObj instanceof Object[])) throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-				"Object[] parameter is required for this method!");
+		if (!(pObj instanceof Object[])) throw new WBEMException(
+			WBEMException.CIM_ERR_FAILED,
+			"Object[] parameter is required for this method!"
+		);
 		Object[] objA = (Object[]) pObj;
 		String[] strA = new String[objA.length];
 		// here we don't deal with the consistency check of the Object[]
-		for (int i = 0; i < objA.length; i++)
-			strA[i] = cimObjectToXMLString(objA[i]);
+		for (int i = 0; i < objA.length; i++) strA[i] = cimObjectToXMLString(objA[i]);
 		return strA;
 	}
 
@@ -1090,7 +1083,6 @@ public class CIMXMLBuilderImpl {
 	}
 
 	static class EmbObjBuilder {
-
 		private static final int ATTRIB_ONLY = 0, EO_QUALI = 1, EO_AND_EI_QUALI = 2;
 
 		private int iSignMethod;
@@ -1102,11 +1094,12 @@ public class CIMXMLBuilderImpl {
 		private boolean iXMLQualified;
 
 		private static final boolean iUpperCaseEmbObjEntities = WBEMConfiguration
-				.getGlobalConfiguration().upperCaseEmbObjEntities();
+			.getGlobalConfiguration()
+			.upperCaseEmbObjEntities();
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pDoc
 		 * @param pTypedE
 		 */
@@ -1116,7 +1109,7 @@ public class CIMXMLBuilderImpl {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pDoc
 		 * @param pTypedE
 		 * @param pXMLQualified
@@ -1139,7 +1132,7 @@ public class CIMXMLBuilderImpl {
 
 		/**
 		 * getTypeStr
-		 * 
+		 *
 		 * @return String
 		 */
 		public String getTypeStr() {
@@ -1148,7 +1141,7 @@ public class CIMXMLBuilderImpl {
 
 		/**
 		 * isArray
-		 * 
+		 *
 		 * @return String
 		 */
 		public boolean isArray() {
@@ -1158,12 +1151,11 @@ public class CIMXMLBuilderImpl {
 		private Object getValue() {
 			if (!(this.iTypedE instanceof CIMValuedElement)) return null;
 			return ((CIMValuedElement<?>) this.iTypedE).getValue();
-
 		}
 
 		/**
 		 * addSign
-		 * 
+		 *
 		 * @param pElement
 		 * @throws WBEMException
 		 */
@@ -1177,10 +1169,10 @@ public class CIMXMLBuilderImpl {
 				qualified = null;
 			}
 			if (this.iSignMethod == ATTRIB_ONLY || (qualified == null && !this.iXMLQualified)) {
-				pElement.setAttribute(iUpperCaseEmbObjEntities ? "EMBEDDEDOBJECT"
-						: "EmbeddedObject",
-						this.iTypedE.getDataType().getType() == CIMDataType.OBJECT ? "instance"
-								: "object");
+				pElement.setAttribute(
+					iUpperCaseEmbObjEntities ? "EMBEDDEDOBJECT" : "EmbeddedObject",
+					this.iTypedE.getDataType().getType() == CIMDataType.OBJECT ? "instance" : "object"
+				);
 			} else {
 				if (this.iSignMethod == EO_AND_EI_QUALI) {
 					addEmbObjOrEmbInstQuali(pElement);
@@ -1201,8 +1193,8 @@ public class CIMXMLBuilderImpl {
 					inst = (CIMInstance) getValue();
 				}
 				String className = inst == null ? "" : inst.getClassName();
-				signQuali = new CIMQualifier<String>("EmbeddedInstance", CIMDataType.STRING_T,
-						className, CIMFlavor.DISABLEOVERRIDE);
+				signQuali =
+					new CIMQualifier<String>("EmbeddedInstance", CIMDataType.STRING_T, className, CIMFlavor.DISABLEOVERRIDE);
 			} else { // class
 				signQuali = EMB_OBJ_QUALI;
 			}
@@ -1211,7 +1203,7 @@ public class CIMXMLBuilderImpl {
 
 		/**
 		 * addValue
-		 * 
+		 *
 		 * @param pElement
 		 * @throws WBEMException
 		 */
@@ -1227,20 +1219,18 @@ public class CIMXMLBuilderImpl {
 			}
 			createVALUE(this.iDoc, pElement, value);
 		}
-
 	}
 
 	/**
 	 * createPROPERTY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pProperty
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createPROPERTY(Document pDoc, Element pParentE, CIMProperty<?> pProperty)
-			throws WBEMException {
+	public static Element createPROPERTY(Document pDoc, Element pParentE, CIMProperty<?> pProperty) throws WBEMException {
 		CIMDataType propType = pProperty.getDataType();
 		Element propertyE;
 		EmbObjBuilder embObjBuilder = new EmbObjBuilder(pDoc, pProperty, true);
@@ -1248,15 +1238,13 @@ public class CIMXMLBuilderImpl {
 		if (propType.isArray()) {
 			propertyE = createPROPERTYARRAY(pDoc, pParentE, pProperty.getName(), typeStr);
 		} else if (propType.getType() == CIMDataType.REFERENCE) {
-			propertyE = createPROPERTYREFERENCE(pDoc, pParentE, pProperty.getName(), propType
-					.getRefClassName());
+			propertyE = createPROPERTYREFERENCE(pDoc, pParentE, pProperty.getName(), propType.getRefClassName());
 		} else {
 			propertyE = createPROPERTY(pDoc, pParentE, pProperty.getName(), typeStr);
 		}
 
 		String classorigin = pProperty.getOriginClass();
-		if (classorigin != null && classorigin.length() > 0) propertyE.setAttribute("CLASSORIGIN",
-				classorigin);
+		if (classorigin != null && classorigin.length() > 0) propertyE.setAttribute("CLASSORIGIN", classorigin);
 
 		if (pProperty.isPropagated()) propertyE.setAttribute("PROPAGATED", MOF.TRUE);
 		// FIXME: here key qualifier should be added if the property is a key
@@ -1264,8 +1252,7 @@ public class CIMXMLBuilderImpl {
 		if (pProperty instanceof CIMClassProperty) {
 			createQUALIFIERS(pDoc, propertyE, ((CIMClassProperty<?>) pProperty).getQualifiers());
 		} else { // CIMProperty
-			if (pProperty.isKey()) createQUALIFIERS(pDoc, propertyE, KEYQUALIFIERS_IMPL
-					.getQualifiers());
+			if (pProperty.isKey()) createQUALIFIERS(pDoc, propertyE, KEYQUALIFIERS_IMPL.getQualifiers());
 		}
 		embObjBuilder.addValue(propertyE);
 		return propertyE;
@@ -1273,18 +1260,19 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEARRAY
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pValA
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUEARRAY(Document pDoc, Element pParentE, Object[] pValA)
-			throws WBEMException {
-		Element valuearrayE = (pValA != null && pValA.length > 0 && (pValA[0] instanceof CIMObjectPath || pValA[0] instanceof CIMInstance)) ? createVALUEREFARRAY(
-				pDoc, pParentE)
-				: createVALUEARRAY(pDoc, pParentE);
+	public static Element createVALUEARRAY(Document pDoc, Element pParentE, Object[] pValA) throws WBEMException {
+		Element valuearrayE = (
+				pValA != null && pValA.length > 0 && (pValA[0] instanceof CIMObjectPath || pValA[0] instanceof CIMInstance)
+			)
+			? createVALUEREFARRAY(pDoc, pParentE)
+			: createVALUEARRAY(pDoc, pParentE);
 
 		if (pValA != null) for (int i = 0; i < pValA.length; i++) {
 			createVALUE(pDoc, valuearrayE, pValA[i]);
@@ -1295,15 +1283,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pArgValue
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUE(Document pDoc, Element pParentE, Object pArgValue)
-			throws WBEMException {
+	public static Element createVALUE(Document pDoc, Element pParentE, Object pArgValue) throws WBEMException {
 		if (pArgValue == null) return null;
 
 		Element valueE = null;
@@ -1357,23 +1344,21 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createINSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pInstance
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createINSTANCE(Document pDoc, Element pParentE, CIMInstance pInstance)
-			throws WBEMException {
+	public static Element createINSTANCE(Document pDoc, Element pParentE, CIMInstance pInstance) throws WBEMException {
 		// <!ELEMENT INSTANCE
 		// (QUALIFIER*,(PROPERTY|PROPERTY.ARRAY|PROPERTY.REFERENCE)*)>
 		// <!ATTLIST INSTANCE
 		// %ClassName;>
 
 		String className = pInstance.getObjectPath().getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_FAILED, "null class name");
 
 		Element instanceE = createINSTANCE(pDoc, pParentE, className);
 
@@ -1388,15 +1373,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createOBJECTPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createOBJECTPATH(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
+	public static Element createOBJECTPATH(Document pDoc, Element pParentE, CIMObjectPath pPath) throws WBEMException {
 		Element objectpathE = pDoc.createElement("OBJECTPATH");
 
 		CIMProperty<?>[] keys = pPath.getKeys();
@@ -1412,34 +1396,36 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createOBJECTNAME
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createOBJECTNAME(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
-
+	public static Element createOBJECTNAME(Document pDoc, Element pParentE, CIMObjectPath pPath) throws WBEMException {
 		CIMProperty<?>[] keys = pPath.getKeys();
-		if (keys.length > 0) { return createINSTANCENAME(pDoc, pParentE, pPath); }
+		if (keys.length > 0) {
+			return createINSTANCENAME(pDoc, pParentE, pPath);
+		}
 		if (pPath.getObjectName() == null) throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"null class name"
+		);
 		return createCLASSNAME(pDoc, pParentE, pPath.getObjectName());
 	}
 
 	/**
 	 * createLOCALINSTANCEPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createLOCALINSTANCEPATH(Document pDoc, Element pParentE,
-			CIMObjectPath pPath) throws WBEMException {
+	public static Element createLOCALINSTANCEPATH(Document pDoc, Element pParentE, CIMObjectPath pPath)
+		throws WBEMException {
 		Element localinstancepathE = pDoc.createElement("LOCALINSTANCEPATH");
 
 		createLOCALNAMESPACEPATH(pDoc, localinstancepathE, pPath);
@@ -1451,7 +1437,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createLOCALCLASSPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1459,13 +1445,15 @@ public class CIMXMLBuilderImpl {
 	 * @throws WBEMException
 	 */
 	public static Element createLOCALCLASSPATH(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
+		throws WBEMException {
 		Element localinstancepathE = pDoc.createElement("LOCALCLASSPATH");
 
 		createLOCALNAMESPACEPATH(pDoc, localinstancepathE, pPath);
 
 		if (pPath.getObjectName() == null) throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"null class name"
+		);
 		createCLASSNAME(pDoc, localinstancepathE, pPath.getObjectName());
 
 		pParentE.appendChild(localinstancepathE);
@@ -1474,7 +1462,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createLOCALOBJECTPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1482,16 +1470,17 @@ public class CIMXMLBuilderImpl {
 	 * @throws WBEMException
 	 */
 	public static Element createLOCALOBJECTPATH(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
-
+		throws WBEMException {
 		CIMProperty<?>[] keys = pPath.getKeys();
-		if (keys.length > 0) { return createLOCALINSTANCEPATH(pDoc, pParentE, pPath); }
+		if (keys.length > 0) {
+			return createLOCALINSTANCEPATH(pDoc, pParentE, pPath);
+		}
 		return createLOCALCLASSPATH(pDoc, pParentE, pPath);
 	}
 
 	/**
 	 * createVALUEREFERENCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1499,7 +1488,7 @@ public class CIMXMLBuilderImpl {
 	 * @throws WBEMException
 	 */
 	public static Element createVALUEREFERENCE(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
+		throws WBEMException {
 		Element objectpathE = pDoc.createElement("VALUE.REFERENCE");
 
 		String ns = pPath.getNamespace();
@@ -1524,7 +1513,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createINSTANCENAME
-	 * 
+	 *
 	 * @param doc
 	 * @param parentE
 	 * @param instanceOP
@@ -1532,8 +1521,7 @@ public class CIMXMLBuilderImpl {
 	 * @throws WBEMException
 	 */
 	public static Element createINSTANCENAME(Document doc, Element parentE, CIMObjectPath instanceOP)
-			throws WBEMException {
-
+		throws WBEMException {
 		Element instancenameE = doc.createElement("INSTANCENAME");
 		String classname = instanceOP.getObjectName();
 		if (classname != null) {
@@ -1554,28 +1542,40 @@ public class CIMXMLBuilderImpl {
 			 * KEYVALUE? | VALUE.REFERENCE?)> Handling direct KEYVALUE and
 			 * VALUE.REFERENCE children is difficult, KEYBINDING can wrap them
 			 * -> dropping out KEYVALUE? | VALUE.REFERENCE?.
-			 * 
+			 *
 			 * <!ELEMENT KEYBINDING (KEYVALUE | VALUE.REFERENCE)> <!ATTLIST
 			 * KEYBINDING %CIMName; >
-			 * 
+			 *
 			 * <!ELEMENT KEYVALUE (#PCDATA)> <!ATTLIST KEYVALUE VALUETYPE
 			 * (string | boolean | numeric) "string" %CIMType; #IMPLIED> - non
 			 * reference values can be null
-			 * 
+			 *
 			 * <!ELEMENT VALUE.REFERENCE (CLASSPATH | LOCALCLASSPATH | CLASSNAME
 			 * | INSTANCEPATH | LOCALINSTANCEPATH | INSTANCENAME)> - reference
 			 * value shouldn't be null
 			 */
-			if (propType == null) { throw new WBEMException(
+			if (propType == null) {
+				throw new WBEMException(
 					WBEMException.CIM_ERR_INVALID_PARAMETER,
-					"Type of property or key cannot be a null! " + propName + " in ObjectPath "
-							+ instanceOP.toString() + " has null type."); }
+					"Type of property or key cannot be a null! " +
+					propName +
+					" in ObjectPath " +
+					instanceOP.toString() +
+					" has null type."
+				);
+			}
 
 			if (propValue == null) {
-				if (propType.getType() == CIMDataType.REFERENCE) { throw new WBEMException(
+				if (propType.getType() == CIMDataType.REFERENCE) {
+					throw new WBEMException(
 						WBEMException.CIM_ERR_INVALID_PARAMETER,
-						"Value of reference cannot be null! " + propName + " in ObjectPath "
-								+ instanceOP.toString() + " has null value."); }
+						"Value of reference cannot be null! " +
+						propName +
+						" in ObjectPath " +
+						instanceOP.toString() +
+						" has null value."
+					);
+				}
 			}
 
 			Element keybindingE = createKEYBINDING(doc, instancenameE, propName);
@@ -1596,7 +1596,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createCLASSPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1615,14 +1615,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPARAMETERS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pParameters
 	 * @throws WBEMException
 	 */
-	public static void createPARAMETERS(Document pDoc, Element pParentE,
-			CIMParameter<?>[] pParameters) throws WBEMException {
+	public static void createPARAMETERS(Document pDoc, Element pParentE, CIMParameter<?>[] pParameters)
+		throws WBEMException {
 		if (pParameters == null) return;
 		for (int i = 0; i < pParameters.length; i++) {
 			createPARAMETER(pDoc, pParentE, pParameters[i]);
@@ -1631,15 +1631,15 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createPARAMETER
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pParameter
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createPARAMETER(Document pDoc, Element pParentE,
-			CIMParameter<?> pParameter) throws WBEMException {
+	public static Element createPARAMETER(Document pDoc, Element pParentE, CIMParameter<?> pParameter)
+		throws WBEMException {
 		Element parameterE;
 		CIMDataType type = pParameter.getDataType();
 		int typeCode = type.getType();
@@ -1650,7 +1650,9 @@ public class CIMXMLBuilderImpl {
 				parameterE = pDoc.createElement("PARAMETER.REFARRAY");
 				String refclass = type.getRefClassName();
 				if (refclass != null && refclass.length() > 0) parameterE.setAttribute(
-						"REFERENCECLASS", type.getRefClassName());
+					"REFERENCECLASS",
+					type.getRefClassName()
+				);
 			} else {
 				parameterE = pDoc.createElement("PARAMETER.ARRAY");
 				parameterE.setAttribute("TYPE", typeStr);
@@ -1660,7 +1662,9 @@ public class CIMXMLBuilderImpl {
 				parameterE = pDoc.createElement("PARAMETER.REFERENCE");
 				String refclass = type.getRefClassName();
 				if (refclass != null && refclass.length() > 0) parameterE.setAttribute(
-						"REFERENCECLASS", type.getRefClassName());
+					"REFERENCECLASS",
+					type.getRefClassName()
+				);
 			} else {
 				parameterE = pDoc.createElement("PARAMETER");
 				parameterE.setAttribute("TYPE", typeStr);
@@ -1676,15 +1680,15 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMETHODS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pMethods
 	 * @param pClassName
 	 * @throws WBEMException
 	 */
-	public static void createMETHODS(Document pDoc, Element pParentE, CIMMethod<?>[] pMethods,
-			String pClassName) throws WBEMException {
+	public static void createMETHODS(Document pDoc, Element pParentE, CIMMethod<?>[] pMethods, String pClassName)
+		throws WBEMException {
 		for (int i = 0; i < pMethods.length; i++) {
 			createMETHOD(pDoc, pParentE, pMethods[i], pClassName);
 		}
@@ -1692,7 +1696,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createMETHOD
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pMethod
@@ -1700,8 +1704,8 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createMETHOD(Document pDoc, Element pParentE, CIMMethod<?> pMethod,
-			String pClassName) throws WBEMException {
+	public static Element createMETHOD(Document pDoc, Element pParentE, CIMMethod<?> pMethod, String pClassName)
+		throws WBEMException {
 		Element methodE = pDoc.createElement("METHOD");
 
 		methodE.setAttribute("NAME", pMethod.getName());
@@ -1710,8 +1714,7 @@ public class CIMXMLBuilderImpl {
 		methodE.setAttribute("TYPE", typeStr);
 		String classorigin = pMethod.getOriginClass();
 
-		if (classorigin != null && classorigin.length() != 0) methodE.setAttribute("CLASSORIGIN",
-				classorigin);
+		if (classorigin != null && classorigin.length() != 0) methodE.setAttribute("CLASSORIGIN", classorigin);
 
 		// 17459
 		if (pMethod.isPropagated()) {
@@ -1739,16 +1742,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createCLASS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pClass
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createCLASS(Document pDoc, Element pParentE, CIMClass pClass)
-			throws WBEMException {
-
+	public static Element createCLASS(Document pDoc, Element pParentE, CIMClass pClass) throws WBEMException {
 		Element classE = createCLASS(pDoc, pParentE, pClass.getName(), pClass.getSuperClassName());
 
 		createQUALIFIERS(pDoc, classE, pClass.getQualifiers());
@@ -1761,7 +1762,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createHOST
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pHost
@@ -1779,7 +1780,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createNAMESPACEPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1807,15 +1808,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createINSTANCEPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createINSTANCEPATH(Document pDoc, Element pParentE, CIMObjectPath pPath)
-			throws WBEMException {
+	public static Element createINSTANCEPATH(Document pDoc, Element pParentE, CIMObjectPath pPath) throws WBEMException {
 		Element instancepathE = pDoc.createElement("INSTANCEPATH");
 
 		createNAMESPACEPATH(pDoc, instancepathE, pPath);
@@ -1826,7 +1826,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUENAMEDINSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pPath
@@ -1834,8 +1834,13 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUENAMEDINSTANCE(Document pDoc, Element pParentE,
-			CIMObjectPath pPath, CIMInstance pInst) throws WBEMException {
+	public static Element createVALUENAMEDINSTANCE(
+		Document pDoc,
+		Element pParentE,
+		CIMObjectPath pPath,
+		CIMInstance pInst
+	)
+		throws WBEMException {
 		Element valuenamedinstanceE = pDoc.createElement("VALUE.NAMEDINSTANCE");
 		createINSTANCENAME(pDoc, valuenamedinstanceE, pPath);
 		createINSTANCE(pDoc, valuenamedinstanceE, pInst);
@@ -1846,15 +1851,15 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUENAMEDINSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pInst
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUENAMEDINSTANCE(Document pDoc, Element pParentE,
-			CIMInstance pInst) throws WBEMException {
+	public static Element createVALUENAMEDINSTANCE(Document pDoc, Element pParentE, CIMInstance pInst)
+		throws WBEMException {
 		Element valuenamedinstanceE = pDoc.createElement("VALUE.NAMEDINSTANCE");
 		createINSTANCENAME(pDoc, valuenamedinstanceE, pInst.getObjectPath());
 		createINSTANCE(pDoc, valuenamedinstanceE, pInst);
@@ -1863,17 +1868,29 @@ public class CIMXMLBuilderImpl {
 		return valuenamedinstanceE;
 	}
 
-	private static CIMObjectPath changeNameSpace(CIMNamedElementInterface pNamedElement,
-			String pNameSpace) {
+	private static CIMObjectPath changeNameSpace(CIMNamedElementInterface pNamedElement, String pNameSpace) {
 		CIMObjectPath path = pNamedElement.getObjectPath();
-		return new CIMObjectPath(path.getScheme(), path.getHost(), path.getPort(), pNameSpace, path
-				.getObjectName(), path.getKeys());
+		return new CIMObjectPath(
+			path.getScheme(),
+			path.getHost(),
+			path.getPort(),
+			pNameSpace,
+			path.getObjectName(),
+			path.getKeys()
+		);
 	}
 
 	private static CIMClass changeClassNameSpace(CIMClass pClass, String pNameSpace) {
 		CIMObjectPath newOp = changeNameSpace(pClass, pNameSpace);
-		return new CIMClass(newOp, pClass.getSuperClassName(), pClass.getQualifiers(), pClass
-				.getProperties(), pClass.getMethods(), pClass.isAssociation(), pClass.isKeyed());
+		return new CIMClass(
+			newOp,
+			pClass.getSuperClassName(),
+			pClass.getQualifiers(),
+			pClass.getProperties(),
+			pClass.getMethods(),
+			pClass.isAssociation(),
+			pClass.isKeyed()
+		);
 	}
 
 	private static CIMInstance changeInstanceNameSpace(CIMInstance pInst, String pNameSpace) {
@@ -1883,7 +1900,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEOBJECTWITHPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pObj
@@ -1891,14 +1908,13 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUEOBJECTWITHPATH(Document pDoc, Element pParentE, Object pObj,
-			String pNameSpace) throws WBEMException {
+	public static Element createVALUEOBJECTWITHPATH(Document pDoc, Element pParentE, Object pObj, String pNameSpace)
+		throws WBEMException {
 		Element valueobjectwithpathE = pDoc.createElement("VALUE.OBJECTWITHPATH");
 		if (pObj instanceof CIMClass) {
 			CIMClass clazz = (CIMClass) pObj;
 
-			if (clazz.getObjectPath().getNamespace() == null
-					|| clazz.getObjectPath().getNamespace().length() == 0) {
+			if (clazz.getObjectPath().getNamespace() == null || clazz.getObjectPath().getNamespace().length() == 0) {
 				// ebak: changing the namespace in clazz's objectPath
 				// clazz.getObjectPath().setNameSpace(pNameSpace);
 				clazz = changeClassNameSpace(clazz, pNameSpace);
@@ -1908,8 +1924,7 @@ public class CIMXMLBuilderImpl {
 			createCLASS(pDoc, valueobjectwithpathE, clazz);
 		} else if (pObj instanceof CIMInstance) {
 			CIMInstance inst = (CIMInstance) pObj;
-			if (inst.getObjectPath().getNamespace() == null
-					|| inst.getObjectPath().getNamespace().length() == 0) {
+			if (inst.getObjectPath().getNamespace() == null || inst.getObjectPath().getNamespace().length() == 0) {
 				// ebak: changing the namespace ins inst's objectPath
 				// inst.getObjectPath().setNameSpace(pNameSpace);
 				inst = changeInstanceNameSpace(inst, pNameSpace);
@@ -1924,7 +1939,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createVALUEOBJECTWITHLOCALPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pObj
@@ -1932,14 +1947,13 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createVALUEOBJECTWITHLOCALPATH(Document pDoc, Element pParentE,
-			Object pObj, String pNameSpace) throws WBEMException {
+	public static Element createVALUEOBJECTWITHLOCALPATH(Document pDoc, Element pParentE, Object pObj, String pNameSpace)
+		throws WBEMException {
 		Element valueobjectwithpathE = pDoc.createElement("VALUE.OBJECTWITHLOCALPATH");
 		if (pObj instanceof CIMClass) {
 			CIMClass clazz = (CIMClass) pObj;
 
-			if (clazz.getObjectPath().getNamespace() == null
-					|| clazz.getObjectPath().getNamespace().length() == 0) {
+			if (clazz.getObjectPath().getNamespace() == null || clazz.getObjectPath().getNamespace().length() == 0) {
 				// ebak: changing clazz's objectPath
 				// clazz.getObjectPath().setNameSpace(pNameSpace);
 				clazz = changeClassNameSpace(clazz, pNameSpace);
@@ -1948,8 +1962,7 @@ public class CIMXMLBuilderImpl {
 			createCLASS(pDoc, valueobjectwithpathE, clazz);
 		} else if (pObj instanceof CIMInstance) {
 			CIMInstance inst = (CIMInstance) pObj;
-			if (inst.getObjectPath().getNamespace() == null
-					|| inst.getObjectPath().getNamespace().length() == 0) {
+			if (inst.getObjectPath().getNamespace() == null || inst.getObjectPath().getNamespace().length() == 0) {
 				// inst.getObjectPath().setNameSpace(pNameSpace);
 				inst = changeInstanceNameSpace(inst, pNameSpace);
 			}
@@ -1963,7 +1976,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ERROR
-	 * 
+	 *
 	 * @param doc
 	 * @param parentE
 	 * @param error
@@ -1978,15 +1991,15 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_GETINSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pInst
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createIRETURNVALUE_GETINSTANCE(Document pDoc, Element pParentE,
-			CIMInstance pInst) throws WBEMException {
+	public static Element createIRETURNVALUE_GETINSTANCE(Document pDoc, Element pParentE, CIMInstance pInst)
+		throws WBEMException {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		createINSTANCENAME(pDoc, ireturnvalueE, pInst.getObjectPath());
 
@@ -1995,15 +2008,19 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ASSOCIATORS_NAMES
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
 	 * @return Element
 	 * @throws Exception
 	 */
-	public static Element createIRETURNVALUE_ASSOCIATORS_NAMES(Document pDoc, Element pParentE,
-			CIMObjectPath[] pResultSet) throws Exception {
+	public static Element createIRETURNVALUE_ASSOCIATORS_NAMES(
+		Document pDoc,
+		Element pParentE,
+		CIMObjectPath[] pResultSet
+	)
+		throws Exception {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 
 		if (pResultSet != null) {
@@ -2011,8 +2028,10 @@ public class CIMXMLBuilderImpl {
 				CIMObjectPath path = pResultSet[i];
 
 				if (path.getHost() == null || "".equals(path.getHost())) createLOCALOBJECTPATH(
-						pDoc, ireturnvalueE, path);
-				else createOBJECTPATH(pDoc, ireturnvalueE, path);
+					pDoc,
+					ireturnvalueE,
+					path
+				); else createOBJECTPATH(pDoc, ireturnvalueE, path);
 			}
 		}
 		pParentE.appendChild(ireturnvalueE);
@@ -2021,7 +2040,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ASSOCIATORS
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
@@ -2029,8 +2048,13 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws Exception
 	 */
-	public static Element createIRETURNVALUE_ASSOCIATORS(Document pDoc, Element pParentE,
-			Object[] pResultSet, String pNameSpace) throws Exception {
+	public static Element createIRETURNVALUE_ASSOCIATORS(
+		Document pDoc,
+		Element pParentE,
+		Object[] pResultSet,
+		String pNameSpace
+	)
+		throws Exception {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		if (pResultSet != null) {
 			for (int i = 0; i < pResultSet.length; i++) {
@@ -2041,8 +2065,7 @@ public class CIMXMLBuilderImpl {
 				} else if (obj instanceof CIMInstance) {
 					op = ((CIMInstance) obj).getObjectPath();
 				} else {
-					throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-							"object in result set neither class nor instance!");
+					throw new WBEMException(WBEMException.CIM_ERR_FAILED, "object in result set neither class nor instance!");
 				}
 				if (op.getHost() == null || "".equals(op.getHost())) {
 					createVALUEOBJECTWITHLOCALPATH(pDoc, ireturnvalueE, obj, pNameSpace);
@@ -2057,7 +2080,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ENUMERATE_INSTANCENAME
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
@@ -2065,8 +2088,13 @@ public class CIMXMLBuilderImpl {
 	 * @return Element
 	 * @throws Exception
 	 */
-	public static Element createIRETURNVALUE_ENUMERATE_INSTANCENAME(Document pDoc,
-			Element pParentE, Object[] pResultSet, String pNameSpace) throws Exception {
+	public static Element createIRETURNVALUE_ENUMERATE_INSTANCENAME(
+		Document pDoc,
+		Element pParentE,
+		Object[] pResultSet,
+		String pNameSpace
+	)
+		throws Exception {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		if (pResultSet != null) {
 			for (int i = 0; i < pResultSet.length; i++) {
@@ -2077,8 +2105,7 @@ public class CIMXMLBuilderImpl {
 				} else if (obj instanceof CIMInstance) {
 					op = ((CIMInstance) obj).getObjectPath();
 				} else {
-					throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-							"object in result set neither class nor instance!");
+					throw new WBEMException(WBEMException.CIM_ERR_FAILED, "object in result set neither class nor instance!");
 				}
 				if (op.getHost() == null || "".equals(op.getHost())) {
 					createVALUEOBJECTWITHLOCALPATH(pDoc, ireturnvalueE, obj, pNameSpace);
@@ -2093,15 +2120,14 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createIRETURNVALUE(Document pDoc, Element pParentE, Object[] pResultSet)
-			throws WBEMException {
+	public static Element createIRETURNVALUE(Document pDoc, Element pParentE, Object[] pResultSet) throws WBEMException {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		if (pResultSet != null && pResultSet.length > 0) {
 			Object obj = pResultSet[0];
@@ -2125,14 +2151,13 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ENUMERATE_CLASSNAME
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
 	 * @return Element
 	 */
-	public static Element createIRETURNVALUE_ENUMERATE_CLASSNAME(Document pDoc, Element pParentE,
-			CIMClass[] pResultSet) {
+	public static Element createIRETURNVALUE_ENUMERATE_CLASSNAME(Document pDoc, Element pParentE, CIMClass[] pResultSet) {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		if (pResultSet != null && pResultSet.length > 0) {
 			for (int i = 0; i < pResultSet.length; i++) {
@@ -2149,7 +2174,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIndication_response
-	 * 
+	 *
 	 * @param doc
 	 * @param ID
 	 * @param error
@@ -2158,7 +2183,6 @@ public class CIMXMLBuilderImpl {
 	// ebak: [ 1656285 ] IndicationHandler does not accept non-Integer message
 	// ID
 	public static Element createIndication_response(Document doc, String ID, CIMError error) {
-
 		// xmlBuilder.create XML
 		Element cimE = createCIM(doc);
 		Element messageE = createMESSAGE(doc, cimE, ID, "1.0");
@@ -2175,15 +2199,19 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createIRETURNVALUE_ENUMERATE_INSTANCE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pResultSet
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element createIRETURNVALUE_ENUMERATE_INSTANCE(Document pDoc, Element pParentE,
-			CIMInstance[] pResultSet) throws WBEMException {
+	public static Element createIRETURNVALUE_ENUMERATE_INSTANCE(
+		Document pDoc,
+		Element pParentE,
+		CIMInstance[] pResultSet
+	)
+		throws WBEMException {
 		Element ireturnvalueE = pDoc.createElement("IRETURNVALUE");
 		if (pResultSet != null && pResultSet.length > 0) {
 			for (int i = 0; i < pResultSet.length; i++) {
@@ -2196,7 +2224,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * getTypeStr
-	 * 
+	 *
 	 * @param pType
 	 * @return String
 	 */
@@ -2208,7 +2236,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * getOpTypeStr
-	 * 
+	 *
 	 * @param pType
 	 * @return String
 	 */
@@ -2220,14 +2248,13 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createLOCALNAMESPACEPATH
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
 	 * @return Element
 	 */
-	public static Element createLOCALNAMESPACEPATH(Document pDoc, Element pParentE,
-			CIMObjectPath pName) {
+	public static Element createLOCALNAMESPACEPATH(Document pDoc, Element pParentE, CIMObjectPath pName) {
 		if (pName == null) return null;
 		// TODO: name(ObjectPath) should not be null, should an exception be
 		// thrown?
@@ -2237,9 +2264,11 @@ public class CIMXMLBuilderImpl {
 		String nameSpace = pName.getNamespace();
 		if (nameSpace != null) {
 			String[] nsA = NAMESPACE_SPLIT_PATTERN.split(nameSpace);
-			for (int i = 0; i < nsA.length; i++)
-				if (nsA[i] != null && nsA[i].length() > 0) createNAMESPACE(pDoc,
-						localnamespacepathE, nsA[i]);
+			for (int i = 0; i < nsA.length; i++) if (nsA[i] != null && nsA[i].length() > 0) createNAMESPACE(
+				pDoc,
+				localnamespacepathE,
+				nsA[i]
+			);
 		}
 		pParentE.appendChild(localnamespacepathE);
 
@@ -2248,7 +2277,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createSIMPLEEXPREQ
-	 * 
+	 *
 	 * @param pDoc
 	 * @return Element
 	 */
@@ -2260,7 +2289,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createEXPMETHODCALL
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName
@@ -2279,7 +2308,7 @@ public class CIMXMLBuilderImpl {
 
 	/**
 	 * createEXPPARAMVALUE
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pParentE
 	 * @param pName

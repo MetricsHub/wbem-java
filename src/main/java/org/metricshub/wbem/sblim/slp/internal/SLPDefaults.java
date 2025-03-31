@@ -47,19 +47,17 @@ package org.metricshub.wbem.sblim.slp.internal;
  */
 
 import java.util.Locale;
-
 import org.metricshub.wbem.sblim.slp.ServiceType;
 
 /**
  * SLPDefaults
- * 
+ *
  */
 /**
  * Class SLPDefaults is responsible for
- * 
+ *
  */
 public interface SLPDefaults {
-
 	/**
 	 * ALL_AUTHORITIES
 	 */
@@ -74,10 +72,11 @@ public interface SLPDefaults {
 	 * CONF_URLS
 	 */
 	public static final String[] CONF_URLS = {
-			"file:sblim-slp-client2.properties",
-			"file:" + System.getProperty("user.home") + System.getProperty("file.separator")
-					+ "sblim-slp-client2.properties",
-			"file:/etc/java/sblim-slp-client2.properties", "file:/etc/sblim-slp-client2.properties" };
+		"file:sblim-slp-client2.properties",
+		"file:" + System.getProperty("user.home") + System.getProperty("file.separator") + "sblim-slp-client2.properties",
+		"file:/etc/java/sblim-slp-client2.properties",
+		"file:/etc/sblim-slp-client2.properties"
+	};
 
 	/**
 	 * DA_DISCOVERY_TIMEOUTS
@@ -213,5 +212,4 @@ public interface SLPDefaults {
 	 * IPV6_MULTICAST_SCOPE
 	 */
 	public static final int IPV6_MULTICAST_SCOPE = 5;
-
 }

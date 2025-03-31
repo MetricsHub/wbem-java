@@ -43,20 +43,18 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  * It is implemented by the AbstractArrayValueNode class.
  */
 public interface ArrayIf {
-
 	/**
 	 * size
-	 * 
+	 *
 	 * @return int
 	 */
 	public int size();
 
 	/**
 	 * elementAt
-	 * 
+	 *
 	 * @param pIdx
 	 * @return Object
 	 */
 	public Object elementAt(int pIdx);
-
 }

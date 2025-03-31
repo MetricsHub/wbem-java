@@ -50,7 +50,6 @@ package org.metricshub.wbem.javax.cim;
  */
 
 import java.util.Arrays;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMElementSorter;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInterfaceImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
@@ -62,12 +61,11 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * Specification (<a
  * href=http://www.dmtf.org/standards/published_documents/DSP0004V2.3_final.pdf
  * >DSP004</a>).
- * 
+ *
  * @param <E>
  *            Type parameter.
  */
 public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElementInterface {
-
 	private static final long serialVersionUID = -3920536802046705977L;
 
 	private CIMQualifiedElementInterfaceImpl iQualiImpl;
@@ -81,7 +79,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	/**
 	 * Constructs a <code>CIMMethod</code> object with the specified
 	 * information.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the method.
 	 * @param pType
@@ -95,8 +93,14 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	 * @param pOriginClass
 	 *            The class this method was defined or overridden in.
 	 */
-	public CIMMethod(String pName, CIMDataType pType, CIMQualifier<?>[] pQualis,
-			CIMParameter<?>[] pParams, boolean pPropagated, String pOriginClass) {
+	public CIMMethod(
+		String pName,
+		CIMDataType pType,
+		CIMQualifier<?>[] pQualis,
+		CIMParameter<?>[] pParams,
+		boolean pPropagated,
+		String pOriginClass
+	) {
 		super(pName, pType);
 		this.iQualiImpl = new CIMQualifiedElementInterfaceImpl(pQualis, false, true);
 		this.iParams = (CIMParameter[]) CIMElementSorter.sort(pParams);
@@ -109,7 +113,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMMethod</code> object that represents the same value as
 	 * this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -127,7 +131,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Returns a <code>CIMMethod</code> filtered as specified.
-	 * 
+	 *
 	 * @param pIncludeQualifiers
 	 *            If <code>true</code> all qualifiers are returned; otherwise no
 	 *            qualifiers.
@@ -142,7 +146,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Returns a <code>CIMMethod</code> filtered as specified.
-	 * 
+	 *
 	 * @param pIncludeQualifiers
 	 *            If <code>true</code> all qualifiers are returned; otherwise no
 	 *            qualifiers.
@@ -152,19 +156,23 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	 * @param pLocalOnly
 	 *            If <code>true</code> only the qualifiers defined on this class
 	 *            are included; otherwise all qualifiers are included.
-	 * 
+	 *
 	 * @return A filtered <code>CIMMethod</code>.
 	 */
-	public CIMMethod<E> filter(boolean pIncludeQualifiers, boolean pIncludeClassOrigin,
-			boolean pLocalOnly) {
-		return new CIMMethod<E>(getName(), getDataType(), pIncludeQualifiers ? this.iQualiImpl
-				.getQualifiers(pLocalOnly) : null, this.iParams, this.iPropagated,
-				pIncludeClassOrigin ? this.iOriginClass : null);
+	public CIMMethod<E> filter(boolean pIncludeQualifiers, boolean pIncludeClassOrigin, boolean pLocalOnly) {
+		return new CIMMethod<E>(
+			getName(),
+			getDataType(),
+			pIncludeQualifiers ? this.iQualiImpl.getQualifiers(pLocalOnly) : null,
+			this.iParams,
+			this.iPropagated,
+			pIncludeClassOrigin ? this.iOriginClass : null
+		);
 	}
 
 	/**
 	 * Returns the class name in which this method was defined or overridden.
-	 * 
+	 *
 	 * @return Name of class where this property was defined.
 	 */
 	public String getOriginClass() {
@@ -173,7 +181,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Get the parameter that matches the specified name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the <code>CIMParameter</code> to retrieve.
 	 * @return <code>CIMParameter</code> matching the name specified; otherwise
@@ -185,7 +193,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Returns an array of the parameters for this method.
-	 * 
+	 *
 	 * @return The parameters for this method.
 	 */
 	public CIMParameter<?>[] getParameters() {
@@ -194,7 +202,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Get a qualifier by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the qualifier.
 	 * @return The Qualifier at index <code>pIndex</code>.
@@ -206,7 +214,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Gets a qualifier by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist, otherwise
@@ -218,7 +226,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Get the number of qualifiers defined for this CIM Method.
-	 * 
+	 *
 	 * @return The number of qualifiers.
 	 */
 	public int getQualifierCount() {
@@ -227,7 +235,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Returns the list of qualifiers for this class.
-	 * 
+	 *
 	 * @return Qualifiers for this class.
 	 */
 	public CIMQualifier<?>[] getQualifiers() {
@@ -236,7 +244,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Gets a qualifier value by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist or value is
@@ -250,7 +258,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	/**
 	 * Checks whether the specified qualifier is one of the qualifiers in this
 	 * CIM method.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @return <code>true</code> if the qualifier exists in this CIM method,
@@ -265,7 +273,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	 * for this method with the specified value. This method will return
 	 * <code>false</code> if the qualifier is not applied or if the value does
 	 * not match.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pValue
@@ -279,7 +287,7 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 
 	/**
 	 * Determines if this method is Propagated.
-	 * 
+	 *
 	 * @return <code>true</code> if this method is propagated.
 	 */
 	public boolean isPropagated() {
@@ -292,12 +300,11 @@ public class CIMMethod<E> extends CIMTypedElement implements CIMQualifiedElement
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return The string representation of this method.
 	 */
 	@Override
 	public String toString() {
 		return MOF.methodDeclaration(this, MOF.EMPTY);
 	}
-
 }

@@ -25,7 +25,6 @@ package org.metricshub.wbem.client.exceptions;
  *
  */
 public class WqlQuerySyntaxException extends Exception {
-
 	private static final long serialVersionUID = 1L;
 
 	public WqlQuerySyntaxException(final String wqlQuery) {

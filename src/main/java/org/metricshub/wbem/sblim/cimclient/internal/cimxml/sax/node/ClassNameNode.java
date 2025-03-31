@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ClassNameNode extends AbstractPathNode {
-
 	private String iClassName;
 
 	private CIMObjectPath iLocalPath;
@@ -79,7 +78,7 @@ public class ClassNameNode extends AbstractPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class ClassNameNode extends AbstractPathNode {
 
 	@Override
 	public void testCompletness() {
-	// no child nodes to test
+		// no child nodes to test
 	}
 
 	/**
@@ -100,12 +99,12 @@ public class ClassNameNode extends AbstractPathNode {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do
+		// nothing to do
 	}
 
 	/**
 	 * getClassName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getClassName() {
@@ -115,5 +114,4 @@ public class ClassNameNode extends AbstractPathNode {
 	public CIMObjectPath getCIMObjectPath() {
 		return LocalPathBuilder.build(this.iLocalPath, this.iClassName, null);
 	}
-
 }

@@ -60,7 +60,6 @@ import org.xml.sax.SAXException;
  * PARAMVALUE %CIMName; %ParamType; #IMPLIED %EmbeddedObject; #IMPLIED - new
  */
 public class ParamValueNode extends AbstractParamValueNode {
-
 	private String iName;
 
 	private EmbObjHandler iEmbObjHandler;
@@ -83,8 +82,7 @@ public class ParamValueNode extends AbstractParamValueNode {
 
 	@Override
 	public void init(Attributes pAttribs, SAXSession pSession) throws SAXException {
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				pSession, null, true);
+		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, pSession, null, true);
 		this.iHasChild = false;
 		this.iHasTypeValue = false;
 		this.iName = getCIMName(pAttribs);
@@ -97,11 +95,20 @@ public class ParamValueNode extends AbstractParamValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { VALUE, VALUE_REFERENCE, VALUE_ARRAY,
-			VALUE_REFARRAY, CLASSNAME, INSTANCENAME, CLASS, INSTANCE, VALUE_NAMEDINSTANCE };
+	private static final String[] ALLOWED_CHILDREN = {
+		VALUE,
+		VALUE_REFERENCE,
+		VALUE_ARRAY,
+		VALUE_REFARRAY,
+		CLASSNAME,
+		INSTANCENAME,
+		CLASS,
+		INSTANCE,
+		VALUE_NAMEDINSTANCE
+	};
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
@@ -112,17 +119,19 @@ public class ParamValueNode extends AbstractParamValueNode {
 				break;
 			}
 		}
-		if (!allowed) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
-		if (this.iHasChild) throw new SAXException(getNodeName()
-				+ " node cannot have more than one child node!");
+		if (!allowed) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
+		if (this.iHasChild) throw new SAXException(getNodeName() + " node cannot have more than one child node!");
 		// type check
 		CIMDataType rawType = this.iEmbObjHandler.getRawType();
 		if (rawType != null) {
 			if (pNodeNameEnum == VALUE_REFERENCE || pNodeNameEnum == VALUE_REFARRAY) {
 				if (rawType.getType() != CIMDataType.REFERENCE) throw new SAXException(
-						"PARAMVALUE node's PARAMTYPE attribute is not reference (" + rawType
-								+ "), but a " + pNodeNameEnum + " child node is found!");
+					"PARAMVALUE node's PARAMTYPE attribute is not reference (" +
+					rawType +
+					"), but a " +
+					pNodeNameEnum +
+					" child node is found!"
+				);
 			}
 		}
 	}
@@ -133,11 +142,11 @@ public class ParamValueNode extends AbstractParamValueNode {
 			this.iEmbObjHandler.addValueNode((AbstractValueNode) pChild);
 		} else {
 			this.iValue = ((ValueIf) pChild).getValue();
-			if (pChild instanceof TypedIf) this.iType = ((TypedIf) pChild).getType();
-			else if (pChild instanceof ObjectPathIf) this.iType = CIMDataType
-					.getDataType(((ObjectPathIf) pChild).getCIMObjectPath());
-			else if (pChild instanceof ValueIf) this.iType = CIMDataType
-					.getDataType(((ValueIf) pChild).getValue());
+			if (pChild instanceof TypedIf) this.iType = ((TypedIf) pChild).getType(); else if (
+				pChild instanceof ObjectPathIf
+			) this.iType = CIMDataType.getDataType(((ObjectPathIf) pChild).getCIMObjectPath()); else if (
+				pChild instanceof ValueIf
+			) this.iType = CIMDataType.getDataType(((ValueIf) pChild).getValue());
 			this.iHasTypeValue = true;
 		}
 		this.iHasChild = true;
@@ -158,7 +167,7 @@ public class ParamValueNode extends AbstractParamValueNode {
 
 	/**
 	 * getCIMArgument
-	 * 
+	 *
 	 * @return CIMArgument
 	 */
 	@Override
@@ -175,5 +184,4 @@ public class ParamValueNode extends AbstractParamValueNode {
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

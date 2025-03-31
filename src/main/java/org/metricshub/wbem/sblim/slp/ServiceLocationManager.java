@@ -48,7 +48,6 @@ package org.metricshub.wbem.sblim.slp;
 
 import java.util.Locale;
 import java.util.Vector;
-
 import org.metricshub.wbem.sblim.slp.internal.AdvertiserImpl;
 import org.metricshub.wbem.sblim.slp.internal.ua.LocatorImpl;
 
@@ -56,7 +55,7 @@ import org.metricshub.wbem.sblim.slp.internal.ua.LocatorImpl;
  * The ServiceLocationManager manages access to the service location framework.
  * Clients obtain the Locator and Advertiser objects for UA and SA, and a Vector
  * of known scope names from the ServiceLocationManager.
- * 
+ *
  */
 public class ServiceLocationManager {
 
@@ -66,9 +65,9 @@ public class ServiceLocationManager {
 	 * and, if used by the SA, assures that no refresh registration will be
 	 * rejected. If no DA advertises a min-refresh-interval attribute, a value
 	 * of 0 is returned.
-	 * 
+	 *
 	 * <b>Not yet implemented</b>
-	 * 
+	 *
 	 * @return The minimum refresh interval
 	 * @throws ServiceLocationException
 	 */
@@ -81,9 +80,9 @@ public class ServiceLocationManager {
 	 * scopes comes from a variety of sources, see Section 2.1 for the scope
 	 * discovery algorithm. There is always at least one string in the Vector,
 	 * the default scope, "DEFAULT".
-	 * 
+	 *
 	 * <b>Not yet implemented</b>
-	 * 
+	 *
 	 * @return A Vector containing the scopes
 	 * @throws ServiceLocationException
 	 */
@@ -94,7 +93,7 @@ public class ServiceLocationManager {
 	/**
 	 * Return a Locator object for the given language locale. If the
 	 * implementation does not support UA functionality, returns null.
-	 * 
+	 *
 	 * @param pLocale
 	 *            The language locale of the Locator. The default SLP locale is
 	 *            used if null.
@@ -107,7 +106,7 @@ public class ServiceLocationManager {
 	/**
 	 * Return an Advertiser object for the given language locale. If the
 	 * implementation does not support SA functionality, returns null.
-	 * 
+	 *
 	 * @param pLocale
 	 *            The language locale of the Advertiser. The default SLP locale
 	 *            is used if null.
@@ -116,5 +115,4 @@ public class ServiceLocationManager {
 	public static Advertiser getAdvertiser(Locale pLocale) {
 		return new AdvertiserImpl(pLocale);
 	}
-
 }

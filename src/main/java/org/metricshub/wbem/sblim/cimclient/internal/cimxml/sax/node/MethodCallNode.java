@@ -62,16 +62,18 @@ public class MethodCallNode extends AbstractMethodCallNode {
 	@Override
 	protected void testSpecChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == LOCALCLASSPATH || pNodeNameEnum == LOCALINSTANCEPATH) {
-			if (this.iPath != null) throw new SAXException(getNodeName()
-					+ " node can have only one LOCALINSTANCEPATH or LOCALCLASSPATH child node!");
-		} else if (pNodeNameEnum != PARAMVALUE) throw new SAXException(getNodeName()
-				+ " node cannot have " + pNodeNameEnum + " child node!");
+			if (this.iPath != null) throw new SAXException(
+				getNodeName() + " node can have only one LOCALINSTANCEPATH or LOCALCLASSPATH child node!"
+			);
+		} else if (pNodeNameEnum != PARAMVALUE) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iPath == null) throw new SAXException(
-				"METHODCALL node must have a LOCALINSTANCEPATH or LOCALCLASSPATH child node!");
+			"METHODCALL node must have a LOCALINSTANCEPATH or LOCALCLASSPATH child node!"
+		);
 	}
-
 }

@@ -125,19 +125,27 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMClassProperty;
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMDateTime;
 import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
 import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
+import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMMethod;
+import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMParameter;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.cim.CIMQualifier;
 import org.metricshub.wbem.javax.cim.CIMQualifierType;
+import org.metricshub.wbem.javax.cim.CIMScope;
+import org.metricshub.wbem.javax.cim.UnsignedInteger16;
+import org.metricshub.wbem.javax.cim.UnsignedInteger32;
+import org.metricshub.wbem.javax.cim.UnsignedInteger64;
+import org.metricshub.wbem.javax.cim.UnsignedInteger8;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMHelper;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInterfaceImpl;
@@ -146,15 +154,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.util.XMLHostStr;
-import org.metricshub.wbem.javax.cim.CIMDateTime;
-import org.metricshub.wbem.javax.cim.CIMFlavor;
-import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
-import org.metricshub.wbem.javax.cim.CIMProperty;
-import org.metricshub.wbem.javax.cim.CIMScope;
-import org.metricshub.wbem.javax.cim.UnsignedInteger16;
-import org.metricshub.wbem.javax.cim.UnsignedInteger32;
-import org.metricshub.wbem.javax.cim.UnsignedInteger64;
-import org.metricshub.wbem.javax.cim.UnsignedInteger8;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -166,10 +165,9 @@ import org.xml.sax.InputSource;
 
 /**
  * Class CIMXMLParserImpl is the main class of CIM-XML DOM parser.
- * 
+ *
  */
 public class CIMXMLParserImpl {
-
 	/*
 	 * ebak: local object path - should be used by parseLOCALCLASSPATH(),
 	 * parseLOCALINSTANCEPATH(), parseCLASSNAME(), parseINSTANCENAME(),
@@ -179,7 +177,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * setLocalObjectPath
-	 * 
+	 *
 	 * @param pLocalOp
 	 *            - empty fields of parsed objectpaths will be substituted by
 	 *            fields coming from this parameter
@@ -194,7 +192,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCIM
-	 * 
+	 *
 	 * @param pCimE
 	 * @return CIMMessage
 	 * @throws CIMXMLParseException
@@ -203,13 +201,11 @@ public class CIMXMLParserImpl {
 		// <!ELEMENT CIM (MESSAGE|DECLARATION)>
 		// <!ATTLIST CIM %CIMVERSION;%DTDVERSION;>
 		Attr cim_cimversionA = (Attr) searchAttribute(pCimE, "CIMVERSION");
-		if (cim_cimversionA == null) throw new CIMXMLParseException(
-				"CIM element missing CIMVERSION attribute!");
+		if (cim_cimversionA == null) throw new CIMXMLParseException("CIM element missing CIMVERSION attribute!");
 		String cimversion = cim_cimversionA.getNodeValue();
 
 		Attr cim_dtdversionA = (Attr) searchAttribute(pCimE, "DTDVERSION");
-		if (cim_dtdversionA == null) throw new CIMXMLParseException(
-				"CIM element missing DTDVERSION attribute!");
+		if (cim_dtdversionA == null) throw new CIMXMLParseException("CIM element missing DTDVERSION attribute!");
 		String dtdversion = cim_dtdversionA.getNodeValue();
 
 		// MESSAGE
@@ -223,7 +219,8 @@ public class CIMXMLParserImpl {
 
 		// DECLARATION
 		if (searchNodes(pCimE, "DECLARATION", 0, 1, false) != null) throw new CIMXMLParseException(
-				"DECLARATION element not supported!");
+			"DECLARATION element not supported!"
+		);
 
 		throw new CIMXMLParseException("CIM element missing required child element!");
 	}
@@ -234,7 +231,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUE - supports the non-standard TYPE attribute
-	 * 
+	 *
 	 * @param pValueE
 	 * @return TypedValue, type is null if no TYPE attribute was found, the
 	 *         value is always String, the caller method have to convert it.
@@ -260,7 +257,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUEARRAY - supports the non-standard TYPE attribute
-	 * 
+	 *
 	 * @param pValueArrayE
 	 * @return TypedValue, type is null if no TYPE attribute was found, the
 	 *         value is always String[], the caller method have to convert it.
@@ -283,21 +280,21 @@ public class CIMXMLParserImpl {
 				resStringV.add((String) parseVALUE((Element) n).getValue());
 			} else if (name.equals("VALUE.NULL")) {
 				resStringV.add(null);
-			} else if (NODENAME_HASH.containsKey(name)) { throw new CIMXMLParseException(
-					"VALUE.ARRAY element contains invalid child element " + name + "!"); }
+			} else if (NODENAME_HASH.containsKey(name)) {
+				throw new CIMXMLParseException("VALUE.ARRAY element contains invalid child element " + name + "!");
+			}
 		}
 		return new TypedValue(type, resStringV.toArray(new String[0]));
 	}
 
 	/**
 	 * parseVALUEREFERENCE
-	 * 
+	 *
 	 * @param pValuereferenceE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseVALUEREFERENCE(Element pValuereferenceE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseVALUEREFERENCE(Element pValuereferenceE) throws CIMXMLParseException {
 		// <!ELEMENT VALUE.REFERENCE
 		// (CLASSPATH|LOCALCLASSPATH|CLASSNAME|INSTANCEPATH|LOCALINSTANCEPATH|INSTANCENAME)>
 
@@ -322,8 +319,16 @@ public class CIMXMLParserImpl {
 			if (op != null && op.getNamespace() != null) {
 				// LocalPathBuilder includes default namespace in CLASSNAME
 				// elements, needs to be stripped
-				op = new CIMObjectPath(op.getScheme(), op.getHost(), op.getPort(), null, op
-						.getObjectName(), op.getKeys(), op.getXmlSchemaName());
+				op =
+					new CIMObjectPath(
+						op.getScheme(),
+						op.getHost(),
+						op.getPort(),
+						null,
+						op.getObjectName(),
+						op.getKeys(),
+						op.getXmlSchemaName()
+					);
 			}
 			return op;
 		}
@@ -336,8 +341,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// LOCALINSTANCEPATH
-		Element localinstancepathA[] = searchNodes(pValuereferenceE, "LOCALINSTANCEPATH", 0, 1,
-				false);
+		Element localinstancepathA[] = searchNodes(pValuereferenceE, "LOCALINSTANCEPATH", 0, 1, false);
 		if (localinstancepathA != null) {
 			CIMObjectPath op = parseLOCALINSTANCEPATH(localinstancepathA[0]);
 			return op;
@@ -350,8 +354,16 @@ public class CIMXMLParserImpl {
 			if (op != null && op.getNamespace() != null) {
 				// LocalPathBuilder includes default namespace in INSTANCENAME
 				// elements, needs to be stripped
-				op = new CIMObjectPath(op.getScheme(), op.getHost(), op.getPort(), null, op
-						.getObjectName(), op.getKeys(), op.getXmlSchemaName());
+				op =
+					new CIMObjectPath(
+						op.getScheme(),
+						op.getHost(),
+						op.getPort(),
+						null,
+						op.getObjectName(),
+						op.getKeys(),
+						op.getXmlSchemaName()
+					);
 			}
 			return op;
 		}
@@ -361,13 +373,12 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUEREFARRAY
-	 * 
+	 *
 	 * @param pValueRefArrayE
 	 * @return CIMObjectPath[]
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath[] parseVALUEREFARRAY(Element pValueRefArrayE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath[] parseVALUEREFARRAY(Element pValueRefArrayE) throws CIMXMLParseException {
 		// <! ELEMENT VALUE.REFARRAY (VALUE.REFERENCE|VALUE.NULL)*>
 
 		// Process node list here, order of VALUE.REFERENCE/VALUE.NULL IS
@@ -383,21 +394,21 @@ public class CIMXMLParserImpl {
 				resObjectPathV.add(parseVALUEREFERENCE((Element) n));
 			} else if (name.equals("VALUE.NULL")) {
 				resObjectPathV.add(null);
-			} else if (NODENAME_HASH.containsKey(name)) { throw new CIMXMLParseException(
-					"VALUE.REFARRAY element contains invalid child element " + name + "!"); }
+			} else if (NODENAME_HASH.containsKey(name)) {
+				throw new CIMXMLParseException("VALUE.REFARRAY element contains invalid child element " + name + "!");
+			}
 		}
 		return resObjectPathV.toArray(new CIMObjectPath[0]);
 	}
 
 	/**
 	 * parseVALUEOBJECT
-	 * 
+	 *
 	 * @param pValueObjectE
 	 * @return CIMNamedElementInterface (CIMClass|CIMInstance)
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMNamedElementInterface parseVALUEOBJECT(Element pValueObjectE)
-			throws CIMXMLParseException {
+	public static CIMNamedElementInterface parseVALUEOBJECT(Element pValueObjectE) throws CIMXMLParseException {
 		// <! ELEMENT VALUE.OBJECT (CLASS|INSTANCE)>
 
 		// CLASS
@@ -421,25 +432,26 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUENAMEDINSTANCE
-	 * 
+	 *
 	 * @param pValueNamedInstanceE
 	 * @return CIMInstance
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMInstance parseVALUENAMEDINSTANCE(Element pValueNamedInstanceE)
-			throws CIMXMLParseException {
+	public static CIMInstance parseVALUENAMEDINSTANCE(Element pValueNamedInstanceE) throws CIMXMLParseException {
 		// <! ELEMENT VALUE.NAMEDINSTANCE (INSTANCENAME,INSTANCE)>
 
 		// INSTANCENAME
 		Element instancenameA[] = searchNodes(pValueNamedInstanceE, "INSTANCENAME", 1, 1, true);
-		if (instancenameA == null) { throw new CIMXMLParseException(
-				"VALUE.NAMEDINSTANCE element missing INSTANCENAME child element!"); }
+		if (instancenameA == null) {
+			throw new CIMXMLParseException("VALUE.NAMEDINSTANCE element missing INSTANCENAME child element!");
+		}
 		CIMObjectPath op = parseINSTANCENAME(instancenameA[0]);
 
 		// INSTANCE
 		Element instanceA[] = searchNodes(pValueNamedInstanceE, "INSTANCE", 1, 1, true);
-		if (instanceA == null) { throw new CIMXMLParseException(
-				"VALUE.NAMEDINSTANCE element missing INSTANCE child element!"); }
+		if (instanceA == null) {
+			throw new CIMXMLParseException("VALUE.NAMEDINSTANCE element missing INSTANCE child element!");
+		}
 		CIMInstance inst = parseINSTANCE(instanceA[0], op); // BB mod
 		checkOtherNodes(pValueNamedInstanceE, nodesVALUENAMEDINSTANCE);
 		return inst;
@@ -449,25 +461,26 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUEINSTANCEWITHPATH
-	 * 
+	 *
 	 * @param pValueNamedInstanceE
 	 * @return CIMInstance
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMInstance parseVALUEINSTANCEWITHPATH(Element pValueNamedInstanceE)
-			throws CIMXMLParseException {
+	public static CIMInstance parseVALUEINSTANCEWITHPATH(Element pValueNamedInstanceE) throws CIMXMLParseException {
 		// <! ELEMENT VALUE.INSTANCEWITHPATH (INSTANCEPATH,INSTANCE)>
 
 		// INSTANCEPATH
 		Element instancepathA[] = searchNodes(pValueNamedInstanceE, "INSTANCEPATH", 1, 1, true);
-		if (instancepathA == null) { throw new CIMXMLParseException(
-				"VALUE.INSTANCEWITHPATH element missing INSTANCEPATH child element!"); }
+		if (instancepathA == null) {
+			throw new CIMXMLParseException("VALUE.INSTANCEWITHPATH element missing INSTANCEPATH child element!");
+		}
 		CIMObjectPath op = parseINSTANCEPATH(instancepathA[0]);
 
 		// INSTANCE
 		Element instanceA[] = searchNodes(pValueNamedInstanceE, "INSTANCE", 1, 1, true);
-		if (instanceA == null) { throw new CIMXMLParseException(
-				"VALUE.INSTANCEWITHPATH element missing INSTANCE child element!"); }
+		if (instanceA == null) {
+			throw new CIMXMLParseException("VALUE.INSTANCEWITHPATH element missing INSTANCE child element!");
+		}
 		CIMInstance inst = parseINSTANCE(instanceA[0], op); // BB mod
 		checkOtherNodes(pValueNamedInstanceE, nodesVALUEINSTANCEWITHPATH);
 		return inst;
@@ -477,13 +490,12 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUENAMEDOBJECT
-	 * 
+	 *
 	 * @param pValueNamedObjectE
 	 * @return CIMNamedElementInterface
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMNamedElementInterface parseVALUENAMEDOBJECT(Element pValueNamedObjectE)
-			throws CIMXMLParseException {
+	public static CIMNamedElementInterface parseVALUENAMEDOBJECT(Element pValueNamedObjectE) throws CIMXMLParseException {
 		// <! ELEMENT VALUE.NAMEDOBJECT (CLASS|(INSTANCENAME,INSTANCE))>
 
 		// CLASS
@@ -501,8 +513,9 @@ public class CIMXMLParserImpl {
 
 			// INSTANCE
 			Element instanceA[] = searchNodes(pValueNamedObjectE, "INSTANCE", 0, 1, true);
-			if (instanceA == null) { throw new CIMXMLParseException(
-					"VALUE.NAMEDOBJECT element missing INSTANCE child element!"); }
+			if (instanceA == null) {
+				throw new CIMXMLParseException("VALUE.NAMEDOBJECT element missing INSTANCE child element!");
+			}
 			CIMInstance inst = parseINSTANCE(instanceA[0], op); // BB mod
 			checkOtherNodes(pValueNamedObjectE, nodesVALUENAMEDOBJECTi);
 			return inst;
@@ -517,13 +530,13 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseVALUEOBJECTWITHPATH
-	 * 
+	 *
 	 * @param pValueObjectWithPathE
 	 * @return CIMNamedElementInterface
 	 * @throws CIMXMLParseException
 	 */
 	public static CIMNamedElementInterface parseVALUEOBJECTWITHPATH(Element pValueObjectWithPathE)
-			throws CIMXMLParseException {
+		throws CIMXMLParseException {
 		// <! ELEMENT VALUE.OBJECTWITHPATH
 		// ((CLASSPATH,CLASS)|(INSTANCEPATH,INSTANCE))>
 
@@ -534,8 +547,9 @@ public class CIMXMLParserImpl {
 
 			// CLASS
 			Element classA[] = searchNodes(pValueObjectWithPathE, "CLASS", 0, 1, true);
-			if (classA == null) { throw new CIMXMLParseException(
-					"VALUE.OBJECTWITHPATH element missing CLASS child element!"); }
+			if (classA == null) {
+				throw new CIMXMLParseException("VALUE.OBJECTWITHPATH element missing CLASS child element!");
+			}
 
 			CIMClass obj = parseCLASS(classA[0], op);
 			checkOtherNodes(pValueObjectWithPathE, nodesVALUEOBJECTWITHPATHcls);
@@ -549,44 +563,43 @@ public class CIMXMLParserImpl {
 
 			// INSTANCE
 			Element instanceA[] = searchNodes(pValueObjectWithPathE, "INSTANCE", 0, 1, true);
-			if (instanceA == null) { throw new CIMXMLParseException(
-					"VALUE.OBJECTWITHPATH element missing INSTANCE child element!"); }
+			if (instanceA == null) {
+				throw new CIMXMLParseException("VALUE.OBJECTWITHPATH element missing INSTANCE child element!");
+			}
 			CIMInstance inst = parseINSTANCE(instanceA[0], op); // BB mod
 			checkOtherNodes(pValueObjectWithPathE, nodesVALUEOBJECTWITHPATHins);
 			return inst;
 		}
 
-		throw new CIMXMLParseException(
-				"VALUE.OBJECTWITHPATH element missing required child element!");
+		throw new CIMXMLParseException("VALUE.OBJECTWITHPATH element missing required child element!");
 	}
 
 	private static final String nodesVALUEOBJECTWITHLOCALPATHcls[] = { "LOCALCLASSPATH", "CLASS" };
 
-	private static final String nodesVALUEOBJECTWITHLOCALPATHins[] = { "LOCALINSTANCEPATH",
-			"INSTANCE" };
+	private static final String nodesVALUEOBJECTWITHLOCALPATHins[] = { "LOCALINSTANCEPATH", "INSTANCE" };
 
 	/**
 	 * parseVALUEOBJECTWITHLOCALPATH
-	 * 
+	 *
 	 * @param pValueObjectWithLocalPathE
 	 * @return CIMNamedElementInterface
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMNamedElementInterface parseVALUEOBJECTWITHLOCALPATH(
-			Element pValueObjectWithLocalPathE) throws CIMXMLParseException {
+	public static CIMNamedElementInterface parseVALUEOBJECTWITHLOCALPATH(Element pValueObjectWithLocalPathE)
+		throws CIMXMLParseException {
 		// <! ELEMENT VALUE.OBJECTWITHLOCALPATH
 		// ((LOCALCLASSPATH,CLASS)|(LOCALINSTANCEPATH,INSTANCE))>
 
 		// LOCALCLASSPATH
-		Element localclasspathA[] = searchNodes(pValueObjectWithLocalPathE, "LOCALCLASSPATH", 0, 1,
-				true);
+		Element localclasspathA[] = searchNodes(pValueObjectWithLocalPathE, "LOCALCLASSPATH", 0, 1, true);
 		if (localclasspathA != null) {
 			CIMObjectPath op = parseLOCALCLASSPATH(localclasspathA[0]);
 
 			// CLASS
 			Element classA[] = searchNodes(pValueObjectWithLocalPathE, "CLASS", 0, 1, true);
-			if (classA == null) { throw new CIMXMLParseException(
-					"VALUE.OBJECTWITHLOCALPATH element missing CLASS child element!"); }
+			if (classA == null) {
+				throw new CIMXMLParseException("VALUE.OBJECTWITHLOCALPATH element missing CLASS child element!");
+			}
 
 			CIMClass obj = parseCLASS(classA[0], op);
 			checkOtherNodes(pValueObjectWithLocalPathE, nodesVALUEOBJECTWITHLOCALPATHcls);
@@ -594,22 +607,21 @@ public class CIMXMLParserImpl {
 		}
 
 		// LOCALINSTANCEPATH
-		Element localinstancepathA[] = searchNodes(pValueObjectWithLocalPathE, "LOCALINSTANCEPATH",
-				0, 1, true);
+		Element localinstancepathA[] = searchNodes(pValueObjectWithLocalPathE, "LOCALINSTANCEPATH", 0, 1, true);
 		if (localinstancepathA != null) {
 			CIMObjectPath op = parseLOCALINSTANCEPATH(localinstancepathA[0]);
 
 			// INSTANCE
 			Element instanceA[] = searchNodes(pValueObjectWithLocalPathE, "INSTANCE", 0, 1, true);
-			if (instanceA == null) { throw new CIMXMLParseException(
-					"VALUE.OBJECTWITHLOCALPATH element missing INSTANCE child element!"); }
+			if (instanceA == null) {
+				throw new CIMXMLParseException("VALUE.OBJECTWITHLOCALPATH element missing INSTANCE child element!");
+			}
 			CIMInstance inst = parseINSTANCE(instanceA[0], op); // BB mod
 			checkOtherNodes(pValueObjectWithLocalPathE, nodesVALUEOBJECTWITHLOCALPATHins);
 			return inst;
 		}
 
-		throw new CIMXMLParseException(
-				"VALUE.OBJECTWITHLOCALPATH element missing required child element!");
+		throw new CIMXMLParseException("VALUE.OBJECTWITHLOCALPATH element missing required child element!");
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////
@@ -620,67 +632,69 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseNAMESPACEPATH
-	 * 
+	 *
 	 * @param pNameSpacePathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseNAMESPACEPATH(Element pNameSpacePathE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseNAMESPACEPATH(Element pNameSpacePathE) throws CIMXMLParseException {
 		// <!ELEMENT NAMESPACEPATH (HOST,LOCALNAMESPACEPATH)>
 		// HOST
 		Element hostA[] = searchNodes(pNameSpacePathE, "HOST", 1, 1, true);
-		if (hostA == null) { throw new CIMXMLParseException(
-				"NAMESPACEPATH element missing HOST child element!"); }
+		if (hostA == null) {
+			throw new CIMXMLParseException("NAMESPACEPATH element missing HOST child element!");
+		}
 		XMLHostStr xmlHostStr = new XMLHostStr(parseHOST(hostA[0]));
 		// LOCALNAMESPACE
-		Element localnamespacepathA[] = searchNodes(pNameSpacePathE, "LOCALNAMESPACEPATH", 1, 1,
-				true);
-		if (localnamespacepathA == null) { throw new CIMXMLParseException(
-				"NAMESPACEPATH element missing LOCALNAMESPACEPATH child element!"); }
+		Element localnamespacepathA[] = searchNodes(pNameSpacePathE, "LOCALNAMESPACEPATH", 1, 1, true);
+		if (localnamespacepathA == null) {
+			throw new CIMXMLParseException("NAMESPACEPATH element missing LOCALNAMESPACEPATH child element!");
+		}
 		String nameSpace = parseLOCALNAMESPACEPATH(localnamespacepathA[0]);
 		/*
 		 * CIMObjectPath( String scheme, String host, String port, String
 		 * namespace, String objectName, CIMProperty[] keys )
 		 */
 		checkOtherNodes(pNameSpacePathE, nodesNAMESPACEPATH);
-		return new CIMObjectPath(xmlHostStr.getProtocol(), xmlHostStr.getHost(), xmlHostStr
-				.getPort(), nameSpace, null, null);
+		return new CIMObjectPath(
+			xmlHostStr.getProtocol(),
+			xmlHostStr.getHost(),
+			xmlHostStr.getPort(),
+			nameSpace,
+			null,
+			null
+		);
 	}
 
 	/**
 	 * parseLOCALNAMESPACEPATH
-	 * 
+	 *
 	 * @param pLocalNameSpaceE
 	 * @return String
 	 * @throws CIMXMLParseException
 	 */
-	public static String parseLOCALNAMESPACEPATH(Element pLocalNameSpaceE)
-			throws CIMXMLParseException {
+	public static String parseLOCALNAMESPACEPATH(Element pLocalNameSpaceE) throws CIMXMLParseException {
 		// <!ELEMENT LOCALNAMESPACE (NAMESPACE+))>
 
-		Element[] nameSpaceElementA = searchNodes(pLocalNameSpaceE, "NAMESPACE", 1,
-				Integer.MAX_VALUE, false);
+		Element[] nameSpaceElementA = searchNodes(pLocalNameSpaceE, "NAMESPACE", 1, Integer.MAX_VALUE, false);
 		if (nameSpaceElementA == null) {
-			if (WBEMConfiguration.getGlobalConfiguration().allowEmptyLocalNameSpacePath()
-					&& cLocalPathBuilder != null) return cLocalPathBuilder.getBasePath()
-					.getNamespace();
-			throw new CIMXMLParseException(
-					"LOCALNAMESPACEPATH element missing NAMESPACE child element!");
+			if (
+				WBEMConfiguration.getGlobalConfiguration().allowEmptyLocalNameSpacePath() && cLocalPathBuilder != null
+			) return cLocalPathBuilder.getBasePath().getNamespace();
+			throw new CIMXMLParseException("LOCALNAMESPACEPATH element missing NAMESPACE child element!");
 		}
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < nameSpaceElementA.length; i++) {
 			Element namespaceE = nameSpaceElementA[i];
 			String s = parseNAMESPACE(namespaceE);
-			if (i > 0) sb.append("/" + s);
-			else sb.append(s);
+			if (i > 0) sb.append("/" + s); else sb.append(s);
 		}
 		return sb.toString();
 	}
 
 	/**
 	 * parseHOST
-	 * 
+	 *
 	 * @param pHostE
 	 * @return String
 	 */
@@ -696,7 +710,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseNAMESPACE
-	 * 
+	 *
 	 * @param pNameSpaceE
 	 * @return String
 	 * @throws CIMXMLParseException
@@ -706,8 +720,7 @@ public class CIMXMLParserImpl {
 		// <!ATTLIST NAMESPACE %NAME;>
 
 		Attr namespace_nameA = (Attr) searchAttribute(pNameSpaceE, "NAME");
-		if (namespace_nameA == null) throw new CIMXMLParseException(
-				"NAMESPACE element missing NAME attribute!");
+		if (namespace_nameA == null) throw new CIMXMLParseException("NAMESPACE element missing NAME attribute!");
 		String n = namespace_nameA.getValue();
 		checkOtherNodes(pNameSpaceE, nodesNAMESPACE);
 		return n;
@@ -717,7 +730,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCLASSPATH
-	 * 
+	 *
 	 * @param pClassPathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
@@ -727,46 +740,55 @@ public class CIMXMLParserImpl {
 
 		// NAMESPACEPATH
 		Element namespacepathA[] = searchNodes(pClassPathE, "NAMESPACEPATH", 1, 1, true);
-		if (namespacepathA == null) { throw new CIMXMLParseException(
-				"CLASSPATH element missing NAMESPACEPATH child element!"); }
+		if (namespacepathA == null) {
+			throw new CIMXMLParseException("CLASSPATH element missing NAMESPACEPATH child element!");
+		}
 		CIMObjectPath nsPath = parseNAMESPACEPATH(namespacepathA[0]);
 		// CLASSNAME
 		Element classnameA[] = searchNodes(pClassPathE, "CLASSNAME", 1, 1, true);
-		if (classnameA == null) { throw new CIMXMLParseException(
-				"CLASSPATH element missing CLASSNAME child element!"); }
+		if (classnameA == null) {
+			throw new CIMXMLParseException("CLASSPATH element missing CLASSNAME child element!");
+		}
 		String className = parseClassName(classnameA[0]);
 		/*
 		 * CIMObjectPath( String scheme, String host, String port, String
 		 * namespace, String objectName, CIMProperty[] keys )
 		 */
 		checkOtherNodes(pClassPathE, nodesCLASSPATH);
-		return new CIMObjectPath(nsPath.getScheme(), nsPath.getHost(), nsPath.getPort(), nsPath
-				.getNamespace(), className, null);
+		return new CIMObjectPath(
+			nsPath.getScheme(),
+			nsPath.getHost(),
+			nsPath.getPort(),
+			nsPath.getNamespace(),
+			className,
+			null
+		);
 	}
 
 	private static final String nodesLOCALCLASSPATH[] = { "LOCALNAMESPACEPATH", "CLASSNAME" };
 
 	/**
 	 * parseLOCALCLASSPATH
-	 * 
+	 *
 	 * @param pClassPathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseLOCALCLASSPATH(Element pClassPathE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseLOCALCLASSPATH(Element pClassPathE) throws CIMXMLParseException {
 		// <!ELEMENT LOCALCLASSPATH (LOCALNAMESPACEPATH,CLASSNAME)>
 
 		// NAMESPACEPATH
 		Element localnamespacepathA[] = searchNodes(pClassPathE, "LOCALNAMESPACEPATH", 1, 1, true);
-		if (localnamespacepathA == null) { throw new CIMXMLParseException(
-				"LOCALCLASSPATH element missing LOCALNAMESPACEPATH child element!"); }
+		if (localnamespacepathA == null) {
+			throw new CIMXMLParseException("LOCALCLASSPATH element missing LOCALNAMESPACEPATH child element!");
+		}
 		String nameSpace = parseLOCALNAMESPACEPATH(localnamespacepathA[0]);
 
 		// CLASSNAME
 		Element classnameA[] = searchNodes(pClassPathE, "CLASSNAME", 1, 1, true);
-		if (classnameA == null) { throw new CIMXMLParseException(
-				"LOCALCLASSPATH element missing CLASSNAME child element!"); }
+		if (classnameA == null) {
+			throw new CIMXMLParseException("LOCALCLASSPATH element missing CLASSNAME child element!");
+		}
 		CIMObjectPath op = parseCLASSNAME(classnameA[0]);
 		checkOtherNodes(pClassPathE, nodesLOCALCLASSPATH);
 		return cLocalPathBuilder.build(op.getObjectName(), nameSpace);
@@ -776,7 +798,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseClassName
-	 * 
+	 *
 	 * @param pClassNameE
 	 * @return String
 	 * @throws CIMXMLParseException
@@ -785,15 +807,14 @@ public class CIMXMLParserImpl {
 		// <!ELEMENT CLASSNAME EMPTY>
 		// <!ATTLIST CLASSNAME %NAME;>
 		Attr classname_nameA = (Attr) searchAttribute(pClassNameE, "NAME");
-		if (classname_nameA == null) throw new CIMXMLParseException(
-				"CLASSNAME element missing NAME attribute!");
+		if (classname_nameA == null) throw new CIMXMLParseException("CLASSNAME element missing NAME attribute!");
 		checkOtherNodes(pClassNameE, nodesCLASSNAME);
 		return classname_nameA.getNodeValue();
 	}
 
 	/**
 	 * parseCLASSNAME
-	 * 
+	 *
 	 * @param pClassNameE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
@@ -806,55 +827,62 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseINSTANCEPATH
-	 * 
+	 *
 	 * @param pInstancePathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseINSTANCEPATH(Element pInstancePathE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseINSTANCEPATH(Element pInstancePathE) throws CIMXMLParseException {
 		// <!ELEMENT INSTANCEPATH (NAMESPACEPATH,INSTANCENAME)>
 
 		// NAMESPACEPATH
 		Element namespacepathA[] = searchNodes(pInstancePathE, "NAMESPACEPATH", 1, 1, true);
-		if (namespacepathA == null) { throw new CIMXMLParseException(
-				"INSTANCEPATH element missing NAMESPACEPATH child element!"); }
+		if (namespacepathA == null) {
+			throw new CIMXMLParseException("INSTANCEPATH element missing NAMESPACEPATH child element!");
+		}
 		CIMObjectPath nsPath = parseNAMESPACEPATH(namespacepathA[0]);
 		// INSTANCENAME
 		Element instancenameA[] = searchNodes(pInstancePathE, "INSTANCENAME", 1, 1, true);
-		if (instancenameA == null) { throw new CIMXMLParseException(
-				"INSTANCEPATH element missing INSTANCENAME child element!"); }
+		if (instancenameA == null) {
+			throw new CIMXMLParseException("INSTANCEPATH element missing INSTANCENAME child element!");
+		}
 		CIMObjectPath op = parseINSTANCENAME(instancenameA[0]);
 		// ebak: change host and namespace
 		checkOtherNodes(pInstancePathE, nodesINSTANCEPATH);
-		return new CIMObjectPath(nsPath.getScheme(), nsPath.getHost(), nsPath.getPort(), nsPath
-				.getNamespace(), op.getObjectName(), op.getKeys());
+		return new CIMObjectPath(
+			nsPath.getScheme(),
+			nsPath.getHost(),
+			nsPath.getPort(),
+			nsPath.getNamespace(),
+			op.getObjectName(),
+			op.getKeys()
+		);
 	}
 
 	private static final String nodesLOCALINSTANCEPATH[] = { "LOCALNAMESPACEPATH", "INSTANCENAME" };
 
 	/**
 	 * parseLOCALINSTANCEPATH
-	 * 
+	 *
 	 * @param pLocalInstancePathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseLOCALINSTANCEPATH(Element pLocalInstancePathE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseLOCALINSTANCEPATH(Element pLocalInstancePathE) throws CIMXMLParseException {
 		// <!ELEMENT LOCALINSTANCEPATH (LOCALNAMESPACEPATH,INSTANCENAME)>
 
 		// LOCALNAMESPACEPATH
-		Element localnamespacepathA[] = searchNodes(pLocalInstancePathE, "LOCALNAMESPACEPATH", 1,
-				1, true);
-		if (localnamespacepathA == null) { throw new CIMXMLParseException(
-				"LOCALINSTANCEPATH element missing LOCALNAMESPACEPATH child element!"); }
+		Element localnamespacepathA[] = searchNodes(pLocalInstancePathE, "LOCALNAMESPACEPATH", 1, 1, true);
+		if (localnamespacepathA == null) {
+			throw new CIMXMLParseException("LOCALINSTANCEPATH element missing LOCALNAMESPACEPATH child element!");
+		}
 		String nameSpace = parseLOCALNAMESPACEPATH(localnamespacepathA[0]);
 
 		// INSTANCENAME
 		Element instancenameA[] = searchNodes(pLocalInstancePathE, "INSTANCENAME", 1, 1, true);
-		if (instancenameA == null) { throw new CIMXMLParseException(
-				"LOCALINSTANCEPATH element missing INSTANCENAME child element!"); }
+		if (instancenameA == null) {
+			throw new CIMXMLParseException("LOCALINSTANCEPATH element missing INSTANCENAME child element!");
+		}
 		CIMObjectPath op = parseINSTANCENAME(instancenameA[0]);
 		/*
 		 * CIMObjectPath(String objectName, String namespace, CIMProperty[]
@@ -868,23 +896,22 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseINSTANCENAME
-	 * 
+	 *
 	 * @param pInstanceNameE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMObjectPath parseINSTANCENAME(Element pInstanceNameE)
-			throws CIMXMLParseException {
+	public static CIMObjectPath parseINSTANCENAME(Element pInstanceNameE) throws CIMXMLParseException {
 		// <!ELEMENT INSTANCENAME (KEYBINDING*|KEYVALUE?|VALUE.REFERENCE?)>
 		// <!ATTLIST INSTANCENAME %CLASSNAME;>
 		Attr instance_classnameA = (Attr) searchAttribute(pInstanceNameE, "CLASSNAME");
 		if (instance_classnameA == null) throw new CIMXMLParseException(
-				"INSTANCENAME element missing CLASSNAME attribute!");
+			"INSTANCENAME element missing CLASSNAME attribute!"
+		);
 		String opClassName = instance_classnameA.getNodeValue();
 
 		// KEYBINDING
-		Element[] keyBindingElementA = searchNodes(pInstanceNameE, "KEYBINDING", 0,
-				Integer.MAX_VALUE, false);
+		Element[] keyBindingElementA = searchNodes(pInstanceNameE, "KEYBINDING", 0, Integer.MAX_VALUE, false);
 		if (keyBindingElementA != null) {
 			CIMProperty<?>[] keys = new CIMProperty[keyBindingElementA.length];
 			for (int i = 0; i < keyBindingElementA.length; i++) {
@@ -899,8 +926,7 @@ public class CIMXMLParserImpl {
 		if (keyvalueA != null) {
 			CIMProperty<?>[] keys = new CIMProperty[1];
 			TypedValue propTypedVal = parseKEYVALUE(keyvalueA[0]);
-			keys[0] = new CIMProperty<Object>("", propTypedVal.getType(), propTypedVal.getValue(),
-					true, false, null);
+			keys[0] = new CIMProperty<Object>("", propTypedVal.getType(), propTypedVal.getValue(), true, false, null);
 			return cLocalPathBuilder.build(opClassName, null, keys);
 		}
 
@@ -909,8 +935,7 @@ public class CIMXMLParserImpl {
 		if (valuereferenceA != null) {
 			CIMProperty<?>[] keys = new CIMProperty[1];
 			CIMObjectPath op = parseVALUEREFERENCE(valuereferenceA[0]);
-			keys[0] = new CIMProperty<CIMObjectPath>("", new CIMDataType(op.getObjectName()), op,
-					true, false, null);
+			keys[0] = new CIMProperty<CIMObjectPath>("", new CIMDataType(op.getObjectName()), op, true, false, null);
 			return cLocalPathBuilder.build(opClassName, null, keys);
 		}
 
@@ -921,7 +946,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseOBJECTPATH
-	 * 
+	 *
 	 * @param pObjectPathE
 	 * @return CIMObjectPath
 	 * @throws CIMXMLParseException
@@ -948,7 +973,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseKEYBINDING
-	 * 
+	 *
 	 * @param pKeyBindingE
 	 * @return CIMProperty
 	 * @throws CIMXMLParseException
@@ -958,37 +983,34 @@ public class CIMXMLParserImpl {
 		// <!ATTLIST KEYBINDING %NAME;>
 
 		Attr keybinding_nameA = (Attr) searchAttribute(pKeyBindingE, "NAME");
-		if (keybinding_nameA == null) throw new CIMXMLParseException(
-				"KEYBINDING element missing NAME attribute!");
+		if (keybinding_nameA == null) throw new CIMXMLParseException("KEYBINDING element missing NAME attribute!");
 		String propName = keybinding_nameA.getValue();
 
 		// KEYVALUE
 		Element keyvalueA[] = searchNodes(pKeyBindingE, "KEYVALUE", 0, 1, false);
 		if (keyvalueA != null) {
 			TypedValue propTypedVal = parseKEYVALUE(keyvalueA[0]);
-			return new CIMProperty<Object>(propName, propTypedVal.getType(), propTypedVal
-					.getValue(), true, false, null);
+			return new CIMProperty<Object>(propName, propTypedVal.getType(), propTypedVal.getValue(), true, false, null);
 		}
 
 		// VALUE.REFERENCE
 		Element valuereferenceA[] = searchNodes(pKeyBindingE, "VALUE.REFERENCE", 0, 1, false);
 		if (valuereferenceA != null) {
 			CIMObjectPath op = parseVALUEREFERENCE(valuereferenceA[0]);
-			return new CIMProperty<CIMObjectPath>(propName, new CIMDataType(op.getObjectName()),
-					op, true, false, null);
+			return new CIMProperty<CIMObjectPath>(propName, new CIMDataType(op.getObjectName()), op, true, false, null);
 		}
 
 		throw new CIMXMLParseException("KEYBINDING element missing required child element!");
 	}
 
 	private static final TreeMap<String, CIMDataType> TYPESTR_MAP = new TreeMap<String, CIMDataType>(
-			new Comparator<Object>() {
+		new Comparator<Object>() {
 
-				public int compare(Object pO1, Object pO2) {
-					return ((String) pO1).compareToIgnoreCase((String) pO2);
-				}
-
-			});
+			public int compare(Object pO1, Object pO2) {
+				return ((String) pO1).compareToIgnoreCase((String) pO2);
+			}
+		}
+	);
 
 	static {
 		TYPESTR_MAP.put(MOF.DT_UINT8, CIMDataType.UINT8_T);
@@ -1016,7 +1038,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseScalarTypeStr
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @return CIMDataType
 	 * @throws CIMXMLParseException
@@ -1027,7 +1049,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseArrayTypeStr
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @return CIMDataType
 	 * @throws CIMXMLParseException
@@ -1038,20 +1060,18 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseTypeStr
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @param pArray
 	 * @return CIMDataType
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMDataType parseTypeStr(String pTypeStr, boolean pArray)
-			throws CIMXMLParseException {
+	public static CIMDataType parseTypeStr(String pTypeStr, boolean pArray) throws CIMXMLParseException {
 		if (pTypeStr == null) return pArray ? CIMDataType.STRING_ARRAY_T : CIMDataType.STRING_T;
 		CIMDataType type = TYPESTR_MAP.get(pTypeStr);
 		if (type == null) throw new CIMXMLParseException("Unknown TYPE string:" + pTypeStr);
 		if (pArray) {
-			if (type.getType() == CIMDataType.REFERENCE) return new CIMDataType(type
-					.getRefClassName(), 0);
+			if (type.getType() == CIMDataType.REFERENCE) return new CIMDataType(type.getRefClassName(), 0);
 			return CIMHelper.UnboundedArrayDataType(type.getType());
 		}
 		return type;
@@ -1059,7 +1079,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseKEYVALUE
-	 * 
+	 *
 	 * @param pKeyValueE
 	 * @return TypedValue
 	 * @throws CIMXMLParseException
@@ -1094,27 +1114,25 @@ public class CIMXMLParserImpl {
 	 * parser will be removed.
 	 */
 	private static class ValueTypeHandler {
-
 		private CIMDataType iType;
 
 		private Object iValue;
 
 		/**
-		 * 
+		 *
 		 * Ctor.
-		 * 
+		 *
 		 * @param pValueTypeStr
 		 * @param pValueStr
 		 * @throws CIMXMLParseException
 		 */
 		public ValueTypeHandler(String pValueTypeStr, String pValueStr) throws CIMXMLParseException {
-
-			if (pValueTypeStr == null) throw new CIMXMLParseException(
-					"KEYVALUE element missing VALUETYPE attribute!");
+			if (pValueTypeStr == null) throw new CIMXMLParseException("KEYVALUE element missing VALUETYPE attribute!");
 
 			if (pValueTypeStr.equals("numeric")) {
 				if (!setUInt64(pValueStr) && !setSInt64(pValueStr) && !setReal64(pValueStr)) throw new CIMXMLParseException(
-						"Unparseable \"number\" value: " + pValueStr + " !");
+					"Unparseable \"number\" value: " + pValueStr + " !"
+				);
 			} else if (pValueTypeStr.equals(MOF.DT_STR)) {
 				if (!setDTAbsolute(pValueStr) && !setDTInterval(pValueStr)) {
 					this.iValue = pValueStr;
@@ -1122,18 +1140,25 @@ public class CIMXMLParserImpl {
 				}
 			} else if (pValueTypeStr.equals(MOF.DT_BOOL)) {
 				if (!setBoolean(pValueStr)) throw new CIMXMLParseException(
-						"Unparseable \"boolean\" value: " + pValueStr + " !");
+					"Unparseable \"boolean\" value: " + pValueStr + " !"
+				);
 			} else {
-				throw new CIMXMLParseException("KEYVALUE element's VALUETYPE attribute must be "
-						+ MOF.DT_STR + ", " + MOF.DT_BOOL + " or numeric! " + pValueStr
-						+ " is not allowed!");
+				throw new CIMXMLParseException(
+					"KEYVALUE element's VALUETYPE attribute must be " +
+					MOF.DT_STR +
+					", " +
+					MOF.DT_BOOL +
+					" or numeric! " +
+					pValueStr +
+					" is not allowed!"
+				);
 			}
 		}
 
 		/**
-		 * 
+		 *
 		 * getType
-		 * 
+		 *
 		 * @return CIMDataType
 		 */
 		public CIMDataType getType() {
@@ -1141,9 +1166,9 @@ public class CIMXMLParserImpl {
 		}
 
 		/**
-		 * 
+		 *
 		 * getValue
-		 * 
+		 *
 		 * @return Object
 		 */
 		public Object getValue() {
@@ -1220,12 +1245,17 @@ public class CIMXMLParserImpl {
 		return attrib;
 	}
 
-	private static final String[] nodesCLASS = { "QUALIFIER", "PROPERTY", "PROPERTY.ARRAY",
-			"PROPERTY.REFERENCE", "METHOD" };
+	private static final String[] nodesCLASS = {
+		"QUALIFIER",
+		"PROPERTY",
+		"PROPERTY.ARRAY",
+		"PROPERTY.REFERENCE",
+		"METHOD"
+	};
 
 	/**
 	 * parseCLASS
-	 * 
+	 *
 	 * @param pClassE
 	 * @return CIMClass
 	 * @throws CIMXMLParseException
@@ -1236,21 +1266,19 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCLASS
-	 * 
+	 *
 	 * @param pClassE
 	 * @param pObjectPath
 	 * @return CIMClass
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMClass parseCLASS(Element pClassE, CIMObjectPath pObjectPath)
-			throws CIMXMLParseException {
+	public static CIMClass parseCLASS(Element pClassE, CIMObjectPath pObjectPath) throws CIMXMLParseException {
 		// <!ELEMENT CLASS (QUALIFIER*,
 		// (PROPERTY|PROPERTY.ARRAY|PROPERTY.REFERENCE)*,METHOD*)>
 		// <!ATTLIST CLASS %NAME;%SUPERCLASS;>
 
 		Attr class_nameA = (Attr) searchAttribute(pClassE, "NAME");
-		if (class_nameA == null) throw new CIMXMLParseException(
-				"CLASS element missing NAME attribute!");
+		if (class_nameA == null) throw new CIMXMLParseException("CLASS element missing NAME attribute!");
 		String name = class_nameA.getNodeValue();
 
 		// Attr superclass_nameA = (Attr)searchAttribute(classE, "SUPERCLASS");
@@ -1280,9 +1308,9 @@ public class CIMXMLParserImpl {
 		/*
 		 * CIMClass( String name, String superclass, CIMQualifier[] qualifiers,
 		 * CIMClassProperty[] props, CIMMethod[] methods )
-		 * 
+		 *
 		 * return new CIMClass( name, superClass, qualis, props, methods );
-		 * 
+		 *
 		 * This constructor can provide localPath info. CIMClass( CIMObjectPath
 		 * path, String superclass, CIMQualifier[] qualifiers,
 		 * CIMClassProperty[] props, CIMMethod[] pMethods, boolean
@@ -1291,24 +1319,28 @@ public class CIMXMLParserImpl {
 		checkOtherNodes(pClassE, nodesCLASS);
 
 		return new CIMClass(
-				pObjectPath == null ? cLocalPathBuilder.build(name, null) : pObjectPath,
-				superClass, qualis, props, methods, hasAssocQuali(qualis), hasKeyProp(props));
+			pObjectPath == null ? cLocalPathBuilder.build(name, null) : pObjectPath,
+			superClass,
+			qualis,
+			props,
+			methods,
+			hasAssocQuali(qualis),
+			hasKeyProp(props)
+		);
 	}
 
 	private static boolean hasAssocQuali(CIMQualifier<?>[] pQualis) {
 		if (pQualis == null) return false;
 		for (int i = 0; i < pQualis.length; i++) {
 			CIMQualifier<?> quali = pQualis[i];
-			if ("ASSOCIATION".equalsIgnoreCase(quali.getName())
-					&& Boolean.TRUE.equals(quali.getValue())) return true;
+			if ("ASSOCIATION".equalsIgnoreCase(quali.getName()) && Boolean.TRUE.equals(quali.getValue())) return true;
 		}
 		return false;
 	}
 
 	private static boolean hasKeyProp(CIMProperty<?>[] pProps) {
 		if (pProps == null) return false;
-		for (int i = 0; i < pProps.length; i++)
-			if (pProps[i].isKey()) return true;
+		for (int i = 0; i < pProps.length; i++) if (pProps[i].isKey()) return true;
 		return false;
 	}
 
@@ -1354,12 +1386,17 @@ public class CIMXMLParserImpl {
 		return paramV.toArray(new CIMParameter[0]);
 	}
 
-	private static final String nodesMETHOD[] = { "QUALIFIER", "PARAMETER", "PARAMETER.REFERENCE",
-			"PARAMETER.ARRAY", "PARAMETER.REFARRAY" };
+	private static final String nodesMETHOD[] = {
+		"QUALIFIER",
+		"PARAMETER",
+		"PARAMETER.REFERENCE",
+		"PARAMETER.ARRAY",
+		"PARAMETER.REFARRAY"
+	};
 
 	/**
 	 * parseMETHOD
-	 * 
+	 *
 	 * @param pMethodE
 	 * @return CIMMethod
 	 * @throws CIMXMLParseException
@@ -1377,8 +1414,7 @@ public class CIMXMLParserImpl {
 		if (name == null) throw new CIMXMLParseException("METHOD element missing NAME attribute!");
 		EmbObjHandler embObjHandler = new EmbObjHandler(pMethodE);
 		CIMDataType type = embObjHandler.getType();
-		if (type != null && type.isArray()) throw new CIMXMLParseException(
-				"Method's type cannot be Array!");
+		if (type != null && type.isArray()) throw new CIMXMLParseException("Method's type cannot be Array!");
 		String classOrigin = attribute(pMethodE, "CLASSORIGIN");
 		String propagatedStr = pMethodE.getAttribute("PROPAGATED");
 		boolean propagated = "true".equalsIgnoreCase(propagatedStr);
@@ -1389,47 +1425,41 @@ public class CIMXMLParserImpl {
 		CIMParameter<?>[] params = parseParameters(pMethodE);
 		// CIMMethod(String name, CIMDataType type, CIMQualifier[] qualifiers,
 		// CIMParameter[] parameters, boolean propagated, String originClass)
-		return new CIMMethod<Object>(name, type, embObjHandler.getQualifiers(), params, propagated,
-				classOrigin);
+		return new CIMMethod<Object>(name, type, embObjHandler.getQualifiers(), params, propagated, classOrigin);
 	}
 
 	private static final String nodesPARAMETER[] = { "QUALIFIER" };
 
 	/**
 	 * parsePARAMETER
-	 * 
+	 *
 	 * @param pParamE
 	 * @return CIMParameter
 	 * @throws CIMXMLParseException
 	 */
 	public static CIMParameter<Object> parsePARAMETER(Element pParamE) throws CIMXMLParseException {
 		String name = attribute(pParamE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PARAMETER element missing NAME attribute!");
-		if (attribute(pParamE, "TYPE") == null) throw new CIMXMLParseException(
-				"PARAMETER element missing TYPE attribute!");
+		if (name == null) throw new CIMXMLParseException("PARAMETER element missing NAME attribute!");
+		if (attribute(pParamE, "TYPE") == null) throw new CIMXMLParseException("PARAMETER element missing TYPE attribute!");
 		checkOtherNodes(pParamE, nodesPARAMETER);
 		EmbObjHandler iEmbObjHandler = new EmbObjHandler(pParamE);
 		// CIMParameter(String name, CIMDataType type, CIMQualifier[]
 		// qualifiers)
-		return new CIMParameter<Object>(name, iEmbObjHandler.getType(), iEmbObjHandler
-				.getQualifiers());
+		return new CIMParameter<Object>(name, iEmbObjHandler.getType(), iEmbObjHandler.getQualifiers());
 	}
 
 	private static final String nodesPARAMETERREFERENCE[] = { "QUALIFIER" };
 
 	/**
 	 * parsePARAMETERREFERENCE
-	 * 
+	 *
 	 * @param pParamE
 	 * @return CIMParameter
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMParameter<Object> parsePARAMETERREFERENCE(Element pParamE)
-			throws CIMXMLParseException {
+	public static CIMParameter<Object> parsePARAMETERREFERENCE(Element pParamE) throws CIMXMLParseException {
 		String name = attribute(pParamE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PARAMETER.REFERENCE element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PARAMETER.REFERENCE element missing NAME attribute!");
 		String referenceClass = attribute(pParamE, "REFERENCECLASS");
 		CIMDataType type = new CIMDataType(referenceClass != null ? referenceClass : "");
 		checkOtherNodes(pParamE, nodesPARAMETERREFERENCE);
@@ -1442,45 +1472,40 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parsePARAMETERARRAY
-	 * 
+	 *
 	 * @param pParamE
 	 * @return CIMParameter
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMParameter<Object> parsePARAMETERARRAY(Element pParamE)
-			throws CIMXMLParseException {
+	public static CIMParameter<Object> parsePARAMETERARRAY(Element pParamE) throws CIMXMLParseException {
 		String name = attribute(pParamE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PARAMETER.ARRAY element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PARAMETER.ARRAY element missing NAME attribute!");
 		if (attribute(pParamE, "TYPE") == null) throw new CIMXMLParseException(
-				"PARAMETER.ARRAY element missing TYPE attribute!");
+			"PARAMETER.ARRAY element missing TYPE attribute!"
+		);
 		String arraySizeStr = pParamE.getAttribute("ARRAYSIZE");
 		try {
 			if (arraySizeStr.length() > 0) Integer.parseInt(arraySizeStr);
 		} catch (NumberFormatException e) {
-			throw new CIMXMLParseException(arraySizeStr
-					+ " is not a valid ARRAYSIZE attribute for PARAMETER.ARRAY!");
+			throw new CIMXMLParseException(arraySizeStr + " is not a valid ARRAYSIZE attribute for PARAMETER.ARRAY!");
 		}
 		checkOtherNodes(pParamE, nodesPARAMETERARRAY);
 		EmbObjHandler iEmbObjHandler = new EmbObjHandler(pParamE);
-		return new CIMParameter<Object>(name, iEmbObjHandler.getArrayType(), iEmbObjHandler
-				.getQualifiers());
+		return new CIMParameter<Object>(name, iEmbObjHandler.getArrayType(), iEmbObjHandler.getQualifiers());
 	}
 
 	private static final String nodesPARAMETERREFARRAY[] = { "QUALIFIER" };
 
 	/**
 	 * parsePARAMETERREFARRAY
-	 * 
+	 *
 	 * @param pParamE
 	 * @return CIMParameter
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMParameter<Object> parsePARAMETERREFARRAY(Element pParamE)
-			throws CIMXMLParseException {
+	public static CIMParameter<Object> parsePARAMETERREFARRAY(Element pParamE) throws CIMXMLParseException {
 		String name = attribute(pParamE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PARAMETER.REFARRAY element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PARAMETER.REFARRAY element missing NAME attribute!");
 
 		String referenceClass = attribute(pParamE, "REFERENCECLASS");
 
@@ -1489,12 +1514,10 @@ public class CIMXMLParserImpl {
 		try {
 			if (arraySizeStr.length() > 0) arraySize = Integer.parseInt(arraySizeStr);
 		} catch (NumberFormatException e) {
-			throw new CIMXMLParseException(arraySizeStr
-					+ " is not a valid ARRAYSIZE attribute for PARAMETER.REFARRAY!");
+			throw new CIMXMLParseException(arraySizeStr + " is not a valid ARRAYSIZE attribute for PARAMETER.REFARRAY!");
 		}
 
-		CIMDataType type = new CIMDataType((referenceClass != null) ? referenceClass : "",
-				arraySize);
+		CIMDataType type = new CIMDataType((referenceClass != null) ? referenceClass : "", arraySize);
 
 		// QUALIFIER
 		checkOtherNodes(pParamE, nodesPARAMETERREFARRAY);
@@ -1504,7 +1527,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseINSTANCE
-	 * 
+	 *
 	 * @param pInstanceE
 	 * @return CIMInstance
 	 * @throws CIMXMLParseException
@@ -1513,27 +1536,24 @@ public class CIMXMLParserImpl {
 		return parseINSTANCE(pInstanceE, null);
 	}
 
-	private static final String[] nodesINSTANCE = { "QUALIFIER", "PROPERTY", "PROPERTY.ARRAY",
-			"PROPERTY.REFERENCE" };
+	private static final String[] nodesINSTANCE = { "QUALIFIER", "PROPERTY", "PROPERTY.ARRAY", "PROPERTY.REFERENCE" };
 
 	/**
 	 * parseINSTANCE
-	 * 
+	 *
 	 * @param pInstanceE
 	 * @param pObjPath
 	 * @return CIMInstance
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMInstance parseINSTANCE(Element pInstanceE, CIMObjectPath pObjPath)
-			throws CIMXMLParseException {
+	public static CIMInstance parseINSTANCE(Element pInstanceE, CIMObjectPath pObjPath) throws CIMXMLParseException {
 		// <!ELEMENT INSTANCE (QUALIFIER*,
 		// (PROPERTY|PROPERTY.ARRAY|PROPERTY.REFERENCE)*)>
 		// <!ATTLIST INSTANCE %CLASSNAME;>
 
 		// BB mod CIMInstance inst = new CIMInstance();
 		String className = attribute(pInstanceE, "CLASSNAME");
-		if (className == null) throw new CIMXMLParseException(
-				"INSTANCE element missing CLASSNAME attribute!");
+		if (className == null) throw new CIMXMLParseException("INSTANCE element missing CLASSNAME attribute!");
 		// QUALIFIER
 		// FIXME: in JSR48 CIMInstance doesn't have qualifiers
 		// CIMQualifier[] qualis = parseQUALIFIERS(pInstanceE);
@@ -1542,10 +1562,10 @@ public class CIMXMLParserImpl {
 
 		checkOtherNodes(pInstanceE, nodesINSTANCE);
 
-		if (pObjPath == null) return new CIMInstance(cLocalPathBuilder.build(className, null),
-				props);
-		if (WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()) return CIMHelper
-				.CIMInstanceWithSynchonizedNumericKeyDataTypes(pObjPath, props);
+		if (pObjPath == null) return new CIMInstance(cLocalPathBuilder.build(className, null), props);
+		if (
+			WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()
+		) return CIMHelper.CIMInstanceWithSynchonizedNumericKeyDataTypes(pObjPath, props);
 		return new CIMInstance(pObjPath, props);
 	}
 
@@ -1553,7 +1573,7 @@ public class CIMXMLParserImpl {
 	 * ebak: Access to enclosing method parseQUALIFIERS(Element) from the type
 	 * CIMXMLParserImpl is emulated by a synthetic accessor method. Increasing
 	 * its visibility will improve your performance
-	 * 
+	 *
 	 * @param pElement
 	 * @return CIMQualifier[]
 	 * @throws CIMXMLParseException
@@ -1579,7 +1599,7 @@ public class CIMXMLParserImpl {
 	 *  TOINSTANCE     (true|false)  'false'
 	 *  TRANSLATABLE   (true|false)  'false'&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pElement
 	 * @return int - CIMFlavor bit mixture
 	 */
@@ -1597,8 +1617,7 @@ public class CIMXMLParserImpl {
 
 	private static final int VALUE = 1, VALUEA = 2, VALUEREF = 4, VALUEREFA = 8;
 
-	private static TypedValue parseSingleValue(Element pElement, int pMask)
-			throws CIMXMLParseException {
+	private static TypedValue parseSingleValue(Element pElement, int pMask) throws CIMXMLParseException {
 		boolean foundSingleValue = false;
 		String typeStr = attribute(pElement, "TYPE");
 		// ebak: there was an ESS fix in the base implementation
@@ -1635,8 +1654,7 @@ public class CIMXMLParserImpl {
 				if (valStrA != null) {
 					Object[] values = new Object[valStrA.length];
 					for (int i = 0; i < valStrA.length; i++) {
-						values[i] = createJavaObject(type == null ? null : type.toString(),
-								valStrA[i]);
+						values[i] = createJavaObject(type == null ? null : type.toString(), valStrA[i]);
 					}
 					value = values;
 				}
@@ -1654,9 +1672,8 @@ public class CIMXMLParserImpl {
 			}
 		}
 		if (!foundSingleValue) {
-			if (value instanceof Object[]) type = CIMDataType.STRING_ARRAY_T;
-			else if (value != null) type = CIMDataType.STRING_T;
-			else type = CIMDataType.STRING_T; // /throw new
+			if (value instanceof Object[]) type = CIMDataType.STRING_ARRAY_T; else if (value != null) type =
+				CIMDataType.STRING_T; else type = CIMDataType.STRING_T; // /throw new
 			// CIMXMLParseException("null
 			// type with null value!");
 		}
@@ -1667,7 +1684,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseQUALIFIER
-	 * 
+	 *
 	 * @param pQualifierE
 	 * @return CIMQualifier
 	 * @throws CIMXMLParseException
@@ -1677,41 +1694,40 @@ public class CIMXMLParserImpl {
 		// <!ATTLIST QUALIFIER %NAME;%TYPE;%PROPAGATED;%QUALIFIERFLAVOR;>
 
 		String name = attribute(pQualifierE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"QUALIFIER element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("QUALIFIER element missing NAME attribute!");
 		String typeStr = attribute(pQualifierE, "TYPE");
 		if (typeStr == null && !hasTypeAttrsInNodes(pQualifierE)) throw new CIMXMLParseException(
-				"QUALIFIER element missing TYPE attribute!");
+			"QUALIFIER element missing TYPE attribute!"
+		);
 		boolean propagated = MOF.TRUE.equalsIgnoreCase(pQualifierE.getAttribute("PROPAGATED"));
 		// FLAVORS
 		int flavors = parseFLAVORS(pQualifierE);
 		// VALUE
-		if (searchNodes(pQualifierE, "VALUE", 0, 1, false) != null
-				|| searchNodes(pQualifierE, "VALUE.ARRAY", 0, 1, false) != null) {
+		if (
+			searchNodes(pQualifierE, "VALUE", 0, 1, false) != null ||
+			searchNodes(pQualifierE, "VALUE.ARRAY", 0, 1, false) != null
+		) {
 			TypedValue typedValue = parseSingleValue(pQualifierE);
-			if (typedValue.getType() == null) throw new CIMXMLParseException(
-					"Qualifier's type is null!");
+			if (typedValue.getType() == null) throw new CIMXMLParseException("Qualifier's type is null!");
 			// CIMQualifier(String pName, CIMDataType pType, Object pValue, int
 			// pFlavor)
-			return new CIMQualifier<Object>(name, typedValue.getType(), typedValue.getValue(),
-					flavors, propagated);
+			return new CIMQualifier<Object>(name, typedValue.getType(), typedValue.getValue(), flavors, propagated);
 		}
 		checkOtherNodes(pQualifierE, nodesQUALIFIER);
 
 		CIMDataType type = parseScalarTypeStr(typeStr);
-		return new CIMQualifier<Object>(name, type != null ? type : CIMDataType.STRING_T, null,
-				flavors, propagated);
+		return new CIMQualifier<Object>(name, type != null ? type : CIMDataType.STRING_T, null, flavors, propagated);
 	}
 
 	/**
 	 * parseQUALIFIERDECLARATION
-	 * 
+	 *
 	 * @param pQualifierTypeE
 	 * @return CIMQualifierType
 	 * @throws CIMXMLParseException
 	 */
 	public static CIMQualifierType<Object> parseQUALIFIERDECLARATION(Element pQualifierTypeE)
-			throws CIMXMLParseException {
+		throws CIMXMLParseException {
 		// <!ELEMENT QUALIFIER.DECLARATION (SCOPE?,(VALUE|VALUE.ARRAY)?)>
 		// <!ATTLIST QUALIFIER.DECLARATION
 		// %CIMName;
@@ -1721,11 +1737,11 @@ public class CIMXMLParserImpl {
 		// %QualifierFlavor;>
 
 		String name = attribute(pQualifierTypeE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"QUALIFIER.DECLARATION element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("QUALIFIER.DECLARATION element missing NAME attribute!");
 		String type = attribute(pQualifierTypeE, "TYPE");
 		if (type == null && !hasTypeAttrsInNodes(pQualifierTypeE)) throw new CIMXMLParseException(
-				"QUALIFIER.DECLARATION element missing TYPE attribute!");
+			"QUALIFIER.DECLARATION element missing TYPE attribute!"
+		);
 
 		// SCOPES
 		// ebak: there should be only 1 scope node
@@ -1753,15 +1769,15 @@ public class CIMXMLParserImpl {
 			boolean isArray = hasTrueAttribute(pQualifierTypeE, "ISARRAY");
 			String arraySizeStr = attribute(pQualifierTypeE, "ARRAYSIZE");
 			try {
-				int arraySize = (arraySizeStr == null ? (isArray ? 0 : -1) : Integer
-						.parseInt(arraySizeStr));
+				int arraySize = (arraySizeStr == null ? (isArray ? 0 : -1) : Integer.parseInt(arraySizeStr));
 				if (isArray || arraySize >= 0) {
-					qdType = (arraySize > 0) ? new CIMDataType(qdType.getType(), arraySize)
+					qdType =
+						(arraySize > 0)
+							? new CIMDataType(qdType.getType(), arraySize)
 							: CIMHelper.UnboundedArrayDataType(qdType.getType());
 				}
 			} catch (NumberFormatException e) {
-				throw new CIMXMLParseException(arraySizeStr
-						+ " is not a valid ARRAYSIZE attribute for QUALIFIER.DECLARATION!");
+				throw new CIMXMLParseException(arraySizeStr + " is not a valid ARRAYSIZE attribute for QUALIFIER.DECLARATION!");
 			}
 		} else {
 			nodes = new String[] { "SCOPE" };
@@ -1772,8 +1788,13 @@ public class CIMXMLParserImpl {
 		checkOtherNodes(pQualifierTypeE, nodes);
 
 		// FIXME: ebak: what about the flavors?
-		return new CIMQualifierType<Object>(new CIMObjectPath(null, null, null, null, name, null),
-				qdType, qdValue, scopes, 0);
+		return new CIMQualifierType<Object>(
+			new CIMObjectPath(null, null, null, null, name, null),
+			qdType,
+			qdValue,
+			scopes,
+			0
+		);
 	}
 
 	private static boolean hasTrueAttribute(Element pElement, String pName) {
@@ -1790,7 +1811,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseSCOPES
-	 * 
+	 *
 	 * @param pScopeE
 	 * @return int
 	 */
@@ -1806,15 +1827,13 @@ public class CIMXMLParserImpl {
 		return scopes;
 	}
 
-	private static Vector<CIMClassProperty<?>> parseClassPropsToVec(Element pElement)
-			throws CIMXMLParseException {
+	private static Vector<CIMClassProperty<?>> parseClassPropsToVec(Element pElement) throws CIMXMLParseException {
 		Element[] propElementA = searchNodes(pElement, "PROPERTY");
 		Vector<CIMClassProperty<?>> propVec = new Vector<CIMClassProperty<?>>();
 		if (propElementA != null) {
 			for (int i = 0; i < propElementA.length; i++) {
 				Element propertyE = propElementA[i];
 				propVec.add(parseCLASSPROPERTY(propertyE));
-
 			}
 		}
 
@@ -1840,7 +1859,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parsePROPERTIES
-	 * 
+	 *
 	 * @param pElement
 	 * @return CIMProperty[]
 	 * @throws CIMXMLParseException
@@ -1857,28 +1876,34 @@ public class CIMXMLParserImpl {
 		CIMProperty<?>[] retA = new CIMProperty[arraySize];
 		for (int i = 0; i < arraySize; i++) {
 			CIMClassProperty<?> prop = classPropVec.get(i);
-			retA[i] = new CIMProperty<Object>(prop.getName(), prop.getDataType(), prop.getValue(),
-					prop.isKey(), prop.isPropagated(), prop.getOriginClass());
+			retA[i] =
+				new CIMProperty<Object>(
+					prop.getName(),
+					prop.getDataType(),
+					prop.getValue(),
+					prop.isKey(),
+					prop.isPropagated(),
+					prop.getOriginClass()
+				);
 		}
 		return retA;
 	}
 
 	/**
 	 * parseCLASSPROPERTIES
-	 * 
+	 *
 	 * @param pElement
 	 * @return CIMClassProperty[]
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMClassProperty<?>[] parseCLASSPROPERTIES(Element pElement)
-			throws CIMXMLParseException {
+	public static CIMClassProperty<?>[] parseCLASSPROPERTIES(Element pElement) throws CIMXMLParseException {
 		Vector<CIMClassProperty<?>> classPropVec = parseClassPropsToVec(pElement);
 		return classPropVec.toArray(new CIMClassProperty[0]);
 	}
 
 	/**
 	 * parsePROPERTY
-	 * 
+	 *
 	 * @param pPropertyE
 	 * @return CIMProperty
 	 * @throws CIMXMLParseException
@@ -1888,7 +1913,6 @@ public class CIMXMLParserImpl {
 	}
 
 	private static class EmbObjHandler {
-
 		private CIMQualifier<?>[] iQualiA;
 
 		private boolean iHasEmbObjAttr, iHasEmbInstAttr, iHasEmbObjQuali, iHasEmbInstQuali, iKeyed;
@@ -1899,12 +1923,11 @@ public class CIMXMLParserImpl {
 
 		private Element iElement;
 
-		private boolean iStrictParsing = WBEMConfiguration.getGlobalConfiguration()
-				.strictEmbObjTypes();
+		private boolean iStrictParsing = WBEMConfiguration.getGlobalConfiguration().strictEmbObjTypes();
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pElement
 		 * @throws CIMXMLParseException
 		 */
@@ -1980,27 +2003,28 @@ public class CIMXMLParserImpl {
 			} else if ("instance".equalsIgnoreCase(embObjAttrStr)) {
 				this.iHasEmbObjAttr = false;
 				this.iHasEmbInstAttr = true;
-			} else throw new CIMXMLParseException("EmbeddedObject attribute cannot contain \""
-					+ embObjAttrStr + "\" value!");
+			} else throw new CIMXMLParseException("EmbeddedObject attribute cannot contain \"" + embObjAttrStr + "\" value!");
 		}
 
 		/**
 		 * getQualifiers
-		 * 
+		 *
 		 * @return CIMQualifier[]
 		 * @throws CIMXMLParseException
 		 */
 		public CIMQualifier<?>[] getQualifiers() throws CIMXMLParseException {
 			transform();
 			CIMQualifiedElementInterfaceImpl qualiImpl = new CIMQualifiedElementInterfaceImpl(
-					this.iQualiA, isKeyed(), this.iType == null
-							|| this.iType.getType() == CIMDataType.STRING);
+				this.iQualiA,
+				isKeyed(),
+				this.iType == null || this.iType.getType() == CIMDataType.STRING
+			);
 			return qualiImpl.getQualifiers();
 		}
 
 		/**
 		 * isKeyed
-		 * 
+		 *
 		 * @return boolean
 		 */
 		public boolean isKeyed() {
@@ -2009,17 +2033,16 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * isEmbeddedObject
-		 * 
+		 *
 		 * @return boolean
 		 */
 		private boolean isEmbeddedObject() {
-			return this.iHasEmbObjAttr || this.iHasEmbInstAttr || this.iHasEmbObjQuali
-					|| this.iHasEmbInstQuali;
+			return this.iHasEmbObjAttr || this.iHasEmbInstAttr || this.iHasEmbObjQuali || this.iHasEmbInstQuali;
 		}
 
 		/**
 		 * isEmbeddedClass
-		 * 
+		 *
 		 * @return boolean
 		 */
 		private boolean isEmbeddedClass() {
@@ -2028,7 +2051,7 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * isEmbeddedInstance
-		 * 
+		 *
 		 * @return boolean
 		 */
 		private boolean isEmbeddedInstance() {
@@ -2037,7 +2060,7 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * getType
-		 * 
+		 *
 		 * @return CIMDataType
 		 * @throws CIMXMLParseException
 		 */
@@ -2048,19 +2071,18 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * getArrayType
-		 * 
+		 *
 		 * @return CIMDataType
 		 * @throws CIMXMLParseException
 		 */
 		public CIMDataType getArrayType() throws CIMXMLParseException {
 			transform();
-			return this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType
-					.getType());
+			return this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType.getType());
 		}
 
 		/**
 		 * getValue
-		 * 
+		 *
 		 * @return Object
 		 * @throws CIMXMLParseException
 		 */
@@ -2074,24 +2096,22 @@ public class CIMXMLParserImpl {
 			if (this.iRawValue == null) {
 				if (isEmbeddedObject()) {
 					if (this.iRawType != CIMDataType.STRING_T) throw new CIMXMLParseException(
-							"Embedded Object CIM-XML element's type must be string. "
-									+ this.iRawType + " is invalid!");
+						"Embedded Object CIM-XML element's type must be string. " + this.iRawType + " is invalid!"
+					);
 					if (this.iStrictParsing) {
 						/*
 						 * In case of strict parsing Object means CIMClass,
 						 * Instance means CIMInstance. Pegasus 2.7.0 seems to
 						 * handle it this way.
 						 */
-						this.iType = isEmbeddedInstance() ? CIMDataType.OBJECT_T
-								: CIMDataType.CLASS_T;
+						this.iType = isEmbeddedInstance() ? CIMDataType.OBJECT_T : CIMDataType.CLASS_T;
 					} else {
 						/*
 						 * for valueless EmbeddedObject="object" the type is
 						 * undeterminable since Pegasus's CIMObject can contain
 						 * both CIMClass and CIMInstance
 						 */
-						this.iType = isEmbeddedInstance() ? CIMDataType.OBJECT_T
-								: CIMDataType.STRING_T;
+						this.iType = isEmbeddedInstance() ? CIMDataType.OBJECT_T : CIMDataType.STRING_T;
 					}
 				} else {
 					this.iType = this.iRawType;
@@ -2115,26 +2135,24 @@ public class CIMXMLParserImpl {
 				this.iType = getCIMObjAType((Object[]) this.iValue);
 			}
 			if (isEmbeddedInstance() && this.iType.getType() != CIMDataType.OBJECT) throw new CIMXMLParseException(
-					this.iElement.getNodeName()
-							+ " element is an EmbeddedInstance with non INSTANCE value. "
-							+ "It's not valid!");
-			if (isEmbeddedClass() && this.iType.getType() != CIMDataType.CLASS
-					&& this.iType.getType() != CIMDataType.OBJECT) throw new CIMXMLParseException(
-					this.iElement.getNodeName()
-							+ " element is an EmbeddedObject with non CLASS/INSTANCE value. It's not valid!");
+				this.iElement.getNodeName() + " element is an EmbeddedInstance with non INSTANCE value. " + "It's not valid!"
+			);
+			if (
+				isEmbeddedClass() && this.iType.getType() != CIMDataType.CLASS && this.iType.getType() != CIMDataType.OBJECT
+			) throw new CIMXMLParseException(
+				this.iElement.getNodeName() + " element is an EmbeddedObject with non CLASS/INSTANCE value. It's not valid!"
+			);
 		}
 
 		private void transformNormObj() throws CIMXMLParseException {
 			if (this.iRawValue instanceof String) {
 				this.iType = this.iRawType;
-				this.iValue = createJavaObject(this.iType == null ? null : this.iType.toString(),
-						(String) this.iRawValue);
+				this.iValue = createJavaObject(this.iType == null ? null : this.iType.toString(), (String) this.iRawValue);
 			} else {
 				String[] rawValueA = (String[]) this.iRawValue;
 				String typeStr = this.iRawType.toString();
 				Object[] objA = new Object[rawValueA.length];
-				for (int i = 0; i < objA.length; i++)
-					objA[i] = createJavaObject(typeStr, rawValueA[i]);
+				for (int i = 0; i < objA.length; i++) objA[i] = createJavaObject(typeStr, rawValueA[i]);
 				this.iType = CIMHelper.UnboundedArrayDataType(this.iRawType.getType());
 				this.iValue = objA;
 			}
@@ -2142,7 +2160,7 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * parseXmlStr
-		 * 
+		 *
 		 * @param pXmlStr
 		 * @return CIMClass or CIMInstance
 		 * @throws CIMXMLParseException
@@ -2164,7 +2182,7 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * parseXmlStrA
-		 * 
+		 *
 		 * @param pXmlStrA
 		 * @return Object[]
 		 * @throws CIMXMLParseException
@@ -2181,23 +2199,21 @@ public class CIMXMLParserImpl {
 
 		/**
 		 * getCIMObjType
-		 * 
+		 *
 		 * @param pCIMObj
 		 * @return CIMDataType
 		 * @throws CIMXMLParseException
 		 */
 		public static CIMDataType getCIMObjType(Object pCIMObj) throws CIMXMLParseException {
-			if (pCIMObj == null) throw new CIMXMLParseException(
-					"cannot have null CIM object! (CIMClass or CIMInstance)");
+			if (pCIMObj == null) throw new CIMXMLParseException("cannot have null CIM object! (CIMClass or CIMInstance)");
 			if (pCIMObj instanceof CIMInstance) return CIMDataType.OBJECT_T;
 			if (pCIMObj instanceof CIMClass) return CIMDataType.CLASS_T;
-			throw new CIMXMLParseException(pCIMObj.getClass().getName()
-					+ " is not a CIM object! (CIMClass or CIMInstance)");
+			throw new CIMXMLParseException(pCIMObj.getClass().getName() + " is not a CIM object! (CIMClass or CIMInstance)");
 		}
 
 		/**
 		 * getCIMObjAType
-		 * 
+		 *
 		 * @param pCIMObjA
 		 * @return CIMDataType
 		 * @throws CIMXMLParseException
@@ -2210,36 +2226,35 @@ public class CIMXMLParserImpl {
 				CIMDataType currType = getCIMObjType(pCIMObjA[i]);
 				if (type == null) {
 					type = currType;
-				} else if (type != currType) { throw new CIMXMLParseException(
-						"Embedded Object arrays with different types are not supported"); }
+				} else if (type != currType) {
+					throw new CIMXMLParseException("Embedded Object arrays with different types are not supported");
+				}
 			}
 			if (type == CIMDataType.OBJECT_T) return CIMDataType.OBJECT_ARRAY_T;
 			if (type == CIMDataType.CLASS_T) return CIMDataType.CLASS_ARRAY_T;
 			return CIMDataType.STRING_ARRAY_T;
 		}
-
 	}
 
 	private static final String nodesPROPERTY[] = { "QUALIFIER", "VALUE" };
 
 	/**
 	 * parseCLASSPROPERTY
-	 * 
+	 *
 	 * @param pPropertyE
 	 * @return CIMClassProperty
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMClassProperty<Object> parseCLASSPROPERTY(Element pPropertyE)
-			throws CIMXMLParseException {
+	public static CIMClassProperty<Object> parseCLASSPROPERTY(Element pPropertyE) throws CIMXMLParseException {
 		// <!ELEMENT PROPERTY (QUALIFIER*,VALUE?)>
 		// <!ATTLIST PROPERTY %NAME;%TYPE;%CLASSORIGIN;%PROPAGATED;>
 
 		Attr property_nameA = (Attr) searchAttribute(pPropertyE, "NAME");
-		if (property_nameA == null) throw new CIMXMLParseException(
-				"PROPERTY element missing NAME attribute!");
+		if (property_nameA == null) throw new CIMXMLParseException("PROPERTY element missing NAME attribute!");
 		String name = property_nameA.getNodeValue();
 		if (attribute(pPropertyE, "TYPE") == null && !hasTypeAttrsInNodes(pPropertyE)) throw new CIMXMLParseException(
-				"PROPERTY element missing TYPE attribute!");
+			"PROPERTY element missing TYPE attribute!"
+		);
 
 		String classOrigin = pPropertyE.getAttribute("CLASSORIGIN");
 		if (classOrigin != null && classOrigin.length() == 0) classOrigin = null;
@@ -2259,20 +2274,25 @@ public class CIMXMLParserImpl {
 		 * CIMQualifier[] pQualifiers, boolean pKey, boolean propagated, String
 		 * originClass)
 		 */
-		return new CIMClassProperty<Object>(name, embObjHandler.getType(),
-				embObjHandler.getValue(), embObjHandler.getQualifiers(), embObjHandler.isKeyed(),
-				propagated, classOrigin);
+		return new CIMClassProperty<Object>(
+			name,
+			embObjHandler.getType(),
+			embObjHandler.getValue(),
+			embObjHandler.getQualifiers(),
+			embObjHandler.isKeyed(),
+			propagated,
+			classOrigin
+		);
 	}
 
 	/**
 	 * parsePROPERTYARRAY
-	 * 
+	 *
 	 * @param pPropertyArrayE
 	 * @return CIMProperty
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMProperty<Object> parsePROPERTYARRAY(Element pPropertyArrayE)
-			throws CIMXMLParseException {
+	public static CIMProperty<Object> parsePROPERTYARRAY(Element pPropertyArrayE) throws CIMXMLParseException {
 		return parseCLASSPROPERTYARRAY(pPropertyArrayE);
 	}
 
@@ -2280,37 +2300,34 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCLASSPROPERTYARRAY
-	 * 
+	 *
 	 * @param pPropArrayE
 	 * @return CIMClassProperty
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMClassProperty<Object> parseCLASSPROPERTYARRAY(Element pPropArrayE)
-			throws CIMXMLParseException {
+	public static CIMClassProperty<Object> parseCLASSPROPERTYARRAY(Element pPropArrayE) throws CIMXMLParseException {
 		// <!ELEMENT PROPERTY.ARRAY (QUALIFIER*,VALUE.ARRAY?)>
 		// <!ATTLIST PROPERTY.ARRAY
 		// %NAME;%TYPE;%ARRAYSIZE;%CLASSORIGIN;%PROPAGATED;>
 
 		String name = attribute(pPropArrayE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PROPERTY.ARRAY element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PROPERTY.ARRAY element missing NAME attribute!");
 		if (attribute(pPropArrayE, "TYPE") == null && !hasTypeAttrsInNodes(pPropArrayE)) throw new CIMXMLParseException(
-				"PROPERTY.ARRAY element missing TYPE attribute!");
+			"PROPERTY.ARRAY element missing TYPE attribute!"
+		);
 
 		String valueArraysizeStr = pPropArrayE.getAttribute("ARRAYSIZE");
 		try {
 			if (valueArraysizeStr.length() > 0) Integer.parseInt(valueArraysizeStr);
 		} catch (NumberFormatException e) {
-			throw new CIMXMLParseException(valueArraysizeStr
-					+ " is not a valid ARRAYSIZE attribute for VALUE.ARRAY!");
+			throw new CIMXMLParseException(valueArraysizeStr + " is not a valid ARRAYSIZE attribute for VALUE.ARRAY!");
 		}
 
 		String classOrigin = pPropArrayE.getAttribute("CLASSORIGIN");
 		if (classOrigin != null && classOrigin.length() == 0) classOrigin = null;
 
 		String valuePropagatedStr = pPropArrayE.getAttribute("PROPAGATED");
-		boolean propagated = (valuePropagatedStr != null && valuePropagatedStr
-				.equalsIgnoreCase(MOF.TRUE));
+		boolean propagated = (valuePropagatedStr != null && valuePropagatedStr.equalsIgnoreCase(MOF.TRUE));
 
 		// only QUALIFIER(s) and 0/1 VALUE.ARRAY
 		searchNodes(pPropArrayE, "VALUE.ARRAY", 0, 1, true);
@@ -2319,20 +2336,25 @@ public class CIMXMLParserImpl {
 		// QUALIFIER
 		// ebak: EmbeddedObject support
 		EmbObjHandler embObjHandler = new EmbObjHandler(pPropArrayE);
-		return new CIMClassProperty<Object>(name, embObjHandler.getArrayType(), embObjHandler
-				.getValue(), embObjHandler.getQualifiers(), embObjHandler.isKeyed(), propagated,
-				classOrigin);
+		return new CIMClassProperty<Object>(
+			name,
+			embObjHandler.getArrayType(),
+			embObjHandler.getValue(),
+			embObjHandler.getQualifiers(),
+			embObjHandler.isKeyed(),
+			propagated,
+			classOrigin
+		);
 	}
 
 	/**
 	 * parsePROPERTYREFERENCE
-	 * 
+	 *
 	 * @param pPropRefE
 	 * @return CIMProperty
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMProperty<Object> parsePROPERTYREFERENCE(Element pPropRefE)
-			throws CIMXMLParseException {
+	public static CIMProperty<Object> parsePROPERTYREFERENCE(Element pPropRefE) throws CIMXMLParseException {
 		return parseCLASSPROPERTYREFERENCE(pPropRefE);
 	}
 
@@ -2340,20 +2362,18 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCLASSPROPERTYREFERENCE
-	 * 
+	 *
 	 * @param pPropRefE
 	 * @return CIMClassProperty
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMClassProperty<Object> parseCLASSPROPERTYREFERENCE(Element pPropRefE)
-			throws CIMXMLParseException {
+	public static CIMClassProperty<Object> parseCLASSPROPERTYREFERENCE(Element pPropRefE) throws CIMXMLParseException {
 		// <!ELEMENT PROPERTY.REFERENCE (QUALIFIER*,VALUE.REFERENCE?)>
 		// <!ATTLIST PROPERTY.REFERENCE
 		// %NAME;%REFERENCECLASS;%CLASSORIGIN;%PROPAGATED;>
 
 		String name = attribute(pPropRefE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PROPERTY.REFERENCE element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PROPERTY.REFERENCE element missing NAME attribute!");
 
 		String classOrigin = pPropRefE.getAttribute("CLASSORIGIN");
 		if (classOrigin != null && classOrigin.length() == 0) classOrigin = null;
@@ -2374,13 +2394,12 @@ public class CIMXMLParserImpl {
 		// return a CIMProperty without a CIMValue
 		checkOtherNodes(pPropRefE, nodesPROPERTYREFERENCE);
 		CIMQualifiedElementInterfaceImpl qualiImpl = new CIMQualifiedElementInterfaceImpl(qualis);
-		return new CIMClassProperty<Object>(name, type, value, qualis, qualiImpl.isKeyed(),
-				propagated, classOrigin);
+		return new CIMClassProperty<Object>(name, type, value, qualis, qualiImpl.isKeyed(), propagated, classOrigin);
 	}
 
 	/**
 	 * parseMESSAGE
-	 * 
+	 *
 	 * @param pCimVersion
 	 * @param pDtdVersion
 	 * @param pMessageE
@@ -2388,7 +2407,7 @@ public class CIMXMLParserImpl {
 	 * @throws CIMXMLParseException
 	 */
 	public static CIMMessage parseMESSAGE(String pCimVersion, String pDtdVersion, Element pMessageE)
-			throws CIMXMLParseException {
+		throws CIMXMLParseException {
 		// <!ELEMENT MESSAGE
 		// (SIMPLEREQ|MULTIREQ|SIMPLERSP|MULTIRSP|SIMPLEEXPREQ|MULTIEXPREQ|SIMPLEEXPRSP|MULTIEXPRSP)>
 		// <!ATTLIST MESSAGE %ID;%PROTOCOLVERSION;>
@@ -2398,11 +2417,9 @@ public class CIMXMLParserImpl {
 		String id = idA.getNodeValue();
 
 		Attr protocolA = (Attr) searchAttribute(pMessageE, "PROTOCOLVERSION");
-		if (protocolA == null) throw new CIMXMLParseException(
-				"MESSAGE element missing PROTOCOLVERSION attribute!");
+		if (protocolA == null) throw new CIMXMLParseException("MESSAGE element missing PROTOCOLVERSION attribute!");
 		// TODO
 		if (pCimVersion.equals("2.0") && pDtdVersion.equals("2.0")) {
-
 			// Attr message_idA = (Attr)searchAttribute(messageE, "ID");
 			// String messadeID = message_idA.getNodeValue();
 
@@ -2482,41 +2499,51 @@ public class CIMXMLParserImpl {
 		throw new CIMXMLParseException("DTD not supported");
 	}
 
-	private static final String nodesPARAMVALUE[] = { "VALUE", "VALUE.REFERENCE", "VALUE.ARRAY",
-			"VALUE.REFARRAY", "CLASSNAME", "INSTANCENAME", "CLASS", "INSTANCE",
-			"VALUE.NAMEDINSTANCE" };
+	private static final String nodesPARAMVALUE[] = {
+		"VALUE",
+		"VALUE.REFERENCE",
+		"VALUE.ARRAY",
+		"VALUE.REFARRAY",
+		"CLASSNAME",
+		"INSTANCENAME",
+		"CLASS",
+		"INSTANCE",
+		"VALUE.NAMEDINSTANCE"
+	};
 
 	/**
 	 * parsePARAMVALUE
-	 * 
+	 *
 	 * @param pParamValueE
 	 * @return CIMArgument
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMArgument<Object> parsePARAMVALUE(Element pParamValueE)
-			throws CIMXMLParseException {
+	public static CIMArgument<Object> parsePARAMVALUE(Element pParamValueE) throws CIMXMLParseException {
 		// <!ELEMENT PARAMVALUE
 		// (VALUE|VALUE.REFERENCE|VALUE.ARRAY|VALUE.REFARRAYCLASSNAME|
 		// INSTANCENAME|CLASS|INSTANCE|VALUE.NAMEDINSTANCE)?>)
 		// <!ATTLIST PARAMTYPE %NAME;%PARAMTYPE%>
 		String name = attribute(pParamValueE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"PARAMVALUE element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("PARAMVALUE element missing NAME attribute!");
 		// FIXME: ebak: The base implementation didn't contain VALUE.REFARRAY
 		// handling. Why?
 		// ebak: embedded object support, different parsing for VALUE and
 		// VALUE.ARRAY sub elements
-		if (searchNodes(pParamValueE, "VALUE.REFERENCE", 0, 1, false) != null
-				|| searchNodes(pParamValueE, "VALUE.REFARRAY", 0, 1, false) != null) {
+		if (
+			searchNodes(pParamValueE, "VALUE.REFERENCE", 0, 1, false) != null ||
+			searchNodes(pParamValueE, "VALUE.REFARRAY", 0, 1, false) != null
+		) {
 			TypedValue typedValue = parseSingleValue(pParamValueE, VALUEREF | VALUEREFA);
 			CIMDataType type = typedValue.getType();
 			Object value = typedValue.getValue();
 			if (type == null) throw new CIMXMLParseException("PARAMVALUE element type is null!");
 			return new CIMArgument<Object>(name, type, value);
 		}
-		if (searchNodes(pParamValueE, "VALUE", 0, 1, false) != null
-				|| searchNodes(pParamValueE, "VALUE.ARRAY", 0, 1, false) != null
-				|| !hasNodes(pParamValueE)) {
+		if (
+			searchNodes(pParamValueE, "VALUE", 0, 1, false) != null ||
+			searchNodes(pParamValueE, "VALUE.ARRAY", 0, 1, false) != null ||
+			!hasNodes(pParamValueE)
+		) {
 			EmbObjHandler embObjHandler = new EmbObjHandler(pParamValueE);
 			return new CIMArgument<Object>(name, embObjHandler.getType(), embObjHandler.getValue());
 		}
@@ -2552,8 +2579,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.NAMEDINSTANCE
-		Element valuenamedisntanceA[] = searchNodes(pParamValueE, "VALUE.NAMEDINSTANCE", 0, 1,
-				false);
+		Element valuenamedisntanceA[] = searchNodes(pParamValueE, "VALUE.NAMEDINSTANCE", 0, 1, false);
 		if (valuenamedisntanceA != null) {
 			CIMInstance inst = parseVALUENAMEDINSTANCE(valuenamedisntanceA[0]);
 			return new CIMArgument<Object>(name, CIMDataType.OBJECT_T, inst);
@@ -2562,19 +2588,26 @@ public class CIMXMLParserImpl {
 		return new CIMArgument<Object>(name, CIMDataType.STRING_T, null);
 	}
 
-	private static final String nodesIPARAMVALUE[] = { "VALUE", "VALUE.ARRAY", "VALUE.REFERENCE",
-			"CLASSNAME", "INSTANCENAME", "QUALIFIER.DECLARATION", "CLASS", "INSTANCE",
-			"VALUE.NAMEDINSTANCE" };
+	private static final String nodesIPARAMVALUE[] = {
+		"VALUE",
+		"VALUE.ARRAY",
+		"VALUE.REFERENCE",
+		"CLASSNAME",
+		"INSTANCENAME",
+		"QUALIFIER.DECLARATION",
+		"CLASS",
+		"INSTANCE",
+		"VALUE.NAMEDINSTANCE"
+	};
 
 	/**
 	 * parseIPARAMVALUE
-	 * 
+	 *
 	 * @param pParamValueE
 	 * @return CIMArgument
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMArgument<Object> parseIPARAMVALUE(Element pParamValueE)
-			throws CIMXMLParseException {
+	public static CIMArgument<Object> parseIPARAMVALUE(Element pParamValueE) throws CIMXMLParseException {
 		// <!ELEMENT IPARAMVALUE
 		// (VALUE|VALUE.ARRAY|VALUE.REFERENCE|CLASSNAME|INSTANCENAME|QUALIFIER.DECLARATION|
 		// CLASS|INSTANCE|VALUE.NAMEDINSTANCE)?>
@@ -2582,15 +2615,17 @@ public class CIMXMLParserImpl {
 		// %CIMName;>
 
 		String name = attribute(pParamValueE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"IPARAMVALUE element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("IPARAMVALUE element missing NAME attribute!");
 		// this can parse VALUE, VALUE.ARRAY and VALUE.REFERENCE
-		if (searchNodes(pParamValueE, "VALUE", 0, 1, false) != null
-				|| searchNodes(pParamValueE, "VALUE.ARRAY", 0, 1, false) != null
-				|| searchNodes(pParamValueE, "VALUE.REFERENCE", 0, 1, false) != null) {
+		if (
+			searchNodes(pParamValueE, "VALUE", 0, 1, false) != null ||
+			searchNodes(pParamValueE, "VALUE.ARRAY", 0, 1, false) != null ||
+			searchNodes(pParamValueE, "VALUE.REFERENCE", 0, 1, false) != null
+		) {
 			TypedValue typedValue = parseSingleValue(pParamValueE, VALUE | VALUEA | VALUEREF);
-			if (typedValue.getType() != null) { return new CIMArgument<Object>(name, typedValue
-					.getType(), typedValue.getValue()); }
+			if (typedValue.getType() != null) {
+				return new CIMArgument<Object>(name, typedValue.getType(), typedValue.getValue());
+			}
 		}
 		// we can have different types too which cannot be handled by
 		// parseSingleValue()
@@ -2612,8 +2647,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// QUALIFIER.DECLARATION
-		Element qualiDeclarationA[] = searchNodes(pParamValueE, "QUALIFIER.DECLARATION", 0, 1,
-				false);
+		Element qualiDeclarationA[] = searchNodes(pParamValueE, "QUALIFIER.DECLARATION", 0, 1, false);
 		if (qualiDeclarationA != null) {
 			CIMQualifierType<Object> qualiType = parseQUALIFIERDECLARATION(qualiDeclarationA[0]);
 			// FIXME: ebak: Does it surely have to be mapped to type:
@@ -2636,8 +2670,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.NAMEDINSTANCE
-		Element valuenamedisntanceA[] = searchNodes(pParamValueE, "VALUE.NAMEDINSTANCE", 0, 1,
-				false);
+		Element valuenamedisntanceA[] = searchNodes(pParamValueE, "VALUE.NAMEDINSTANCE", 0, 1, false);
 		if (valuenamedisntanceA != null) {
 			CIMInstance inst = parseVALUENAMEDINSTANCE(valuenamedisntanceA[0]);
 			return new CIMArgument<Object>(name, CIMDataType.OBJECT_T, inst);
@@ -2649,7 +2682,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseSIMPLERSP
-	 * 
+	 *
 	 * @param pSimpleRspE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
@@ -2660,19 +2693,21 @@ public class CIMXMLParserImpl {
 		// METHODRESPONSE
 		Element methodresponseA[] = searchNodes(pSimpleRspE, "METHODRESPONSE", 0, 1, false);
 		if (methodresponseA != null) {
-
-		return parseMETHODRESPONSE(methodresponseA[0]); }
+			return parseMETHODRESPONSE(methodresponseA[0]);
+		}
 
 		// IMETHODRESPONSE
 		Element imethodresponseA[] = searchNodes(pSimpleRspE, "IMETHODRESPONSE", 0, 1, false);
-		if (imethodresponseA != null) { return parseIMETHODRESPONSE(imethodresponseA[0]); }
+		if (imethodresponseA != null) {
+			return parseIMETHODRESPONSE(imethodresponseA[0]);
+		}
 
 		throw new CIMXMLParseException("SIMPLERSP element missing required child element!");
 	}
 
 	/**
 	 * parseMULTIRSP
-	 * 
+	 *
 	 * @param pSimpleRspE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
@@ -2680,8 +2715,7 @@ public class CIMXMLParserImpl {
 	public static CIMResponse parseMULTIRSP(Element pSimpleRspE) throws CIMXMLParseException {
 		// <!ELEMENT MULTIRSP (SIMPLERSP,SIMPLERSP+)>
 
-		Element[] multiRespElementA = searchNodes(pSimpleRspE, "SIMPLERSP", 2, Integer.MAX_VALUE,
-				false);
+		Element[] multiRespElementA = searchNodes(pSimpleRspE, "SIMPLERSP", 2, Integer.MAX_VALUE, false);
 		if (multiRespElementA != null) {
 			CIMResponse multiRsp = new CIMResponse();
 			for (int i = 0; i < multiRespElementA.length; i++) {
@@ -2700,7 +2734,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseSIMPLEREQ
-	 * 
+	 *
 	 * @param pSimpleReqE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2718,20 +2752,19 @@ public class CIMXMLParserImpl {
 		// IMETHODCALL
 		Element imethodcallA[] = searchNodes(pSimpleReqE, "IMETHODCALL", 0, 1, true);
 		if (imethodcallA != null) {
-			if (request != null) { throw new CIMXMLParseException(
-					"SIMPLEREQ element cannot have METHODCALL and IMETHODCALL child elements!"); }
+			if (request != null) {
+				throw new CIMXMLParseException("SIMPLEREQ element cannot have METHODCALL and IMETHODCALL child elements!");
+			}
 			request = parseIMETHODCALL(imethodcallA[0]);
 		}
 
-		if (request == null) throw new CIMXMLParseException(
-				"SIMPLEREQ element missing required child element!");
+		if (request == null) throw new CIMXMLParseException("SIMPLEREQ element missing required child element!");
 
 		// CORRELATOR
 		Element[] correlatorA = searchNodes(pSimpleReqE, "CORRELATOR", 0, Integer.MAX_VALUE, true);
 		if (correlatorA != null) {
-			for (int i = 0; i < correlatorA.length; i++)
-				// TODO: return to WBEMClient API if JSR48 changes
-				parseCORRELATOR(correlatorA[i]);
+			for (int i = 0; i < correlatorA.length; i++) // TODO: return to WBEMClient API if JSR48 changes
+			parseCORRELATOR(correlatorA[i]);
 		}
 
 		checkOtherNodes(pSimpleReqE, nodesSIMPLEREQ);
@@ -2740,7 +2773,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseMULTIREQ
-	 * 
+	 *
 	 * @param pMultiReqE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2748,8 +2781,7 @@ public class CIMXMLParserImpl {
 	public static CIMRequest parseMULTIREQ(Element pMultiReqE) throws CIMXMLParseException {
 		// <!ELEMENT MULTIREQ (SIMPLEREQ,SIMPLEREQ+)>
 
-		Element[] methodReqElementA = searchNodes(pMultiReqE, "SIMPLEREQ", 2, Integer.MAX_VALUE,
-				false);
+		Element[] methodReqElementA = searchNodes(pMultiReqE, "SIMPLEREQ", 2, Integer.MAX_VALUE, false);
 		if (methodReqElementA != null) {
 			CIMRequest multiReq = new CIMRequest();
 			for (int i = 0; i < methodReqElementA.length; i++) {
@@ -2764,12 +2796,11 @@ public class CIMXMLParserImpl {
 		throw new CIMXMLParseException("MULTIREQ element missing SIMPLEREQ child element!");
 	}
 
-	private static final String nodesMETHODCALL[] = { "LOCALCLASSPATH", "LOCALINSTANCEPATH",
-			"PARAMVALUE" };
+	private static final String nodesMETHODCALL[] = { "LOCALCLASSPATH", "LOCALINSTANCEPATH", "PARAMVALUE" };
 
 	/**
 	 * parseMETHODCALL
-	 * 
+	 *
 	 * @param pMethodCallE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2782,8 +2813,7 @@ public class CIMXMLParserImpl {
 
 		CIMRequest request = new CIMRequest();
 		String methodname = attribute(pMethodCallE, "NAME");
-		if (methodname == null) throw new CIMXMLParseException(
-				"METHODCALL element missing NAME attribute!");
+		if (methodname == null) throw new CIMXMLParseException("METHODCALL element missing NAME attribute!");
 		request.setMethodName(methodname);
 
 		// EXPMETHODCALL
@@ -2799,18 +2829,17 @@ public class CIMXMLParserImpl {
 		Element localinstancepathA[] = searchNodes(pMethodCallE, "LOCALINSTANCEPATH", 0, 1, true);
 		if (localinstancepathA != null) {
 			if (localclasspathFound) throw new CIMXMLParseException(
-					"METHODCALL element cannot have both LOCALCLASSPATH and LOCALINSTANCEPATH child elements!");
+				"METHODCALL element cannot have both LOCALCLASSPATH and LOCALINSTANCEPATH child elements!"
+			);
 
 			CIMObjectPath path = parseLOCALINSTANCEPATH(localinstancepathA[0]);
 
 			request.setObjectPath(path);
 		} else {
-			if (!localclasspathFound) throw new CIMXMLParseException(
-					"METHODCALL element missing required child element!");
+			if (!localclasspathFound) throw new CIMXMLParseException("METHODCALL element missing required child element!");
 		}
 
-		Element[] paramValueElementA = searchNodes(pMethodCallE, "PARAMVALUE", 0,
-				Integer.MAX_VALUE, true);
+		Element[] paramValueElementA = searchNodes(pMethodCallE, "PARAMVALUE", 0, Integer.MAX_VALUE, true);
 
 		if (paramValueElementA != null) {
 			CIMArgument<?>[] argA = new CIMArgument[paramValueElementA.length];
@@ -2829,7 +2858,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseIMETHODCALL
-	 * 
+	 *
 	 * @param pIMethodCallE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2842,8 +2871,7 @@ public class CIMXMLParserImpl {
 		CIMRequest request = new CIMRequest();
 		String methodname = attribute(pIMethodCallE, "NAME"); // ebak:
 		// CIMName->NAME
-		if (methodname == null) throw new CIMXMLParseException(
-				"IMETHODCALL element missing NAME attribute!");
+		if (methodname == null) throw new CIMXMLParseException("IMETHODCALL element missing NAME attribute!");
 		request.setMethodName(methodname);
 
 		// METHODCALL
@@ -2853,8 +2881,7 @@ public class CIMXMLParserImpl {
 			request.setNameSpace(nameSpace);
 		}
 
-		Element[] iParamValElementA = searchNodes(pIMethodCallE, "IPARAMVALUE", 0,
-				Integer.MAX_VALUE, true); // ebak:
+		Element[] iParamValElementA = searchNodes(pIMethodCallE, "IPARAMVALUE", 0, Integer.MAX_VALUE, true); // ebak:
 		// PARAMVALUE->IPARAMVALUE
 
 		if (iParamValElementA != null) {
@@ -2870,12 +2897,22 @@ public class CIMXMLParserImpl {
 				if (value instanceof CIMObjectPath) {
 					CIMObjectPath op = (CIMObjectPath) value;
 					if (op.getNamespace() == null || op.getNamespace().length() == 0) {
-						arg = new CIMArgument<Object>(arg.getName(), arg.getDataType(),
-						// CIMObjectPath(String scheme, String host, String
+						arg =
+							new CIMArgument<Object>(
+								arg.getName(),
+								arg.getDataType(),
+								// CIMObjectPath(String scheme, String host, String
 								// port, String namespace, String objectName,
 								// CIMProperty[] keys)
-								new CIMObjectPath(op.getScheme(), op.getHost(), op.getPort(),
-										request.getNameSpace(), op.getObjectName(), op.getKeys()));
+								new CIMObjectPath(
+									op.getScheme(),
+									op.getHost(),
+									op.getPort(),
+									request.getNameSpace(),
+									op.getObjectName(),
+									op.getKeys()
+								)
+							);
 					}
 				}
 				argA[i] = arg;
@@ -2891,7 +2928,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseSIMPLEEXPREQ
-	 * 
+	 *
 	 * @param pSimpleExpReqE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2905,17 +2942,14 @@ public class CIMXMLParserImpl {
 		if (expmethodcallA != null) {
 			request = parseEXPMETHODCALL(expmethodcallA[0]);
 		} else {
-			throw new CIMXMLParseException(
-					"SIMPLEEXPREQ element missing EXPMETHODCALL child element!");
+			throw new CIMXMLParseException("SIMPLEEXPREQ element missing EXPMETHODCALL child element!");
 		}
 
 		// CORRELATOR
-		Element[] correlatorA = searchNodes(pSimpleExpReqE, "CORRELATOR", 0, Integer.MAX_VALUE,
-				true);
+		Element[] correlatorA = searchNodes(pSimpleExpReqE, "CORRELATOR", 0, Integer.MAX_VALUE, true);
 		if (correlatorA != null) {
-			for (int i = 0; i < correlatorA.length; i++)
-				// TODO: return to WBEMClient API if JSR48 changes
-				parseCORRELATOR(correlatorA[i]);
+			for (int i = 0; i < correlatorA.length; i++) // TODO: return to WBEMClient API if JSR48 changes
+			parseCORRELATOR(correlatorA[i]);
 		}
 
 		checkOtherNodes(pSimpleExpReqE, nodesSIMPLEEXPREQ);
@@ -2924,7 +2958,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseMULTIEXPREQ
-	 * 
+	 *
 	 * @param pMultiExpReqE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
@@ -2932,8 +2966,7 @@ public class CIMXMLParserImpl {
 	public static CIMRequest parseMULTIEXPREQ(Element pMultiExpReqE) throws CIMXMLParseException {
 		// <!ELEMENT SIMPLEEXPREQ (METHODRESPONSE)>
 
-		Element[] methodReqElementA = searchNodes(pMultiExpReqE, "SIMPLEEXPREQ", 2,
-				Integer.MAX_VALUE, false);
+		Element[] methodReqElementA = searchNodes(pMultiExpReqE, "SIMPLEEXPREQ", 2, Integer.MAX_VALUE, false);
 		if (methodReqElementA != null) {
 			CIMRequest multiReq = new CIMRequest();
 			for (int i = 0; i < methodReqElementA.length; i++) {
@@ -2952,24 +2985,21 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseEXPMETHODCALL
-	 * 
+	 *
 	 * @param pExpMethodCallE
 	 * @return CIMRequest
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMRequest parseEXPMETHODCALL(Element pExpMethodCallE)
-			throws CIMXMLParseException {
+	public static CIMRequest parseEXPMETHODCALL(Element pExpMethodCallE) throws CIMXMLParseException {
 		// <!ELEMENT EXPMETHODCALL (EXPPARAMVALUE*)>
 
 		// EXPMETHODCALL
 		CIMRequest request = new CIMRequest();
 		String methodname = attribute(pExpMethodCallE, "NAME");
-		if (methodname == null) throw new CIMXMLParseException(
-				"EXPMETHODCALL element missing NAME attribute!");
+		if (methodname == null) throw new CIMXMLParseException("EXPMETHODCALL element missing NAME attribute!");
 		request.setMethodName(methodname);
 
-		Element[] paramValElementA = searchNodes(pExpMethodCallE, "EXPPARAMVALUE", 0,
-				Integer.MAX_VALUE, false);
+		Element[] paramValElementA = searchNodes(pExpMethodCallE, "EXPPARAMVALUE", 0, Integer.MAX_VALUE, false);
 		Vector<CIMInstance> v = new Vector<CIMInstance>();
 		if (paramValElementA != null) {
 			for (int i = 0; i < paramValElementA.length; i++) {
@@ -2987,19 +3017,19 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseEXPPARAMVALUE
-	 * 
+	 *
 	 * @param pExpParamValueE
 	 * @return CIMInstance
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMInstance parseEXPPARAMVALUE(Element pExpParamValueE)
-			throws CIMXMLParseException {
+	public static CIMInstance parseEXPPARAMVALUE(Element pExpParamValueE) throws CIMXMLParseException {
 		// <!ELEMENT EXPPARAMVALUE (INSTANCE?)>
 		// <!ATTLIST EXPPARAMVALUE
 		// %CIMName;>
 		// INSTANCE
 		if (attribute(pExpParamValueE, "NAME") == null) throw new CIMXMLParseException(
-				"EXPPARAMVALUE element missing NAME attribute!");
+			"EXPPARAMVALUE element missing NAME attribute!"
+		);
 
 		Element[] instanceA = searchNodes(pExpParamValueE, "INSTANCE", 0, 1, false);
 		if (instanceA != null) {
@@ -3016,16 +3046,16 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseMETHODRESPONSE
-	 * 
+	 *
 	 * @param pMethodResponseE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMResponse parseMETHODRESPONSE(Element pMethodResponseE)
-			throws CIMXMLParseException {
+	public static CIMResponse parseMETHODRESPONSE(Element pMethodResponseE) throws CIMXMLParseException {
 		// <!ELEMENT METHODRESPONSE (ERROR|(RETURNVALUE?,PARAMVALUE*))>
 		if (attribute(pMethodResponseE, "NAME") == null) throw new CIMXMLParseException(
-				"METHODRESPONSE element missing NAME attribute!");
+			"METHODRESPONSE element missing NAME attribute!"
+		);
 
 		CIMResponse response = new CIMResponse();
 
@@ -3049,8 +3079,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// PARAMVALUE
-		Element[] paramValElementA = searchNodes(pMethodResponseE, "PARAMVALUE", 0,
-				Integer.MAX_VALUE, true);
+		Element[] paramValElementA = searchNodes(pMethodResponseE, "PARAMVALUE", 0, Integer.MAX_VALUE, true);
 		if (paramValElementA != null) {
 			Vector<Object> v = new Vector<Object>();
 			for (int i = 0; i < paramValElementA.length; i++) {
@@ -3087,16 +3116,16 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseIMETHODRESPONSE
-	 * 
+	 *
 	 * @param pIMethodResponseE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMResponse parseIMETHODRESPONSE(Element pIMethodResponseE)
-			throws CIMXMLParseException {
+	public static CIMResponse parseIMETHODRESPONSE(Element pIMethodResponseE) throws CIMXMLParseException {
 		// <!ELEMENT IMETHODRESPONSE (ERROR|(IRETURNVALUE?, PARAMVALUE*))>
 		if (attribute(pIMethodResponseE, "NAME") == null) throw new CIMXMLParseException(
-				"IMETHODRESPONSE element missing NAME attribute!");
+			"IMETHODRESPONSE element missing NAME attribute!"
+		);
 
 		CIMResponse response = new CIMResponse();
 		// ERROR
@@ -3119,8 +3148,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// PARAMVALUE
-		Element[] paramValElementA = searchNodes(pIMethodResponseE, "PARAMVALUE", 0,
-				Integer.MAX_VALUE, true);
+		Element[] paramValElementA = searchNodes(pIMethodResponseE, "PARAMVALUE", 0, Integer.MAX_VALUE, true);
 		if (paramValElementA != null) {
 			Vector<Object> v = new Vector<Object>();
 			for (int i = 0; i < paramValElementA.length; i++) {
@@ -3139,7 +3167,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseERROR
-	 * 
+	 *
 	 * @param pErrorE
 	 * @return WBEMException
 	 * @throws CIMXMLParseException
@@ -3149,15 +3177,13 @@ public class CIMXMLParserImpl {
 		// <!ATTLSIT ERROR %CODE;%DESCRIPTION;>
 
 		Attr error_codeA = (Attr) searchAttribute(pErrorE, "CODE");
-		if (error_codeA == null) throw new CIMXMLParseException(
-				"ERROR element missing CODE attribute!");
+		if (error_codeA == null) throw new CIMXMLParseException("ERROR element missing CODE attribute!");
 		String code = error_codeA.getNodeValue();
 		int errorCode = 0;
 		try {
 			if (code.length() > 0) errorCode = Integer.parseInt(code);
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker().trace(Level.WARNING,
-					"exception while parsing error code from XML", e);
+			LogAndTraceBroker.getBroker().trace(Level.WARNING, "exception while parsing error code from XML", e);
 			errorCode = WBEMException.CIM_ERR_FAILED;
 		}
 		Attr error_descriptionA = (Attr) searchAttribute(pErrorE, "DESCRIPTION");
@@ -3181,17 +3207,19 @@ public class CIMXMLParserImpl {
 
 		// throw new CIMException(CIMException.getErrorName(errorCode),
 		// description.substring(description.indexOf(':')+1));
-		if (!rtnV.isEmpty()) return new WBEMException(errorCode, "ErrorCode:" + errorCode
-				+ " description:" + description, rtnV.toArray(new CIMInstance[0]));
-		return new WBEMException(errorCode, "ErrorCode:" + errorCode + " description:"
-				+ description);
+		if (!rtnV.isEmpty()) return new WBEMException(
+			errorCode,
+			"ErrorCode:" + errorCode + " description:" + description,
+			rtnV.toArray(new CIMInstance[0])
+		);
+		return new WBEMException(errorCode, "ErrorCode:" + errorCode + " description:" + description);
 	}
 
 	private static final String nodesRETURNVALUE[] = { "VALUE", "VALUE.REFERENCE" };
 
 	/**
 	 * parseRETURNVALUE
-	 * 
+	 *
 	 * @param pRetValE
 	 * @return Object
 	 * @throws CIMXMLParseException
@@ -3214,14 +3242,26 @@ public class CIMXMLParserImpl {
 		return null;
 	}
 
-	private static final String nodesIRETURNVALUE[] = { "CLASSNAME", "INSTANCENAME", "VALUE",
-			"VALUE.OBJECTWITHPATH", "VALUE.OBJECTWITHLOCALPATH", "VALUE.OBJECT", "OBJECTPATH",
-			"QUALIFIER.DECLARATION", "VALUE.ARRAY", "VALUE.REFERENCE", "CLASS", "INSTANCE",
-			"INSTANCEPATH", "VALUE.NAMEDINSTANCE" };
+	private static final String nodesIRETURNVALUE[] = {
+		"CLASSNAME",
+		"INSTANCENAME",
+		"VALUE",
+		"VALUE.OBJECTWITHPATH",
+		"VALUE.OBJECTWITHLOCALPATH",
+		"VALUE.OBJECT",
+		"OBJECTPATH",
+		"QUALIFIER.DECLARATION",
+		"VALUE.ARRAY",
+		"VALUE.REFERENCE",
+		"CLASS",
+		"INSTANCE",
+		"INSTANCEPATH",
+		"VALUE.NAMEDINSTANCE"
+	};
 
 	/**
 	 * parseIRETURNVALUE
-	 * 
+	 *
 	 * @param pIRetValE
 	 * @return Vector
 	 * @throws CIMXMLParseException
@@ -3257,8 +3297,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// CLASSNAME
-		Element[] classNameElementA = searchNodes(pIRetValE, "CLASSNAME", 0, Integer.MAX_VALUE,
-				false);
+		Element[] classNameElementA = searchNodes(pIRetValE, "CLASSNAME", 0, Integer.MAX_VALUE, false);
 		if (classNameElementA != null) {
 			for (int i = 0; i < classNameElementA.length; i++) {
 				Element classnameE = classNameElementA[i];
@@ -3269,8 +3308,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// INSTANCENAME
-		Element[] instNameElementA = searchNodes(pIRetValE, "INSTANCENAME", 0, Integer.MAX_VALUE,
-				false);
+		Element[] instNameElementA = searchNodes(pIRetValE, "INSTANCENAME", 0, Integer.MAX_VALUE, false);
 		if (instNameElementA != null) {
 			for (int i = 0; i < instNameElementA.length; i++) {
 				Element instancenameE = instNameElementA[i];
@@ -3281,8 +3319,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// INSTANCEPATH
-		Element[] instpathElementA = searchNodes(pIRetValE, "INSTANCEPATH", 0, Integer.MAX_VALUE,
-				false);
+		Element[] instpathElementA = searchNodes(pIRetValE, "INSTANCEPATH", 0, Integer.MAX_VALUE, false);
 		if (instpathElementA != null) {
 			for (int i = 0; i < instpathElementA.length; i++) {
 				Element instancePathE = instpathElementA[i];
@@ -3293,8 +3330,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// OBJECTPATH
-		Element[] objPathElementA = searchNodes(pIRetValE, "OBJECTPATH", 0, Integer.MAX_VALUE,
-				false);
+		Element[] objPathElementA = searchNodes(pIRetValE, "OBJECTPATH", 0, Integer.MAX_VALUE, false);
 		if (objPathElementA != null) {
 			for (int i = 0; i < objPathElementA.length; i++) {
 				Element objectpathE = objPathElementA[i];
@@ -3334,8 +3370,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.OBJECT
-		Element[] valObjElementA = searchNodes(pIRetValE, "VALUE.OBJECT", 0, Integer.MAX_VALUE,
-				false);
+		Element[] valObjElementA = searchNodes(pIRetValE, "VALUE.OBJECT", 0, Integer.MAX_VALUE, false);
 		if (valObjElementA != null) {
 			for (int i = 0; i < valObjElementA.length; i++) {
 				Element valueobjectE = valObjElementA[i];
@@ -3346,8 +3381,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.NAMEDINSTANCE
-		Element[] valNamedInstElementA = searchNodes(pIRetValE, "VALUE.NAMEDINSTANCE", 0,
-				Integer.MAX_VALUE, false);
+		Element[] valNamedInstElementA = searchNodes(pIRetValE, "VALUE.NAMEDINSTANCE", 0, Integer.MAX_VALUE, false);
 		if (valNamedInstElementA != null) {
 			for (int i = 0; i < valNamedInstElementA.length; i++) {
 				Element valuenamedisntanceE = valNamedInstElementA[i];
@@ -3358,8 +3392,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.INSTANCEWITHPATH
-		Element[] valInstWithPathElementA = searchNodes(pIRetValE, "VALUE.INSTANCEWITHPATH", 0,
-				Integer.MAX_VALUE, false);
+		Element[] valInstWithPathElementA = searchNodes(pIRetValE, "VALUE.INSTANCEWITHPATH", 0, Integer.MAX_VALUE, false);
 		if (valInstWithPathElementA != null) {
 			for (int i = 0; i < valInstWithPathElementA.length; i++) {
 				Element valueinstancewithpathE = valInstWithPathElementA[i];
@@ -3370,8 +3403,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.OBJECTWITHPATH
-		Element[] valObjWithPathElementA = searchNodes(pIRetValE, "VALUE.OBJECTWITHPATH", 0,
-				Integer.MAX_VALUE, false);
+		Element[] valObjWithPathElementA = searchNodes(pIRetValE, "VALUE.OBJECTWITHPATH", 0, Integer.MAX_VALUE, false);
 		if (valObjWithPathElementA != null) {
 			for (int i = 0; i < valObjWithPathElementA.length; i++) {
 				Element valueobjectwithpathE = valObjWithPathElementA[i];
@@ -3382,8 +3414,13 @@ public class CIMXMLParserImpl {
 		}
 
 		// VALUE.OBJECTWITHLOCALPATH
-		Element[] valObjWithLocalPathElementA = searchNodes(pIRetValE, "VALUE.OBJECTWITHLOCALPATH",
-				0, Integer.MAX_VALUE, false);
+		Element[] valObjWithLocalPathElementA = searchNodes(
+			pIRetValE,
+			"VALUE.OBJECTWITHLOCALPATH",
+			0,
+			Integer.MAX_VALUE,
+			false
+		);
 		if (valObjWithLocalPathElementA != null) {
 			for (int i = 0; i < valObjWithLocalPathElementA.length; i++) {
 				Element valueobjectwithlocalpathE = valObjWithLocalPathElementA[i];
@@ -3394,8 +3431,7 @@ public class CIMXMLParserImpl {
 		}
 
 		// QUALIFIER.DECLARATION
-		Element[] qualiDeclElementA = searchNodes(pIRetValE, "QUALIFIER.DECLARATION", 0,
-				Integer.MAX_VALUE, false);
+		Element[] qualiDeclElementA = searchNodes(pIRetValE, "QUALIFIER.DECLARATION", 0, Integer.MAX_VALUE, false);
 		if (qualiDeclElementA != null) {
 			for (int i = 0; i < qualiDeclElementA.length; i++) {
 				Element qualifierdeclarationE = qualiDeclElementA[i];
@@ -3410,7 +3446,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseObject
-	 * 
+	 *
 	 * @param pRootE
 	 * @return Object
 	 * @throws CIMXMLParseException
@@ -3470,7 +3506,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * hasNodes
-	 * 
+	 *
 	 * @param pParentE
 	 * @return boolean
 	 */
@@ -3486,11 +3522,11 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * hasTypeAttrsInNodes
-	 * 
+	 *
 	 * SVC CIMOM sends typed CIM-XML elements in a non-standard way. The TYPE
 	 * attribute is included in the VALUE or VALUE.ARRAY element not in the
 	 * enclosing element as the standard says.
-	 * 
+	 *
 	 * @param pParentE
 	 * @return boolean
 	 */
@@ -3502,8 +3538,7 @@ public class CIMXMLParserImpl {
 			String name = n.getNodeName();
 			if ("VALUE".equalsIgnoreCase(name) || "VALUE.ARRAY".equalsIgnoreCase(name)) {
 				NamedNodeMap nm = n.getAttributes();
-				if (nm != null
-						&& (nm.getNamedItem("TYPE") != null || nm.getNamedItem("PARAMTYPE") != null)) return true;
+				if (nm != null && (nm.getNamedItem("TYPE") != null || nm.getNamedItem("PARAMTYPE") != null)) return true;
 			}
 		}
 		return false;
@@ -3512,35 +3547,87 @@ public class CIMXMLParserImpl {
 	private static final HashMap<String, String> NODENAME_HASH = new HashMap<String, String>();
 
 	private static void initNodeNameHash(String[] pEnumA) {
-		for (int i = 0; i < pEnumA.length; i++)
-			NODENAME_HASH.put(pEnumA[i], pEnumA[i]);
+		for (int i = 0; i < pEnumA.length; i++) NODENAME_HASH.put(pEnumA[i], pEnumA[i]);
 	}
 
 	static {
-		initNodeNameHash(new String[] { "CIM", "DECLARATION", "DECLGROUP", "DECLGROUP.WITHNAME",
-				"DECLGROUP.WITHPATH", "QUALIFIER.DECLARATION", "SCOPE", "VALUE", "VALUE.ARRAY",
-				"VALUE.REFERENCE", "VALUE.REFARRAY", "VALUE.OBJECT", "VALUE.NAMEDINSTANCE",
-				"VALUE.NAMEDOBJECT", "VALUE.OBJECTWITHLOCALPATH", "VALUE.OBJECTWITHPATH",
-				"VALUE.NULL", "VALUE.INSTANCEWITHPATH", "NAMESPACEPATH", "LOCALNAMESPACEPATH",
-				"HOST", "NAMESPACE", "CLASSPATH", "LOCALCLASSPATH", "CLASSNAME", "INSTANCEPATH",
-				"LOCALINSTANCEPATH", "INSTANCENAME", "OBJECTPATH", "KEYBINDING", "KEYVALUE",
-				"CLASS", "INSTANCE", "QUALIFIER", "PROPERTY", "PROPERTY.ARRAY",
-				"PROPERTY.REFERENCE", "METHOD", "PARAMETER", "PARAMETER.REFERENCE",
-				"PARAMETER.ARRAY", "PARAMETER.REFARRAY", "MESSAGE", "MULTIREQ", "MULTIEXPREQ",
-				"SIMPLEREQ", "SIMPLEEXPREQ", "IMETHODCALL", "METHODCALL", "EXPMETHODCALL",
-				"PARAMVALUE", "IPARAMVALUE", "EXPPARAMVALUE", "MULTIRSP", "MULTIEXPRSP",
-				"SIMPLERSP", "SIMPLEEXPRSP", "METHODRESPONSE", "EXPMETHODRESPONSE",
-				"IMETHODRESPONSE", "ERROR", "RETURNVALUE", "IRETURNVALUE", "CORRELATOR" });
+		initNodeNameHash(
+			new String[] {
+				"CIM",
+				"DECLARATION",
+				"DECLGROUP",
+				"DECLGROUP.WITHNAME",
+				"DECLGROUP.WITHPATH",
+				"QUALIFIER.DECLARATION",
+				"SCOPE",
+				"VALUE",
+				"VALUE.ARRAY",
+				"VALUE.REFERENCE",
+				"VALUE.REFARRAY",
+				"VALUE.OBJECT",
+				"VALUE.NAMEDINSTANCE",
+				"VALUE.NAMEDOBJECT",
+				"VALUE.OBJECTWITHLOCALPATH",
+				"VALUE.OBJECTWITHPATH",
+				"VALUE.NULL",
+				"VALUE.INSTANCEWITHPATH",
+				"NAMESPACEPATH",
+				"LOCALNAMESPACEPATH",
+				"HOST",
+				"NAMESPACE",
+				"CLASSPATH",
+				"LOCALCLASSPATH",
+				"CLASSNAME",
+				"INSTANCEPATH",
+				"LOCALINSTANCEPATH",
+				"INSTANCENAME",
+				"OBJECTPATH",
+				"KEYBINDING",
+				"KEYVALUE",
+				"CLASS",
+				"INSTANCE",
+				"QUALIFIER",
+				"PROPERTY",
+				"PROPERTY.ARRAY",
+				"PROPERTY.REFERENCE",
+				"METHOD",
+				"PARAMETER",
+				"PARAMETER.REFERENCE",
+				"PARAMETER.ARRAY",
+				"PARAMETER.REFARRAY",
+				"MESSAGE",
+				"MULTIREQ",
+				"MULTIEXPREQ",
+				"SIMPLEREQ",
+				"SIMPLEEXPREQ",
+				"IMETHODCALL",
+				"METHODCALL",
+				"EXPMETHODCALL",
+				"PARAMVALUE",
+				"IPARAMVALUE",
+				"EXPPARAMVALUE",
+				"MULTIRSP",
+				"MULTIEXPRSP",
+				"SIMPLERSP",
+				"SIMPLEEXPRSP",
+				"METHODRESPONSE",
+				"EXPMETHODRESPONSE",
+				"IMETHODRESPONSE",
+				"ERROR",
+				"RETURNVALUE",
+				"IRETURNVALUE",
+				"CORRELATOR"
+			}
+		);
 	}
 
 	/**
 	 * checkOtherNodes
-	 * 
+	 *
 	 * @param pParentE
 	 * @param pAllowedChildNodes
 	 */
-	private static void checkOtherNodes(Element pParentE, String[] pAllowedChildNodes)
-			throws CIMXMLParseException {
+	private static void checkOtherNodes(Element pParentE, String[] pAllowedChildNodes) throws CIMXMLParseException {
 		NodeList nl = pParentE.getChildNodes();
 		if (nl == null || nl.getLength() == 0) return;
 		for (int i = 0; i < nl.getLength(); i++) {
@@ -3554,15 +3641,15 @@ public class CIMXMLParserImpl {
 					break;
 				}
 			}
-			if (!found && NODENAME_HASH.containsKey(name)) throw new CIMXMLParseException(pParentE
-					.getNodeName()
-					+ " element contains invalid child element " + name + "!");
+			if (!found && NODENAME_HASH.containsKey(name)) throw new CIMXMLParseException(
+				pParentE.getNodeName() + " element contains invalid child element " + name + "!"
+			);
 		}
 	}
 
 	/**
 	 * searchNodes
-	 * 
+	 *
 	 * @param pParentE
 	 * @param pTagName
 	 * @return Element[]
@@ -3584,7 +3671,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * searchNodes
-	 * 
+	 *
 	 * @param pParentE
 	 * @param pTagName
 	 * @param pMin
@@ -3593,14 +3680,15 @@ public class CIMXMLParserImpl {
 	 * @return Element[]
 	 * @throws CIMXMLParseException
 	 */
-	public static Element[] searchNodes(Element pParentE, String pTagName, int pMin, int pMax,
-			boolean pAllowOtherNodes) throws CIMXMLParseException {
+	public static Element[] searchNodes(Element pParentE, String pTagName, int pMin, int pMax, boolean pAllowOtherNodes)
+		throws CIMXMLParseException {
 		// return all child nodes immediately below parent, null if none found
 
 		NodeList nl = pParentE.getChildNodes();
 		if (nl == null || nl.getLength() == 0) {
-			if (pMin > 0) throw new CIMXMLParseException(pParentE.getNodeName()
-					+ " element must have at least " + pMin + " " + pTagName + " child element(s)!");
+			if (pMin > 0) throw new CIMXMLParseException(
+				pParentE.getNodeName() + " element must have at least " + pMin + " " + pTagName + " child element(s)!"
+			);
 			return null;
 		}
 
@@ -3616,13 +3704,20 @@ public class CIMXMLParserImpl {
 			}
 		}
 
-		if (resElementV.size() < pMin) throw new CIMXMLParseException(pParentE.getNodeName()
-				+ " element must have at least " + pMin + " " + pTagName + " child element(s)!");
-		if (resElementV.size() > pMax) throw new CIMXMLParseException(pParentE.getNodeName()
-				+ " element can have no more than " + pMax + " " + pTagName + " child element(s)!");
+		if (resElementV.size() < pMin) throw new CIMXMLParseException(
+			pParentE.getNodeName() + " element must have at least " + pMin + " " + pTagName + " child element(s)!"
+		);
+		if (resElementV.size() > pMax) throw new CIMXMLParseException(
+			pParentE.getNodeName() + " element can have no more than " + pMax + " " + pTagName + " child element(s)!"
+		);
 		if (resElementV.size() > 0 && !pAllowOtherNodes && otherNode != null) throw new CIMXMLParseException(
-				pParentE.getNodeName() + " element cannot have " + otherNode
-						+ " child element(s) when it already has " + pTagName + " element(s)!");
+			pParentE.getNodeName() +
+			" element cannot have " +
+			otherNode +
+			" child element(s) when it already has " +
+			pTagName +
+			" element(s)!"
+		);
 		if (resElementV.size() == 0) return null;
 
 		return resElementV.toArray(new Element[0]);
@@ -3630,7 +3725,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * searchFirstNode
-	 * 
+	 *
 	 * @param pParentE
 	 * @param pTagName
 	 * @return Node
@@ -3641,14 +3736,16 @@ public class CIMXMLParserImpl {
 		NodeList nl = pParentE.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node n = nl.item(i);
-			if (n.getNodeName().equals(pTagName)) { return n; }
+			if (n.getNodeName().equals(pTagName)) {
+				return n;
+			}
 		}
 		return null;
 	}
 
 	/**
 	 * searchAttribute
-	 * 
+	 *
 	 * @param pParentN
 	 * @param pAttrName
 	 * @return Node
@@ -3661,7 +3758,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * searchFirstChild
-	 * 
+	 *
 	 * @param pParentE
 	 * @return Node
 	 */
@@ -3673,14 +3770,13 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * createJavaObject
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @param pValue
 	 * @return Object
 	 * @throws CIMXMLParseException
 	 */
-	public static Object createJavaObject(String pTypeStr, String pValue)
-			throws CIMXMLParseException {
+	public static Object createJavaObject(String pTypeStr, String pValue) throws CIMXMLParseException {
 		// return a java object with the specific type
 		if (pTypeStr == null) pTypeStr = MOF.DT_STR;
 		if (MOF.NULL.equalsIgnoreCase(pTypeStr)) return null;
@@ -3692,8 +3788,8 @@ public class CIMXMLParserImpl {
 			pValue = pValue.toLowerCase();
 			if (pValue.startsWith("0x") || pValue.startsWith("+0x") || pValue.startsWith("-0x")) {
 				radix = 16;
-				if (pValue.startsWith("-")) pValue = "-" + pValue.substring(3);
-				else pValue = pValue.substring(pValue.indexOf('x') + 1);
+				if (pValue.startsWith("-")) pValue = "-" + pValue.substring(3); else pValue =
+					pValue.substring(pValue.indexOf('x') + 1);
 			}
 		}
 
@@ -3734,7 +3830,8 @@ public class CIMXMLParserImpl {
 			case CIMDataType.REAL64:
 				if (WBEMConfiguration.getGlobalConfiguration().verifyJavaLangDoubleStrings()) {
 					if (Util.isBadDoubleString(pValue)) throw new IllegalArgumentException(
-							"Double value string hangs older JVMs!\n" + pValue);
+						"Double value string hangs older JVMs!\n" + pValue
+					);
 				}
 				o = new Double(pValue);
 				break;
@@ -3760,16 +3857,23 @@ public class CIMXMLParserImpl {
 			try {
 				return new CIMDateTimeInterval(pValue);
 			} catch (IllegalArgumentException eInt) {
-				throw new CIMXMLParseException("Failed to parse dateTime string: " + pValue + "!\n"
-						+ "CIMDateTimeAbsolute parsing error:\n" + eAbs.getMessage() + "\n"
-						+ "CIMDateTimeInterval parsing error:\n" + eInt.getMessage());
+				throw new CIMXMLParseException(
+					"Failed to parse dateTime string: " +
+					pValue +
+					"!\n" +
+					"CIMDateTimeAbsolute parsing error:\n" +
+					eAbs.getMessage() +
+					"\n" +
+					"CIMDateTimeInterval parsing error:\n" +
+					eInt.getMessage()
+				);
 			}
 		}
 	}
 
 	/**
 	 * parseSIMPLEEXPRSP
-	 * 
+	 *
 	 * @param pSimpleExpRspE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
@@ -3781,13 +3885,12 @@ public class CIMXMLParserImpl {
 		Element[] expmethodresponseA = searchNodes(pSimpleExpRspE, "EXPMETHODRESPONSE", 1, 1, false);
 		if (expmethodresponseA != null) return parseEXPMETHODRESPONSE(expmethodresponseA[0]);
 
-		throw new CIMXMLParseException(
-				"SIMPLEEXPRSP element missing EXPMETHODRESPONSE child element!");
+		throw new CIMXMLParseException("SIMPLEEXPRSP element missing EXPMETHODRESPONSE child element!");
 	}
 
 	/**
 	 * parseMULTIEXPRSP
-	 * 
+	 *
 	 * @param pMultiExpRspE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
@@ -3795,8 +3898,7 @@ public class CIMXMLParserImpl {
 	public static CIMResponse parseMULTIEXPRSP(Element pMultiExpRspE) throws CIMXMLParseException {
 		// <!ELEMENT MULTIEXPRSP (SIMPLEEXPRSP,SIMPLEEXPRSP+)>
 
-		Element[] multiExpRespElementA = searchNodes(pMultiExpRspE, "SIMPLEEXPRSP", 2,
-				Integer.MAX_VALUE, false);
+		Element[] multiExpRespElementA = searchNodes(pMultiExpRspE, "SIMPLEEXPRSP", 2, Integer.MAX_VALUE, false);
 		if (multiExpRespElementA != null) {
 			CIMResponse multiExpRsp = new CIMResponse();
 			for (int i = 0; i < multiExpRespElementA.length; i++) {
@@ -3815,19 +3917,19 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseEXPMETHODRESPONSE
-	 * 
+	 *
 	 * @param pExpMethodResponseE
 	 * @return CIMResponse
 	 * @throws CIMXMLParseException
 	 */
-	public static CIMResponse parseEXPMETHODRESPONSE(Element pExpMethodResponseE)
-			throws CIMXMLParseException {
+	public static CIMResponse parseEXPMETHODRESPONSE(Element pExpMethodResponseE) throws CIMXMLParseException {
 		// <!ELEMENT EXPMETHODRESPONSE (ERROR | IRETURNVALUE?)>
 
 		CIMResponse response = new CIMResponse();
 
 		if (attribute(pExpMethodResponseE, "NAME") == null) throw new CIMXMLParseException(
-				"EXPMETHODRESPONSE element missing NAME attribute!");
+			"EXPMETHODRESPONSE element missing NAME attribute!"
+		);
 
 		// ERROR
 		Element[] errorA = searchNodes(pExpMethodResponseE, "ERROR", 0, 1, false);
@@ -3856,7 +3958,7 @@ public class CIMXMLParserImpl {
 
 	/**
 	 * parseCORRELATOR
-	 * 
+	 *
 	 * @param pCorrelatorE
 	 * @throws CIMXMLParseException
 	 * */
@@ -3864,11 +3966,9 @@ public class CIMXMLParserImpl {
 		// <!ELEMENT CORRELATOR (VALUE)>
 		// <!ATTLIST CORRELATOR %CIMName; %CIMType; #REQUIRED>
 		String name = attribute(pCorrelatorE, "NAME");
-		if (name == null) throw new CIMXMLParseException(
-				"CORRELATOR element missing NAME attribute!");
+		if (name == null) throw new CIMXMLParseException("CORRELATOR element missing NAME attribute!");
 		String type = attribute(pCorrelatorE, "TYPE");
-		if (type == null) throw new CIMXMLParseException(
-				"CORRELATOR element missing TYPE attribute!");
+		if (type == null) throw new CIMXMLParseException("CORRELATOR element missing TYPE attribute!");
 
 		// VALUE
 		Element[] valueA = searchNodes(pCorrelatorE, "VALUE", 1, 1, false);

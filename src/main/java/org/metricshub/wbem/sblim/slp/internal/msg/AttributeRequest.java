@@ -45,9 +45,8 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.io.IOException;
 import java.util.List;
 import java.util.SortedSet;
-
-import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceURL;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -67,10 +66,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * AttributeRequest message
- * 
+ *
  */
 public class AttributeRequest extends RequestMessage {
-
 	private String iURLStr;
 
 	private List<String> iTagList;
@@ -81,22 +79,27 @@ public class AttributeRequest extends RequestMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new AttributeRequest(pHdr, pInStr.readStringSet(), pInStr.readString(), pInStr
-				.readStringList(), pInStr.readStringList(), pInStr.readStringList());
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new AttributeRequest(
+			pHdr,
+			pInStr.readStringSet(),
+			pInStr.readString(),
+			pInStr.readStringList(),
+			pInStr.readStringList(),
+			pInStr.readStringList()
+		);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pPrevResponderSet
 	 *            - set of address strings
 	 * @param pURLStr
@@ -105,15 +108,20 @@ public class AttributeRequest extends RequestMessage {
 	 * @param pTagList
 	 * @param pSPIList
 	 */
-	public AttributeRequest(SortedSet<String> pPrevResponderSet, String pURLStr,
-			List<String> pScopeList, List<String> pTagList, List<String> pSPIList) {
+	public AttributeRequest(
+		SortedSet<String> pPrevResponderSet,
+		String pURLStr,
+		List<String> pScopeList,
+		List<String> pTagList,
+		List<String> pSPIList
+	) {
 		super(ATTR_RQST, pPrevResponderSet, pScopeList);
 		init(pURLStr, pTagList, pSPIList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pPrevResponderSet
 	 *            - set of address strings
@@ -123,15 +131,21 @@ public class AttributeRequest extends RequestMessage {
 	 * @param pTagList
 	 * @param pSPIList
 	 */
-	public AttributeRequest(String pLangTag, SortedSet<String> pPrevResponderSet, String pURLStr,
-			List<String> pScopeList, List<String> pTagList, List<String> pSPIList) {
+	public AttributeRequest(
+		String pLangTag,
+		SortedSet<String> pPrevResponderSet,
+		String pURLStr,
+		List<String> pScopeList,
+		List<String> pTagList,
+		List<String> pSPIList
+	) {
 		super(ATTR_RQST, pLangTag, pPrevResponderSet, pScopeList);
 		init(pURLStr, pTagList, pSPIList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pPrevResponderSet
 	 *            - set of address strings
@@ -141,15 +155,21 @@ public class AttributeRequest extends RequestMessage {
 	 * @param pTagList
 	 * @param pSPIList
 	 */
-	public AttributeRequest(MsgHeader pHeader, SortedSet<String> pPrevResponderSet, String pURLStr,
-			List<String> pScopeList, List<String> pTagList, List<String> pSPIList) {
+	public AttributeRequest(
+		MsgHeader pHeader,
+		SortedSet<String> pPrevResponderSet,
+		String pURLStr,
+		List<String> pScopeList,
+		List<String> pTagList,
+		List<String> pSPIList
+	) {
 		super(pHeader, pPrevResponderSet, pScopeList);
 		init(pURLStr, pTagList, pSPIList);
 	}
 
 	/**
 	 * getServiceURL
-	 * 
+	 *
 	 * @return ServiceURL
 	 */
 	public ServiceURL getServiceURL() {
@@ -158,8 +178,12 @@ public class AttributeRequest extends RequestMessage {
 
 	@Override
 	protected boolean serializeRequestBody(SLPOutputStream pOutStr) {
-		return pOutStr.write(this.iURLStr) && pOutStr.writeStringList(getScopeList())
-				&& pOutStr.writeStringList(this.iTagList) && pOutStr.writeStringList(this.iSPIList);
+		return (
+			pOutStr.write(this.iURLStr) &&
+			pOutStr.writeStringList(getScopeList()) &&
+			pOutStr.writeStringList(this.iTagList) &&
+			pOutStr.writeStringList(this.iSPIList)
+		);
 	}
 
 	@Override
@@ -172,5 +196,4 @@ public class AttributeRequest extends RequestMessage {
 		this.iTagList = pTagList;
 		this.iSPIList = pSPIList;
 	}
-
 }

@@ -51,29 +51,26 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMMessage;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMResponse;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParseException;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParserImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMMessage;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParseException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 /**
  * Class CloseableIteratorDOM is a CloseableIterator implementation for the
  * CIM-XML DOM parser.
- * 
+ *
  */
 public class CloseableIteratorDOM implements CloseableIterator<Object> {
-
 	private Iterator<Object> iItr;
 
 	private CIMResponse iRsp;
@@ -92,14 +89,13 @@ public class CloseableIteratorDOM implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 * @param pPath
 	 * @throws WBEMException
 	 * @throws IOException
 	 */
-	public CloseableIteratorDOM(InputStreamReader pStream, CIMObjectPath pPath)
-			throws WBEMException, IOException {
+	public CloseableIteratorDOM(InputStreamReader pStream, CIMObjectPath pPath) throws WBEMException, IOException {
 		try {
 			parse(new InputSource(pStream), pPath);
 		} finally {
@@ -109,7 +105,7 @@ public class CloseableIteratorDOM implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pIs
 	 * @param pLocalPath
 	 * @throws WBEMException
@@ -152,7 +148,7 @@ public class CloseableIteratorDOM implements CloseableIterator<Object> {
 	/**
 	 * getParamValues : returns the list of CIMArgument parsed parameters and
 	 * their values : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return List of CIMArgument
 	 */
 	public List<Object> getParamValues() {
@@ -195,5 +191,4 @@ public class CloseableIteratorDOM implements CloseableIterator<Object> {
 		this.iItr = retValVec == null ? null : retValVec.iterator();
 		this.outParamValues = this.iRsp.getParamValues();
 	}
-
 }

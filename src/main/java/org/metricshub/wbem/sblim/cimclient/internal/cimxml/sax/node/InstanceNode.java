@@ -46,14 +46,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMHelper;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.LocalPathBuilder;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -66,7 +65,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class InstanceNode extends AbstractObjectNode {
-
 	private String iClassName;
 
 	/**
@@ -97,18 +95,15 @@ public class InstanceNode extends AbstractObjectNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { QUALIFIER, PROPERTY, PROPERTY_ARRAY,
-			PROPERTY_REFERENCE };
+	private static final String[] ALLOWED_CHILDREN = { QUALIFIER, PROPERTY, PROPERTY_ARRAY, PROPERTY_REFERENCE };
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (ALLOWED_CHILDREN[i] == pNodeNameEnum) return;
-		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (ALLOWED_CHILDREN[i] == pNodeNameEnum) return;
+		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -120,28 +115,28 @@ public class InstanceNode extends AbstractObjectNode {
 
 	@Override
 	public void testCompletness() {
-	// all child nodes are optional
+		// all child nodes are optional
 	}
 
 	/**
 	 * getCIMInstance
-	 * 
+	 *
 	 * @return CIMInstance
 	 */
 	public CIMInstance getCIMInstance() {
-		return new CIMInstance(LocalPathBuilder.build(this.iLocalPath, this.iClassName, null),
-				getProps());
+		return new CIMInstance(LocalPathBuilder.build(this.iLocalPath, this.iClassName, null), getProps());
 	}
 
 	/**
 	 * getCIMInstance
-	 * 
+	 *
 	 * @param pObjPath
 	 * @return CIMInstance with the provided object path
 	 */
 	public CIMInstance getCIMInstance(CIMObjectPath pObjPath) {
-		if (WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()) return CIMHelper
-				.CIMInstanceWithSynchonizedNumericKeyDataTypes(pObjPath, getProps());
+		if (
+			WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()
+		) return CIMHelper.CIMInstanceWithSynchonizedNumericKeyDataTypes(pObjPath, getProps());
 		return new CIMInstance(pObjPath, getProps());
 	}
 
@@ -159,5 +154,4 @@ public class InstanceNode extends AbstractObjectNode {
 		if (this.iCIMPropAL == null) return null;
 		return this.iCIMPropAL.toArray(EMPTY_PA);
 	}
-
 }

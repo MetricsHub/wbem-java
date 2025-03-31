@@ -45,14 +45,13 @@ import java.util.logging.Level;
 /**
  * The interface LogListener must be implemented if you want to attach your own
  * logging framework to the CIM Client.
- * 
+ *
  * @see LogAndTraceManager
  */
 public interface LogListener {
-
 	/**
 	 * Receive a message.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the message level identifiers, e.g. SEVERE
 	 * @param pMessageKey

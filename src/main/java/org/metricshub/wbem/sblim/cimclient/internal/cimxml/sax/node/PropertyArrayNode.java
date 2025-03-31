@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT PROPERTY.ARRAY (QUALIFIER*, VALUE.ARRAY?)
- * ATTLIST PROPERTY.ARRAY 
+ * ATTLIST PROPERTY.ARRAY
  *   %CIMName;
  *   %CIMType;              #REQUIRED
  *   %ArraySize;
@@ -67,7 +67,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class PropertyArrayNode extends AbstractPropertyNode {
-
 	// VALUE.ARRAY
 	// required for super.testChild()
 	private boolean iHasValueArray;
@@ -90,15 +89,16 @@ public class PropertyArrayNode extends AbstractPropertyNode {
 	@Override
 	protected void specificInit(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iHasTypeAttribute = (getCIMType(pAttribs, true) != null);
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				pSession, this.iQualiHandler, true);
+		this.iEmbObjHandler =
+			EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, pSession, this.iQualiHandler, true);
 		this.iHasValueArray = false;
 	}
 
 	@Override
 	protected void childValueNodeParsed(Node pChild) throws SAXException {
 		if (!this.iHasTypeAttribute && ((ValueArrayNode) pChild).getType() == null) throw new SAXException(
-				"PROPERTY.ARRAY element missing TYPE attribute!");
+			"PROPERTY.ARRAY element missing TYPE attribute!"
+		);
 		this.iEmbObjHandler.addValueNode((ValueArrayNode) pChild);
 		this.iHasValueArray = true;
 	}
@@ -135,5 +135,4 @@ public class PropertyArrayNode extends AbstractPropertyNode {
 	protected CIMQualifier<?>[] getQualis() {
 		return this.iQualiHandler.getQualis(this.iType == CIMDataType.STRING_ARRAY_T);
 	}
-
 }

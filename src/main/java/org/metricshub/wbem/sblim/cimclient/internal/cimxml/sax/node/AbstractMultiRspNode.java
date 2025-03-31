@@ -48,7 +48,7 @@ public abstract class AbstractMultiRspNode extends AbstractResponseNode {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractMultiRspNode(String pNameEnum) {
@@ -57,16 +57,15 @@ public abstract class AbstractMultiRspNode extends AbstractResponseNode {
 
 	/**
 	 * getResponseCount
-	 * 
+	 *
 	 * @return the number of retrievable responses
 	 */
 	public abstract int getResponseCount();
 
 	/**
 	 * readResponse
-	 * 
+	 *
 	 * @return AbstractSimpleRspNode
 	 */
 	public abstract AbstractSimpleRspNode readResponse();
-
 }

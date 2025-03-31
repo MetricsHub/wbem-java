@@ -56,10 +56,9 @@ import java.util.Vector;
  * created, deregistrations of service instances are made for all locales.
  */
 public interface Advertiser {
-
 	/**
 	 * Return the language locale with which this object was created.
-	 * 
+	 *
 	 * @return The locale
 	 */
 	public abstract Locale getLocale();
@@ -68,7 +67,7 @@ public interface Advertiser {
 	 * Register a new service with SLP having the given attributes. The API
 	 * library is required to perform the operation in all scopes obtained
 	 * through configuration.
-	 * 
+	 *
 	 * @param pURL
 	 *            The URL for the service.
 	 * @param pAttributes
@@ -77,14 +76,14 @@ public interface Advertiser {
 	 * @throws ServiceLocationException
 	 */
 	public abstract void register(ServiceURL pURL, Vector<ServiceLocationAttribute> pAttributes)
-			throws ServiceLocationException;
+		throws ServiceLocationException;
 
 	/**
 	 * Deregister a service from the SLP framework. This has the effect of
 	 * deregistering the service from every language locale. The API library is
 	 * required to perform the operation in all scopes obtained through
 	 * configuration.
-	 * 
+	 *
 	 * @param pURL
 	 *            The URL for the service.
 	 * @throws ServiceLocationException
@@ -95,7 +94,7 @@ public interface Advertiser {
 	 * Update the registration by adding the given attributes. The API library
 	 * is required to perform the operation in all scopes obtained through
 	 * configuration.
-	 * 
+	 *
 	 * @param pURL
 	 *            The URL for the service.
 	 * @param pAttributes
@@ -105,13 +104,13 @@ public interface Advertiser {
 	 * @throws ServiceLocationException
 	 */
 	public abstract void addAttributes(ServiceURL pURL, Vector<ServiceLocationAttribute> pAttributes)
-			throws ServiceLocationException;
+		throws ServiceLocationException;
 
 	/**
 	 * Delete the attributes from a URL for the locale with which the Advertiser
 	 * was created. The API library is required to perform the operation in all
 	 * scopes obtained through configuration.
-	 * 
+	 *
 	 * @param pURL
 	 *            The URL for the service.
 	 * @param pAttributeIds
@@ -123,6 +122,5 @@ public interface Advertiser {
 	 *            transmission. May not be the empty vector or null.
 	 * @throws ServiceLocationException
 	 */
-	public abstract void deleteAttributes(ServiceURL pURL, Vector<String> pAttributeIds)
-			throws ServiceLocationException;
+	public abstract void deleteAttributes(ServiceURL pURL, Vector<String> pAttributeIds) throws ServiceLocationException;
 }

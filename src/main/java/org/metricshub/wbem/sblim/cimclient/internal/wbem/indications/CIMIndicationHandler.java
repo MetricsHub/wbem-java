@@ -79,35 +79,32 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Map.Entry;
 import java.util.logging.Level;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMInstance;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMClientXML_HelperImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMRequest;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLBuilderImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParserImpl;
+import org.metricshub.wbem.sblim.cimclient.internal.http.HttpContentHandler;
+import org.metricshub.wbem.sblim.cimclient.internal.http.HttpException;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader;
+import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader.HeaderEntry;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeaderParser;
 import org.metricshub.wbem.sblim.cimclient.internal.http.MessageReader;
 import org.metricshub.wbem.sblim.cimclient.internal.http.MessageWriter;
-import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader.HeaderEntry;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.DebugInputStream;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfigurationDefaults;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
-import org.metricshub.wbem.javax.cim.CIMProperty;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.metricshub.wbem.sblim.cimclient.internal.http.HttpContentHandler;
-import org.metricshub.wbem.sblim.cimclient.internal.http.HttpException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -123,7 +120,6 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * reliable indication queue and cache.
 	 */
 	private class DataManager extends Thread {
-
 		private boolean iAlive = true;
 
 		private LinkedList<ServerListEntry> iLinkedList;
@@ -165,8 +161,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 						Map.Entry<ServerTableEntry, IndicationServer> entry;
 						Iterator<Map.Entry<ServerTableEntry, IndicationServer>> iterator;
 
-						Set<Map.Entry<ServerTableEntry, IndicationServer>> set = this.iHashTable
-								.entrySet();
+						Set<Map.Entry<ServerTableEntry, IndicationServer>> set = this.iHashTable.entrySet();
 						if (set != null) {
 							iterator = set.iterator();
 							while (iterator.hasNext()) {
@@ -200,7 +195,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * serverIP/destinationURL pair along with its own
 	 * <code>ReliableIndicationHandler</code>. This is done to handle multiple
 	 * contexts from the same server.
-	 * 
+	 *
 	 * NOTE: Multiple contexts from the same server will not be handled
 	 * correctly if the user creates multiple
 	 * <code>CIM_ListenerDestination</code> instances with the same
@@ -212,13 +207,12 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * DSP1054 1.2.
 	 */
 	private class IndicationServer {
-
 		private boolean iRIInitialized = false;
 
 		private ReliableIndicationHandler iRIHandler;
 
 		public IndicationServer() {
-		// initialize() does the work
+			// initialize() does the work
 		}
 
 		public void initialize(ReliableIndicationHandler pRIHandler) {
@@ -242,7 +236,6 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * looking for the corresponding server IP and destination URL.
 	 */
 	private class ServerListEntry {
-
 		private InetAddress iInetAddress;
 
 		private String iDestinationUrl;
@@ -275,7 +268,6 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * and destination URL.
 	 */
 	private class ServerTableEntry {
-
 		private InetAddress iInetAddress;
 
 		private String iDestinationUrl;
@@ -297,8 +289,10 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		public boolean equals(Object pObj) {
 			if (!(pObj instanceof ServerTableEntry)) return false;
 			ServerTableEntry that = (ServerTableEntry) pObj;
-			if (this.iInetAddress.equals(that.getInetAddress())
-					&& this.iDestinationUrl.equalsIgnoreCase(that.getDestinationUrl())) return true;
+			if (
+				this.iInetAddress.equals(that.getInetAddress()) &&
+				this.iDestinationUrl.equalsIgnoreCase(that.getDestinationUrl())
+			) return true;
 			return false;
 		}
 
@@ -334,7 +328,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pDispatcher
 	 */
 	public CIMIndicationHandler(CIMEventDispatcher pDispatcher) {
@@ -343,37 +337,35 @@ public class CIMIndicationHandler extends HttpContentHandler {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pDispatcher
 	 * @param pProperties
 	 */
 	public CIMIndicationHandler(CIMEventDispatcher pDispatcher, WBEMConfiguration pProperties) {
 		this.iDispatcher = pDispatcher;
-		this.iSessionProperties = (pProperties != null) ? pProperties : WBEMConfiguration
-				.getGlobalConfiguration();
+		this.iSessionProperties = (pProperties != null) ? pProperties : WBEMConfiguration.getGlobalConfiguration();
 		this.iReliableIndicationsDisabled = !this.iSessionProperties.isReliableIndicationEnabled();
 
 		// Initialize reliable indication support
 		if (!this.iReliableIndicationsDisabled) {
-			this.iHashtableCapacity = this.iSessionProperties
-					.getReliableIndicationHashtableCapacity();
+			this.iHashtableCapacity = this.iSessionProperties.getReliableIndicationHashtableCapacity();
 
 			// Validate ReliableIndicationHashtableCapacity property
 			if (this.iHashtableCapacity < 0 || this.iHashtableCapacity > 25000) {
-				this.iLogger.trace(Level.FINE, "ReliableIndicationHashtableCapacity of "
-						+ this.iHashtableCapacity + " outside range, using default value");
+				this.iLogger.trace(
+						Level.FINE,
+						"ReliableIndicationHashtableCapacity of " + this.iHashtableCapacity + " outside range, using default value"
+					);
 
-				this.iHashtableCapacity = Integer.valueOf(
-						WBEMConfigurationDefaults.LISTENER_RELIABLE_INDICATION_HASHTABLE_CAPACITY)
-						.intValue();
+				this.iHashtableCapacity =
+					Integer.valueOf(WBEMConfigurationDefaults.LISTENER_RELIABLE_INDICATION_HASHTABLE_CAPACITY).intValue();
 			}
 
 			if (this.iHashtableCapacity == 0) {
 				this.iServerList = new LinkedList<ServerListEntry>();
 				this.iDataManagerThread = new DataManager(this.iServerList);
 			} else {
-				this.iServerTable = new Hashtable<ServerTableEntry, IndicationServer>(
-						this.iHashtableCapacity);
+				this.iServerTable = new Hashtable<ServerTableEntry, IndicationServer>(this.iHashtableCapacity);
 				this.iDataManagerThread = new DataManager(this.iServerTable);
 			}
 
@@ -410,8 +402,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 					this.iIndicationTraceProperties = a.toArray(new String[0]);
 
 					if (this.iLogger.isLoggableTrace(Level.INFO)) {
-						StringBuilder msg = new StringBuilder(
-								"Indication trace enabled: class filter=");
+						StringBuilder msg = new StringBuilder("Indication trace enabled: class filter=");
 
 						if (this.iIndicationTraceClass != null) {
 							msg.append("\"");
@@ -461,7 +452,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 
 	/**
 	 * getMsgID
-	 * 
+	 *
 	 * @return int
 	 */
 	public synchronized int getMsgID() {
@@ -470,9 +461,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		return this.iMessageId;
 	}
 
-	private static HttpHeader processHeader(HttpHeader pHeader, MessageWriter pWriter)
-			throws HttpException {
-
+	private static HttpHeader processHeader(HttpHeader pHeader, MessageWriter pWriter) throws HttpException {
 		HttpHeader header = processHttpExtensions(pHeader);
 		String cimExport = header.getField("CIMExport");
 		String cimOperation = header.getField("CIMOperation");
@@ -481,8 +470,11 @@ public class CIMIndicationHandler extends HttpContentHandler {
 			pWriter.getHeader().addField("CIMError", "unsupported-operation");
 			throw new HttpException(400, "Bad Request");
 		}
-		if (cimExport != null && !"METHODREQUEST".equalsIgnoreCase(cimExport)
-				&& !"EXPORTMETHODCALL".equalsIgnoreCase(cimExport)) {
+		if (
+			cimExport != null &&
+			!"METHODREQUEST".equalsIgnoreCase(cimExport) &&
+			!"EXPORTMETHODCALL".equalsIgnoreCase(cimExport)
+		) {
 			pWriter.getHeader().addField("CIMError", "unsupported-operation");
 			throw new HttpException(400, "Bad Request");
 		}
@@ -497,16 +489,19 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	}
 
 	@Override
-	public void handleContent(MessageReader pReader, MessageWriter pWriter,
-			InetAddress pInetAddress, String pLocalAddress) throws HttpException, IOException {
-
+	public void handleContent(
+		MessageReader pReader,
+		MessageWriter pWriter,
+		InetAddress pInetAddress,
+		String pLocalAddress
+	)
+		throws HttpException, IOException {
 		CIMError error = null;
 
 		// TODO validate CIMHeaders!
 		HttpHeader inputHeader = pReader.getHeader();
 		inputHeader = processHeader(inputHeader, pWriter);
-		LogAndTraceBroker.getBroker().trace(Level.FINER,
-				"Indication Request HTTP Headers= " + inputHeader.toString());
+		LogAndTraceBroker.getBroker().trace(Level.FINER, "Indication Request HTTP Headers= " + inputHeader.toString());
 		String cimMethod = inputHeader.getField("CIMMethod");
 		String cimExport = inputHeader.getField("CIMExport");
 
@@ -522,11 +517,16 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		}
 
 		InputStream inputstream = null;
-		if ((this.iSessionProperties.isCimXmlTracingEnabled() && LogAndTraceBroker.getBroker()
-				.getXmlTraceStream() != null)
-				|| LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) {
-			inputstream = new DebugInputStream(pReader.getInputStream(), LogAndTraceBroker
-					.getBroker().getXmlTraceStream(), "indication request");
+		if (
+			(this.iSessionProperties.isCimXmlTracingEnabled() && LogAndTraceBroker.getBroker().getXmlTraceStream() != null) ||
+			LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)
+		) {
+			inputstream =
+				new DebugInputStream(
+					pReader.getInputStream(),
+					LogAndTraceBroker.getBroker().getXmlTraceStream(),
+					"indication request"
+				);
 		} else {
 			inputstream = pReader.getInputStream();
 		}
@@ -535,24 +535,22 @@ public class CIMIndicationHandler extends HttpContentHandler {
 
 		if (request == null) throw new HttpException(400, "Bad Request");
 
-		if ((cimExport == null && !cimMethod.equalsIgnoreCase("Indication"))
-				|| !request.isCIMExport()) { throw new HttpException(400, "Bad Request"); }
+		if ((cimExport == null && !cimMethod.equalsIgnoreCase("Indication")) || !request.isCIMExport()) {
+			throw new HttpException(400, "Bad Request");
+		}
 
 		error = dispatchIndications(pReader, pInetAddress, pLocalAddress, request);
 
 		buildResponse(xmlHelper, pWriter, request, error);
 	}
 
-	private CIMRequest parseDocument(CIMClientXML_HelperImpl xmlHelper, MessageReader pReader,
-			InputStream inputstream) throws HttpException {
-
+	private CIMRequest parseDocument(CIMClientXML_HelperImpl xmlHelper, MessageReader pReader, InputStream inputstream)
+		throws HttpException {
 		// TODO: integrate SAX parser and DOM parser
 
 		Document doc = null;
 		try {
-
-			doc = xmlHelper.parse(new InputSource(new InputStreamReader(inputstream, pReader
-					.getCharacterEncoding())));
+			doc = xmlHelper.parse(new InputSource(new InputStreamReader(inputstream, pReader.getCharacterEncoding())));
 			Element rootE = doc.getDocumentElement();
 			return (CIMRequest) CIMXMLParserImpl.parseCIM(rootE);
 		} catch (Exception e) {
@@ -565,28 +563,32 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * Returns the corresponding indication server if the server is already
 	 * present in the linked list, otherwise appends the server to the linked
 	 * list and returns the new entry.
-	 * 
+	 *
 	 * @param pInetAddress
 	 *            Address of indication server.
 	 * @param pDestinationUrl
 	 *            Destination URL of indication.
 	 * @return <code>IndicationServer</code> with given address.
 	 */
-	private IndicationServer getIndicationServerFromList(InetAddress pInetAddress,
-			String pDestinationUrl) {
+	private IndicationServer getIndicationServerFromList(InetAddress pInetAddress, String pDestinationUrl) {
 		ServerListEntry entry;
 		Iterator<ServerListEntry> iterator = this.iServerList.iterator();
 		while (iterator.hasNext()) {
 			entry = iterator.next();
-			if (entry.getInetAddress().equals(pInetAddress)
-					&& entry.getDestinationUrl().equalsIgnoreCase(pDestinationUrl)) return entry
-					.getIndicationServer();
+			if (
+				entry.getInetAddress().equals(pInetAddress) && entry.getDestinationUrl().equalsIgnoreCase(pDestinationUrl)
+			) return entry.getIndicationServer();
 		}
 		entry = new ServerListEntry(pInetAddress, pDestinationUrl);
 		this.iServerList.add(entry);
-		this.iLogger.trace(Level.FINE, "Creating reliable indication handler for server IP "
-				+ entry.getInetAddress().toString() + ", destination URL "
-				+ entry.getDestinationUrl() + " in linked list");
+		this.iLogger.trace(
+				Level.FINE,
+				"Creating reliable indication handler for server IP " +
+				entry.getInetAddress().toString() +
+				", destination URL " +
+				entry.getDestinationUrl() +
+				" in linked list"
+			);
 
 		return entry.getIndicationServer();
 	}
@@ -595,15 +597,14 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 * Returns the corresponding indication server if the server is already
 	 * present in the hash table, otherwise adds the server to the hash table
 	 * and returns the new entry.
-	 * 
+	 *
 	 * @param pInetAddress
 	 *            Address of indication server.
 	 * @param pDestinationUrl
 	 *            Destination URL of indication.
 	 * @return <code>IndicationServer</code> with given address.
 	 */
-	private IndicationServer getIndicationServerFromTable(InetAddress pInetAddress,
-			String pDestinationUrl) {
+	private IndicationServer getIndicationServerFromTable(InetAddress pInetAddress, String pDestinationUrl) {
 		ServerTableEntry key;
 		IndicationServer server;
 
@@ -612,9 +613,14 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		if (server == null) {
 			server = new IndicationServer();
 			this.iServerTable.put(key, server);
-			this.iLogger.trace(Level.FINE, "Creating reliable indication handler for server IP "
-					+ key.getInetAddress().toString() + ", destination URL "
-					+ key.getDestinationUrl() + " in hash table");
+			this.iLogger.trace(
+					Level.FINE,
+					"Creating reliable indication handler for server IP " +
+					key.getInetAddress().toString() +
+					", destination URL " +
+					key.getDestinationUrl() +
+					" in hash table"
+				);
 		}
 		return server;
 	}
@@ -622,7 +628,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	/**
 	 * deliverIndication handles reliable indications and returns a boolean
 	 * indicating whether the indication should be delivered or not
-	 * 
+	 *
 	 * @param pIndication
 	 *            Indication.
 	 * @param pId
@@ -633,8 +639,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 	 *         <code>false</code> if <code>ReliableIndicationHandler</code> will
 	 *         deliver indication
 	 */
-	private synchronized boolean deliverIndication(CIMInstance pIndication, String pId,
-			InetAddress pInetAddress) {
+	private synchronized boolean deliverIndication(CIMInstance pIndication, String pId, InetAddress pInetAddress) {
 		IndicationServer server;
 
 		// Each serverIP/destinationURL pair needs its own
@@ -650,33 +655,34 @@ public class CIMIndicationHandler extends HttpContentHandler {
 			// Validate DeliveryRetryAttempts property
 			long attempts = this.iSessionProperties.getListenerDeliveryRetryAttempts();
 			if (attempts <= 0 || attempts > 1000) {
-				this.iLogger.trace(Level.FINE, "DeliveryRetryAttempts of " + attempts
-						+ " outside range, using default value");
+				this.iLogger.trace(Level.FINE, "DeliveryRetryAttempts of " + attempts + " outside range, using default value");
 
-				attempts = Long.valueOf(WBEMConfigurationDefaults.LISTENER_DELIVERY_RETRY_ATTEMPTS)
-						.longValue();
+				attempts = Long.valueOf(WBEMConfigurationDefaults.LISTENER_DELIVERY_RETRY_ATTEMPTS).longValue();
 			}
 
 			// Validate DeliveryRetryInterval property
 			long interval = this.iSessionProperties.getListenerDeliveryRetryInterval();
 			if (interval <= 0 || interval > 86400) {
-				this.iLogger.trace(Level.FINE, "DeliveryRetryInterval of " + interval
-						+ " outside range, using default value");
+				this.iLogger.trace(Level.FINE, "DeliveryRetryInterval of " + interval + " outside range, using default value");
 
-				interval = Long.valueOf(WBEMConfigurationDefaults.LISTENER_DELIVERY_RETRY_INTERVAL)
-						.longValue();
+				interval = Long.valueOf(WBEMConfigurationDefaults.LISTENER_DELIVERY_RETRY_INTERVAL).longValue();
 			}
 
 			// Create new ReliableIndicationHandler for this
 			// CIMIndicationHandler
-			server.initialize(new ReliableIndicationHandler(this.iDispatcher, attempts * interval
-					* 10 * 1000));
+			server.initialize(new ReliableIndicationHandler(this.iDispatcher, attempts * interval * 10 * 1000));
 
-			this.iLogger
-					.trace(Level.FINE, "Reliable indication support enabled for IP "
-							+ pInetAddress.getHostAddress() + " and URL " + pId
-							+ ", DeliveryRetryAttempts=" + attempts + ", DeliveryRetryInterval="
-							+ interval);
+			this.iLogger.trace(
+					Level.FINE,
+					"Reliable indication support enabled for IP " +
+					pInetAddress.getHostAddress() +
+					" and URL " +
+					pId +
+					", DeliveryRetryAttempts=" +
+					attempts +
+					", DeliveryRetryInterval=" +
+					interval
+				);
 		}
 
 		// Let ReliableIndicationHandler deliver it
@@ -684,8 +690,12 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		return false;
 	}
 
-	private CIMError dispatchIndications(MessageReader pReader, InetAddress pInetAddress,
-			String pLocalAddress, CIMRequest request) {
+	private CIMError dispatchIndications(
+		MessageReader pReader,
+		InetAddress pInetAddress,
+		String pLocalAddress,
+		CIMRequest request
+	) {
 		try {
 			Vector<Object> paramValue = request.getParamValue();
 			Iterator<Object> iter = paramValue.iterator();
@@ -715,18 +725,21 @@ public class CIMIndicationHandler extends HttpContentHandler {
 					if (this.iAddSenderIPAddress) {
 						int size = indicationInst.getPropertyCount();
 						CIMProperty<?> props[] = new CIMProperty<?>[size + 1];
-						for (int i = 0; i < size; i++)
-							props[i] = indicationInst.getProperty(i);
-						props[size] = new CIMProperty<String>("SBLIMJCC_SenderIPAddress",
-								CIMDataType.STRING_T, pInetAddress.getHostAddress());
+						for (int i = 0; i < size; i++) props[i] = indicationInst.getProperty(i);
+						props[size] =
+							new CIMProperty<String>("SBLIMJCC_SenderIPAddress", CIMDataType.STRING_T, pInetAddress.getHostAddress());
 						indicationInst = new CIMInstance(indicationInst.getObjectPath(), props);
 					}
 
 					// Do any user-requested indication tracing here
-					if (this.iIndicationTraceProperties != null
-							&& this.iLogger.isLoggableTrace(Level.FINE)
-							&& (this.iIndicationTraceClass == null || indicationInst.getClassName()
-									.toLowerCase().indexOf(this.iIndicationTraceClass) != -1)) {
+					if (
+						this.iIndicationTraceProperties != null &&
+						this.iLogger.isLoggableTrace(Level.FINE) &&
+						(
+							this.iIndicationTraceClass == null ||
+							indicationInst.getClassName().toLowerCase().indexOf(this.iIndicationTraceClass) != -1
+						)
+					) {
 						StringBuilder msg = new StringBuilder("Received indication ");
 						msg.append(indicationInst.getClassName());
 						msg.append(" from IP=");
@@ -737,8 +750,7 @@ public class CIMIndicationHandler extends HttpContentHandler {
 						msg.append(" with properties:");
 						for (int i = 0; i < this.iIndicationTraceProperties.length; i++) {
 							msg.append(" ");
-							CIMProperty<?> prop = indicationInst
-									.getProperty(this.iIndicationTraceProperties[i]);
+							CIMProperty<?> prop = indicationInst.getProperty(this.iIndicationTraceProperties[i]);
 							if (prop == null) {
 								msg.append(this.iIndicationTraceProperties[i]);
 								msg.append(" not a property;");
@@ -755,41 +767,45 @@ public class CIMIndicationHandler extends HttpContentHandler {
 						this.iLogger.trace(Level.FINE, msg.toString());
 					}
 
-					if (this.iReliableIndicationsDisabled
-							|| deliverIndication(indicationInst, id, pInetAddress)) {
-						this.iDispatcher.dispatchEvent(new CIMEvent(indicationInst, id,
-								pInetAddress));
+					if (this.iReliableIndicationsDisabled || deliverIndication(indicationInst, id, pInetAddress)) {
+						this.iDispatcher.dispatchEvent(new CIMEvent(indicationInst, id, pInetAddress));
 					}
 				}
 			}
 			return null;
 		} catch (Exception e) {
-			return new CIMError(new WBEMException(WBEMException.CIM_ERR_FAILED, "CIM_ERR_FAILED",
-					null, e));
+			return new CIMError(new WBEMException(WBEMException.CIM_ERR_FAILED, "CIM_ERR_FAILED", null, e));
 		}
 	}
 
-	private void buildResponse(CIMClientXML_HelperImpl xmlHelper, MessageWriter pWriter,
-			CIMRequest request, CIMError error) throws HttpException, IOException {
+	private void buildResponse(
+		CIMClientXML_HelperImpl xmlHelper,
+		MessageWriter pWriter,
+		CIMRequest request,
+		CIMError error
+	)
+		throws HttpException, IOException {
 		Document responseDoc = null;
 		try {
 			DocumentBuilder docBuilder = xmlHelper.getDocumentBuilder();
 			responseDoc = docBuilder.newDocument();
 			CIMXMLBuilderImpl.createIndication_response(responseDoc, request.getId(), error);
-
 		} catch (Exception e) {
 			// TODO: check this error code, may not be appropriate
 			throw new HttpException(400, "Bad Request");
 		}
-		if (this.iSessionProperties.isCimXmlTracingEnabled()
-				|| this.iLogger.isLoggableCIMXMLTrace(Level.FINEST)) {
+		if (this.iSessionProperties.isCimXmlTracingEnabled() || this.iLogger.isLoggableCIMXMLTrace(Level.FINEST)) {
 			OutputStream pos = new ByteArrayOutputStream();
 			CIMClientXML_HelperImpl.dumpDocument(pos, responseDoc, "indication response");
 			OutputStream debugStream = this.iLogger.getXmlTraceStream();
-			if (this.iSessionProperties.isCimXmlTracingEnabled() && debugStream != null) debugStream
-					.write(pos.toString().getBytes());
+			if (this.iSessionProperties.isCimXmlTracingEnabled() && debugStream != null) debugStream.write(
+				pos.toString().getBytes()
+			);
 			if (this.iLogger.isLoggableCIMXMLTrace(Level.FINEST)) this.iLogger.traceCIMXML(
-					Level.FINEST, pos.toString(), true);
+					Level.FINEST,
+					pos.toString(),
+					true
+				);
 		}
 		CIMClientXML_HelperImpl.serialize(pWriter.getOutputStream(), responseDoc);
 		pWriter.getHeader().addField("CIMExport", "MethodResponse");
@@ -802,21 +818,22 @@ public class CIMIndicationHandler extends HttpContentHandler {
 		String ns = null;
 
 		HttpHeaderParser manOptHeader = null;
-		if (man != null && man.length() > 0) manOptHeader = new HttpHeaderParser(man);
-		else if (opt != null && opt.length() > 0) manOptHeader = new HttpHeaderParser(opt);
+		if (man != null && man.length() > 0) manOptHeader = new HttpHeaderParser(man); else if (
+			opt != null && opt.length() > 0
+		) manOptHeader = new HttpHeaderParser(opt);
 		if (manOptHeader != null) ns = manOptHeader.getValue("ns");
 
 		if (ns != null) {
-
 			Iterator<Entry<HeaderEntry, String>> iter = pOriginalHeader.iterator();
 			String key;
 			while (iter.hasNext()) {
 				Entry<HeaderEntry, String> entry = iter.next();
 				if (entry != null) {
 					key = entry.getKey().toString();
-					if (key.startsWith(ns + "-")) headers.addParsedField(key.substring(3), entry
-							.getValue().toString());
-					else headers.addParsedField(key, entry.getValue().toString());
+					if (key.startsWith(ns + "-")) headers.addParsedField(
+						key.substring(3),
+						entry.getValue().toString()
+					); else headers.addParsedField(key, entry.getValue().toString());
 				}
 			}
 		} else {
@@ -825,5 +842,4 @@ public class CIMIndicationHandler extends HttpContentHandler {
 
 		return headers;
 	}
-
 }

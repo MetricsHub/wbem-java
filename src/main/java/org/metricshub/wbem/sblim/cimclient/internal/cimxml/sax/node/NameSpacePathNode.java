@@ -53,7 +53,6 @@ import org.xml.sax.SAXException;
  * ELEMENT NAMESPACEPATH (HOST, LOCALNAMESPACEPATH)
  */
 public class NameSpacePathNode extends Node {
-
 	// HOST
 	private boolean iHasHost;
 
@@ -87,19 +86,18 @@ public class NameSpacePathNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == HOST) {
-			if (this.iHasHost) throw new SAXException(getNodeName()
-					+ " node can have only one HOST child node!");
+			if (this.iHasHost) throw new SAXException(getNodeName() + " node can have only one HOST child node!");
 		} else if (pNodeNameEnum == LOCALNAMESPACEPATH) {
-			if (this.iHasLocalNameSpacePath) throw new SAXException(getNodeName()
-					+ " node can have only one LOCALNAMESPACEPATH child node!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasLocalNameSpacePath) throw new SAXException(
+				getNodeName() + " node can have only one LOCALNAMESPACEPATH child node!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -115,15 +113,15 @@ public class NameSpacePathNode extends Node {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasHost) throw new SAXException("HOST child node is mandatory for "
-				+ getNodeName() + " node!");
+		if (!this.iHasHost) throw new SAXException("HOST child node is mandatory for " + getNodeName() + " node!");
 		if (!this.iHasLocalNameSpacePath) throw new SAXException(
-				"LOCALNAMESPACEPATH child node is mandatory for " + getNodeName() + " node!");
+			"LOCALNAMESPACEPATH child node is mandatory for " + getNodeName() + " node!"
+		);
 	}
 
 	/**
 	 * getHostStr
-	 * 
+	 *
 	 * @return String which may contain the protocol, host and port
 	 */
 	public String getHostStr() {
@@ -132,11 +130,10 @@ public class NameSpacePathNode extends Node {
 
 	/**
 	 * getLocalNameSpacePath
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getLocalNameSpacePath() {
 		return this.iLocalNameSpacePathStr;
 	}
-
 }

@@ -43,17 +43,16 @@ import org.metricshub.wbem.javax.cim.CIMDataType;
 
 /**
  * Class TypedValue is required for the CIM-XML DOM parser.
- * 
+ *
  */
 public class TypedValue {
-
 	private CIMDataType iType;
 
 	private Object iValue;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pType
 	 * @param pValue
 	 */
@@ -64,7 +63,7 @@ public class TypedValue {
 
 	/**
 	 * getType
-	 * 
+	 *
 	 * @return CIMDataType
 	 */
 	public CIMDataType getType() {
@@ -73,11 +72,10 @@ public class TypedValue {
 
 	/**
 	 * getValue
-	 * 
+	 *
 	 * @return Object
 	 */
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

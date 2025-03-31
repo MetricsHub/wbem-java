@@ -23,6 +23,16 @@
 
 package org.metricshub.wbem.sblim.cimclient.discovery;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -44,20 +54,8 @@ package org.metricshub.wbem.sblim.cimclient.discovery;
  */
 
 import javax.security.auth.Subject;
-
 import org.metricshub.wbem.javax.wbem.client.WBEMClient;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class AdvertisementCatalog implements a catalog for WBEM service
@@ -67,7 +65,7 @@ import java.util.Set;
  * of this by indexing services by the unique service id and therefore surfacing
  * which advertisements belong to the same service. The application might then
  * choose it's preferred communication mechanism.
- * 
+ *
  * No thread synchronization provided, this is the responsibility of
  *            the caller.
  * @since 2.0.2
@@ -78,19 +76,18 @@ public class AdvertisementCatalog {
 	 * Interface EventListener specifies listener that are called when an
 	 * advertisement is added to or removed from the catalog, expires or is
 	 * renewed.
-	 * 
+	 *
 	 */
 	public static interface EventListener {
-
 		/**
 		 * Called when an advertisement is added to the catalog that has not
 		 * been a member of the catalog before.
-		 * 
+		 *
 		 * @param pEvent
 		 *            The type of the event. One of the constants
 		 *            <code>EVENT_ADD, EVENT_REMOVE, EVENT_EXPIRE, EVENT_RENEW</code>
 		 *            in <code>AdvertisementCatalog</code>.
-		 * 
+		 *
 		 * @param pAdvertisment
 		 *            The added advertisement
 		 */
@@ -100,19 +97,18 @@ public class AdvertisementCatalog {
 	/**
 	 * Class AdvertisementDecorator decorates a WBEMAdvertisement with state
 	 * information required by the AdvertisementCatalog class
-	 * 
+	 *
 	 * @pattern Decorator
 	 * <code>iAvertisement!=null</code>
 	 */
 	private static class AdvertisementDecorator implements WBEMServiceAdvertisement {
-
 		private WBEMServiceAdvertisement iAdvertisement;
 
 		private boolean iRefresh = false;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pAdvertisement
 		 *            The advertisement to decorate
 		 */
@@ -123,7 +119,7 @@ public class AdvertisementCatalog {
 
 		/**
 		 * Returns advertisement
-		 * 
+		 *
 		 * @return The value of advertisement.
 		 */
 		protected WBEMServiceAdvertisement getAdvertisementXXX() {
@@ -132,7 +128,7 @@ public class AdvertisementCatalog {
 
 		/**
 		 * Returns refresh
-		 * 
+		 *
 		 * @return The value of refresh.
 		 */
 		protected boolean isRefresh() {
@@ -141,7 +137,7 @@ public class AdvertisementCatalog {
 
 		/**
 		 * Sets advertisement
-		 * 
+		 *
 		 * @param pAdvertisement
 		 *            The new value of advertisement.
 		 */
@@ -151,7 +147,7 @@ public class AdvertisementCatalog {
 
 		/**
 		 * Sets refresh
-		 * 
+		 *
 		 * @param pRefresh
 		 *            The new value of refresh.
 		 */
@@ -161,7 +157,7 @@ public class AdvertisementCatalog {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		@Override
@@ -171,7 +167,7 @@ public class AdvertisementCatalog {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#hashCode()
 		 */
 		@Override
@@ -280,13 +276,13 @@ public class AdvertisementCatalog {
 	 * Ctor.
 	 */
 	public AdvertisementCatalog() {
-	/**/
+		/**/
 	}
 
 	/**
 	 * Adds a listener for "add" events. The listener will be called whenever a
 	 * advertisement is added to the catalog.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -297,7 +293,7 @@ public class AdvertisementCatalog {
 	/**
 	 * Adds new advertisements to the catalog. Existing advertisements sharing
 	 * concrete type, url and directory are replaced.
-	 * 
+	 *
 	 * @param pAdvertisements
 	 *            The new advertisements
 	 */
@@ -310,8 +306,7 @@ public class AdvertisementCatalog {
 				WBEMProtocol protocol = makeProtocol(advertisement);
 				String serviceId = advertisement.getAttribute(WBEMServiceAdvertisement.SERVICE_ID);
 				{
-					List<AdvertisementDecorator> innerList = this.iCatalogByDirectory
-							.get(advertisement.getDirectory());
+					List<AdvertisementDecorator> innerList = this.iCatalogByDirectory.get(advertisement.getDirectory());
 					if (innerList == null) {
 						innerList = new ArrayList<AdvertisementDecorator>();
 						this.iCatalogByDirectory.put(advertisement.getDirectory(), innerList);
@@ -331,8 +326,7 @@ public class AdvertisementCatalog {
 					}
 				}
 				{
-					Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById
-							.get(serviceId);
+					Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById.get(serviceId);
 					if (innerMap == null) {
 						innerMap = new HashMap<WBEMProtocol, WBEMServiceAdvertisement>();
 						this.iCatalogById.put(serviceId, innerMap);
@@ -340,8 +334,7 @@ public class AdvertisementCatalog {
 					innerMap.put(protocol, advertisement);
 				}
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINE,
-				                                    "Incomplete advertisement for" + url, e);
+				LogAndTraceBroker.getBroker().trace(Level.FINE, "Incomplete advertisement for" + url, e);
 			}
 		}
 	}
@@ -349,7 +342,7 @@ public class AdvertisementCatalog {
 	/**
 	 * Returns the advertisement from the catalog corresponding to a given id
 	 * and with the protocol preferred most.
-	 * 
+	 *
 	 * @param pId
 	 *            The service id
 	 * @param pProtocols
@@ -358,13 +351,16 @@ public class AdvertisementCatalog {
 	 *            protocols this service returns null.
 	 * @return The corresponding advertisement
 	 */
-	public WBEMServiceAdvertisement getAdvertisement(final String pId,
-			final WBEMProtocol[] pProtocols) {
+	public WBEMServiceAdvertisement getAdvertisement(final String pId, final WBEMProtocol[] pProtocols) {
 		Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById.get(pId);
-		if (innerMap == null) { return null; }
+		if (innerMap == null) {
+			return null;
+		}
 		for (int i = 0; i < pProtocols.length; ++i) {
 			WBEMServiceAdvertisement advertisement = innerMap.get(pProtocols[i]);
-			if (advertisement != null) { return advertisement; }
+			if (advertisement != null) {
+				return advertisement;
+			}
 		}
 		return null;
 	}
@@ -372,35 +368,39 @@ public class AdvertisementCatalog {
 	/**
 	 * Returns the advertisements from the catalog corresponding to a given
 	 * directory
-	 * 
+	 *
 	 * @param pDirectory
 	 *            The directory service
 	 * @return The corresponding advertisements
 	 */
 	public WBEMServiceAdvertisement[] getAdvertisementsByDirectory(String pDirectory) {
 		List<AdvertisementDecorator> result = this.iCatalogByDirectory.get(pDirectory);
-		return (result != null ? (WBEMServiceAdvertisement[]) result
-				.toArray(new WBEMServiceAdvertisement[result.size()])
-				: new WBEMServiceAdvertisement[] {});
+		return (
+			result != null
+				? (WBEMServiceAdvertisement[]) result.toArray(new WBEMServiceAdvertisement[result.size()])
+				: new WBEMServiceAdvertisement[] {}
+		);
 	}
 
 	/**
 	 * Returns the advertisements from the catalog corresponding to a given id
-	 * 
+	 *
 	 * @param pId
 	 *            The service id
 	 * @return The corresponding advertisements
 	 */
 	public WBEMServiceAdvertisement[] getAdvertisementsById(String pId) {
 		Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById.get(pId);
-		if (innerMap == null) { return null; }
+		if (innerMap == null) {
+			return null;
+		}
 		Collection<WBEMServiceAdvertisement> advertisements = innerMap.values();
 		return advertisements.toArray(new WBEMServiceAdvertisement[advertisements.size()]);
 	}
 
 	/**
 	 * Returns an array of service ids known by this catalog
-	 * 
+	 *
 	 * @return The service ids
 	 */
 	public String[] getKnownIds() {
@@ -412,14 +412,13 @@ public class AdvertisementCatalog {
 	 * Refreshes the advertisements from a given directory. All existing
 	 * advertisements from this directory are deleted first before the new ones
 	 * are added.
-	 * 
+	 *
 	 * @param pDirectory
 	 *            The directory services we got the advertisements from
 	 * @param pAdvertisements
 	 *            The advertisements
 	 */
-	public void refreshAdvertisements(final String[] pDirectory,
-			WBEMServiceAdvertisement[] pAdvertisements) {
+	public void refreshAdvertisements(final String[] pDirectory, WBEMServiceAdvertisement[] pAdvertisements) {
 		for (int i = 0; i < pDirectory.length; ++i) {
 			markRefresh(pDirectory[i]);
 		}
@@ -431,7 +430,7 @@ public class AdvertisementCatalog {
 
 	/**
 	 * Removes a listener
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener to remove
 	 */
@@ -441,14 +440,13 @@ public class AdvertisementCatalog {
 
 	/**
 	 * Removes the expired advertisements from the catalog.
-	 * 
+	 *
 	 * @param pDirectory
 	 *            When <code>not null</code> only the expired advertisements of
 	 *            the given directory are removed. Otherwise all expired
 	 *            advertisements are removed.
 	 */
 	public void removeExpired(String pDirectory) {
-
 		if (pDirectory == null) {
 			Iterator<String> iter = this.iCatalogByDirectory.keySet().iterator();
 			while (iter.hasNext()) {
@@ -464,8 +462,7 @@ public class AdvertisementCatalog {
 			if (decorator.isExpired()) {
 				iter.remove();
 				notifyEventListeners(EVENT_REMOVE, decorator);
-				Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById
-						.get(decorator.getServiceId());
+				Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = this.iCatalogById.get(decorator.getServiceId());
 				innerMap.remove(makeProtocol(decorator));
 			}
 		}
@@ -473,15 +470,15 @@ public class AdvertisementCatalog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append("AdvertisementCatalog:");
-		Iterator<Map.Entry<String, Map<WBEMProtocol, WBEMServiceAdvertisement>>> outer = this.iCatalogById
-				.entrySet().iterator();
+		Iterator<Map.Entry<String, Map<WBEMProtocol, WBEMServiceAdvertisement>>> outer =
+			this.iCatalogById.entrySet().iterator();
 		while (outer.hasNext()) {
 			Map.Entry<String, Map<WBEMProtocol, WBEMServiceAdvertisement>> entry = outer.next();
 			if (entry.getValue() == null) {
@@ -491,8 +488,7 @@ public class AdvertisementCatalog {
 			result.append(entry.getKey());
 			result.append("\"");
 			Map<WBEMProtocol, WBEMServiceAdvertisement> innerMap = entry.getValue();
-			Iterator<Map.Entry<WBEMProtocol, WBEMServiceAdvertisement>> inner = innerMap.entrySet()
-			                                                                            .iterator();
+			Iterator<Map.Entry<WBEMProtocol, WBEMServiceAdvertisement>> inner = innerMap.entrySet().iterator();
 			while (inner.hasNext()) {
 				Map.Entry<WBEMProtocol, WBEMServiceAdvertisement> innerEntry = inner.next();
 				result.append("[");
@@ -506,7 +502,9 @@ public class AdvertisementCatalog {
 
 	private void expire(String pDirectory) {
 		List<AdvertisementDecorator> advertisementList = this.iCatalogByDirectory.get(pDirectory);
-		if (advertisementList == null) { return; }
+		if (advertisementList == null) {
+			return;
+		}
 		Iterator<AdvertisementDecorator> iter = advertisementList.iterator();
 		while (iter.hasNext()) {
 			AdvertisementDecorator advertisement = iter.next();
@@ -518,12 +516,16 @@ public class AdvertisementCatalog {
 		}
 	}
 
-	private AdvertisementDecorator findAdvertisement(List<AdvertisementDecorator> pList,
-			WBEMServiceAdvertisement pAdvertisement) {
+	private AdvertisementDecorator findAdvertisement(
+		List<AdvertisementDecorator> pList,
+		WBEMServiceAdvertisement pAdvertisement
+	) {
 		Iterator<AdvertisementDecorator> iter = pList.iterator();
 		while (iter.hasNext()) {
 			AdvertisementDecorator entry = iter.next();
-			if (entry.getServiceUrl().equals(pAdvertisement.getServiceUrl())) { return entry; }
+			if (entry.getServiceUrl().equals(pAdvertisement.getServiceUrl())) {
+				return entry;
+			}
 		}
 		return null;
 	}
@@ -531,8 +533,7 @@ public class AdvertisementCatalog {
 	private WBEMProtocol makeProtocol(WBEMServiceAdvertisement advertisement) {
 		String presentation = advertisement.getAttribute(WBEMServiceAdvertisement.COMM_MECHANISM);
 		if ("OTHER".equalsIgnoreCase(presentation)) {
-			presentation = advertisement
-					.getAttribute(WBEMServiceAdvertisement.OTHER_COMM_MECHN_DESC);
+			presentation = advertisement.getAttribute(WBEMServiceAdvertisement.OTHER_COMM_MECHN_DESC);
 		}
 		String transport = advertisement.getServiceUrl().split(":", 2)[0];
 		WBEMProtocol protocol = new WBEMProtocol(transport, presentation);
@@ -541,7 +542,9 @@ public class AdvertisementCatalog {
 
 	private void markRefresh(String pDirectory) {
 		List<AdvertisementDecorator> advertisementList = this.iCatalogByDirectory.get(pDirectory);
-		if (advertisementList == null) { return; }
+		if (advertisementList == null) {
+			return;
+		}
 		Iterator<AdvertisementDecorator> iter = advertisementList.iterator();
 		while (iter.hasNext()) {
 			AdvertisementDecorator advertisement = iter.next();
@@ -555,5 +558,4 @@ public class AdvertisementCatalog {
 			iter.next().advertisementEvent(pEvent, pAdvertisement);
 		}
 	}
-
 }

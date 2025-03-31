@@ -47,13 +47,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem.operations;
 
 /**
  * CIMCreateNameSpaceOp
- * 
+ *
  */
 public class CIMCreateNameSpaceOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNamespace
 	 */
 	public CIMCreateNameSpaceOp(String pNamespace) {

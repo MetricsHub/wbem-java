@@ -43,19 +43,19 @@ package org.metricshub.wbem.sblim.slp.internal;
 /**
  * <pre>
  * This class provides functions for comparison of SLP message strings.
- * 
+ *
  * From RFC 2608:
- * 
+ *
  * String comparison for order and equality in SLP MUST be case
  * insensitive inside the 0x00-0x7F subrange of UTF-8 (which corresponds
  * to ASCII character encoding).  Case insensitivity SHOULD be supported
  * throughout the entire UTF-8 encoded Unicode [6] character set.
- * 
+ *
  * The case insensitivity rule applies to all string matching in SLPv2,
  * including Scope strings, SLP SPI strings, service types, attribute
  * tags and values in query handling, language tags, previous responder
  * lists.  Comparisons of URL strings, however, is case sensitive.
- * 
+ *
  * White space (SPACE, CR, LF, TAB) internal to a string value is folded
  * to a single SPACE character for the sake of string comparisons.
  * White space preceding or following a string value is ignored for the
@@ -68,7 +68,7 @@ public class SLPString {
 
 	/**
 	 * equals
-	 * 
+	 *
 	 * @param pStr0
 	 * @param pStr1
 	 * @return boolean
@@ -81,7 +81,7 @@ public class SLPString {
 
 	/**
 	 * compare
-	 * 
+	 *
 	 * @param pStr0
 	 * @param pStr1
 	 * @return int
@@ -92,7 +92,7 @@ public class SLPString {
 
 	/**
 	 * public for testing only.
-	 * 
+	 *
 	 * @param pStr
 	 * @return String
 	 */
@@ -115,5 +115,4 @@ public class SLPString {
 		}
 		return resBuf.toString();
 	}
-
 }

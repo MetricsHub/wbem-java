@@ -59,19 +59,17 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.slp.SLPConfigProperties;
 
 /**
  * SLPConfig
- * 
+ *
  */
 public final class SLPConfig {
-
 	private static InetAddress cBroadcastAddress;
 
 	private static SLPConfig cInstance = null;
@@ -113,7 +111,7 @@ public final class SLPConfig {
 
 	/**
 	 * getBroadcastAddress
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getBroadcastAddress() {
@@ -122,7 +120,7 @@ public final class SLPConfig {
 
 	/**
 	 * getGlobalCfg
-	 * 
+	 *
 	 * @return SLPConfig
 	 */
 	public static synchronized SLPConfig getGlobalCfg() {
@@ -134,7 +132,7 @@ public final class SLPConfig {
 
 	/**
 	 * getLoopbackV4
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getLoopbackV4() {
@@ -143,7 +141,7 @@ public final class SLPConfig {
 
 	/**
 	 * getLoopbackV6
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getLoopbackV6() {
@@ -152,7 +150,7 @@ public final class SLPConfig {
 
 	/**
 	 * getMulticastAddress
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getMulticastAddress() {
@@ -161,7 +159,7 @@ public final class SLPConfig {
 
 	/**
 	 * getSRVLOC_MulticastAddress
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getSRVLOC_MulticastAddress() {
@@ -170,7 +168,7 @@ public final class SLPConfig {
 
 	/**
 	 * getSRVLOC_DA_MulticastAddress
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public static InetAddress getSRVLOC_DA_MulticastAddress() {
@@ -183,7 +181,6 @@ public final class SLPConfig {
 	}
 
 	private SLPConfig() {
-
 		try {
 			// try to load config class from CIM client. This will cause load of
 			// the CIM client's config file.
@@ -198,12 +195,9 @@ public final class SLPConfig {
 			if (inputstream != null) {
 				slpProperties.load(inputstream);
 			}
-			for (Iterator<Entry<Object, Object>> iterator = slpProperties.entrySet().iterator(); iterator
-					.hasNext();) {
+			for (Iterator<Entry<Object, Object>> iterator = slpProperties.entrySet().iterator(); iterator.hasNext();) {
 				Entry<Object, Object> entry = iterator.next();
-				System
-						.setProperty(String.valueOf(entry.getKey()), String.valueOf(entry
-								.getValue()));
+				System.setProperty(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
 			}
 		} catch (IOException e) {
 			System.out.println("Error while parsing property file");
@@ -213,58 +207,62 @@ public final class SLPConfig {
 
 	/**
 	 * getActiveDiscoveryGranularity
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getActiveDiscoveryGranularity() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_DA_ACTIVE_DISCOVERY_GRANULARITY,
-				SLPDefaults.ACTIVE_DISCOVERY_GRANULARITY, SLPLimits.MIN_DISCOVERY_GRANULARITY,
-				SLPLimits.MAX_DISCOVERY_GRANULARITY);
+		return getIntProperty(
+			SLPConfigProperties.NET_SLP_DA_ACTIVE_DISCOVERY_GRANULARITY,
+			SLPDefaults.ACTIVE_DISCOVERY_GRANULARITY,
+			SLPLimits.MIN_DISCOVERY_GRANULARITY,
+			SLPLimits.MAX_DISCOVERY_GRANULARITY
+		);
 	}
 
 	/**
 	 * getActiveDiscoveryInterval
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getActiveDiscoveryInterval() {
-		int interval = getIntProperty(SLPConfigProperties.NET_SLP_DA_ACTIVE_DISCOVERY_INTERVAL,
-				SLPDefaults.ACTIVE_DISCOVERY_INTERVAL, SLPLimits.MIN_DISCOVERY_INTERVAL,
-				SLPLimits.MAX_DISCOVERY_INTERVAL); // 3mins
-		if (interval > 0 && interval < 300) { return 300;
-		// prevent network flooding
+		int interval = getIntProperty(
+			SLPConfigProperties.NET_SLP_DA_ACTIVE_DISCOVERY_INTERVAL,
+			SLPDefaults.ACTIVE_DISCOVERY_INTERVAL,
+			SLPLimits.MIN_DISCOVERY_INTERVAL,
+			SLPLimits.MAX_DISCOVERY_INTERVAL
+		); // 3mins
+		if (interval > 0 && interval < 300) {
+			return 300;
+			// prevent network flooding
 		}
 		return interval;
 	}
 
 	/**
 	 * getDADiscoveryTimeouts
-	 * 
+	 *
 	 * @return int[]
 	 */
 	public int[] getDADiscoveryTimeouts() {
-		return parseTimeouts(SLPConfigProperties.NET_SLP_DA_DISCOVERY_TIMEOUTS,
-				SLPDefaults.DA_DISCOVERY_TIMEOUTS);
+		return parseTimeouts(SLPConfigProperties.NET_SLP_DA_DISCOVERY_TIMEOUTS, SLPDefaults.DA_DISCOVERY_TIMEOUTS);
 	}
 
 	/**
 	 * getDatagramTimeouts
-	 * 
+	 *
 	 * @return int[]
 	 */
 	public int[] getDatagramTimeouts() {
-		return parseTimeouts(SLPConfigProperties.NET_SLP_DATAGRAM_TIMEOUTS,
-				SLPDefaults.DATAGRAM_TIMEOUTS);
+		return parseTimeouts(SLPConfigProperties.NET_SLP_DATAGRAM_TIMEOUTS, SLPDefaults.DATAGRAM_TIMEOUTS);
 	}
 
 	/**
 	 * getInterfaces
-	 * 
+	 *
 	 * @return List
 	 */
 	@SuppressWarnings("null")
 	public List<InetAddress> getInterfaces() {
-
 		String property = System.getProperty(SLPConfigProperties.NET_SLP_INTERFACES);
 
 		List<String> addresses = parseList(property);
@@ -299,17 +297,16 @@ public final class SLPConfig {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getPort() {
-		return Integer.getInteger(SLPConfigProperties.NET_SLP_PORT, SLPDefaults.SLP_PORT)
-				.intValue();
+		return Integer.getInteger(SLPConfigProperties.NET_SLP_PORT, SLPDefaults.SLP_PORT).intValue();
 	}
 
 	/**
 	 * setPort
-	 * 
+	 *
 	 * @param pPort
 	 */
 	public void setPort(int pPort) {
@@ -318,7 +315,7 @@ public final class SLPConfig {
 
 	/**
 	 * getTraceLevel
-	 * 
+	 *
 	 * @return String
 	 */
 	public Level getTraceLevel() {
@@ -333,7 +330,7 @@ public final class SLPConfig {
 
 	/**
 	 * setTraceLevel
-	 * 
+	 *
 	 * @param pLevel
 	 */
 	public void setTraceLevel(String pLevel) {
@@ -342,7 +339,7 @@ public final class SLPConfig {
 
 	/**
 	 * setUseIPv6
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void setUseIPv6(boolean pValue) {
@@ -351,7 +348,7 @@ public final class SLPConfig {
 
 	/**
 	 * useIPv6
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean useIPv6() {
@@ -360,7 +357,7 @@ public final class SLPConfig {
 
 	/**
 	 * setUseIPv4
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void setUseIPv4(boolean pValue) {
@@ -369,7 +366,7 @@ public final class SLPConfig {
 
 	/**
 	 * useIPv4
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean useIPv4() {
@@ -378,7 +375,7 @@ public final class SLPConfig {
 
 	/**
 	 * getLocalHost
-	 * 
+	 *
 	 * @return InetAddress
 	 */
 	public InetAddress getLocalHost() {
@@ -388,61 +385,63 @@ public final class SLPConfig {
 
 	/**
 	 * getMaximumResults
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getMaximumResults() {
-		int value = Integer.getInteger(SLPConfigProperties.NET_SLP_MAX_RESULTS,
-				SLPDefaults.MAXIMUM_RESULTS).intValue();
-		return (value >= 1 && value < SLPDefaults.MAXIMUM_RESULTS) ? value
-				: SLPDefaults.MAXIMUM_RESULTS;
+		int value = Integer.getInteger(SLPConfigProperties.NET_SLP_MAX_RESULTS, SLPDefaults.MAXIMUM_RESULTS).intValue();
+		return (value >= 1 && value < SLPDefaults.MAXIMUM_RESULTS) ? value : SLPDefaults.MAXIMUM_RESULTS;
 	}
 
 	/**
 	 * getMTU
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getMTU() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_MTU, SLPDefaults.MTU, SLPLimits.MIN_MTU,
-				SLPLimits.MAX_MTU);
+		return getIntProperty(SLPConfigProperties.NET_SLP_MTU, SLPDefaults.MTU, SLPLimits.MIN_MTU, SLPLimits.MAX_MTU);
 	}
 
 	/**
 	 * getMulticastMaximumWait
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getMulticastMaximumWait() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_MULTICAST_MAXIMUM_WAIT,
-				SLPDefaults.MULTICAST_MAXIMUM_WAIT, SLPLimits.MIN_MULTICAST_MAXIMUM_WAIT,
-				SLPLimits.MAX_MULTICAST_MAXIMUM_WAIT);
+		return getIntProperty(
+			SLPConfigProperties.NET_SLP_MULTICAST_MAXIMUM_WAIT,
+			SLPDefaults.MULTICAST_MAXIMUM_WAIT,
+			SLPLimits.MIN_MULTICAST_MAXIMUM_WAIT,
+			SLPLimits.MAX_MULTICAST_MAXIMUM_WAIT
+		);
 	}
 
 	/**
 	 * getMulticastRadius
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getMulticastRadius() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_MULTICAST_TTL,
-				SLPDefaults.MULTICAST_RADIUS, SLPLimits.MIN_MULTICAST_RADIUS,
-				SLPLimits.MAX_MULTICAST_RADIUS);
+		return getIntProperty(
+			SLPConfigProperties.NET_SLP_MULTICAST_TTL,
+			SLPDefaults.MULTICAST_RADIUS,
+			SLPLimits.MIN_MULTICAST_RADIUS,
+			SLPLimits.MAX_MULTICAST_RADIUS
+		);
 	}
 
 	/**
 	 * getMulticastTimeouts
-	 * 
+	 *
 	 * @return int[]
 	 */
 	public int[] getMulticastTimeouts() {
-		return parseTimeouts(SLPConfigProperties.NET_SLP_MULTICAST_TIMEOUTS,
-				SLPDefaults.MULTICAST_TIMEOUTS);
+		return parseTimeouts(SLPConfigProperties.NET_SLP_MULTICAST_TIMEOUTS, SLPDefaults.MULTICAST_TIMEOUTS);
 	}
 
 	/**
 	 * getPreconfiguredDAs
-	 * 
+	 *
 	 * @return List &lt;InetAddress&gt;
 	 */
 	public List<InetAddress> getPreconfiguredDAs() {
@@ -462,7 +461,7 @@ public final class SLPConfig {
 
 	/**
 	 * getConfiguredScopes
-	 * 
+	 *
 	 * @return List&lt;String&gt;
 	 */
 	public List<String> getConfiguredScopes() {
@@ -474,7 +473,7 @@ public final class SLPConfig {
 
 	/**
 	 * getSAOnlyScopes
-	 * 
+	 *
 	 * @return List&lt;String&gt;
 	 */
 	public List<String> getSAOnlyScopes() {
@@ -483,28 +482,35 @@ public final class SLPConfig {
 
 	/**
 	 * getServerSocketQueueLength
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getServerSocketQueueLength() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_SERVER_SOCKET_QUEUE_LENGTH,
-				SLPDefaults.SERVER_SOCKET_QUEUE_LENGTH, SLPLimits.MIN_SERVER_SOCKET_QUEUE_LENGTH,
-				SLPLimits.MAX_SERVER_SOCKET_QUEUE_LENGTH);
+		return getIntProperty(
+			SLPConfigProperties.NET_SLP_SERVER_SOCKET_QUEUE_LENGTH,
+			SLPDefaults.SERVER_SOCKET_QUEUE_LENGTH,
+			SLPLimits.MIN_SERVER_SOCKET_QUEUE_LENGTH,
+			SLPLimits.MAX_SERVER_SOCKET_QUEUE_LENGTH
+		);
 	}
 
 	/**
 	 * getTCPTimeout
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getTCPTimeout() {
-		return getIntProperty(SLPConfigProperties.NET_SLP_TCPTIMEOUT, SLPDefaults.TCP_TIMEOUT,
-				SLPLimits.MIN_TCP_TIMEOUT, SLPLimits.MAX_TCP_TIMEOUT);
+		return getIntProperty(
+			SLPConfigProperties.NET_SLP_TCPTIMEOUT,
+			SLPDefaults.TCP_TIMEOUT,
+			SLPLimits.MIN_TCP_TIMEOUT,
+			SLPLimits.MAX_TCP_TIMEOUT
+		);
 	}
 
 	/**
 	 * getTraceMsg
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean getTraceMsg() {
@@ -513,7 +519,7 @@ public final class SLPConfig {
 
 	/**
 	 * isBroadcastOnly
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isBroadcastOnly() {
@@ -522,7 +528,7 @@ public final class SLPConfig {
 
 	/**
 	 * isDA
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isDA() {
@@ -531,7 +537,7 @@ public final class SLPConfig {
 
 	/**
 	 * isSA
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isSA() {
@@ -544,7 +550,6 @@ public final class SLPConfig {
 	}
 
 	private InputStream getConfigURLStream() {
-
 		String configURL = System.getProperty(SLPConfigProperties.NET_SLP_CONFIG_URL);
 
 		if (configURL != null) {
@@ -576,7 +581,7 @@ public final class SLPConfig {
 
 	/**
 	 * Parses comma separated list.
-	 * 
+	 *
 	 * @param pList
 	 * @return List of Strings
 	 */

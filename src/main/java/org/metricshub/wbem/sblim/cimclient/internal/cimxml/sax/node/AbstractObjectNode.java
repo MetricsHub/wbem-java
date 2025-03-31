@@ -47,16 +47,14 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
  * classes.
  */
 public abstract class AbstractObjectNode extends Node implements ValueIf {
-
 	protected CIMObjectPath iLocalPath;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractObjectNode(String pNameEnum) {
 		super(pNameEnum);
 	}
-
 }

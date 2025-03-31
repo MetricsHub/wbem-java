@@ -50,10 +50,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMInvokeMethodOp
- * 
+ *
  */
 public class CIMInvokeMethodOp extends CIMOperation {
-
 	protected String iMethodName;
 
 	protected CIMArgument<?>[] iInParams;
@@ -62,14 +61,18 @@ public class CIMInvokeMethodOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pMethodName
 	 * @param pInParams
 	 * @param pOutParams
 	 */
-	public CIMInvokeMethodOp(CIMObjectPath pObjectName, String pMethodName,
-			CIMArgument<?>[] pInParams, CIMArgument<?>[] pOutParams) {
+	public CIMInvokeMethodOp(
+		CIMObjectPath pObjectName,
+		String pMethodName,
+		CIMArgument<?>[] pInParams,
+		CIMArgument<?>[] pOutParams
+	) {
 		this.iMethodCall = "InvokeMethod";
 		this.iObjectName = pObjectName;
 		this.iMethodName = pMethodName;
@@ -79,7 +82,7 @@ public class CIMInvokeMethodOp extends CIMOperation {
 
 	/**
 	 * Returns inParameters
-	 * 
+	 *
 	 * @return The value of inParameters.
 	 */
 	public CIMArgument<?>[] getInParams() {
@@ -88,7 +91,7 @@ public class CIMInvokeMethodOp extends CIMOperation {
 
 	/**
 	 * Returns methodName
-	 * 
+	 *
 	 * @return The value of methodName.
 	 */
 	public String getMethodName() {
@@ -97,11 +100,10 @@ public class CIMInvokeMethodOp extends CIMOperation {
 
 	/**
 	 * Returns outParameters
-	 * 
+	 *
 	 * @return The value of outParameters.
 	 */
 	public CIMArgument<?>[] getOutParams() {
 		return this.iOutParams;
 	}
-
 }

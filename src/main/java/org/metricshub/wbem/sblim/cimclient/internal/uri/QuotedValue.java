@@ -44,12 +44,10 @@ package org.metricshub.wbem.sblim.cimclient.internal.uri;
  * printed in a quoted form.
  */
 public interface QuotedValue {
-
 	/**
 	 * Prints the String representation in a quoted form.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String toQuotedString();
-
 }

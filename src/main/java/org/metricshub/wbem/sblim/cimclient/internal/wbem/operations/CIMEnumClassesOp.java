@@ -48,10 +48,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMEnumClassesOp
- * 
+ *
  */
 public class CIMEnumClassesOp extends CIMOperation {
-
 	protected boolean iDeep;
 
 	protected boolean iLocalOnly;
@@ -62,15 +61,20 @@ public class CIMEnumClassesOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pDeep
 	 * @param pLocalOnly
 	 * @param pIncludeQualifiers
 	 * @param pIncludeClassOrigin
 	 */
-	public CIMEnumClassesOp(CIMObjectPath pObjectName, boolean pDeep, boolean pLocalOnly,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin) {
+	public CIMEnumClassesOp(
+		CIMObjectPath pObjectName,
+		boolean pDeep,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin
+	) {
 		this.iMethodCall = "EnumerateClasses";
 		this.iObjectName = pObjectName;
 		this.iDeep = pDeep;
@@ -81,7 +85,7 @@ public class CIMEnumClassesOp extends CIMOperation {
 
 	/**
 	 * Returns if deep is set
-	 * 
+	 *
 	 * @return The value of deep
 	 */
 	public boolean isDeep() {
@@ -90,7 +94,7 @@ public class CIMEnumClassesOp extends CIMOperation {
 
 	/**
 	 * Returns if includeClassOrigin is set
-	 * 
+	 *
 	 * @return The value of includeClassOrigin
 	 */
 	public boolean isIncludeClassOrigin() {
@@ -99,7 +103,7 @@ public class CIMEnumClassesOp extends CIMOperation {
 
 	/**
 	 * Returns if includeQualifiers is set
-	 * 
+	 *
 	 * @return The value of includeQualifiers
 	 */
 	public boolean isIncludeQualifiers() {
@@ -108,11 +112,10 @@ public class CIMEnumClassesOp extends CIMOperation {
 
 	/**
 	 * Returns if localOnly is set
-	 * 
+	 *
 	 * @return The value of localOnly
 	 */
 	public boolean isLocalOnly() {
 		return this.iLocalOnly;
 	}
-
 }

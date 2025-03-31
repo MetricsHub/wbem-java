@@ -3,7 +3,6 @@ package org.metricshub.wbem;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.metricshub.wbem.client.WqlQuery;
@@ -58,8 +57,11 @@ class WqlQueryTest {
 			final WqlQuery wqlQuery = WqlQuery.parseQuery(" select    Antecedent,     Dependent    from IBMTSDS_SHWIDToSPC");
 
 			Assertions.assertEquals("IBMTSDS_SHWIDToSPC", wqlQuery.getClassName());
-			Assertions.assertArrayEquals(new String[] {"Antecedent", "Dependent"}, wqlQuery.getPropertiesArray());
-			Assertions.assertEquals(Arrays.asList("Antecedent", "Dependent").stream().collect(Collectors.toCollection(LinkedHashSet::new)), wqlQuery.getProperties());
+			Assertions.assertArrayEquals(new String[] { "Antecedent", "Dependent" }, wqlQuery.getPropertiesArray());
+			Assertions.assertEquals(
+				Arrays.asList("Antecedent", "Dependent").stream().collect(Collectors.toCollection(LinkedHashSet::new)),
+				wqlQuery.getProperties()
+			);
 			Assertions.assertEquals(Arrays.asList("Antecedent", "Dependent"), wqlQuery.getOriginalProperties());
 			Assertions.assertFalse(wqlQuery.hasDuplicateProperties());
 		}
@@ -67,8 +69,11 @@ class WqlQueryTest {
 			final WqlQuery wqlQuery = WqlQuery.parseQuery("   SELECT __Path, Name, __PATH   from   EMC_StorageSystem   ");
 
 			Assertions.assertEquals("EMC_StorageSystem", wqlQuery.getClassName());
-			Assertions.assertArrayEquals(new String[] {"Name"}, wqlQuery.getPropertiesArray());
-			Assertions.assertEquals(Arrays.asList("__Path", "Name").stream().collect(Collectors.toCollection(LinkedHashSet::new)), wqlQuery.getProperties());
+			Assertions.assertArrayEquals(new String[] { "Name" }, wqlQuery.getPropertiesArray());
+			Assertions.assertEquals(
+				Arrays.asList("__Path", "Name").stream().collect(Collectors.toCollection(LinkedHashSet::new)),
+				wqlQuery.getProperties()
+			);
 			Assertions.assertEquals(Arrays.asList("__Path", "Name", "__PATH"), wqlQuery.getOriginalProperties());
 			Assertions.assertTrue(wqlQuery.hasDuplicateProperties());
 		}

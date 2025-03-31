@@ -48,11 +48,10 @@ public abstract class AbstractArrayValueNode extends AbstractValueNode implement
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractArrayValueNode(String pNameEnum) {
 		super(pNameEnum);
 	}
-
 }

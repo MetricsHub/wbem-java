@@ -55,18 +55,16 @@ package org.metricshub.wbem.sblim.cimclient.internal.cim;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
-import org.metricshub.wbem.javax.cim.CIMQualifier;
 import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.javax.cim.CIMQualifiedElementInterface;
+import org.metricshub.wbem.javax.cim.CIMQualifier;
 
 /**
  * Class CIMQualifiedElementInterfaceImpl is responsible for implementing the
  * functionality of javax.cim.CIMQualifiedElementInterface
  */
 public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInterface, Serializable {
-
 	/**
 	 * serialVersionUID
 	 */
@@ -78,17 +76,25 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 
 	private boolean iEmbeddedObject;
 
-	private static final CIMQualifier<Boolean> KEY = new CIMQualifier<Boolean>("Key",
-			CIMDataType.BOOLEAN_T, Boolean.TRUE, CIMFlavor.DISABLEOVERRIDE);
+	private static final CIMQualifier<Boolean> KEY = new CIMQualifier<Boolean>(
+		"Key",
+		CIMDataType.BOOLEAN_T,
+		Boolean.TRUE,
+		CIMFlavor.DISABLEOVERRIDE
+	);
 
 	private static final CIMQualifier<Boolean> ASSOCIATION = new CIMQualifier<Boolean>(
-			"Association", CIMDataType.BOOLEAN_T, Boolean.TRUE, CIMFlavor.DISABLEOVERRIDE);
+		"Association",
+		CIMDataType.BOOLEAN_T,
+		Boolean.TRUE,
+		CIMFlavor.DISABLEOVERRIDE
+	);
 
 	private static final CIMQualifier<?>[] EMPTY_QA = new CIMQualifier[0];
 
 	/**
 	 * Ctor. This constructor doesn't modify the passed qualifier list.
-	 * 
+	 *
 	 * @param pQualifiers
 	 */
 	public CIMQualifiedElementInterfaceImpl(CIMQualifier<?>[] pQualifiers) {
@@ -98,7 +104,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 	/**
 	 * Ctor. This constructor modifies the qualifier list according to the
 	 * pIsKeyed flag.
-	 * 
+	 *
 	 * @param pQualifiers
 	 * @param pIsKeyed
 	 */
@@ -110,13 +116,12 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 	 * Ctor. This constructor is able to not remove the EmbeddedObject
 	 * qualifier. It is useful for the XML parser to parse EmbeddedObject
 	 * qualified elements without values.
-	 * 
+	 *
 	 * @param pQualifiers
 	 * @param pIsKeyed
 	 * @param pKeepEmbObj
 	 */
-	public CIMQualifiedElementInterfaceImpl(CIMQualifier<?>[] pQualifiers, boolean pIsKeyed,
-			boolean pKeepEmbObj) {
+	public CIMQualifiedElementInterfaceImpl(CIMQualifier<?>[] pQualifiers, boolean pIsKeyed, boolean pKeepEmbObj) {
 		this(pQualifiers, pIsKeyed, pKeepEmbObj, false);
 	}
 
@@ -125,14 +130,18 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 	 * qualifier. It is useful for the XML parser to parse EmbeddedObject
 	 * qualified elements without values. It also adds or removes the
 	 * Association qualifier depending on the value of pIsAssociation.
-	 * 
+	 *
 	 * @param pQualifiers
 	 * @param pIsKeyed
 	 * @param pKeepEmbObj
 	 * @param pIsAssociation
 	 */
-	public CIMQualifiedElementInterfaceImpl(CIMQualifier<?>[] pQualifiers, boolean pIsKeyed,
-			boolean pKeepEmbObj, boolean pIsAssociation) {
+	public CIMQualifiedElementInterfaceImpl(
+		CIMQualifier<?>[] pQualifiers,
+		boolean pIsKeyed,
+		boolean pKeepEmbObj,
+		boolean pIsAssociation
+	) {
 		if (pKeepEmbObj) {
 			this.iQualis = (CIMQualifier[]) CIMElementSorter.sort(pQualifiers);
 			this.iEmbeddedObject = CIMElementSorter.findIdx(this.iQualis, "EmbeddedObject") >= 0;
@@ -164,7 +173,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 	/**
 	 * Sets the Qualifiers. If there is an EmbeddedObject qualifier,
 	 * corresponding flag is set.
-	 * 
+	 *
 	 * @param pQualiA
 	 */
 	private void setQualis(CIMQualifier<?>[] pQualiA) {
@@ -182,7 +191,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 	 * if pValue is false and boolean qualifier exists it is removed.<br>
 	 * if pValue is true and boolean qualifier exists, it's value is changed to
 	 * true, if boolean qualifier doesn't exist it is added.
-	 * 
+	 *
 	 * @param pQuali
 	 * @param pValue
 	 */
@@ -210,22 +219,18 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 		int origLength = this.iQualis == null ? 0 : this.iQualis.length;
 		CIMQualifier<?>[] qualis = new CIMQualifier[origLength + 1];
 		int srcIdx = 0, dstIdx = 0;
-		while (srcIdx < idx)
-			qualis[dstIdx++] = this.iQualis[srcIdx++];
+		while (srcIdx < idx) qualis[dstIdx++] = this.iQualis[srcIdx++];
 		qualis[dstIdx++] = pQuali;
-		while (srcIdx < origLength)
-			qualis[dstIdx++] = this.iQualis[srcIdx++];
+		while (srcIdx < origLength) qualis[dstIdx++] = this.iQualis[srcIdx++];
 		this.iQualis = qualis;
 	}
 
 	private void removeQuali(int idx) {
 		CIMQualifier<?>[] qualis = new CIMQualifier[this.iQualis.length - 1];
 		int srcIdx = 0, dstIdx = 0;
-		while (srcIdx < idx)
-			qualis[dstIdx++] = this.iQualis[srcIdx++];
+		while (srcIdx < idx) qualis[dstIdx++] = this.iQualis[srcIdx++];
 		++srcIdx;
-		while (srcIdx < this.iQualis.length)
-			qualis[dstIdx++] = this.iQualis[srcIdx++];
+		while (srcIdx < this.iQualis.length) qualis[dstIdx++] = this.iQualis[srcIdx++];
 		this.iQualis = qualis;
 	}
 
@@ -236,7 +241,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 
 	/**
 	 * Returns true if the "key" Qualifier with true value presents.
-	 * 
+	 *
 	 * @return true/false
 	 */
 	public boolean isKeyed() {
@@ -245,7 +250,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 
 	/**
 	 * Returns true if the "EmbeddedObject" qualifier with true value presents.
-	 * 
+	 *
 	 * @return true/false
 	 */
 	public boolean isEmbeddedObject() {
@@ -291,7 +296,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 
 	/**
 	 * getQualifiers - helps filtering based on the propagated flag.
-	 * 
+	 *
 	 * @param pLocalOnly
 	 * @return CIMQualifier[]
 	 */
@@ -300,8 +305,7 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 		if (!pLocalOnly) return this.iQualis;
 		if (this.iLocalOnlyQualis == null) {
 			ArrayList<CIMQualifier<?>> qualiL = new ArrayList<CIMQualifier<?>>(this.iQualis.length);
-			for (int i = 0; i < this.iQualis.length; i++)
-				if (!this.iQualis[i].isPropagated()) qualiL.add(this.iQualis[i]);
+			for (int i = 0; i < this.iQualis.length; i++) if (!this.iQualis[i].isPropagated()) qualiL.add(this.iQualis[i]);
 			this.iLocalOnlyQualis = qualiL.toArray(new CIMQualifier[qualiL.size()]);
 		}
 		return this.iLocalOnlyQualis;
@@ -323,5 +327,4 @@ public class CIMQualifiedElementInterfaceImpl implements CIMQualifiedElementInte
 		Object value = getQualifierValue(pName);
 		return value == null ? pValue == null : value.equals(pValue);
 	}
-
 }

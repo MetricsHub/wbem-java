@@ -41,7 +41,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax;
  */
 
 import java.util.HashMap;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.Node;
 
 /**
@@ -49,7 +48,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.Node;
  * which can be reused later without instantiating new ones.
  */
 public class NodePool {
-
 	private HashMap<String, PoolStack> iPoolMap = new HashMap<String, PoolStack>(512);
 
 	private int iHitCnt = 0;
@@ -58,7 +56,7 @@ public class NodePool {
 
 	/**
 	 * addNode
-	 * 
+	 *
 	 * @param pNode
 	 */
 	public void addNode(Node pNode) {
@@ -72,7 +70,7 @@ public class NodePool {
 
 	/**
 	 * getNode
-	 * 
+	 *
 	 * @param pNodeName
 	 * @return Node
 	 */
@@ -83,14 +81,13 @@ public class NodePool {
 			return null;
 		}
 		Node node = ps.get();
-		if (node == null) ++this.iMissCnt;
-		else ++this.iHitCnt;
+		if (node == null) ++this.iMissCnt; else ++this.iHitCnt;
 		return node;
 	}
 
 	/**
 	 * getHitCnt
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getHitCnt() {
@@ -99,17 +96,15 @@ public class NodePool {
 
 	/**
 	 * getMissCnt
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getMissCnt() {
 		return this.iMissCnt;
 	}
-
 }
 
 class PoolStack {
-
 	private static final int CAPACITY = 8, MAX_USECNT = CAPACITY - 1, MAX_IDX = MAX_USECNT;
 
 	private Node[] iNodeA = new Node[CAPACITY];
@@ -118,7 +113,7 @@ class PoolStack {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNode
 	 */
 	public PoolStack(Node pNode) {
@@ -127,7 +122,7 @@ class PoolStack {
 
 	/**
 	 * put
-	 * 
+	 *
 	 * @param pNode
 	 */
 	public void put(Node pNode) {
@@ -138,7 +133,7 @@ class PoolStack {
 
 	/**
 	 * get
-	 * 
+	 *
 	 * @return Node
 	 */
 	public Node get() {
@@ -155,5 +150,4 @@ class PoolStack {
 	private void incIdx() {
 		this.iIdx = (this.iIdx == MAX_IDX ? 0 : this.iIdx + 1);
 	}
-
 }

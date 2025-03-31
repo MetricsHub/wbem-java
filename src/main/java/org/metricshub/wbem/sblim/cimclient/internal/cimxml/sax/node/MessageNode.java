@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class MessageNode extends Node implements NonVolatileIf {
-
 	private String iID;
 
 	private String iProtocolVersion;
@@ -84,7 +83,8 @@ public class MessageNode extends Node implements NonVolatileIf {
 		if (this.iID == null) throw new SAXException("ID attribute is mandatory for MESSAGE node!");
 		this.iProtocolVersion = pAttribs.getValue("PROTOCOLVERSION");
 		if (this.iProtocolVersion == null) throw new SAXException(
-				"PROTOCOLVERSION attribute is mandatory for MESSAGE node!");
+			"PROTOCOLVERSION attribute is mandatory for MESSAGE node!"
+		);
 		this.iAbstractMsgNode = null;
 	}
 
@@ -93,18 +93,24 @@ public class MessageNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { SIMPLEREQ, MULTIREQ, SIMPLERSP, MULTIRSP,
-			SIMPLEEXPREQ, MULTIEXPREQ, SIMPLEEXPRSP, MULTIEXPRSP };
+	private static final String[] ALLOWED_CHILDREN = {
+		SIMPLEREQ,
+		MULTIREQ,
+		SIMPLERSP,
+		MULTIRSP,
+		SIMPLEEXPREQ,
+		MULTIEXPREQ,
+		SIMPLEEXPRSP,
+		MULTIEXPRSP
+	};
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iAbstractMsgNode != null) throw new SAXException(
-				"MESSAGE node can have only one child node!");
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (pNodeNameEnum == ALLOWED_CHILDREN[i]) return;
+		if (this.iAbstractMsgNode != null) throw new SAXException("MESSAGE node can have only one child node!");
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (pNodeNameEnum == ALLOWED_CHILDREN[i]) return;
 		throw new SAXException("MESSAGE node cannot have " + pNodeNameEnum + " child node!");
 	}
 
@@ -113,22 +119,20 @@ public class MessageNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do
+		// nothing to do
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iAbstractMsgNode == null) throw new SAXException(
-				"MESSAGE node must have a child node!");
+		if (this.iAbstractMsgNode == null) throw new SAXException("MESSAGE node must have a child node!");
 	}
 
 	/**
 	 * getAbstractMessageNode
-	 * 
+	 *
 	 * @return AbstractMessageNode
 	 */
 	public AbstractMessageNode getAbstractMessageNode() {
 		return this.iAbstractMsgNode;
 	}
-
 }

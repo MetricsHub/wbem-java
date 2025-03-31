@@ -50,10 +50,8 @@ package org.metricshub.wbem.sblim.cimclient;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Properties;
-
 import javax.net.SocketFactory;
 import javax.security.auth.Subject;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
@@ -63,16 +61,15 @@ import org.metricshub.wbem.javax.wbem.client.WBEMClient;
 /**
  * Class WBEMClientSBLIM contains the SBLIM CIM Client specific extensions to
  * the WBEMClient interface.
- * 
+ *
  * @see WBEMClient
- * 
+ *
  */
 public interface WBEMClientSBLIM extends WBEMClient {
-
 	/**
 	 * Initialize the client connection. This must be called before any
 	 * operations. This must only be called once.
-	 * 
+	 *
 	 * @param pUri
 	 *            The protocol and host to use. Any other fields will be
 	 *            ignored.
@@ -86,8 +83,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * @throws WBEMException
 	 *             If the protocol adapter or security cannot be initialized.
 	 */
-	public void initialize(URI pUri, Subject pSubject, Locale[] pLocales)
-			throws IllegalArgumentException, WBEMException;
+	public void initialize(URI pUri, Subject pSubject, Locale[] pLocales) throws IllegalArgumentException, WBEMException;
 
 	/**
 	 * Returns the client specific configuration properties. Note that only
@@ -96,7 +92,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * class.<br />
 	 * If the no client specific configuration is set, this method returns
 	 * <code>null</code>
-	 * 
+	 *
 	 * @return The configuration properties
 	 * @see System#getProperties()
 	 */
@@ -110,11 +106,11 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * properties not specified here are taken from the global properties. The
 	 * global settings can be accessed via the <code>java.lang.System</code>
 	 * class.
-	 * 
+	 *
 	 * @param pProperties
 	 *            The session specific properties. <code>null</code> resets this
 	 *            client to the global settings.
-	 * 
+	 *
 	 * @see System#setProperties(Properties)
 	 */
 	public void setProperties(Properties pProperties);
@@ -125,10 +121,10 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * otherwise client specific value if one was set or otherwise the global
 	 * value if one was set or otherwise the default value. Valid property names
 	 * can be found in the <code>WBEMConfigurationProperties</code> interface.
-	 * 
+	 *
 	 * @param pKey
 	 *            The name of the configuration property
-	 * 
+	 *
 	 * @return The value of the given configuration property
 	 * @see WBEMConfigurationProperties
 	 */
@@ -141,7 +137,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * class. Valid property names can be found in the
 	 * <code>WBEMConfigurationProperties</code> interface. Unknown properties
 	 * are ignored.
-	 * 
+	 *
 	 * @param pKey
 	 *            The name of the configuration property
 	 * @param pValue
@@ -160,7 +156,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * <code>getProperties()</code>.<br />
 	 * If the no client specific configuration is set, this method returns
 	 * <code>null</code>
-	 * 
+	 *
 	 * @return The configuration properties
 	 * @see System#getProperties()
 	 * @see #getProperties()
@@ -176,11 +172,11 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * specified here are taken from the client or global properties. The global
 	 * settings can be accessed via the <code>java.lang.System</code> class, the
 	 * client setting via <code>getProperties()</code>.
-	 * 
+	 *
 	 * @param pProperties
 	 *            The thread specific properties. <code>null</code> remove the
 	 *            local setting of the current thread.
-	 * 
+	 *
 	 * @see System#setProperties(Properties)
 	 * @see #setProperties(Properties)
 	 */
@@ -194,7 +190,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * <code>getProperties()</code>. Valid property names can be found in the
 	 * <code>WBEMConfigurationProperties</code> interface. Unknown properties
 	 * are ignored.
-	 * 
+	 *
 	 * @param pKey
 	 *            The name of the configuration property
 	 * @param pValue
@@ -209,7 +205,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	/**
 	 * Gets the custom socket factory if one is set. The client uses this
 	 * factory for socket creation instead of the default one.
-	 * 
+	 *
 	 * @return The custom factory used for socket creation. <code>null</code>
 	 *         indicates set the JRE default factory is used.
 	 */
@@ -218,7 +214,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	/**
 	 * Sets a custom socket factory. The client will use this factory for socket
 	 * creation instead of the JRE default.
-	 * 
+	 *
 	 * @param pFactory
 	 *            The factory to use for socket creation. <code>null</code>
 	 *            resets to the JRE default factory.
@@ -229,7 +225,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 
 	/**
 	 * Enumerate the names of the instances of CIM namespaces.
-	 * 
+	 *
 	 * @param pNamespace
 	 *            The Interop Namespace, if known. If null, the default Interop
 	 *            Namespace names defined by DSP1033 are used.
@@ -237,18 +233,17 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
+	 *
 	 *             <pre>
 	 *      CIM_ERR_FAILED (some other unspecified error occurred)
 	 * </pre>
 	 */
-	public CloseableIterator<CIMObjectPath> enumerateNamespaces(String pNamespace)
-			throws WBEMException;
+	public CloseableIterator<CIMObjectPath> enumerateNamespaces(String pNamespace) throws WBEMException;
 
 	/**
 	 * Returns an indication of whether the client is active (initialized and
 	 * not closed) or inactive (not initialized or closed).
-	 * 
+	 *
 	 * @return <code>true</code> if client is active, <code>false</code>
 	 *         otherwise.
 	 */
@@ -256,7 +251,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 
 	/**
 	 * Sends the indication to the specified recipient.
-	 * 
+	 *
 	 * @param pRecipient
 	 *            URI of indication recipient.
 	 * @param pIndication
@@ -266,7 +261,7 @@ public interface WBEMClientSBLIM extends WBEMClient {
 	 * @throws WBEMException
 	 *             If unsuccessful, one of the following status codes must be
 	 *             returned. The ORDERED list is:
-	 * 
+	 *
 	 *             <pre>
 	 *      CIM_ERR_INVALID_PARAMETER (including missing, duplicate, unrecognized
 	 *            or otherwise incorrect parameters)

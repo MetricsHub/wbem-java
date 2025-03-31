@@ -49,23 +49,24 @@ import java.util.regex.Pattern;
  * protocol, host and port strings.
  */
 public class XMLHostStr {
-
 	private String iHostStr, iProtocol, iHost, iPort;
 
 	/*
 	 * [ protocol "://"] host [ ":" port ]
-	 * 
+	 *
 	 * hosts: bela@anything.org 172.20.8.1 [ffe8::e391:13a3]
 	 */
 
 	/**
 	 * Ctor.
 	 */
-	public XMLHostStr() { /* default constructor */}
+	public XMLHostStr() {
+		/* default constructor */
+	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pXMLHostStr
 	 *            - like https://anything.org:5989
 	 */
@@ -75,7 +76,7 @@ public class XMLHostStr {
 
 	/**
 	 * set
-	 * 
+	 *
 	 * @param pXMLHostStr
 	 *            - like https://anything.org:5989
 	 */
@@ -93,7 +94,7 @@ public class XMLHostStr {
 
 	/**
 	 * getProtocol
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getProtocol() {
@@ -102,7 +103,7 @@ public class XMLHostStr {
 
 	/**
 	 * getHost
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getHost() {
@@ -111,7 +112,7 @@ public class XMLHostStr {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getPort() {
@@ -158,7 +159,7 @@ public class XMLHostStr {
 
 	/*
 	 * [ protocol "://"] host [ ":" port ]
-	 * 
+	 *
 	 * hosts: bela@anything.org 172.20.8.1 [ffe8::e391:13a3]
 	 */
 
@@ -180,5 +181,4 @@ public class XMLHostStr {
 		this.iHostStr = m.group(1);
 		return m.group(2);
 	}
-
 }

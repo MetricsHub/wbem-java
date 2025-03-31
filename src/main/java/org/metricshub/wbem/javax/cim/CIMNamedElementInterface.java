@@ -48,12 +48,10 @@ package org.metricshub.wbem.javax.cim;
  * can be retrieved by a WBEM client.
  */
 public interface CIMNamedElementInterface {
-
 	/**
 	 * Retrieve the ObjectPath that represents the name for this element.
-	 * 
+	 *
 	 * @return The Object Path that represents the element.
 	 */
 	CIMObjectPath getObjectPath();
-
 }

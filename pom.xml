@@ -16,7 +16,7 @@
 
 	<organization>
 		<name>MetricsHub</name>
-		<url>https://metricshub.com</url>
+		<url>https://metricshub.org</url>
 	</organization>
 
 	<url>https://metricshub.org/wbem</url>
@@ -32,11 +32,11 @@
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/MetricsHub/wbem-java/issues/</url>
+		<url>https://github.com/metricshub/wbem-java/issues/</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/MetricsHub/wbem-java.git</connection>
+		<connection>scm:git:https://github.com/metricshub/wbem-java.git</connection>
 		<url>https://github.com/metricshub/wbem-java</url>
 		<tag>HEAD</tag>
 	</scm>
@@ -44,21 +44,21 @@
 	<developers>
 		<developer>
 			<name>Bertrand Martin (@bertysentry)</name>
-			<email>bertrand@metricshub.com</email>
+			<email>bertrand@sentrysoftware.com</email>
 			<roles>
 				<role>maintainer</role>
 			</roles>
 		</developer>
 		<developer>
 			<name>Nassim BOUTEKEDJIRET (@NassimBtk)</name>
-			<email>nassim@metricshub.com</email>
+			<email>nassim@sentrysoftware.com</email>
 			<roles>
 				<role>maintainer</role>
 			</roles>
 		</developer>
 		<developer>
 			<name>Elyes Cherfa (@CherfaElyes)</name>
-			<email>elyes@metricshub.com</email>
+			<email>elyes@sentrysoftware.com</email>
 			<roles>
 				<role>maintainer</role>
 			</roles>

@@ -44,7 +44,6 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
  * FunctionIDs
  */
 public interface FunctionIDs {
-
 	/**
 	 * SRV_RQST
 	 */
@@ -109,5 +108,4 @@ public interface FunctionIDs {
 	 * LAST_ID
 	 */
 	public static final int LAST_ID = SA_ADVERT;
-
 }

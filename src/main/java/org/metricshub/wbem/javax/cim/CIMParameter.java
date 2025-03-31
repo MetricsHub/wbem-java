@@ -62,14 +62,13 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * Infrastructure Specification (<a
  * href=http://www.dmtf.org/standards/published_documents/DSP0004V2.3_final.pdf
  * >DSP004</a>). To invoke a method, you would use <code>CIMArgument</code>.
- * 
+ *
  * @param <E>
  *            Type parameter.
- * 
+ *
  * @see CIMMethod
  */
 public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElementInterface {
-
 	private static final long serialVersionUID = -4741931597423829396L;
 
 	private CIMQualifiedElementInterfaceImpl iQualiImpl;
@@ -79,7 +78,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	 * data type and qualifiers. Takes a string for the name of an existing CIM
 	 * parameter and creates a new instance of a CIM parameter, using the name
 	 * and identifier of the existing CIM parameter.
-	 * 
+	 *
 	 * @param pName
 	 *            Name of this parameter.
 	 * @param pType
@@ -97,7 +96,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMParameter</code> object that represents the same value
 	 * as this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -113,7 +112,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 
 	/**
 	 * Returns a <code>CIMParameter</code> filtered as specified.
-	 * 
+	 *
 	 * @param pIncludeQualifiers
 	 *            If <code>true</code> all qualifiers are returned; otherwise no
 	 *            qualifiers.
@@ -123,13 +122,16 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	 * @return A filtered <code>CIMParameter</code>.
 	 */
 	public CIMParameter<E> filter(boolean pIncludeQualifiers, boolean pLocalOnly) {
-		return new CIMParameter<E>(getName(), getDataType(), pIncludeQualifiers ? this.iQualiImpl
-				.getQualifiers(pLocalOnly) : null);
+		return new CIMParameter<E>(
+			getName(),
+			getDataType(),
+			pIncludeQualifiers ? this.iQualiImpl.getQualifiers(pLocalOnly) : null
+		);
 	}
 
 	/**
 	 * Get a qualifier by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the qualifier.
 	 * @return The Qualifier at index pIndex.
@@ -141,7 +143,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 
 	/**
 	 * Gets a qualifier by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist, otherwise
@@ -153,7 +155,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 
 	/**
 	 * Get the number of qualifiers defined for this CIM Parameter.
-	 * 
+	 *
 	 * @return The number of qualifiers.
 	 */
 	public int getQualifierCount() {
@@ -162,7 +164,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 
 	/**
 	 * Returns the list of qualifiers for this class.
-	 * 
+	 *
 	 * @return Qualifiers for this class.
 	 */
 	public CIMQualifier<?>[] getQualifiers() {
@@ -171,7 +173,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 
 	/**
 	 * Gets a qualifier value by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist or value is
@@ -185,7 +187,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	/**
 	 * Checks whether the specified qualifier is one of the qualifiers in this
 	 * CIM element.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @return <code>true</code> if the qualifier exists in this CIM parameter,
@@ -200,7 +202,7 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	 * for this parameter with the specified value. This method will return
 	 * <code>false</code> if the qualifier is not applied or if the value does
 	 * not match.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pValue
@@ -218,12 +220,11 @@ public class CIMParameter<E> extends CIMTypedElement implements CIMQualifiedElem
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return String representation of this parameter.
 	 */
 	@Override
 	public String toString() {
 		return MOF.parameter(this, MOF.EMPTY);
 	}
-
 }

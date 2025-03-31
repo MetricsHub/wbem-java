@@ -44,33 +44,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.Socket;
-
-import org.metricshub.wbem.sblim.slp.internal.msg.FunctionIDs;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.msg.FunctionIDs;
 
 /**
  * MsgFactory
- * 
+ *
  */
 public class MsgFactory implements FunctionIDs {
 
 	/**
 	 * FactoryEntry
-	 * 
+	 *
 	 */
 	private interface FactoryEntry {
-
 		/**
 		 * parse
-		 * 
+		 *
 		 * @param pHdr
 		 * @param pInStr
 		 * @return SLPMessage
 		 * @throws ServiceLocationException
 		 * @throws IOException
 		 */
-		public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-				throws ServiceLocationException, IOException;
+		public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException;
 	}
 
 	private static FactoryEntry[] cFactoryArray;
@@ -82,86 +79,107 @@ public class MsgFactory implements FunctionIDs {
 	private static synchronized void createFactoryArray() {
 		if (cFactoryArray != null) return;
 		cFactoryArray = new FactoryEntry[LAST_ID - FIRST_ID + 1];
-		for (int i = 0; i < cFactoryArray.length; i++)
-			cFactoryArray[i] = null;
-		placeFactory(ATTR_RPLY, new FactoryEntry() {
+		for (int i = 0; i < cFactoryArray.length; i++) cFactoryArray[i] = null;
+		placeFactory(
+			ATTR_RPLY,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return AttributeReply.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return AttributeReply.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(ATTR_RQST, new FactoryEntry() {
+		);
+		placeFactory(
+			ATTR_RQST,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return AttributeRequest.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return AttributeRequest.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(DA_ADVERT, new FactoryEntry() {
+		);
+		placeFactory(
+			DA_ADVERT,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return DAAdvert.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return DAAdvert.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SA_ADVERT, new FactoryEntry() {
+		);
+		placeFactory(
+			SA_ADVERT,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return SAAdvert.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return SAAdvert.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_ACK, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_ACK,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceAcknowledgment.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceAcknowledgment.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_DEREG, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_DEREG,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceDeregistration.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceDeregistration.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_REG, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_REG,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceRegistration.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceRegistration.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_RPLY, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_RPLY,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceReply.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceReply.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_RQST, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_RQST,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceRequest.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceRequest.parse(pHdr, pInStr);
+				}
 			}
-		});
+		);
 		//
-		placeFactory(SRV_TYPE_RPLY, new FactoryEntry() {
+		placeFactory(
+			SRV_TYPE_RPLY,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceTypeReply.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceTypeReply.parse(pHdr, pInStr);
+				}
 			}
-		});
-		placeFactory(SRV_TYPE_RQST, new FactoryEntry() {
+		);
+		placeFactory(
+			SRV_TYPE_RQST,
+			new FactoryEntry() {
 
-			public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-					throws ServiceLocationException, IOException {
-				return ServiceTypeRequest.parse(pHdr, pInStr);
+				public SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+					return ServiceTypeRequest.parse(pHdr, pInStr);
+				}
 			}
-		});
+		);
 	}
 
 	private static FactoryEntry getFactory(int pFnID) {
@@ -171,7 +189,7 @@ public class MsgFactory implements FunctionIDs {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pSock
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
@@ -183,7 +201,7 @@ public class MsgFactory implements FunctionIDs {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
@@ -195,33 +213,31 @@ public class MsgFactory implements FunctionIDs {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pPacket
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(DatagramPacket pPacket) throws ServiceLocationException,
-			IOException {
+	public static SLPMessage parse(DatagramPacket pPacket) throws ServiceLocationException, IOException {
 		return parse(new SLPInputStream(pPacket));
 	}
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(SLPInputStream pInStr) throws ServiceLocationException,
-			IOException {
+	public static SLPMessage parse(SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		MsgHeader hdr = MsgHeader.parse(pInStr);
 		FactoryEntry factory = getFactory(hdr.getFunctionID());
 		if (factory == null) throw new ServiceLocationException(
-				ServiceLocationException.NOT_IMPLEMENTED, "FunctionID=" + hdr.getFunctionID()
-						+ " is not implemented!");
+			ServiceLocationException.NOT_IMPLEMENTED,
+			"FunctionID=" + hdr.getFunctionID() + " is not implemented!"
+		);
 		return factory.parse(hdr, pInStr);
 	}
-
 }

@@ -48,15 +48,14 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMGetQualifierTypeOp
- * 
+ *
  */
 public class CIMGetQualifierTypeOp extends CIMSingleResultOperation {
-
 	protected String iQualifierType;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pQualifierType
 	 */
@@ -68,11 +67,10 @@ public class CIMGetQualifierTypeOp extends CIMSingleResultOperation {
 
 	/**
 	 * Returns qualifierType
-	 * 
+	 *
 	 * @return The value of qualifierType.
 	 */
 	public String getQualifierType() {
 		return this.iQualifierType;
 	}
-
 }

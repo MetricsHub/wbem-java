@@ -46,7 +46,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cim;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMProperty;
 
@@ -60,23 +59,21 @@ import org.metricshub.wbem.javax.cim.CIMProperty;
  * ( VALUE.NAMEDINSTANCE->INSTANCE->PROPERTY* )<br>
  * The implementation merges the properties from both params.<br>
  * From CIMObjectPath's keys only the type and value information is considered.<br>
- * 
+ *
  */
 public class CIMInstanceBuilder {
-
 	private CIMProperty<?>[] iProperties;
 
 	private static final Object[] EMPTY_RPOP_A = new CIMProperty[0];
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pPath
 	 * @param pProps
 	 * @throws IllegalArgumentException
 	 */
-	public CIMInstanceBuilder(CIMObjectPath pPath, CIMProperty<?>[] pProps)
-			throws IllegalArgumentException {
+	public CIMInstanceBuilder(CIMObjectPath pPath, CIMProperty<?>[] pProps) throws IllegalArgumentException {
 		this.iProperties = pProps != null ? pProps : new CIMProperty[0];
 		CIMElementSorter.sort(this.iProperties);
 		addPathKeys(pPath);
@@ -84,7 +81,7 @@ public class CIMInstanceBuilder {
 
 	/**
 	 * Extends the keys of the passed CIMObjectPath.
-	 * 
+	 *
 	 * @param pPath
 	 * @return the new CIMObjectPath
 	 */
@@ -99,13 +96,19 @@ public class CIMInstanceBuilder {
 		 * CIMObjectPath( String scheme, String host, String port, String
 		 * namespace, String objectName, CIMProperty[] keys )
 		 */
-		return new CIMObjectPath(pPath.getScheme(), pPath.getHost(), pPath.getPort(), pPath
-				.getNamespace(), pPath.getObjectName(), (CIMProperty[]) keys.toArray(EMPTY_RPOP_A));
+		return new CIMObjectPath(
+			pPath.getScheme(),
+			pPath.getHost(),
+			pPath.getPort(),
+			pPath.getNamespace(),
+			pPath.getObjectName(),
+			(CIMProperty[]) keys.toArray(EMPTY_RPOP_A)
+		);
 	}
 
 	/**
 	 * getAllPropertis
-	 * 
+	 *
 	 * @return all properties in an ordered way
 	 */
 	public CIMProperty<?>[] getAllPropertis() {
@@ -122,8 +125,7 @@ public class CIMInstanceBuilder {
 				CIMProperty<?>[] newArray = new CIMProperty[this.iProperties.length + 1];
 				System.arraycopy(this.iProperties, 0, newArray, 0, pos);
 				newArray[pos] = key;
-				System.arraycopy(this.iProperties, pos, newArray, pos + 1, this.iProperties.length
-						- pos);
+				System.arraycopy(this.iProperties, pos, newArray, pos + 1, this.iProperties.length - pos);
 				this.iProperties = newArray;
 			} else {
 				CIMProperty<?> prop = this.iProperties[pos];
@@ -134,10 +136,15 @@ public class CIMInstanceBuilder {
 	}
 
 	private static CIMProperty<Object> mkKey(CIMProperty<?> pProp) {
-		return new CIMProperty<Object>(pProp.getName(), pProp.getDataType(), pProp.getValue(),
-				true, pProp.isPropagated(), pProp.getOriginClass());
+		return new CIMProperty<Object>(
+			pProp.getName(),
+			pProp.getDataType(),
+			pProp.getValue(),
+			true,
+			pProp.isPropagated(),
+			pProp.getOriginClass()
+		);
 	}
-
 	/*
 	 * private static void typeAndValueCheck(CIMProperty pPathProp, CIMProperty
 	 * pArrayProp) throws IllegalArgumentException { CIMDataType pType =

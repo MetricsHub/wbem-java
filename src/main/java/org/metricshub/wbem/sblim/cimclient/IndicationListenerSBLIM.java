@@ -41,13 +41,12 @@ package org.metricshub.wbem.sblim.cimclient;
 
 import java.net.InetAddress;
 import java.util.EventListener;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 
 /**
  * This interface is implemented by the code that wants to create a listener for
  * indications. See the <code>WBEMListenerFactory</code> class for an example.
- * 
+ *
  * The difference between this interface and <code>IndicationListener</code> is
  * that the JSR48 standard (<code>javax.wbem.listener.IndicationListener</code>)
  * does not allow for the listener to receive the IP of the indication sender
@@ -55,10 +54,9 @@ import org.metricshub.wbem.javax.cim.CIMInstance;
  * <code>org.sblim.cimclinet.IndicationListenerSBLIM</code>) does.
  */
 public interface IndicationListenerSBLIM extends EventListener {
-
 	/**
 	 * Called when an indication has been received by the listener
-	 * 
+	 *
 	 * @param pIndicationURL
 	 *            The URL to which the indication was posted. For example if the
 	 *            indication was delivered over the https protocol to the
@@ -69,7 +67,5 @@ public interface IndicationListenerSBLIM extends EventListener {
 	 * @param pSenderIP
 	 *            The internet address of the indication sender.
 	 */
-	public void indicationOccured(String pIndicationURL, CIMInstance pIndication,
-			InetAddress pSenderIP);
-
+	public void indicationOccured(String pIndicationURL, CIMInstance pIndication, InetAddress pSenderIP);
 }

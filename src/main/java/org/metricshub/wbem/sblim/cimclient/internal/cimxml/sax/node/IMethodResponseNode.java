@@ -47,7 +47,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
@@ -58,15 +57,14 @@ import org.xml.sax.SAXException;
  * <pre>
  * ELEMENT IMETHODRESPONSE (ERROR|IRETURNVALUE?)
  * ATTLIST IMETHODRESPONSE
- *   %CIMName; 
+ *   %CIMName;
  * </pre>
  */
 /**
  * Class IMethodResponseNode is responsible for
- * 
+ *
  */
 public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, NonVolatileIf {
-
 	private String iName;
 
 	private ErrorNode iErrorNode;
@@ -114,34 +112,44 @@ public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, 
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == ERROR) {
 			String ownedNodeName;
-			if (this.iHasRetVal) ownedNodeName = IRETURNVALUE;
-			else if (this.iHasError) ownedNodeName = ERROR;
-			else if (this.iCIMArgAL != null && this.iCIMArgAL.size() > 0) ownedNodeName = PARAMVALUE;
-			else ownedNodeName = null;
-			if (ownedNodeName != null) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has a " + ownedNodeName + " child node!");
+			if (this.iHasRetVal) ownedNodeName = IRETURNVALUE; else if (this.iHasError) ownedNodeName = ERROR; else if (
+				this.iCIMArgAL != null && this.iCIMArgAL.size() > 0
+			) ownedNodeName = PARAMVALUE; else ownedNodeName = null;
+			if (ownedNodeName != null) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has a " +
+				ownedNodeName +
+				" child node!"
+			);
 		} else if (pNodeNameEnum == IRETURNVALUE) {
 			String ownedNodeName;
-			if (this.iHasRetVal) ownedNodeName = IRETURNVALUE;
-			else if (this.iHasError) ownedNodeName = ERROR;
-			else ownedNodeName = null;
-			if (ownedNodeName != null) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has a " + ownedNodeName + " child node!");
+			if (this.iHasRetVal) ownedNodeName = IRETURNVALUE; else if (this.iHasError) ownedNodeName =
+				ERROR; else ownedNodeName = null;
+			if (ownedNodeName != null) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has a " +
+				ownedNodeName +
+				" child node!"
+			);
 		} else if (pNodeNameEnum == PARAMVALUE) {
-			if (this.iHasError) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has an ERROR child node!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasError) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has an ERROR child node!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	/**
@@ -155,8 +163,7 @@ public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, 
 		} else if (pChild instanceof IReturnValueNode) {
 			this.iHasRetVal = true;
 			this.iRetValNode = (IReturnValueNode) pChild;
-		} else
-		// Values of parameters should be stored in array
+		} else // Values of parameters should be stored in array
 		if (pChild instanceof ParamValueNode) {
 			if (this.iCIMArgAL == null) this.iCIMArgAL = new ArrayList<CIMArgument<Object>>();
 			this.iCIMArgAL.add(((ParamValueNode) pChild).getCIMArgument());
@@ -165,7 +172,7 @@ public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, 
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child nodes
+		// no mandatory child nodes
 	}
 
 	public CIMError getCIMError() {
@@ -182,7 +189,7 @@ public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, 
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -192,12 +199,11 @@ public class IMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, 
 	/**
 	 * getCIMArguments : returns the array of parsed parameters and their values
 	 * : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return CIMArgument&lt;?&gt;[]
 	 */
 	public CIMArgument<?>[] getCIMArguments() {
 		if (this.iCIMArgAL == null || this.iCIMArgAL.size() == 0) return null;
 		return this.iCIMArgAL.toArray(EMPTY_ARG_A);
 	}
-
 }

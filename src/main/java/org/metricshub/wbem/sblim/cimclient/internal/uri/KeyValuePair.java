@@ -45,20 +45,18 @@ import java.util.regex.Pattern;
  * key_name "=" key_value
  */
 public class KeyValuePair {
-
 	private static final Pattern KEYNAMEPAT = Pattern.compile("^([A-Za-z][0-9A-Za-z_]*).*");
 
 	/**
 	 * Tries to get an <code>KeyValuePair</code> from the passed
 	 * <code>pUriStr</code>.
-	 * 
+	 *
 	 * @param pTyped
 	 * @param pUriStr
 	 * @return an <code>KeyValuePair</code> or <code>null</code> if failed.
 	 * @throws IllegalArgumentException
 	 */
-	public static KeyValuePair parse(boolean pTyped, URIString pUriStr)
-			throws IllegalArgumentException {
+	public static KeyValuePair parse(boolean pTyped, URIString pUriStr) throws IllegalArgumentException {
 		// TODO: tracing TRC.log(uriStr.toString());
 		URIString uriStr = pUriStr.deepCopy();
 		if (!uriStr.matchAndCut(KEYNAMEPAT, 1)) {
@@ -98,14 +96,15 @@ public class KeyValuePair {
 	public String toString() {
 		StringBuffer buf = new StringBuffer(this.iKey + '=');
 		if (this.iTyped) buf.append('(' + this.iValue.getTypeInfo() + ')');
-		buf.append((this.iValue instanceof QuotedValue) ? ((QuotedValue) this.iValue)
-				.toQuotedString() : this.iValue.toString());
+		buf.append(
+			(this.iValue instanceof QuotedValue) ? ((QuotedValue) this.iValue).toQuotedString() : this.iValue.toString()
+		);
 		return buf.toString();
 	}
 
 	/**
 	 * getKey
-	 * 
+	 *
 	 * @return the key String
 	 */
 	public String getKey() {
@@ -114,11 +113,10 @@ public class KeyValuePair {
 
 	/**
 	 * getValue
-	 * 
+	 *
 	 * @return the value String
 	 */
 	public Value getValue() {
 		return this.iValue;
 	}
-
 }

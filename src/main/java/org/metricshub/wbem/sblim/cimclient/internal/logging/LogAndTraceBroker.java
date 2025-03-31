@@ -71,14 +71,13 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
+import org.metricshub.wbem.sblim.cimclient.CIMXMLTraceListener;
 import org.metricshub.wbem.sblim.cimclient.LogAndTraceManager;
+import org.metricshub.wbem.sblim.cimclient.LogListener;
+import org.metricshub.wbem.sblim.cimclient.TraceListener;
 import org.metricshub.wbem.sblim.cimclient.WBEMConfigurationProperties;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
-import org.metricshub.wbem.sblim.cimclient.CIMXMLTraceListener;
-import org.metricshub.wbem.sblim.cimclient.LogListener;
-import org.metricshub.wbem.sblim.cimclient.TraceListener;
 
 /**
  * Class LogAndTraceBroker is the central class that implements the logging and
@@ -86,10 +85,9 @@ import org.metricshub.wbem.sblim.cimclient.TraceListener;
  * trace listeners. It sets up the application independent logging. It provides
  * the API to send log and trace messages and forwards them to the appropriate
  * listeners.
- * 
+ *
  */
 public class LogAndTraceBroker {
-
 	private static final String TRACE_LOGGER = "org.metricshub.wbem.sblim.cimclient.trace";
 
 	private static final String FILE_LOGGER = "org.metricshub.wbem.sblim.cimclient.file";
@@ -100,7 +98,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Returns the singleton instance of the broker
-	 * 
+	 *
 	 * @return The broker instance
 	 */
 	public static LogAndTraceBroker getBroker() {
@@ -113,7 +111,7 @@ public class LogAndTraceBroker {
 	 * logging is already up. The <code>WBEMConfiguration</code> is initialized
 	 * before the logging, so methods in this class cannot assume the logging to
 	 * be up and running.
-	 * 
+	 *
 	 * @return <code>true</code> if the logging is up, <code>false</code>
 	 *         otherwise
 	 */
@@ -179,8 +177,11 @@ public class LogAndTraceBroker {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			if (this.iXmlTraceFile != null && (!this.iXmlTraceFile.equals(System.out))
-					&& (!this.iXmlTraceFile.equals(System.err))) this.iXmlTraceFile.close();
+			if (
+				this.iXmlTraceFile != null &&
+				(!this.iXmlTraceFile.equals(System.out)) &&
+				(!this.iXmlTraceFile.equals(System.err))
+			) this.iXmlTraceFile.close();
 		} catch (IOException e) {
 			// bad luck
 		} finally {
@@ -206,15 +207,15 @@ public class LogAndTraceBroker {
 				logger.setUseParentHandlers(false);
 				this.iInternalLevelConsole = level.intValue();
 				if (this.iInternalListenerLogConsole != null) removeLogListener(this.iInternalListenerLogConsole);
-				this.iInternalListenerLogConsole = new LogListener() {
+				this.iInternalListenerLogConsole =
+					new LogListener() {
 
-					public void log(Level pLevel, String pMessageKey, String pMessage,
-							Object[] pParameters) {
-						LogRecord record = new LogRecord(pLevel, pMessageKey + " " + pMessage);
-						record.setParameters(pParameters);
-						logger.log(record);
-					}
-				};
+						public void log(Level pLevel, String pMessageKey, String pMessage, Object[] pParameters) {
+							LogRecord record = new LogRecord(pLevel, pMessageKey + " " + pMessage);
+							record.setParameters(pParameters);
+							logger.log(record);
+						}
+					};
 				addLogListener(this.iInternalListenerLogConsole);
 			}
 		} catch (Exception e) {
@@ -235,15 +236,15 @@ public class LogAndTraceBroker {
 				logger.setUseParentHandlers(false);
 				this.iInternalLevelLogFile = level.intValue();
 				if (this.iInternalListenerLogFile != null) removeLogListener(this.iInternalListenerLogFile);
-				this.iInternalListenerLogFile = new LogListener() {
+				this.iInternalListenerLogFile =
+					new LogListener() {
 
-					public void log(Level pLevel, String pMessageKey, String pMessage,
-							Object[] pParameters) {
-						LogRecord record = new LogRecord(pLevel, pMessageKey + " " + pMessage);
-						record.setParameters(pParameters);
-						logger.log(record);
-					}
-				};
+						public void log(Level pLevel, String pMessageKey, String pMessage, Object[] pParameters) {
+							LogRecord record = new LogRecord(pLevel, pMessageKey + " " + pMessage);
+							record.setParameters(pParameters);
+							logger.log(record);
+						}
+					};
 				addLogListener(this.iInternalListenerLogFile);
 			}
 		} catch (Exception e) {
@@ -262,22 +263,22 @@ public class LogAndTraceBroker {
 				logger.setUseParentHandlers(false);
 				this.iInternalLevelConsole = level.intValue();
 				if (this.iInternalListenerTraceConsole != null) removeTraceListener(this.iInternalListenerTraceConsole);
-				this.iInternalListenerTraceConsole = new TraceListener() {
+				this.iInternalListenerTraceConsole =
+					new TraceListener() {
 
-					public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage) {
-						LogRecord record = new LogRecord(pLevel, pMessage);
-						record.setSourceMethodName(String.valueOf(pOrigin));
-						logger.log(record);
-					}
+						public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage) {
+							LogRecord record = new LogRecord(pLevel, pMessage);
+							record.setSourceMethodName(String.valueOf(pOrigin));
+							logger.log(record);
+						}
 
-					public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage,
-							Throwable pThrown) {
-						LogRecord record = new LogRecord(pLevel, pMessage);
-						record.setSourceMethodName(String.valueOf(pOrigin));
-						record.setThrown(pThrown);
-						logger.log(record);
-					}
-				};
+						public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage, Throwable pThrown) {
+							LogRecord record = new LogRecord(pLevel, pMessage);
+							record.setSourceMethodName(String.valueOf(pOrigin));
+							record.setThrown(pThrown);
+							logger.log(record);
+						}
+					};
 				addTraceListener(this.iInternalListenerTraceConsole);
 			}
 		} catch (Exception e) {
@@ -298,22 +299,22 @@ public class LogAndTraceBroker {
 				logger.setUseParentHandlers(false);
 				this.iInternalLevelTraceFile = level.intValue();
 				if (this.iInternalListenerTraceFile != null) removeTraceListener(this.iInternalListenerTraceFile);
-				this.iInternalListenerTraceFile = new TraceListener() {
+				this.iInternalListenerTraceFile =
+					new TraceListener() {
 
-					public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage) {
-						LogRecord record = new LogRecord(pLevel, pMessage);
-						record.setSourceMethodName(String.valueOf(pOrigin));
-						logger.log(record);
-					}
+						public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage) {
+							LogRecord record = new LogRecord(pLevel, pMessage);
+							record.setSourceMethodName(String.valueOf(pOrigin));
+							logger.log(record);
+						}
 
-					public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage,
-							Throwable pThrown) {
-						LogRecord record = new LogRecord(pLevel, pMessage);
-						record.setSourceMethodName(String.valueOf(pOrigin));
-						record.setThrown(pThrown);
-						logger.log(record);
-					}
-				};
+						public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage, Throwable pThrown) {
+							LogRecord record = new LogRecord(pLevel, pMessage);
+							record.setSourceMethodName(String.valueOf(pOrigin));
+							record.setThrown(pThrown);
+							logger.log(record);
+						}
+					};
 				addTraceListener(this.iInternalListenerTraceFile);
 			}
 		} catch (Exception e) {
@@ -324,7 +325,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Adds a listener for log messages. The listener will be notified of any
 	 * log event. Uses copy on write to ensure concurrent read access.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -335,10 +336,10 @@ public class LogAndTraceBroker {
 		newListeners.add(pListener);
 		this.iLogListeners = newListeners;
 
-		if ((this.iInternalListenerLogFile != null && this.iInternalListenerLogFile
-				.equals(pListener))
-				|| (this.iInternalListenerLogConsole != null && this.iInternalListenerLogConsole
-						.equals(pListener))) {
+		if (
+			(this.iInternalListenerLogFile != null && this.iInternalListenerLogFile.equals(pListener)) ||
+			(this.iInternalListenerLogConsole != null && this.iInternalListenerLogConsole.equals(pListener))
+		) {
 			this.iNumInternalLogListeners++;
 		} else {
 			this.iNumExternalLogListeners++;
@@ -370,72 +371,131 @@ public class LogAndTraceBroker {
 	}
 
 	private void sendGreetings(LogListener pListener) {
-
-		pListener.log(MessageLoader.getLevel(Messages.GREETING), Messages.GREETING, MessageLoader
-				.getLocalizedMessage(Messages.GREETING), new Object[] { this.iProductName,
-				this.iCopyright });
-		pListener.log(MessageLoader.getLevel(Messages.RELEASE), Messages.RELEASE, MessageLoader
-				.getLocalizedMessage(Messages.RELEASE), new Object[] { this.iVersion,
-				this.iBuildDate, this.iBuildTime });
-		pListener.log(MessageLoader.getLevel(Messages.OS), Messages.OS, MessageLoader
-				.getLocalizedMessage(Messages.OS), new Object[] { System.getProperty("os.name"),
-				System.getProperty("os.version"), System.getProperty("os.arch") });
-		pListener.log(MessageLoader.getLevel(Messages.JRE), Messages.JRE, MessageLoader
-				.getLocalizedMessage(Messages.JRE), new Object[] {
-				System.getProperty("java.version"), System.getProperty("java.vendor") });
-		pListener.log(MessageLoader.getLevel(Messages.JVM), Messages.JVM, MessageLoader
-				.getLocalizedMessage(Messages.JVM), new Object[] {
-				System.getProperty("java.vm.name"), System.getProperty("java.vm.version"),
-				System.getProperty("java.vm.vendor") });
-		pListener.log(MessageLoader.getLevel(Messages.CONFIGURATION_URL),
-				Messages.CONFIGURATION_URL, MessageLoader
-						.getLocalizedMessage(Messages.CONFIGURATION_URL),
-				new Object[] { WBEMConfiguration.getActiveConfigFullURL() });
+		pListener.log(
+			MessageLoader.getLevel(Messages.GREETING),
+			Messages.GREETING,
+			MessageLoader.getLocalizedMessage(Messages.GREETING),
+			new Object[] { this.iProductName, this.iCopyright }
+		);
+		pListener.log(
+			MessageLoader.getLevel(Messages.RELEASE),
+			Messages.RELEASE,
+			MessageLoader.getLocalizedMessage(Messages.RELEASE),
+			new Object[] { this.iVersion, this.iBuildDate, this.iBuildTime }
+		);
+		pListener.log(
+			MessageLoader.getLevel(Messages.OS),
+			Messages.OS,
+			MessageLoader.getLocalizedMessage(Messages.OS),
+			new Object[] { System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch") }
+		);
+		pListener.log(
+			MessageLoader.getLevel(Messages.JRE),
+			Messages.JRE,
+			MessageLoader.getLocalizedMessage(Messages.JRE),
+			new Object[] { System.getProperty("java.version"), System.getProperty("java.vendor") }
+		);
+		pListener.log(
+			MessageLoader.getLevel(Messages.JVM),
+			Messages.JVM,
+			MessageLoader.getLocalizedMessage(Messages.JVM),
+			new Object[] {
+				System.getProperty("java.vm.name"),
+				System.getProperty("java.vm.version"),
+				System.getProperty("java.vm.vendor")
+			}
+		);
+		pListener.log(
+			MessageLoader.getLevel(Messages.CONFIGURATION_URL),
+			Messages.CONFIGURATION_URL,
+			MessageLoader.getLocalizedMessage(Messages.CONFIGURATION_URL),
+			new Object[] { WBEMConfiguration.getActiveConfigFullURL() }
+		);
 		if (!WBEMConfiguration.isConfigurationLoadSuccessful()) {
-			pListener.log(MessageLoader.getLevel(Messages.CONFIGURATION_LOAD_FAILED),
-					Messages.CONFIGURATION_LOAD_FAILED, MessageLoader
-							.getLocalizedMessage(Messages.CONFIGURATION_LOAD_FAILED),
-					(Object[]) null);
+			pListener.log(
+				MessageLoader.getLevel(Messages.CONFIGURATION_LOAD_FAILED),
+				Messages.CONFIGURATION_LOAD_FAILED,
+				MessageLoader.getLocalizedMessage(Messages.CONFIGURATION_LOAD_FAILED),
+				(Object[]) null
+			);
 			if (WBEMConfiguration.getConfigurationLoadException() != null) {
-				pListener.log(MessageLoader.getLevel(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
-						Messages.EXCEPTION_DURING_CONFIGURATION_LOAD, MessageLoader
-								.getLocalizedMessage(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
-						new Object[] { WBEMConfiguration.getConfigurationLoadException()
-								.getMessage() });
+				pListener.log(
+					MessageLoader.getLevel(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
+					Messages.EXCEPTION_DURING_CONFIGURATION_LOAD,
+					MessageLoader.getLocalizedMessage(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
+					new Object[] { WBEMConfiguration.getConfigurationLoadException().getMessage() }
+				);
 			}
 		}
 	}
 
 	private void sendGreetings(TraceListener pListener) {
 		StackTraceElement origin = new Throwable().getStackTrace()[0];
-		pListener.trace(MessageLoader.getLevel(Messages.GREETING), origin, MessageFormat.format(
-				MessageLoader.getMessage(Messages.GREETING), new Object[] { this.iProductName,
-						this.iCopyright }));
-		pListener.trace(MessageLoader.getLevel(Messages.RELEASE), origin, MessageFormat.format(
-				MessageLoader.getMessage(Messages.RELEASE), new Object[] { this.iVersion,
-						this.iBuildDate, this.iBuildTime }));
-		pListener.trace(MessageLoader.getLevel(Messages.OS), origin, MessageFormat.format(
-				MessageLoader.getMessage(Messages.OS), new Object[] {
-						System.getProperty("os.name"), System.getProperty("os.version"),
-						System.getProperty("os.arch") }));
-		pListener.trace(MessageLoader.getLevel(Messages.JRE), origin, MessageFormat.format(
-				MessageLoader.getMessage(Messages.JRE), new Object[] {
-						System.getProperty("java.version"), System.getProperty("java.vendor") }));
-		pListener.trace(MessageLoader.getLevel(Messages.JVM), origin, MessageFormat.format(
-				MessageLoader.getMessage(Messages.JVM), new Object[] {
-						System.getProperty("java.vm.name"), System.getProperty("java.vm.version"),
-						System.getProperty("java.vm.vendor") }));
-		pListener.trace(MessageLoader.getLevel(Messages.CONFIGURATION_URL), origin, MessageFormat
-				.format(MessageLoader.getMessage(Messages.CONFIGURATION_URL),
-						new Object[] { WBEMConfiguration.getActiveConfigURL() }));
+		pListener.trace(
+			MessageLoader.getLevel(Messages.GREETING),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.GREETING),
+				new Object[] { this.iProductName, this.iCopyright }
+			)
+		);
+		pListener.trace(
+			MessageLoader.getLevel(Messages.RELEASE),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.RELEASE),
+				new Object[] { this.iVersion, this.iBuildDate, this.iBuildTime }
+			)
+		);
+		pListener.trace(
+			MessageLoader.getLevel(Messages.OS),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.OS),
+				new Object[] { System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch") }
+			)
+		);
+		pListener.trace(
+			MessageLoader.getLevel(Messages.JRE),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.JRE),
+				new Object[] { System.getProperty("java.version"), System.getProperty("java.vendor") }
+			)
+		);
+		pListener.trace(
+			MessageLoader.getLevel(Messages.JVM),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.JVM),
+				new Object[] {
+					System.getProperty("java.vm.name"),
+					System.getProperty("java.vm.version"),
+					System.getProperty("java.vm.vendor")
+				}
+			)
+		);
+		pListener.trace(
+			MessageLoader.getLevel(Messages.CONFIGURATION_URL),
+			origin,
+			MessageFormat.format(
+				MessageLoader.getMessage(Messages.CONFIGURATION_URL),
+				new Object[] { WBEMConfiguration.getActiveConfigURL() }
+			)
+		);
 		if (!WBEMConfiguration.isConfigurationLoadSuccessful()) {
-			pListener.trace(MessageLoader.getLevel(Messages.CONFIGURATION_LOAD_FAILED), origin,
-					MessageLoader.getMessage(Messages.CONFIGURATION_LOAD_FAILED));
+			pListener.trace(
+				MessageLoader.getLevel(Messages.CONFIGURATION_LOAD_FAILED),
+				origin,
+				MessageLoader.getMessage(Messages.CONFIGURATION_LOAD_FAILED)
+			);
 			if (WBEMConfiguration.getConfigurationLoadException() != null) {
-				pListener.trace(MessageLoader
-						.getLevel(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD), origin,
-						MessageLoader.getMessage(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
-						WBEMConfiguration.getConfigurationLoadException());
+				pListener.trace(
+					MessageLoader.getLevel(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
+					origin,
+					MessageLoader.getMessage(Messages.EXCEPTION_DURING_CONFIGURATION_LOAD),
+					WBEMConfiguration.getConfigurationLoadException()
+				);
 			}
 		}
 	}
@@ -443,7 +503,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Remove a listener. This listener will not be notified of log events
 	 * anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -452,13 +512,11 @@ public class LogAndTraceBroker {
 		if (!newListeners.remove(pListener)) return;
 		this.iLogListeners = newListeners;
 
-		if (this.iInternalListenerLogFile != null
-				&& this.iInternalListenerLogFile.equals(pListener)) {
+		if (this.iInternalListenerLogFile != null && this.iInternalListenerLogFile.equals(pListener)) {
 			// Removing internal log listener for file
 			this.iInternalListenerLogFile = null;
 			this.iNumInternalLogListeners--;
-		} else if (this.iInternalListenerLogConsole != null
-				&& this.iInternalListenerLogConsole.equals(pListener)) {
+		} else if (this.iInternalListenerLogConsole != null && this.iInternalListenerLogConsole.equals(pListener)) {
 			// Removing internal log listener for console
 			this.iInternalListenerLogConsole = null;
 			this.iNumInternalLogListeners--;
@@ -486,7 +544,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Gets the registered log listeners including the internal console and file
 	 * loggers.
-	 * 
+	 *
 	 * @return The list of listeners
 	 */
 	public List<LogListener> getLogListeners() {
@@ -496,7 +554,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Adds a listener for log messages. The listener will be notified of any
 	 * trace event.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -507,10 +565,10 @@ public class LogAndTraceBroker {
 		newListeners.add(pListener);
 		this.iTraceListeners = newListeners;
 
-		if ((this.iInternalListenerTraceFile != null && this.iInternalListenerTraceFile
-				.equals(pListener))
-				|| (this.iInternalListenerTraceConsole != null && this.iInternalListenerTraceConsole
-						.equals(pListener))) {
+		if (
+			(this.iInternalListenerTraceFile != null && this.iInternalListenerTraceFile.equals(pListener)) ||
+			(this.iInternalListenerTraceConsole != null && this.iInternalListenerTraceConsole.equals(pListener))
+		) {
 			this.iNumInternalTraceListeners++;
 		} else {
 			this.iNumExternalTraceListeners++;
@@ -520,7 +578,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Removes a listener. This listener will not be notified of trace events
 	 * anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -529,13 +587,11 @@ public class LogAndTraceBroker {
 		if (!newListeners.remove(pListener)) return;
 		this.iTraceListeners = newListeners;
 
-		if (this.iInternalListenerTraceFile != null
-				&& this.iInternalListenerTraceFile.equals(pListener)) {
+		if (this.iInternalListenerTraceFile != null && this.iInternalListenerTraceFile.equals(pListener)) {
 			// Removing internal tracelistener for file
 			this.iInternalListenerTraceFile = null;
 			this.iNumInternalTraceListeners--;
-		} else if (this.iInternalListenerTraceConsole != null
-				&& this.iInternalListenerTraceConsole.equals(pListener)) {
+		} else if (this.iInternalListenerTraceConsole != null && this.iInternalListenerTraceConsole.equals(pListener)) {
 			// Removing internal trace listener for console
 			this.iInternalListenerTraceConsole = null;
 			this.iNumInternalTraceListeners--;
@@ -562,7 +618,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Gets the registered trace listeners including the internal console and
 	 * file loggers.
-	 * 
+	 *
 	 * @return A list of listeners
 	 */
 	public List<TraceListener> getTraceListeners() {
@@ -572,14 +628,13 @@ public class LogAndTraceBroker {
 	/**
 	 * Adds a listener for CIM-XML trace messages. The listener will be notified
 	 * of any CIM-XML trace event.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
 	public synchronized void addCIMXMLTraceListener(CIMXMLTraceListener pListener) {
 		if (pListener == null) return;
-		ArrayList<CIMXMLTraceListener> newListeners = new ArrayList<CIMXMLTraceListener>(
-				this.iCIMXMLTraceListeners);
+		ArrayList<CIMXMLTraceListener> newListeners = new ArrayList<CIMXMLTraceListener>(this.iCIMXMLTraceListeners);
 		newListeners.add(pListener);
 		this.iCIMXMLTraceListeners = newListeners;
 	}
@@ -587,13 +642,12 @@ public class LogAndTraceBroker {
 	/**
 	 * Removes a CIM-XML trace listener. This listener will not be notified of
 	 * CIM-XML trace events anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
 	public synchronized void removeCIMXMLTraceListener(CIMXMLTraceListener pListener) {
-		ArrayList<CIMXMLTraceListener> newListeners = new ArrayList<CIMXMLTraceListener>(
-				this.iCIMXMLTraceListeners);
+		ArrayList<CIMXMLTraceListener> newListeners = new ArrayList<CIMXMLTraceListener>(this.iCIMXMLTraceListeners);
 		if (!newListeners.remove(pListener)) return;
 		this.iCIMXMLTraceListeners = newListeners;
 	}
@@ -607,7 +661,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Gets the registered CIM-XML trace listeners.
-	 * 
+	 *
 	 * @return A list of listeners
 	 */
 	public List<CIMXMLTraceListener> getCIMXMLTraceListeners() {
@@ -616,7 +670,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Forwards a log/trace message to the registered log&trace listeners.
-	 * 
+	 *
 	 * @param pKey
 	 *            The message identifier.
 	 */
@@ -626,7 +680,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Forwards a log/trace message to the registered log&trace listeners.
-	 * 
+	 *
 	 * @param pKey
 	 *            The message identifier.
 	 * @param pParameter
@@ -638,7 +692,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Forwards a log/trace message to the registered log&trace listeners.
-	 * 
+	 *
 	 * @param pKey
 	 *            The message identifier.
 	 * @param pParameters
@@ -653,8 +707,7 @@ public class LogAndTraceBroker {
 				final List<TraceListener> traceListeners = getTraceListeners();
 				StackTraceElement caller = getCaller();
 				for (int i = 0; i < traceListeners.size(); ++i) {
-					traceListeners.get(i).trace(level, caller,
-							pKey + " " + MessageFormat.format(message, pParameters));
+					traceListeners.get(i).trace(level, caller, pKey + " " + MessageFormat.format(message, pParameters));
 				}
 			}
 			final List<LogListener> logListeners = getLogListeners();
@@ -668,7 +721,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Forwards a trace message to the registered trace listeners.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the three message level identifiers FINE, FINER and
 	 *            FINEST
@@ -691,7 +744,7 @@ public class LogAndTraceBroker {
 
 	/**
 	 * Forwards a trace message to the registered trace listeners.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the three message level identifiers FINE, FINER and
 	 *            FINEST
@@ -717,7 +770,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Forwards a CIM-XML trace message to the registered CIM-XML trace
 	 * listeners.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the message level identifiers, e.g. FINE
 	 * @param pMessage
@@ -757,7 +810,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Returns the output stream to which all CIM-XML traffic (outgoing &amp;
 	 * incoming) will be copied for debugging purposes.
-	 * 
+	 *
 	 * @return The output stream. A <code>null</code> value means that CIM-XML
 	 *         debugging is disabled
 	 */
@@ -768,7 +821,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Sets an output stream to which all CIM-XML traffic (outgoing &amp;
 	 * incoming) will be copied for debugging purposes.
-	 * 
+	 *
 	 * @param pStream
 	 *            The output stream. A <code>null</code> value means that
 	 *            CIM-XML debugging is disabled.
@@ -787,8 +840,7 @@ public class LogAndTraceBroker {
 		try {
 			if (WBEMConfiguration.getGlobalConfiguration().isCimXmlTracingEnabled()) {
 				String filename = WBEMConfiguration.getGlobalConfiguration().getCimXmlTraceStream();
-				if (filename != null && filename.length() > 0 && this.iXmlTraceFile == null
-						&& getXmlTraceStream() == null) {
+				if (filename != null && filename.length() > 0 && this.iXmlTraceFile == null && getXmlTraceStream() == null) {
 					if (filename.equalsIgnoreCase("System.out")) {
 						this.iXmlTraceFile = System.out;
 					} else if (filename.equalsIgnoreCase("System.err")) {
@@ -797,9 +849,11 @@ public class LogAndTraceBroker {
 						try {
 							this.iXmlTraceFile = new FileOutputStream(filename);
 						} catch (IOException e) {
-							trace(Level.FINE, "Unable to open "
-									+ WBEMConfigurationProperties.CIMXML_TRACE_STREAM + "="
-									+ filename, e);
+							trace(
+								Level.FINE,
+								"Unable to open " + WBEMConfigurationProperties.CIMXML_TRACE_STREAM + "=" + filename,
+								e
+							);
 						}
 					}
 					setXmlTraceStream(this.iXmlTraceFile);
@@ -813,7 +867,7 @@ public class LogAndTraceBroker {
 	/**
 	 * Analyzes the stack trace and determines from where the
 	 * <code>LogAndTraceBroker</code> was called.
-	 * 
+	 *
 	 * @return First <code>StackTraceElement</code> outside the
 	 *         <code>LogAndTraceBroker</code>
 	 */
@@ -822,14 +876,16 @@ public class LogAndTraceBroker {
 		for (int i = 0; i < stack.length; ++i) {
 			StackTraceElement frame = stack[i];
 			String cname = frame.getClassName();
-			if (!this.iTHIS_CLASS.equals(cname) && !this.iTHROWABLE.equals(cname)) { return frame; }
+			if (!this.iTHIS_CLASS.equals(cname) && !this.iTHROWABLE.equals(cname)) {
+				return frame;
+			}
 		}
 		return null;
 	}
 
 	/**
 	 * Removes all handlers from a logger
-	 * 
+	 *
 	 * @param pLogger
 	 *            The logger
 	 */
@@ -846,13 +902,13 @@ public class LogAndTraceBroker {
 	 * message with the specified level. Use this method to determine if a
 	 * trace() method call could result in logging before preparing the
 	 * information to be logged. For example:
-	 * 
+	 *
 	 * <pre>
 	 *     if (logger.isLoggableTrace(Level.WARNING) {
 	 *         // Prepare info for logging
 	 *         logger.trace(Level.WARNING, ...
 	 * </pre>
-	 * 
+	 *
 	 * @param pLevel
 	 *            The <code>Level</code> of the trace message.
 	 * @return <code>true</code> if trace message could be logged,
@@ -888,13 +944,13 @@ public class LogAndTraceBroker {
 	 * with the specified level. Use this method to determine if a message()
 	 * method call could result in logging before preparing the information to
 	 * be logged. For example:
-	 * 
+	 *
 	 * <pre>
 	 *     if (logger.isLoggableMessage(Level.WARNING) {
 	 *         // Prepare info for logging
 	 *         logger.message(Level.WARNING, ...
 	 * </pre>
-	 * 
+	 *
 	 * @param pLevel
 	 *            The <code>Level</code> of the message.
 	 * @return <code>true</code> if message could be logged, <code>false</code>
@@ -933,13 +989,13 @@ public class LogAndTraceBroker {
 	 * a CIM-XML trace message. Use this method to determine if a trace() method
 	 * call could result in logging before preparing the information to be
 	 * logged. For example:
-	 * 
+	 *
 	 * <pre>
 	 *     if (logger.isLoggableCIMXMLTrace(Level.FINEST) {
 	 *         // Prepare info for logging
 	 *         logger.traceCIMXML(Level.FINEST, ...
 	 * </pre>
-	 * 
+	 *
 	 * @param pLevel
 	 *            The <code>Level</code> of the trace message.
 	 * @return <code>true</code> if CIM-XML trace message could be logged,

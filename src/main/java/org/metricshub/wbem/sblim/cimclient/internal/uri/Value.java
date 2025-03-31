@@ -48,7 +48,7 @@ public abstract class Value {
 
 	/**
 	 * Factory method which tries to parse an untyped value.
-	 * 
+	 *
 	 * @param pTyped
 	 * @param pUriStr
 	 * @return <code>Value</code> instance
@@ -78,10 +78,12 @@ public abstract class Value {
 			return value;
 		} catch (IllegalArgumentException e) {
 			// non string like value
-			if ((value = IntegerValue.parse(uriStr)) != null
-					|| (value = RealValue.parse(uriStr)) != null
-					|| (value = BooleanValue.parse(uriStr)) != null
-					|| (value = CharValue.parse(uriStr)) != null) {
+			if (
+				(value = IntegerValue.parse(uriStr)) != null ||
+				(value = RealValue.parse(uriStr)) != null ||
+				(value = BooleanValue.parse(uriStr)) != null ||
+				(value = CharValue.parse(uriStr)) != null
+			) {
 				pUriStr.set(uriStr);
 				return value;
 			}
@@ -92,7 +94,7 @@ public abstract class Value {
 
 	/**
 	 * getTypeInfo
-	 * 
+	 *
 	 * @return the type description string of the Value.
 	 */
 	public abstract String getTypeInfo();
@@ -142,8 +144,13 @@ public abstract class Value {
 				val = null;
 			}
 		} catch (IllegalArgumentException e) {
-			String msg = "Failed to parse " + typeInfo + " value!\n"
-					+ uriStr.markPosition(valuePos) + "Nested message:\n" + e.getMessage();
+			String msg =
+				"Failed to parse " +
+				typeInfo +
+				" value!\n" +
+				uriStr.markPosition(valuePos) +
+				"Nested message:\n" +
+				e.getMessage();
 			throw new IllegalArgumentException(msg);
 		}
 		if (val == null) {
@@ -160,8 +167,11 @@ public abstract class Value {
 		try {
 			strVal = StringValue.parse(pUriStr);
 		} catch (IllegalArgumentException e) {
-			String msg = "Failed to retrieve typed reference string!\n" + pUriStr.markPosition()
-					+ "Nested message is:\n" + e.getMessage();
+			String msg =
+				"Failed to retrieve typed reference string!\n" +
+				pUriStr.markPosition() +
+				"Nested message is:\n" +
+				e.getMessage();
 			throw new IllegalArgumentException(msg);
 		}
 		URIString refUriStr = new URIString(strVal.toString());
@@ -169,8 +179,11 @@ public abstract class Value {
 			URI ref = URI.parseRef(refUriStr, true);
 			return new ReferenceValue(ref);
 		} catch (IllegalArgumentException e) {
-			String msg = "Failed to parse typed reference value!\n" + pUriStr.markPosition(pos)
-					+ "Nested message is:\n" + e.getMessage();
+			String msg =
+				"Failed to parse typed reference value!\n" +
+				pUriStr.markPosition(pos) +
+				"Nested message is:\n" +
+				e.getMessage();
 			throw new IllegalArgumentException(msg);
 		}
 	}
@@ -180,8 +193,11 @@ public abstract class Value {
 		try {
 			strVal = StringValue.parse(pUriStr);
 		} catch (IllegalArgumentException e) {
-			String msg = "Failed to retrieve typed datetime string!\n" + pUriStr.markPosition()
-					+ "Nested message is:\n" + e.getMessage();
+			String msg =
+				"Failed to retrieve typed datetime string!\n" +
+				pUriStr.markPosition() +
+				"Nested message is:\n" +
+				e.getMessage();
 			throw new IllegalArgumentException(msg);
 		}
 		return DateTimeValue.parse(strVal.toString(), true);
@@ -195,5 +211,4 @@ public abstract class Value {
 		pUriStr.set(uriStr);
 		return typeInfo;
 	}
-
 }

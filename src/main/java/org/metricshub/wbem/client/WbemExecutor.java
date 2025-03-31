@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.metricshub.wbem.client.exceptions.WqlQuerySyntaxException;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 
@@ -37,7 +36,7 @@ import org.metricshub.wbem.javax.wbem.WBEMException;
  */
 public class WbemExecutor {
 
-	private WbemExecutor() { }
+	private WbemExecutor() {}
 
 	/**
 	 * Execute a WBEM query on remote.
@@ -56,26 +55,16 @@ public class WbemExecutor {
 	 * @throws InterruptedException
 	 */
 	public static WbemQueryResult executeWql(
-			final URL url,
-			final String namespace,
-			final String username,
-			final char[] password,
-			final String query,
-			int timeout,
-			final String arraySeparator)
-					throws WqlQuerySyntaxException,
-					WBEMException,
-					TimeoutException,
-					InterruptedException  {
-		return executeMethod(
-				url,
-				namespace,
-				username,
-				password,
-				query,
-				null,
-				timeout,
-				arraySeparator);
+		final URL url,
+		final String namespace,
+		final String username,
+		final char[] password,
+		final String query,
+		int timeout,
+		final String arraySeparator
+	)
+		throws WqlQuerySyntaxException, WBEMException, TimeoutException, InterruptedException {
+		return executeMethod(url, namespace, username, password, query, null, timeout, arraySeparator);
 	}
 
 	/**
@@ -95,26 +84,16 @@ public class WbemExecutor {
 	 * @throws InterruptedException
 	 */
 	public static WbemQueryResult getAssociators(
-			final URL url,
-			final String username,
-			final char[] password,
-			final String query,
-			final String objectPathAssociators,
-			int timeout,
-			final String arraySeparator)
-					throws WqlQuerySyntaxException,
-					WBEMException,
-					TimeoutException,
-					InterruptedException   {
-		return executeMethod(
-				url,
-				null,
-				username,
-				password,
-				query,
-				objectPathAssociators,
-				timeout,
-				arraySeparator);
+		final URL url,
+		final String username,
+		final char[] password,
+		final String query,
+		final String objectPathAssociators,
+		int timeout,
+		final String arraySeparator
+	)
+		throws WqlQuerySyntaxException, WBEMException, TimeoutException, InterruptedException {
+		return executeMethod(url, null, username, password, query, objectPathAssociators, timeout, arraySeparator);
 	}
 
 	/**
@@ -135,19 +114,16 @@ public class WbemExecutor {
 	 * @throws WqlQuerySyntaxException
 	 */
 	private static WbemQueryResult executeMethod(
-			final URL url,
-			final String namespace,
-			final String username,
-			final char[] password,
-			final String query,
-			final String objectPathAssociators,
-			int timeout,
-			final String arraySeparator)
-					throws InterruptedException,
-					TimeoutException,
-					WBEMException,
-					WqlQuerySyntaxException {
-
+		final URL url,
+		final String namespace,
+		final String username,
+		final char[] password,
+		final String query,
+		final String objectPathAssociators,
+		int timeout,
+		final String arraySeparator
+	)
+		throws InterruptedException, TimeoutException, WBEMException, WqlQuerySyntaxException {
 		Utils.checkNonNull(url, "url");
 		Utils.checkNonNull(username, "username");
 		Utils.checkNonNull(password, "password");
@@ -156,36 +132,34 @@ public class WbemExecutor {
 
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-		final Future<WbemQueryResult> future = executor.submit(() -> {
-			try (final WbemClient matsyaWbemClient = new WbemClient()) {
-				matsyaWbemClient.connect(url, username, password, timeout);
+		final Future<WbemQueryResult> future = executor.submit(
+			() -> {
+				try (final WbemClient matsyaWbemClient = new WbemClient()) {
+					matsyaWbemClient.connect(url, username, password, timeout);
 
-				return objectPathAssociators == null ?
-						matsyaWbemClient.executeWql(wqlQuery, namespace, arraySeparator) :
-						matsyaWbemClient.getAssociators(wqlQuery, objectPathAssociators, arraySeparator);
+					return objectPathAssociators == null
+						? matsyaWbemClient.executeWql(wqlQuery, namespace, arraySeparator)
+						: matsyaWbemClient.getAssociators(wqlQuery, objectPathAssociators, arraySeparator);
+				}
 			}
-		});
+		);
 
 		try {
 			return future.get(timeout, TimeUnit.MILLISECONDS);
-
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw (InterruptedException) e;
-
 		} catch (TimeoutException e) {
 			future.cancel(true);
 			throw e;
-
-		}  catch (ExecutionException e) {
+		} catch (ExecutionException e) {
 			if (e.getCause() instanceof WBEMException) {
 				throw (WBEMException) e.getCause();
 			}
 			// else should be RunTimeException as matsyaWbemClient only thrown
 			// WBEMException as checked exceptions.
 			throw (RuntimeException) e.getCause();
-		}
-		finally {
+		} finally {
 			executor.shutdownNow();
 		}
 	}

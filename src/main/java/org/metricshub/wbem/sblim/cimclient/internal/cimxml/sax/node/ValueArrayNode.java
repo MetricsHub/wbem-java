@@ -48,7 +48,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.sblim.cimclient.GenericExts;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMHelper;
@@ -61,7 +60,6 @@ import org.xml.sax.SAXException;
  * For non-standard CIMOMs the TYPE and PARAMTYPE attributes are handled.
  */
 public class ValueArrayNode extends AbstractArrayValueNode {
-
 	// VALUE *
 	private ArrayList<Object> iValueAL;
 
@@ -87,8 +85,7 @@ public class ValueArrayNode extends AbstractArrayValueNode {
 		CIMDataType scalarType = getCIMType(pAttribs, true);
 		if (scalarType == null) scalarType = getParamType(pAttribs);
 		// make array type
-		this.iType = scalarType == null ? null : CIMHelper.UnboundedArrayDataType(scalarType
-				.getType());
+		this.iType = scalarType == null ? null : CIMHelper.UnboundedArrayDataType(scalarType.getType());
 	}
 
 	/**
@@ -96,26 +93,27 @@ public class ValueArrayNode extends AbstractArrayValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum != VALUE && pNodeNameEnum != VALUE_NULL) throw new SAXException(
-				"Only VALUE and VALUE.NULL nodes can be added to VALUE.ARRAY nodes but "
-						+ pNodeNameEnum + " found!");
+			"Only VALUE and VALUE.NULL nodes can be added to VALUE.ARRAY nodes but " + pNodeNameEnum + " found!"
+		);
 	}
 
 	@Override
 	public void childParsed(Node pChild) {
 		if (this.iValueAL == null) this.iValueAL = new ArrayList<Object>();
-		if (pChild instanceof ValueNode) this.iValueAL.add(((ValueNode) pChild).getValue());
-		else if (pChild instanceof ValueNullNode) this.iValueAL.add(null);
+		if (pChild instanceof ValueNode) this.iValueAL.add(((ValueNode) pChild).getValue()); else if (
+			pChild instanceof ValueNullNode
+		) this.iValueAL.add(null);
 	}
 
 	@Override
 	public void testCompletness() {
-	// Nothing to test, since it is OK if it doesn't have child node.
+		// Nothing to test, since it is OK if it doesn't have child node.
 	}
 
 	/**
@@ -150,5 +148,4 @@ public class ValueArrayNode extends AbstractArrayValueNode {
 	public Object getValue() {
 		return this.iValueAL == null ? EMPTY_SA : this.iValueAL.toArray(EMPTY_SA);
 	}
-
 }

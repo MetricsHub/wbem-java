@@ -53,12 +53,12 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMHelper;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.CIMObjectFactory;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.NodeConstIf;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
-import org.metricshub.wbem.javax.cim.CIMFlavor;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.NodeConstIf;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -67,14 +67,13 @@ import org.xml.sax.SAXException;
  * contains helper functions for the implementations.
  */
 public abstract class Node implements NodeConstIf {
-
 	private String iNameEnum;
 
 	private boolean iCompleted;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 *            The name of the node which must be a String constant which is
 	 *            defined inside this class (because the implementation compares
@@ -86,7 +85,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * getNodeName
-	 * 
+	 *
 	 * @return The name of the node. This name have to be one of the String
 	 *         constant defined in the class.
 	 */
@@ -98,7 +97,7 @@ public abstract class Node implements NodeConstIf {
 	 * The SAX ContentHandler implementation calls this method after testChild()
 	 * and addChild() calls. The implementation must reset it's instance unless
 	 * it implements NonVolatileIf
-	 * 
+	 *
 	 * @param pAttribs
 	 * @param pSession
 	 *            - stores variables which are common for the whole SAX parsing
@@ -109,7 +108,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * XML element's data have to be passed
-	 * 
+	 *
 	 * @param pData
 	 *            - String which is concatenated in SAX's
 	 *            DefaultHandler.characters() implementation.
@@ -120,7 +119,7 @@ public abstract class Node implements NodeConstIf {
 	/**
 	 * It have to be called by SAX's DefaultHandler implementation when it
 	 * detects a new child element (startElement()).
-	 * 
+	 *
 	 * @param pNodeNameEnum
 	 *            - the name of the child element, it must be one of the String
 	 *            constant defined in class Node, because the implementer
@@ -135,7 +134,7 @@ public abstract class Node implements NodeConstIf {
 	 * It have to be called by SAX's DefaultHandler.endElement(). It's task is
 	 * to check that the Element is built up correctly. The implementer function
 	 * can do some post processing here. testCompletness
-	 * 
+	 *
 	 * @throws SAXException
 	 *             It must be thrown when the Node is not valid.
 	 */
@@ -143,7 +142,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * Have to be called by SAX's DefaultHandler.endElement()
-	 * 
+	 *
 	 * @param pChild
 	 * @throws SAXException
 	 *             - parent Nodes can make conversions here (e.g. type string
@@ -154,7 +153,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * completed
-	 * 
+	 *
 	 * @return true if the parsing of the node is completed
 	 */
 	public boolean isCompleted() {
@@ -179,7 +178,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % CIMName "NAME CDATA #REQUIRED"
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return String
 	 * @throws SAXException
@@ -192,7 +191,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % ClassName "CLASSNAME CDATA #REQUIRED"
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return String
 	 * @throws SAXException
@@ -205,7 +204,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % ReferenceClass "REFERENCECLASS CDATA #IMPLIED"
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return String
 	 */
@@ -215,7 +214,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % ClassOrigin "CLASSORIGIN CDATA #IMPLIED
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return String
 	 */
@@ -225,7 +224,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % Propagated "PROPAGATED (true|false) 'false'" getPropagated
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return boolean
 	 */
@@ -236,7 +235,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * ENTITY % ArraySize "ARRAYSIZE CDATA #IMPLIED"
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return int
 	 * @throws SAXException
@@ -246,8 +245,7 @@ public abstract class Node implements NodeConstIf {
 		// 0 - unbounded size
 		int size = 0;
 		try {
-			size = arraySizeStr == null || arraySizeStr.length() == 0 ? 0 : Integer
-					.parseInt(arraySizeStr);
+			size = arraySizeStr == null || arraySizeStr.length() == 0 ? 0 : Integer.parseInt(arraySizeStr);
 		} catch (NumberFormatException e) {
 			throw new SAXException(arraySizeStr + " is not a valid ARRAYSIZE attribute!");
 		}
@@ -259,14 +257,13 @@ public abstract class Node implements NodeConstIf {
 	 * ENTITY % CIMType "TYPE
 	 * (boolean|string|char16|uint8|sint8|uint16|sint16|uint32
 	 * |sint32|uint64|sint64|datetime|real32|real64)" getCIMType
-	 * 
+	 *
 	 * @param pAttribs
 	 * @param pOptional
 	 * @return CIMDataType
 	 * @throws SAXException
 	 */
-	public static CIMDataType getCIMType(Attributes pAttribs, boolean pOptional)
-			throws SAXException {
+	public static CIMDataType getCIMType(Attributes pAttribs, boolean pOptional) throws SAXException {
 		String typeStr = pAttribs.getValue("TYPE");
 		if (typeStr == null) {
 			if (pOptional) return null;
@@ -274,16 +271,15 @@ public abstract class Node implements NodeConstIf {
 		}
 		CIMDataType type = CIMObjectFactory.getType(typeStr);
 		if (type == null) throw new SAXException(typeStr + " is not a valid TYPE attribute!");
-		if (type.getType() == CIMDataType.REFERENCE) throw new SAXException(
-				"TYPE attribute cannot be \"reference\"!");
+		if (type.getType() == CIMDataType.REFERENCE) throw new SAXException("TYPE attribute cannot be \"reference\"!");
 		// Is it array?
 		// Yes if ISARRAY is true or ARRAYSIZE>-1.
 		boolean isArray = hasTrueAttribute(pAttribs, "ISARRAY");
 		String arraySizeStr = pAttribs.getValue("ARRAYSIZE");
 		int arraySize;
 		try {
-			arraySize = (arraySizeStr == null || arraySizeStr.length() == 0 ? (isArray ? 0 : -1)
-					: Integer.parseInt(arraySizeStr));
+			arraySize =
+				(arraySizeStr == null || arraySizeStr.length() == 0 ? (isArray ? 0 : -1) : Integer.parseInt(arraySizeStr));
 		} catch (NumberFormatException e) {
 			throw new SAXException(arraySizeStr + " is not a valid ARRAYSIZE attribute!");
 		}
@@ -296,7 +292,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * getCIMType(pAttribs, pOptional=false);
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return CIMDataType
 	 * @throws SAXException
@@ -309,7 +305,7 @@ public abstract class Node implements NodeConstIf {
 	 * ENTITY % ParamType "PARAMTYPE (
 	 * boolean|string|char16|uint8|sint8|uint16|sint16
 	 * |uint32|sint32|uint64|sint64|datetime| real32|real64|reference)
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return CIMDataType
 	 * @throws SAXException
@@ -327,7 +323,7 @@ public abstract class Node implements NodeConstIf {
 	 * TOINSTANCE     (true|false)  'false'
 	 * TRANSLATABLE   (true|false)  'false'&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pAttribs
 	 * @return int - CIMFlavor bit mixture
 	 */
@@ -341,7 +337,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * hasTrueAttribute
-	 * 
+	 *
 	 * @param pAttribs
 	 * @param pName
 	 * @return boolean
@@ -352,7 +348,7 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * getBoolAttribute
-	 * 
+	 *
 	 * @param pAttribs
 	 * @param pName
 	 * @param pDefVal
@@ -367,26 +363,32 @@ public abstract class Node implements NodeConstIf {
 
 	/**
 	 * duplicatedNode
-	 * 
+	 *
 	 * @param pParsedNodeName
 	 * @param pNewNodeName
 	 * @throws SAXException
 	 */
 	public void duplicatedNode(String pParsedNodeName, String pNewNodeName) throws SAXException {
-		throw new SAXException(getNodeName() + " has a " + pParsedNodeName
-				+ " child node which disallows an additional " + pNewNodeName + " child node!");
+		throw new SAXException(
+			getNodeName() +
+			" has a " +
+			pParsedNodeName +
+			" child node which disallows an additional " +
+			pNewNodeName +
+			" child node!"
+		);
 	}
 
 	/**
 	 * illegalChildNodePair
-	 * 
+	 *
 	 * @param pNodeName0
 	 * @param pNodeName1
 	 * @throws SAXException
 	 */
 	public void illegalChildNodePair(String pNodeName0, String pNodeName1) throws SAXException {
-		throw new SAXException(pNodeName0 + ", " + pNodeName1 + " child node pair is illegal for "
-				+ getNodeName() + " node!");
+		throw new SAXException(
+			pNodeName0 + ", " + pNodeName1 + " child node pair is illegal for " + getNodeName() + " node!"
+		);
 	}
-
 }

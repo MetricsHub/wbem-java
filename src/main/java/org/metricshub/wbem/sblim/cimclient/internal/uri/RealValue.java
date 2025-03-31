@@ -42,7 +42,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.uri;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
@@ -51,7 +50,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
  * Class RealValue parses and encapsulates real values.
  */
 public class RealValue extends Value {
-
 	private double iValue;
 
 	private boolean iDoublePrec;
@@ -61,13 +59,12 @@ public class RealValue extends Value {
 	/**
 	 * realValue = [ "+" | "-" ] *decimalDigit "." 1*decimalDigit [ ( "e" | "E"
 	 * ) [ "+" | "-" ] 1*decimalDigit ] parse
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pDoublePrec
 	 * @return Value
 	 */
-	private static Value parse(URIString pUriStr, boolean pDoublePrec, boolean pThrow)
-			throws IllegalArgumentException {
+	private static Value parse(URIString pUriStr, boolean pDoublePrec, boolean pThrow) throws IllegalArgumentException {
 		URIString uriStr = pUriStr.deepCopy();
 		// get the substring till the next ',' or end of pUriStr
 		String strVal = uriStr.removeTill(',');
@@ -90,15 +87,15 @@ public class RealValue extends Value {
 		try {
 			if (WBEMConfiguration.getGlobalConfiguration().verifyJavaLangDoubleStrings()) {
 				if (Util.isBadDoubleString(strVal)) throw new IllegalArgumentException(
-						"Double value string hangs older JVMs!\n" + pUriStr.markPosition());
+					"Double value string hangs older JVMs!\n" + pUriStr.markPosition()
+				);
 			}
 			double val = Double.parseDouble(strVal);
 			pUriStr.set(uriStr);
 			return new RealValue(val, pDoublePrec);
 		} catch (NumberFormatException e) {
 			if (pThrow) {
-				String msg = "Illegal number format!\n" + pUriStr.markPosition()
-						+ "Nested message:\n" + e.getMessage();
+				String msg = "Illegal number format!\n" + pUriStr.markPosition() + "Nested message:\n" + e.getMessage();
 				throw new IllegalArgumentException(msg);
 			}
 			return null;
@@ -107,7 +104,7 @@ public class RealValue extends Value {
 
 	/**
 	 * Parses a RealValue as a double precision value.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return Value
 	 */
@@ -117,7 +114,7 @@ public class RealValue extends Value {
 
 	/**
 	 * parseFloat
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return Value
 	 * @throws IllegalArgumentException
@@ -129,7 +126,7 @@ public class RealValue extends Value {
 
 	/**
 	 * parseDouble
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return Value
 	 * @throws IllegalArgumentException
@@ -146,7 +143,7 @@ public class RealValue extends Value {
 
 	/**
 	 * isDouble
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isDouble() {
@@ -155,7 +152,7 @@ public class RealValue extends Value {
 
 	/**
 	 * floatValue
-	 * 
+	 *
 	 * @return float
 	 */
 	public float floatValue() {
@@ -164,7 +161,7 @@ public class RealValue extends Value {
 
 	/**
 	 * doubleValue
-	 * 
+	 *
 	 * @return double
 	 */
 	public double doubleValue() {
@@ -187,5 +184,4 @@ public class RealValue extends Value {
 		if (this.iDoublePrec) return MOF.DT_REAL64;
 		return MOF.DT_REAL32;
 	}
-
 }

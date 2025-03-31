@@ -62,18 +62,18 @@ public class Utils {
 	 * <li>group(2): optional fraction of seconds
 	 * <li>group(3): timezone offset... in minutes (sigh)
 	 */
-	private static final Pattern CIM_DATETIME_PATTERN = Pattern
-			.compile("^([0-9]{14})(?:\\.([0-9]{3,6}))?([+-][0-9]{3})$");
+	private static final Pattern CIM_DATETIME_PATTERN = Pattern.compile(
+		"^([0-9]{14})(?:\\.([0-9]{3,6}))?([+-][0-9]{3})$"
+	);
 
 	/**
 	 * Convert a String holding a CIM_DATETIME (i.e. a string in the form of
 	 * <code>yyyymmddHHMMSS.mmmmmmsUUU</code>) to an OffsetDateTime object
-	 * 
+	 *
 	 * @param stringValue String value with a CIM_DATETIME
 	 * @return OffsetDateTime instance
 	 */
 	public static OffsetDateTime convertCimDateTime(final String stringValue) {
-
 		if (stringValue == null) {
 			return null;
 		}
@@ -92,13 +92,11 @@ public class Utils {
 		// Zone Offset
 		final String zoneOffset = dateTimeMatcher.group(3);
 		if (zoneOffset == null) {
-			throw new IllegalStateException(
-					"Unable to get the timezone offset from CIM_DATETIME value: " + stringValue);
+			throw new IllegalStateException("Unable to get the timezone offset from CIM_DATETIME value: " + stringValue);
 		}
 		final int secondsOffset = Integer.parseInt(zoneOffset) * 60;
 		final ZoneOffset offset = ZoneOffset.ofTotalSeconds(secondsOffset);
 
 		return OffsetDateTime.of(localDateTime, offset);
 	}
-
 }

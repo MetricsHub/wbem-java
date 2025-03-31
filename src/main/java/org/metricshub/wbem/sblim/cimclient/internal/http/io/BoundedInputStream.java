@@ -47,17 +47,16 @@ import java.io.*;
 /**
  * Class BoundedInputStream implements an input stream with a maximum byte
  * count.
- * 
+ *
  */
 public class BoundedInputStream extends FilterInputStream {
-
 	private long maxLen, used;
 
 	private boolean closed = false;
 
 	/**
 	 * Ctor. Creates the stream with unlimited length.
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream this one is build upon
 	 */
@@ -67,7 +66,7 @@ public class BoundedInputStream extends FilterInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream this one is build upon
 	 * @param pMaximumLength
@@ -131,7 +130,9 @@ public class BoundedInputStream extends FilterInputStream {
 
 	@Override
 	public int available() throws IOException {
-		if (this.maxLen > -1) { return (int) (this.maxLen - this.used); }
+		if (this.maxLen > -1) {
+			return (int) (this.maxLen - this.used);
+		}
 		return this.in.available();
 	}
 

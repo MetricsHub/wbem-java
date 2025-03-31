@@ -46,7 +46,6 @@ import java.util.Vector;
  * key_value_pair *("," key_value_pair)
  */
 public class KeyValuePairs extends Vector<Object> {
-
 	/**
 	 * serialVersionUID
 	 */
@@ -54,15 +53,14 @@ public class KeyValuePairs extends Vector<Object> {
 
 	/**
 	 * Tries to parse the key-value pairs from the passed <code>pUriStr</code>.
-	 * 
+	 *
 	 * @param pTyped
 	 * @param pUriStr
 	 * @return instance of <code>UntypedKeyValuePairs</code> or
 	 *         <code>null</code> if failed.
 	 * @throws IllegalArgumentException
 	 */
-	public static KeyValuePairs parse(boolean pTyped, URIString pUriStr)
-			throws IllegalArgumentException {
+	public static KeyValuePairs parse(boolean pTyped, URIString pUriStr) throws IllegalArgumentException {
 		// TODO: tracing TRC.log(uriStr.toString());
 		URIString uriStr = pUriStr.deepCopy();
 		KeyValuePairs pairs = new KeyValuePairs();
@@ -93,10 +91,8 @@ public class KeyValuePairs extends Vector<Object> {
 		StringBuffer dstBuf = new StringBuffer();
 		for (int i = 0; i < size(); i++) {
 			KeyValuePair pair = (KeyValuePair) elementAt(i);
-			if (sep != null) dstBuf.append(sep);
-			else sep = ",";
+			if (sep != null) dstBuf.append(sep); else sep = ",";
 			dstBuf.append(pair.toString());
-
 		}
 		return dstBuf.toString();
 	}

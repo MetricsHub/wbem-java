@@ -58,18 +58,15 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import org.metricshub.wbem.sblim.cimclient.GenericExts;
 import org.metricshub.wbem.sblim.slp.internal.AttributeHandler;
 import org.metricshub.wbem.sblim.slp.internal.Convert;
 import org.metricshub.wbem.sblim.slp.internal.SLPString;
 
-
 /**
  * Service location attribute
  */
 public class ServiceLocationAttribute implements Serializable {
-
 	private static final long serialVersionUID = -6753246108754657715L;
 
 	private Vector<Object> iValues;
@@ -79,7 +76,7 @@ public class ServiceLocationAttribute implements Serializable {
 	/**
 	 * Construct a service location attribute. Errors in the id or values vector
 	 * result in an IllegalArgumentException.
-	 * 
+	 *
 	 * @param pId
 	 *            The attribute name. The String can consist of any Unicode
 	 *            character.
@@ -99,7 +96,7 @@ public class ServiceLocationAttribute implements Serializable {
 
 	/**
 	 * Construct a service location attribute from a String.
-	 * 
+	 *
 	 * @param pString
 	 *            The string to parse
 	 * @throws ServiceLocationException
@@ -107,25 +104,28 @@ public class ServiceLocationAttribute implements Serializable {
 	 */
 	public ServiceLocationAttribute(String pString) throws ServiceLocationException {
 		if (pString == null || pString.length() == 0) throw new ServiceLocationException(
-				ServiceLocationException.PARSE_ERROR,
-				"Empty or null String is not good for this constructor!");
+			ServiceLocationException.PARSE_ERROR,
+			"Empty or null String is not good for this constructor!"
+		);
 
 		if (pString.startsWith("(") && pString.endsWith(")")) {
 			int equalPos = pString.indexOf('=');
 			if (equalPos < 0) throw new ServiceLocationException(
-					ServiceLocationException.PARSE_ERROR, "Missing '=' from attribute string: "
-							+ pString);
+				ServiceLocationException.PARSE_ERROR,
+				"Missing '=' from attribute string: " + pString
+			);
 			this.iId = Convert.unescape(pString.substring(1, equalPos));
 			if (this.iId.length() == 0) throw new ServiceLocationException(
-					ServiceLocationException.PARSE_ERROR,
-					"Empty attribute ID in attribute string: " + pString);
+				ServiceLocationException.PARSE_ERROR,
+				"Empty attribute ID in attribute string: " + pString
+			);
 			String valueString = pString.substring(equalPos + 1, pString.length() - 1);
 
 			parseValueString(valueString);
-
 		} else {
 			if (pString.indexOf('(') >= 0 || pString.indexOf(')') >= 0) throw new ServiceLocationException(
-					ServiceLocationException.PARSE_ERROR);
+				ServiceLocationException.PARSE_ERROR
+			);
 			this.iId = Convert.unescape(pString);
 			this.iValues = null;
 		}
@@ -136,7 +136,7 @@ public class ServiceLocationAttribute implements Serializable {
 	 * a query. Any reserved characters as specified in [7] are escaped using
 	 * UTF-8 encoding. If any characters in the tag are illegal, throws
 	 * IllegalArgumentException.
-	 * 
+	 *
 	 * @param pId
 	 *            The attribute id to escape. ServiceLocationException is thrown
 	 *            if any characters are illegal for an attribute tag.
@@ -156,7 +156,7 @@ public class ServiceLocationAttribute implements Serializable {
 	 * is a Boolean or Integer, then the returned string contains the object
 	 * converted into a string. If the value is any type other than String,
 	 * Integer, Boolean or byte[], an IllegalArgumentException is thrown.
-	 * 
+	 *
 	 * @param pValue
 	 *            The attribute value to be converted into a string and escaped.
 	 * @return The escaped value
@@ -169,9 +169,9 @@ public class ServiceLocationAttribute implements Serializable {
 	 * Returns a cloned vector of attribute values, or null if the attribute is
 	 * a keyword attribute. If the attribute is single-valued, then the vector
 	 * contains only one object.
-	 * 
+	 *
 	 * @return The value vector
-	 * 
+	 *
 	 */
 	public Vector<Object> getValues() {
 		if (this.iValues != null) return GenericExts.cloneVector(this.iValues);
@@ -180,7 +180,7 @@ public class ServiceLocationAttribute implements Serializable {
 
 	/**
 	 * Returns the attribute's name.
-	 * 
+	 *
 	 * @return The name (id)
 	 */
 	public String getId() {
@@ -189,9 +189,9 @@ public class ServiceLocationAttribute implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
+	 *
 	 * Overrides Object.equals(). Two attributes are equal if their identifiers
 	 * are equal and their value vectors contain the same number of equal values
 	 * as determined by the Object equals() method. Values having byte[] type
@@ -220,9 +220,9 @@ public class ServiceLocationAttribute implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
-	 * 
+	 *
 	 * Overrides Object.toString(). The string returned contains a formatted
 	 * representation of the attribute, giving the attribute's id, values, and
 	 * the Java type of the values. The returned string is suitable for
@@ -243,7 +243,6 @@ public class ServiceLocationAttribute implements Serializable {
 				if (obj instanceof byte[]) obj = AttributeHandler.mkOpaqueStr((byte[]) obj);
 				stringbuffer.append(obj.toString());
 			}
-
 		}
 		stringbuffer.append(")");
 		return stringbuffer.toString();
@@ -258,9 +257,9 @@ public class ServiceLocationAttribute implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
-	 * 
+	 *
 	 * Overrides Object.hashCode(). Hashes on the attribute's identifier.
 	 */
 	@Override
@@ -269,8 +268,7 @@ public class ServiceLocationAttribute implements Serializable {
 			this.iHashCode = this.iId.hashCode();
 			if (this.iValues != null) {
 				ValueEntry[] valueEntries = getSortedValueEntries();
-				for (int i = 0; i < valueEntries.length; i++)
-					incHashCode(valueEntries[i].hashCode());
+				for (int i = 0; i < valueEntries.length; i++) incHashCode(valueEntries[i].hashCode());
 			}
 		}
 		return this.iHashCode;
@@ -302,35 +300,37 @@ public class ServiceLocationAttribute implements Serializable {
 
 	private static byte[] parseOpaqueStr(String pStr) throws ServiceLocationException {
 		if (pStr.length() == 3) throw new ServiceLocationException(
-				ServiceLocationException.PARSE_ERROR,
-				"There must be at least three characters after \\FF in opaque string!" + " pStr="
-						+ pStr);
+			ServiceLocationException.PARSE_ERROR,
+			"There must be at least three characters after \\FF in opaque string!" + " pStr=" + pStr
+		);
 
 		ByteArrayOutputStream oStr = new ByteArrayOutputStream();
 		int pos = 3; // skip "\\FF"
 		int left;
 		while ((left = pStr.length() - pos) > 0) {
-			if (left < 3) throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-					"Number of characters must be multiple of three after \\FF in opaque string!"
-							+ " pStr=" + pStr);
+			if (left < 3) throw new ServiceLocationException(
+				ServiceLocationException.PARSE_ERROR,
+				"Number of characters must be multiple of three after \\FF in opaque string!" + " pStr=" + pStr
+			);
 			if (pStr.charAt(pos) != '\\') throw new ServiceLocationException(
-					ServiceLocationException.PARSE_ERROR,
-					"Hex value must be preceded by \\ in opaque string!" + " pStr=" + pStr);
+				ServiceLocationException.PARSE_ERROR,
+				"Hex value must be preceded by \\ in opaque string!" + " pStr=" + pStr
+			);
 			String hexStr = pStr.substring(pos + 1, pos + 3);
 			pos += 3;
 			try {
 				oStr.write(Integer.parseInt(hexStr, 16));
 			} catch (NumberFormatException e) {
-				throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-						"Failed to parse hex value: " + hexStr + " in opaque string: " + pStr
-								+ " !");
+				throw new ServiceLocationException(
+					ServiceLocationException.PARSE_ERROR,
+					"Failed to parse hex value: " + hexStr + " in opaque string: " + pStr + " !"
+				);
 			}
 		}
 		return oStr.toByteArray();
 	}
 
 	static class ValueEntry implements Comparable<ValueEntry> {
-
 		/**
 		 * iStr
 		 */
@@ -354,8 +354,7 @@ public class ServiceLocationAttribute implements Serializable {
 			if (this.iValue == null) return that.iValue == null;
 			if (that.iValue == null) return false;
 			if (!this.iValue.getClass().equals(that.iValue.getClass())) return false;
-			if (this.iValue instanceof byte[]) return Arrays.equals((byte[]) this.iValue,
-					(byte[]) that.iValue);
+			if (this.iValue instanceof byte[]) return Arrays.equals((byte[]) this.iValue, (byte[]) that.iValue);
 			if (this.iValue instanceof String) return this.iStr.equals(that.iStr);
 			return this.iValue.equals(that.iValue);
 		}
@@ -364,14 +363,13 @@ public class ServiceLocationAttribute implements Serializable {
 		public int hashCode() {
 			return this.iStr == null ? 1 : this.iStr.hashCode();
 		}
-
 	}
 
 	private transient ValueEntry[] iSortedValueEntries;
 
 	/**
 	 * Used for equals check and hashCode calculation.
-	 * 
+	 *
 	 * @param pAttrib
 	 * @return attribute values in unified order, which is : values are sorted
 	 *         by theirs toString().
@@ -400,5 +398,4 @@ public class ServiceLocationAttribute implements Serializable {
 		Arrays.sort(this.iSortedValueEntries);
 		return this.iSortedValueEntries;
 	}
-
 }

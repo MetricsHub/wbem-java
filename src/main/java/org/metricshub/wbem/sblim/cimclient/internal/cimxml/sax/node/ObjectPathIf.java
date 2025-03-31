@@ -45,10 +45,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
  * It's implemented by Nodes which can construct a CIMObjectPath.
  */
 public interface ObjectPathIf {
-
 	/**
 	 * getCIMObjectPath
-	 * 
+	 *
 	 * @return CIMObjectPath
 	 */
 	CIMObjectPath getCIMObjectPath();

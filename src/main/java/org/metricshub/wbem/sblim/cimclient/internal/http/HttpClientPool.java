@@ -58,19 +58,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.net.ssl.SSLContext;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 
 /**
  * Class HttpClientPool implements a pool for http client connections
- * 
+ *
  */
 public class HttpClientPool {
-
 	/**
 	 * Guarded by "this"
 	 */
@@ -99,7 +96,7 @@ public class HttpClientPool {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pConfiguration
 	 *            The configuration for this session. Must be non-null.
 	 */
@@ -116,7 +113,7 @@ public class HttpClientPool {
 	/**
 	 * Returns the number of connections in this pool that are available/free
 	 * for (re-)use.
-	 * 
+	 *
 	 * @return number of available/free connections in pool
 	 */
 	public synchronized int getNumberOfAllConnections() {
@@ -125,7 +122,7 @@ public class HttpClientPool {
 
 	/**
 	 * Returns the number of all connections in this pool.
-	 * 
+	 *
 	 * @return number of all connections in pool
 	 */
 	public synchronized int getNumberOfAvailableConnections() {
@@ -134,7 +131,7 @@ public class HttpClientPool {
 
 	/**
 	 * Returns the configuration context of this pool
-	 * 
+	 *
 	 * @return The configuration
 	 */
 	public WBEMConfiguration getConfigurationContext() {
@@ -144,13 +141,12 @@ public class HttpClientPool {
 	/**
 	 * Returns the SSL context for the clients in this pool. The context is
 	 * initialized on the first call of this method (lazy initialization).
-	 * 
+	 *
 	 * @return The SSL context
 	 */
 	public synchronized SSLContext getSslContext() {
 		if (this.iSslContext == null) {
-			this.iSslContext = HttpSocketFactory.getInstance().getClientSSLContext(
-					this.iConfiguration);
+			this.iSslContext = HttpSocketFactory.getInstance().getClientSSLContext(this.iConfiguration);
 		}
 		return this.iSslContext;
 	}
@@ -158,33 +154,40 @@ public class HttpClientPool {
 	/**
 	 * Returns the available connections of this pool for a given
 	 * URI&AuthorizationHandler
-	 * 
+	 *
 	 * @param pUri
 	 *            The uri
 	 * @param pHandler
 	 *            The authorization handler
 	 * @return A connection if one is available, <code>null</code> otherwise
 	 */
-	public synchronized HttpClient retrieveAvailableConnectionFromPool(URI pUri,
-			AuthorizationHandler pHandler) {
+	public synchronized HttpClient retrieveAvailableConnectionFromPool(URI pUri, AuthorizationHandler pHandler) {
 		if (this.iClosed) {
-			LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Attempt to get client from closed http client pool,");
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Attempt to get client from closed http client pool,");
 			throw new IllegalStateException("HttpClientPool is closed. Retrieve connection failed.");
 		}
 		if (getNumberOfAvailableConnections() > 0) {
-			LogAndTraceBroker.getBroker().trace(
+			LogAndTraceBroker
+				.getBroker()
+				.trace(
 					Level.FINE,
-					"Reusing client (" + pUri.toString() + ", max: " + getPoolSize() + ", current:"
-							+ getNumberOfAvailableConnections());
+					"Reusing client (" +
+					pUri.toString() +
+					", max: " +
+					getPoolSize() +
+					", current:" +
+					getNumberOfAvailableConnections()
+				);
 
 			return this.iAvailableConnections.remove(0);
 		}
 
-		LogAndTraceBroker.getBroker().trace(
+		LogAndTraceBroker
+			.getBroker()
+			.trace(
 				Level.FINE,
-				"New client (" + pUri.toString() + ", max: " + getPoolSize() + ", current:"
-						+ getNumberOfAvailableConnections());
+				"New client (" + pUri.toString() + ", max: " + getPoolSize() + ", current:" + getNumberOfAvailableConnections()
+			);
 		HttpClient client = new HttpClient(pUri, this, pHandler);
 		addConnectionToPool(client);
 		return client;
@@ -194,13 +197,15 @@ public class HttpClientPool {
 	 * Add the connection to the pool. Connection is added as available
 	 * connection. Use method {@link #addConnectionToPool(HttpClient)} to add
 	 * the connection without being available for reuse.
-	 * 
+	 *
 	 * @param httpClient
 	 *            connection that is to be added to the pool
 	 * @return true if connection was added otherwise false
 	 */
 	public synchronized boolean returnAvailableConnectionToPool(HttpClient httpClient) {
-		if (httpClient == null) { return false; }
+		if (httpClient == null) {
+			return false;
+		}
 
 		if (this.iClosed) {
 			this.iAllConnections.remove(httpClient);
@@ -217,8 +222,7 @@ public class HttpClientPool {
 				return true;
 			}
 		} else {
-			LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Http pool size reached, discarding client.");
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Http pool size reached, discarding client.");
 			this.iAllConnections.remove(httpClient);
 			this.iAvailableConnections.remove(httpClient);
 			httpClient.disconnect();
@@ -231,15 +235,14 @@ public class HttpClientPool {
 	 * connection. Use method
 	 * {@link #returnAvailableConnectionToPool(HttpClient)} to also add the
 	 * connection to the available connections.
-	 * 
+	 *
 	 * @param httpClient
 	 *            connection that is to be added to the pool
 	 * @return true if connection was added otherwise false
 	 */
 	public synchronized boolean addConnectionToPool(HttpClient httpClient) {
 		if (this.iClosed) {
-			LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Attempt to add client to closed http client pool,");
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Attempt to add client to closed http client pool,");
 			throw new IllegalStateException("HttpClientPool is closed. Add connection failed.");
 		}
 		if (httpClient != null && !this.iAllConnections.contains(httpClient)) {
@@ -252,7 +255,7 @@ public class HttpClientPool {
 
 	/**
 	 * Removes a connection completely from the pool.
-	 * 
+	 *
 	 * @param httpClient
 	 *            connection that is to be removed from the pool
 	 * @return true if connection was removed otherwise false
@@ -260,7 +263,9 @@ public class HttpClientPool {
 	public synchronized boolean removeConnectionFromPool(HttpClient httpClient) {
 		if (httpClient != null) {
 			this.iAvailableConnections.remove(httpClient);
-			if (this.iAllConnections.remove(httpClient)) { return true; }
+			if (this.iAllConnections.remove(httpClient)) {
+				return true;
+			}
 			return false; // connection was not in pool!
 		}
 		return false; // no connection given
@@ -288,7 +293,7 @@ public class HttpClientPool {
 
 	/**
 	 * Returns poolSize
-	 * 
+	 *
 	 * @return The value of poolSize.
 	 */
 	public int getPoolSize() {
@@ -298,32 +303,31 @@ public class HttpClientPool {
 	/**
 	 * Returns updated array of cipher suites which is current cipher suites
 	 * less any cipher suites listed to be disabled
-	 * 
+	 *
 	 * NOTE: The updated array is generated only upon first invocation and then
 	 * saved, effectively making this a lazy initialization of the cipher suites
 	 * on a HttpClientPool basis - it has to be done here and not in WBEMClient
 	 * where it belongs because socket characteristics are not known to
 	 * WBEMClient
-	 * 
+	 *
 	 * @param pCurrentCipherSuites
 	 *            The currently enabled cipher suites
 	 * @param pDisableCipherSuites
 	 *            The list of cipher suites to be disabled
 	 * @return The updated enabled cipher suites
 	 */
-	public synchronized String[] getUpdatedCipherSuites(String[] pCurrentCipherSuites,
-			String pDisableCipherSuites) {
+	public synchronized String[] getUpdatedCipherSuites(String[] pCurrentCipherSuites, String pDisableCipherSuites) {
 		if (this.iEnabledCipherSuites == null) {
-			this.iEnabledCipherSuites = Util.getFilteredStringArray(pCurrentCipherSuites,
-					pDisableCipherSuites);
+			this.iEnabledCipherSuites = Util.getFilteredStringArray(pCurrentCipherSuites, pDisableCipherSuites);
 			int before = pCurrentCipherSuites.length;
 			int after = this.iEnabledCipherSuites.length;
-			if (before > 0 && after == 0) LogAndTraceBroker.getBroker().trace(Level.WARNING,
-					"All cipher suites disabled for client!");
-			else if (before > after) LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Some (" + (before - after) + ") cipher suites disabled for client");
-			else if (before == after) LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"No cipher suites disabled for client");
+			if (before > 0 && after == 0) LogAndTraceBroker
+				.getBroker()
+				.trace(Level.WARNING, "All cipher suites disabled for client!"); else if (before > after) LogAndTraceBroker
+				.getBroker()
+				.trace(Level.FINE, "Some (" + (before - after) + ") cipher suites disabled for client"); else if (
+				before == after
+			) LogAndTraceBroker.getBroker().trace(Level.FINER, "No cipher suites disabled for client");
 		}
 		return this.iEnabledCipherSuites;
 	}

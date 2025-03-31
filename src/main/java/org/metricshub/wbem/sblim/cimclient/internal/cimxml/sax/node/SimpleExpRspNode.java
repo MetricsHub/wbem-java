@@ -58,7 +58,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class SimpleExpRspNode extends AbstractSimpleRspNode {
-
 	private ExpMethodResponseNode iExpMethodRspNode;
 
 	/**
@@ -87,22 +86,22 @@ public class SimpleExpRspNode extends AbstractSimpleRspNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iExpMethodRspNode != null) throw new SAXException(getNodeName()
-				+ " node can have only one child node!");
-		if (pNodeNameEnum != EXPMETHODRESPONSE) throw new SAXException(getNodeName()
-				+ " node's child node can be EXPMETHODRESPONSE only! " + pNodeNameEnum
-				+ " is invalid!");
+		if (this.iExpMethodRspNode != null) throw new SAXException(getNodeName() + " node can have only one child node!");
+		if (pNodeNameEnum != EXPMETHODRESPONSE) throw new SAXException(
+			getNodeName() + " node's child node can be EXPMETHODRESPONSE only! " + pNodeNameEnum + " is invalid!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iExpMethodRspNode == null) throw new SAXException(getNodeName()
-				+ " node must have an EXPMETHODRESPONSE child node!");
+		if (this.iExpMethodRspNode == null) throw new SAXException(
+			getNodeName() + " node must have an EXPMETHODRESPONSE child node!"
+		);
 	}
 
 	@Override
@@ -125,5 +124,4 @@ public class SimpleExpRspNode extends AbstractSimpleRspNode {
 	public Object readReturnValue() {
 		return this.iExpMethodRspNode == null ? null : this.iExpMethodRspNode.readReturnValue();
 	}
-
 }

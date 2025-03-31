@@ -54,7 +54,6 @@ import org.xml.sax.Attributes;
  * </pre>
  */
 public class ParameterReferenceNode extends AbstractParameterNode {
-
 	private CIMDataType iType;
 
 	/**
@@ -71,10 +70,11 @@ public class ParameterReferenceNode extends AbstractParameterNode {
 	}
 
 	@Override
-	public void testCompletness() { /* */}
+	public void testCompletness() {
+		/* */
+	}
 
 	public CIMDataType getType() {
 		return this.iType;
 	}
-
 }

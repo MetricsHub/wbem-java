@@ -52,7 +52,6 @@ package org.metricshub.wbem.javax.wbem.client;
  * property value is attempted to be set.
  */
 public class WBEMClientConstants {
-
 	/**
 	 * Use this property to set the list of ciphers the client will support.
 	 * Setting this value to null will use the default set of ciphers provided
@@ -135,24 +134,24 @@ public class WBEMClientConstants {
 	/**
 	 * The CIM-XML Protocol as defined by the DMTF in the following
 	 * specifications:
-	 * 
+	 *
 	 * <pre>
-	 * DSP0200 - CIM Operations over HTTP 
-	 * DSP0201 - Representation of CIM Using XML 
+	 * DSP0200 - CIM Operations over HTTP
+	 * DSP0201 - Representation of CIM Using XML
 	 * DSP0203 - CIM DTD
-	 * 
+	 *
 	 */
 	public static final String PROTOCOL_CIMXML = "CIM-XML";
 
 	/**
 	 * The WS-Management Protocol as defined by the DMTF in the following
 	 * specifications:
-	 * 
+	 *
 	 * <pre>
-	 * DSP0226 - WS-Management 
-	 * DSP0227 - WS-Management CIM Binding Specification 
+	 * DSP0226 - WS-Management
+	 * DSP0227 - WS-Management CIM Binding Specification
 	 * DSP0230 - WS-CIM Mapping Specification
-	 * 
+	 *
 	 */
 	public static final String PROTOCOL_WSMANAGEMENT = "WS-Management";
 }

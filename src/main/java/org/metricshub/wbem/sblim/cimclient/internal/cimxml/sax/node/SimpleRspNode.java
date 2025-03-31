@@ -55,13 +55,12 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT SIMPLERSP (METHODRESPONSE | IMETHODRESPONSE)
- * 
+ *
  * ELEMENT METHODRESPONSE (ERROR|(RETURNVALUE?,PARAMVALUE*))
  * ELEMENT IMETHODRESPONSE (ERROR|IRETURNVALUE?) *
  * </pre>
  */
 public class SimpleRspNode extends AbstractSimpleRspNode {
-
 	private Node iChildNode;
 
 	/**
@@ -90,52 +89,54 @@ public class SimpleRspNode extends AbstractSimpleRspNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iChildNode != null) throw new SAXException(getNodeName()
-				+ " node can have only one child node!");
+		if (this.iChildNode != null) throw new SAXException(getNodeName() + " node can have only one child node!");
 		if (pNodeNameEnum != METHODRESPONSE && pNodeNameEnum != IMETHODRESPONSE) throw new SAXException(
-				getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iChildNode == null) throw new SAXException(getNodeName()
-				+ " node must have a child node!");
+		if (this.iChildNode == null) throw new SAXException(getNodeName() + " node must have a child node!");
 	}
 
 	@Override
 	public CIMError getCIMError() {
-		if (this.iChildNode instanceof ErrorIf) { return ((ErrorIf) this.iChildNode).getCIMError(); }
+		if (this.iChildNode instanceof ErrorIf) {
+			return ((ErrorIf) this.iChildNode).getCIMError();
+		}
 		return null;
 	}
 
 	/**
 	 * getCIMArguments : returns the array of parsed parameters and their values
 	 * : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return CIMArgument&lt;?&gt;[]
 	 */
 	@Override
 	public CIMArgument<?>[] getCIMArguments() {
-		if (this.iChildNode instanceof MethodResponseNode) return ((MethodResponseNode) this.iChildNode)
-				.getCIMArguments();
-		else if (this.iChildNode instanceof IMethodResponseNode) return ((IMethodResponseNode) this.iChildNode)
-				.getCIMArguments();
+		if (this.iChildNode instanceof MethodResponseNode) return (
+			(MethodResponseNode) this.iChildNode
+		).getCIMArguments(); else if (this.iChildNode instanceof IMethodResponseNode) return (
+			(IMethodResponseNode) this.iChildNode
+		).getCIMArguments();
 		return null;
 	}
 
 	public int getReturnValueCount() {
-		if (this.iChildNode instanceof RetValPipeIf) { return ((RetValPipeIf) this.iChildNode)
-				.getReturnValueCount(); }
+		if (this.iChildNode instanceof RetValPipeIf) {
+			return ((RetValPipeIf) this.iChildNode).getReturnValueCount();
+		}
 		return 0;
 	}
 
 	public Object readReturnValue() {
 		return ((RetValPipeIf) this.iChildNode).readReturnValue();
 	}
-
 }

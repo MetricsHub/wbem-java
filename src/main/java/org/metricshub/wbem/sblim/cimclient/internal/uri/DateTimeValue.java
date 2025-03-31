@@ -19,10 +19,6 @@
 
 package org.metricshub.wbem.sblim.cimclient.internal.uri;
 
-import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
-import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
-import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
-
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -44,18 +40,20 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  */
 
 import org.metricshub.wbem.javax.cim.CIMDateTime;
+import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
+import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
+import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 
 /**
  * Class DateTimeValue is parses and encapsulates a datetime.
- * 
+ *
  */
 public class DateTimeValue extends Value implements QuotedValue {
-
 	private CIMDateTime iDateTime;
 
 	/**
 	 * datetimeValue = // quoted datetime string
-	 * 
+	 *
 	 * @param pStrVal
 	 *            - the dateTime string in an unquoted form
 	 * @param pThrow
@@ -73,9 +71,13 @@ public class DateTimeValue extends Value implements QuotedValue {
 				dateTime = new CIMDateTimeInterval(pStrVal);
 			} catch (IllegalArgumentException e1) {
 				if (pThrow) {
-					String msg = "Value=" + pStrVal + "\nFailed to parse as DateTimeAbsolute!:\n"
-							+ e0.getMessage() + "\nFailed to parse as DateTimeInterval!:\n"
-							+ e1.getMessage();
+					String msg =
+						"Value=" +
+						pStrVal +
+						"\nFailed to parse as DateTimeAbsolute!:\n" +
+						e0.getMessage() +
+						"\nFailed to parse as DateTimeInterval!:\n" +
+						e1.getMessage();
 					throw new IllegalArgumentException(msg);
 				}
 				return null;
@@ -99,7 +101,7 @@ public class DateTimeValue extends Value implements QuotedValue {
 
 	/**
 	 * getDateTime
-	 * 
+	 *
 	 * @return CIMDateTime
 	 */
 	public CIMDateTime getDateTime() {
@@ -128,5 +130,4 @@ public class DateTimeValue extends Value implements QuotedValue {
 	public String getTypeInfo() {
 		return MOF.DT_DATETIME;
 	}
-
 }

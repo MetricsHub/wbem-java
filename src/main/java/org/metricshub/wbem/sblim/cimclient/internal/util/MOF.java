@@ -52,29 +52,27 @@ package org.metricshub.wbem.sblim.cimclient.internal.util;
 
 import java.util.Comparator;
 import java.util.TreeMap;
-
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMDateTime;
+import org.metricshub.wbem.javax.cim.CIMElement;
+import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMMethod;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMParameter;
-import org.metricshub.wbem.javax.cim.CIMQualifier;
-import org.metricshub.wbem.javax.cim.CIMQualifierType;
-import org.metricshub.wbem.javax.cim.CIMTypedElement;
-import org.metricshub.wbem.javax.cim.CIMValuedElement;
-import org.metricshub.wbem.javax.cim.CIMDateTime;
-import org.metricshub.wbem.javax.cim.CIMElement;
-import org.metricshub.wbem.javax.cim.CIMFlavor;
 import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.cim.CIMQualifiedElementInterface;
+import org.metricshub.wbem.javax.cim.CIMQualifier;
+import org.metricshub.wbem.javax.cim.CIMQualifierType;
 import org.metricshub.wbem.javax.cim.CIMScope;
+import org.metricshub.wbem.javax.cim.CIMTypedElement;
+import org.metricshub.wbem.javax.cim.CIMValuedElement;
 
 /**
  * Class MOF is responsible for helping MOF String generation.
  */
 public class MOF {
-
 	/**
 	 * CLASS
 	 */
@@ -277,10 +275,10 @@ public class MOF {
 	 *        classDeclaration		=	[ qualifierList ] CLASS className [ superClass ]
 	 *       					&quot;{&quot; *classFeature &quot;}&quot; &quot;;&quot;
 	 *        classFeature			=	propertyDeclaration | methodDeclaration
-	 *        
+	 *
 	 *        superClass				=	&quot;:&quot; className
 	 * </pre>
-	 * 
+	 *
 	 * @param pCl
 	 * @param pInd
 	 * @return the MOF string
@@ -294,10 +292,8 @@ public class MOF {
 		if (supCl != null) buf.append(':' + supCl + ' ');
 		buf.append("{\n");
 		// *classFeature
-		for (int i = 0; i < pCl.getPropertyCount(); i++)
-			buf.append(propertyDeclaration(pCl.getProperty(i), pInd + INDENT));
-		for (int i = 0; i < pCl.getMethodCount(); i++)
-			buf.append(methodDeclaration(pCl.getMethod(i), pInd + INDENT));
+		for (int i = 0; i < pCl.getPropertyCount(); i++) buf.append(propertyDeclaration(pCl.getProperty(i), pInd + INDENT));
+		for (int i = 0; i < pCl.getMethodCount(); i++) buf.append(methodDeclaration(pCl.getMethod(i), pInd + INDENT));
 		buf.append("};");
 		return buf.toString();
 	}
@@ -305,7 +301,7 @@ public class MOF {
 	/**
 	 * instanceDeclaration = [ qualifierList ] INSTANCE OF className [ alias ]
 	 * "{" 1*valueInitializer "}" ";"
-	 * 
+	 *
 	 * @param pInst
 	 * @param pInd
 	 * @return the MOF string
@@ -317,8 +313,9 @@ public class MOF {
 		StringBuffer buf = new StringBuffer();
 		buf.append(pInd + INSTOF + pInst.getClassName() + " {\n");
 		// Add all properties in prop array
-		for (int i = 0; i < pInst.getPropertyCount(); i++)
-			buf.append(valueInitializer(pInst.getProperty(i), pInd + INDENT));
+		for (int i = 0; i < pInst.getPropertyCount(); i++) buf.append(
+			valueInitializer(pInst.getProperty(i), pInd + INDENT)
+		);
 		// Add keys that are NOT also in prop array
 		CIMProperty<?>[] keys = pInst.getKeys();
 		for (int i = 0; i < keys.length; i++) {
@@ -335,7 +332,7 @@ public class MOF {
 	 *        methodDeclaration		=	[ qualifierList ] dataType methodName
 	 *       							&quot;(&quot; [ parameterList ] &quot;)&quot; &quot;;&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pMethod
 	 * @param pInd
 	 * @return the MOF string
@@ -354,7 +351,7 @@ public class MOF {
 
 	/**
 	 * parameter
-	 * 
+	 *
 	 * @param pParam
 	 *            - CIMParameter
 	 * @param pInd
@@ -365,17 +362,23 @@ public class MOF {
 	}
 
 	/**
-	 * 
+	 *
 	 * typedElement = [ qualifierList ] (dataType|objectRef) parameterName [
 	 * array ]
-	 * 
+	 *
 	 * @param pTypedElement
 	 * @param pInd
 	 * @return the MOF string
 	 */
 	public static String typedElement(CIMTypedElement pTypedElement, String pInd) {
-		return qualifierList(pTypedElement, pInd) + pInd + dataType(pTypedElement) + ' '
-				+ pTypedElement.getName() + array(pTypedElement);
+		return (
+			qualifierList(pTypedElement, pInd) +
+			pInd +
+			dataType(pTypedElement) +
+			' ' +
+			pTypedElement.getName() +
+			array(pTypedElement)
+		);
 	}
 
 	/**
@@ -383,7 +386,7 @@ public class MOF {
 	 *        valuedElement 		=	typedElement [ defaultValue ] &quot;;&quot;
 	 *        defaultValue			=	&quot;=&quot; initializer
 	 * </pre>
-	 * 
+	 *
 	 * @param pValuedElement
 	 * @param pInd
 	 * @return the MOF string
@@ -399,7 +402,7 @@ public class MOF {
 	 * <pre>
 	 *        qualifierList			=	&quot;[&quot; qualifier *( &quot;,&quot; qualifier ) &quot;]&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pElement
 	 * @param pInd
 	 * @return the MOF string +newLine if qualifiers present or empty string
@@ -419,16 +422,26 @@ public class MOF {
 
 	/**
 	 * <pre>
-	 *        qualifierDeclaration	=	QUALIFIER qualifierName qualifierType scope 
+	 *        qualifierDeclaration	=	QUALIFIER qualifierName qualifierType scope
 	 *        							[ defaultFlavor ] &quot;;&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pQType
 	 * @return the MOF string
 	 */
 	public static String qualifierDeclaration(CIMQualifierType<?> pQType) {
-		return QUALIFIER + ' ' + pQType.getName() + ' ' + dataType(pQType) + ' '
-				+ scope(pQType.getScope()) + ' ' + flavor(pQType.getFlavor()) + ';';
+		return (
+			QUALIFIER +
+			' ' +
+			pQType.getName() +
+			' ' +
+			dataType(pQType) +
+			' ' +
+			scope(pQType.getScope()) +
+			' ' +
+			flavor(pQType.getFlavor()) +
+			';'
+		);
 	}
 
 	/**
@@ -437,7 +450,7 @@ public class MOF {
 	 *        metaElement	=	CLASS | ASSOCIATION | INDICATION | QUALIFIER
 	 *       					PROPERTY | REFERENCE | METHOD | PARAMETER | ANY
 	 * </pre>
-	 * 
+	 *
 	 * @param pScopes
 	 * @return the MOF string
 	 */
@@ -470,7 +483,7 @@ public class MOF {
 	 * <pre>
 	 * flavor = ENABLEOVERRIDE | DISABLEOVERRIDE | RESTRICTED | TOSUBCLASS | TRANSLATABLE
 	 * </pre>
-	 * 
+	 *
 	 * @param flavor
 	 * @return the MOF string
 	 */
@@ -490,7 +503,7 @@ public class MOF {
 	 * <pre>
 	 *        qualifier				=	qualifierName [ qualifierParameter ] [ &quot;:&quot; 1*flavor ]
 	 * </pre>
-	 * 
+	 *
 	 * @param pQuali
 	 * @return the MOF string
 	 */
@@ -498,8 +511,7 @@ public class MOF {
 		StringBuffer buf = new StringBuffer();
 		buf.append(pQuali.getName());
 		// TODO: review. Why qualifierParameter is optional?
-		if (pQuali.getDataType() != null && pQuali.getValue() != null) buf
-				.append(qualifierParameter(pQuali));
+		if (pQuali.getDataType() != null && pQuali.getValue() != null) buf.append(qualifierParameter(pQuali));
 		// FIXME: why flavors are optional
 		// if (pQuali.getFlavor() != 0)
 		buf.append(':' + flavor(pQuali.getFlavor()));
@@ -511,7 +523,7 @@ public class MOF {
 	 *        propertyDeclaration	=	typedElement [ defaultValue ] &quot;;&quot;
 	 *        defaultValue			=	&quot;=&quot; initializer
 	 * </pre>
-	 * 
+	 *
 	 * @param pProp
 	 * @param pInd
 	 * @return the MOF string
@@ -525,15 +537,16 @@ public class MOF {
 	 *        valueInitializer		= [ qualifierList ] ( propertyName | referenceName ) &quot;=&quot;
 	 * 									initializer &quot;;&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pProp
 	 * @param pInd
 	 * @return the MOF string
 	 */
 	public static String valueInitializer(CIMProperty<?> pProp, String pInd) {
 		Object value = pProp.getValue();
-		if (value != null) { return qualifierList(pProp, pInd) + pInd + pProp.getName() + " = "
-				+ initializer(value, pInd) + ";\n"; }
+		if (value != null) {
+			return qualifierList(pProp, pInd) + pInd + pProp.getName() + " = " + initializer(value, pInd) + ";\n";
+		}
 		return "";
 	}
 
@@ -542,14 +555,14 @@ public class MOF {
 	 * dataType = DT_UINT8 | DT_SINT8 | DT_UINT16 | DT_SINT16 | DT_UINT32 | DT_SINT32 | DT_UINT64
 	 * 		| DT_SINT64 | DT_REAL32 | DT_REAL64 | DT_CHAR16 | DT_STR | DT_BOOL | DT_DATETIME
 	 * </pre>
-	 * 
+	 *
 	 * Additionally it handles reference types too.
-	 * 
+	 *
 	 * <pre>
 	 *        objectType	=	objectRef
 	 *        objectRef		=	className REF
 	 * </pre>
-	 * 
+	 *
 	 * @param pType
 	 * @return the MOF string
 	 */
@@ -575,7 +588,7 @@ public class MOF {
 
 	/**
 	 * objectHandle
-	 * 
+	 *
 	 * @param pPath
 	 * @return the Untyped MOF String
 	 */
@@ -585,7 +598,7 @@ public class MOF {
 
 	/**
 	 * objectHandle
-	 * 
+	 *
 	 * @param pPath
 	 *            The path
 	 * @param pTyped
@@ -605,8 +618,7 @@ public class MOF {
 			if (!pLocal) buf.append('/');
 			buf.append(pPath.getNamespace());
 		}
-		if (pTyped) buf.append(pathType(pPath));
-		else if (pPath.getObjectName() != null && buf.length() > 0) {
+		if (pTyped) buf.append(pathType(pPath)); else if (pPath.getObjectName() != null && buf.length() > 0) {
 			buf.append(':');
 		}
 		if (pPath.getObjectName() != null) {
@@ -617,7 +629,7 @@ public class MOF {
 
 	/**
 	 * objectHandleAsRef
-	 * 
+	 *
 	 * @param pPath
 	 * @return the Untyped MOF String
 	 */
@@ -627,7 +639,7 @@ public class MOF {
 
 	/**
 	 * objectHandleAsRef
-	 * 
+	 *
 	 * @param pPath
 	 * @param pTyped
 	 * @return the MOF String
@@ -649,7 +661,7 @@ public class MOF {
 	 * constantValue = integerValue | realValue | charValue | stringValue | booleanValue | nullValue
 	 * // | dateTimeValue | objectHandle
 	 * </pre>
-	 * 
+	 *
 	 * @param pValuedElement
 	 * @param pInd
 	 * @return the MOF string
@@ -660,7 +672,7 @@ public class MOF {
 
 	/**
 	 * constantValue
-	 * 
+	 *
 	 * @param pObj
 	 * @param pTyped
 	 * @param pInd
@@ -703,7 +715,7 @@ public class MOF {
 
 	/**
 	 * constantValue
-	 * 
+	 *
 	 * @param pObj
 	 * @param pInd
 	 * @return the untyped MOF String
@@ -742,7 +754,7 @@ public class MOF {
 	 *        parameterList		=	parameter *( &quot;,&quot; parameter )
 	 *        parameter			=	[ qualifierList ] (dataType|objectRef) parameterName [ array ]
 	 * </pre>
-	 * 
+	 *
 	 * @param pMethod
 	 * @return the MOF string
 	 */
@@ -757,7 +769,6 @@ public class MOF {
 	}
 
 	private static class ScopeBuffer {
-
 		private StringBuffer buf = new StringBuffer();
 
 		private int iScopes;
@@ -766,7 +777,7 @@ public class MOF {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pScopes
 		 */
 		public ScopeBuffer(int pScopes) {
@@ -775,7 +786,7 @@ public class MOF {
 
 		/**
 		 * append
-		 * 
+		 *
 		 * @param pStr
 		 */
 		public void append(String pStr) {
@@ -784,7 +795,7 @@ public class MOF {
 
 		/**
 		 * append
-		 * 
+		 *
 		 * @param pChar
 		 */
 		public void append(char pChar) {
@@ -793,7 +804,7 @@ public class MOF {
 
 		/**
 		 * append
-		 * 
+		 *
 		 * @param pMask
 		 * @param pName
 		 */
@@ -817,18 +828,19 @@ public class MOF {
 	 * <pre>
 	 *        qualifierParameter		=	&quot;(&quot; constantValue &quot;)&quot; | arrayInitializer
 	 * </pre>
-	 * 
+	 *
 	 * @param pQuali
 	 * @return the MOF string
 	 */
 	private static String qualifierParameter(CIMQualifier<?> pQuali) {
-		return pQuali.getDataType().isArray() ? arrayInitializer(pQuali, EMPTY)
-				: '(' + constantValue(pQuali, EMPTY) + ')';
+		return pQuali.getDataType().isArray() ? arrayInitializer(pQuali, EMPTY) : '(' + constantValue(pQuali, EMPTY) + ')';
 	}
 
 	private static String charValue(Character pChar) {
 		char ch = pChar.charValue();
-		if (ch < 32) { return "'\\x" + Integer.toString(ch, 16) + '\''; }
+		if (ch < 32) {
+			return "'\\x" + Integer.toString(ch, 16) + '\'';
+		}
 		return "'" + ch + '\'';
 	}
 
@@ -836,7 +848,7 @@ public class MOF {
 	 * <pre>
 	 *        arrayInitializer		=	&quot;{&quot; constantValue*( &quot;,&quot; constantValue)&quot;}&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param pValue
 	 * @param pInd
 	 * @return the MOF string or empty string if the array has no elements or
@@ -867,7 +879,7 @@ public class MOF {
 
 	/**
 	 * array = "[" [positiveDecimalValue] "]"
-	 * 
+	 *
 	 * @param pType
 	 * @return the MOF string or empty string if not array type
 	 */
@@ -887,14 +899,15 @@ public class MOF {
 	}
 
 	private static final TreeMap<CIMDataType, String> DATATYPE_MAP = new TreeMap<CIMDataType, String>(
-			new Comparator<Object>() {
+		new Comparator<Object>() {
 
-				public int compare(Object pO1, Object pO2) {
-					CIMDataType t1 = (CIMDataType) pO1;
-					CIMDataType t2 = (CIMDataType) pO2;
-					return t1.getType() - t2.getType();
-				}
-			});
+			public int compare(Object pO1, Object pO2) {
+				CIMDataType t1 = (CIMDataType) pO1;
+				CIMDataType t2 = (CIMDataType) pO2;
+				return t1.getType() - t2.getType();
+			}
+		}
+	);
 
 	static {
 		DATATYPE_MAP.put(CIMDataType.UINT8_T, DT_UINT8);
@@ -921,7 +934,7 @@ public class MOF {
 
 	/**
 	 * defaultValue = "=" initializer
-	 * 
+	 *
 	 * @param pValuedElement
 	 * @param pInd
 	 * @return the MOF string or empty string if the value is null
@@ -937,7 +950,7 @@ public class MOF {
 	 * initializer = constantValue | arrayInitializer | referenceInitializer
 	 * // referenceInitializer is handled by constantValue
 	 * </pre>
-	 * 
+	 *
 	 * @param pValue
 	 * @param pInd
 	 * @return the MOF string

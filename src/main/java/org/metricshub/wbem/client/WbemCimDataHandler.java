@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
 import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
@@ -41,11 +40,12 @@ import org.metricshub.wbem.javax.cim.CIMProperty;
  */
 public class WbemCimDataHandler {
 
-	private WbemCimDataHandler() { }
+	private WbemCimDataHandler() {}
 
 	public static final String PATH_PROPERTY = "__Path";
 
 	private static final Map<Integer, Function<Object, String>> CONVERT_MAP;
+
 	static {
 		final Map<Integer, Function<Object, String>> map = new HashMap<>();
 		map.put(CIMDataType.STRING, String::valueOf);
@@ -76,9 +76,10 @@ public class WbemCimDataHandler {
 	 * @return
 	 */
 	public static String getCimPropertyAsString(
-			final String property,
-			final CIMInstance cimInstance,
-			final String arraySeparator) {
+		final String property,
+		final CIMInstance cimInstance,
+		final String arraySeparator
+	) {
 		Utils.checkNonNull(property, "property");
 		Utils.checkNonNull(cimInstance, "cimInstance");
 
@@ -92,17 +93,17 @@ public class WbemCimDataHandler {
 		CIMProperty<?> cimProperty = cimInstance.getProperty(property);
 
 		// then, if null, check getKeys
-		final String separator = arraySeparator == null? Utils.DEFAULT_ARRAY_SEPARATOR : arraySeparator;
+		final String separator = arraySeparator == null ? Utils.DEFAULT_ARRAY_SEPARATOR : arraySeparator;
 		if (cimProperty == null && cimInstance.getKeys() != null) {
-			return Stream.of(cimInstance.getKeys())
-					.filter(key -> key.getName() != null && key.getName().equalsIgnoreCase(property))
-					.findFirst()
-					.map(cp -> convertCimPropertyValue(cp, separator))
-					.orElse(Utils.EMPTY);
+			return Stream
+				.of(cimInstance.getKeys())
+				.filter(key -> key.getName() != null && key.getName().equalsIgnoreCase(property))
+				.findFirst()
+				.map(cp -> convertCimPropertyValue(cp, separator))
+				.orElse(Utils.EMPTY);
 		}
 
-		return cimProperty == null ?
-				Utils.EMPTY : convertCimPropertyValue(cimProperty, separator);
+		return cimProperty == null ? Utils.EMPTY : convertCimPropertyValue(cimProperty, separator);
 	}
 
 	/**
@@ -112,9 +113,7 @@ public class WbemCimDataHandler {
 	 * @param arraySeparator The array separator value.
 	 * @return
 	 */
-	private static String convertCimPropertyValue(
-			final CIMProperty<?> cimProperty,
-			final String arraySeparator) {
+	private static String convertCimPropertyValue(final CIMProperty<?> cimProperty, final String arraySeparator) {
 		final Object cimPropertyValue = cimProperty.getValue();
 		if (cimPropertyValue == null) {
 			return Utils.EMPTY;
@@ -125,9 +124,9 @@ public class WbemCimDataHandler {
 			return cimPropertyValue.toString();
 		}
 
-		return dataType.isArray() ?
-				convertArray(cimProperty, arraySeparator) :
-				CONVERT_MAP.getOrDefault(dataType.getType(), Object::toString).apply(cimPropertyValue);
+		return dataType.isArray()
+			? convertArray(cimProperty, arraySeparator)
+			: CONVERT_MAP.getOrDefault(dataType.getType(), Object::toString).apply(cimPropertyValue);
 	}
 
 	/**
@@ -137,12 +136,16 @@ public class WbemCimDataHandler {
 	 * @param arraySeparator The array separator value.
 	 * @return
 	 */
-	private static String convertArray(
-			final CIMProperty<?> cimProperty,
-			final String arraySeparator) {
-		return Arrays.stream((Object[]) cimProperty.getValue())
-				.map(obj -> (obj == null) ? Utils.EMPTY : CONVERT_MAP.getOrDefault(cimProperty.getDataType().getType(), Object::toString).apply(obj))
-				.collect(Collectors.joining(arraySeparator, Utils.EMPTY, arraySeparator));
+	private static String convertArray(final CIMProperty<?> cimProperty, final String arraySeparator) {
+		return Arrays
+			.stream((Object[]) cimProperty.getValue())
+			.map(
+				obj ->
+					(obj == null)
+						? Utils.EMPTY
+						: CONVERT_MAP.getOrDefault(cimProperty.getDataType().getType(), Object::toString).apply(obj)
+			)
+			.collect(Collectors.joining(arraySeparator, Utils.EMPTY, arraySeparator));
 	}
 
 	/**
@@ -158,9 +161,9 @@ public class WbemCimDataHandler {
 		final CIMObjectPath objectPath = (CIMObjectPath) cimPropertyValue;
 		final String str = objectPath.toString();
 		return str
-				.substring(str.indexOf(':') + 1) // take the part after : (if exists)
-				.replace("\\\\", "\\") // Replace \\ by \
-				.replace("\\\"", "\""); // Replace \" by "
+			.substring(str.indexOf(':') + 1) // take the part after : (if exists)
+			.replace("\\\\", "\\") // Replace \\ by \
+			.replace("\\\"", "\""); // Replace \" by "
 	}
 
 	/**

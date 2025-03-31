@@ -62,16 +62,16 @@ public class IMethodCallNode extends AbstractMethodCallNode {
 	@Override
 	protected void testSpecChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == LOCALNAMESPACEPATH) {
-			if (this.iPath != null) throw new SAXException(getNodeName()
-					+ " node can have only one " + pNodeNameEnum + " child node!");
-		} else if (pNodeNameEnum != IPARAMVALUE) throw new SAXException(getNodeName()
-				+ " node cannot have " + pNodeNameEnum + " child node!");
+			if (this.iPath != null) throw new SAXException(
+				getNodeName() + " node can have only one " + pNodeNameEnum + " child node!"
+			);
+		} else if (pNodeNameEnum != IPARAMVALUE) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iPath == null) throw new SAXException(
-				"IMETHODCALL node must have a LOCALNAMESPACEPATH child node!");
+		if (this.iPath == null) throw new SAXException("IMETHODCALL node must have a LOCALNAMESPACEPATH child node!");
 	}
-
 }

@@ -66,10 +66,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.util.ThreadPool;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
@@ -79,10 +77,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
  * Class HttpServerConnection implements the outer shell of a HTTP server. It
  * accepts incoming connections and puts them in a queue to be serviced by an
  * independent thread
- * 
+ *
  */
 public class HttpServerConnection implements Runnable {
-
 	private int iPort;
 
 	private ServerSocket iServerSocket;
@@ -105,7 +102,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHandler
 	 *            The connection handler
 	 * @param pLocalAddress
@@ -119,9 +116,14 @@ public class HttpServerConnection implements Runnable {
 	 *            The configuration context
 	 * @throws IOException
 	 */
-	public HttpServerConnection(HttpConnectionHandler pHandler, String pLocalAddress, int pPort,
-			boolean pSsl, WBEMConfiguration pProperties) throws IOException {
-
+	public HttpServerConnection(
+		HttpConnectionHandler pHandler,
+		String pLocalAddress,
+		int pPort,
+		boolean pSsl,
+		WBEMConfiguration pProperties
+	)
+		throws IOException {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
@@ -129,21 +131,20 @@ public class HttpServerConnection implements Runnable {
 		this.iHandler = pHandler;
 		this.iSsl = pSsl;
 		this.iServerName = pSsl ? "HTTPS Server" : "HTTP Server";
-		this.iSessionProperties = (pProperties != null) ? pProperties : WBEMConfiguration
-				.getGlobalConfiguration();
-		SSLContext sslContext = pSsl ? HttpSocketFactory.getInstance().getServerSSLContext(
-				this.iSessionProperties) : null;
-		this.iServerSocket = (pLocalAddress != null && pLocalAddress.length() > 0) ? HttpSocketFactory
-				.getInstance().getServerSocketFactory(sslContext).createServerSocket(pPort, 50,
-						InetAddress.getByName(pLocalAddress))
-				: HttpSocketFactory.getInstance().getServerSocketFactory(sslContext)
-						.createServerSocket(pPort);
+		this.iSessionProperties = (pProperties != null) ? pProperties : WBEMConfiguration.getGlobalConfiguration();
+		SSLContext sslContext = pSsl ? HttpSocketFactory.getInstance().getServerSSLContext(this.iSessionProperties) : null;
+		this.iServerSocket =
+			(pLocalAddress != null && pLocalAddress.length() > 0)
+				? HttpSocketFactory
+					.getInstance()
+					.getServerSocketFactory(sslContext)
+					.createServerSocket(pPort, 50, InetAddress.getByName(pLocalAddress))
+				: HttpSocketFactory.getInstance().getServerSocketFactory(sslContext).createServerSocket(pPort);
 		if (this.iServerSocket instanceof SSLServerSocket) {
 			if (this.iSessionProperties.getSslListenerPeerVerification().equalsIgnoreCase("ignore")) {
 				logger.trace(Level.FINER, "Listener peer verification: ignore");
 				((SSLServerSocket) this.iServerSocket).setNeedClientAuth(false);
-			} else if (this.iSessionProperties.getSslListenerPeerVerification().equalsIgnoreCase(
-					"accept")) {
+			} else if (this.iSessionProperties.getSslListenerPeerVerification().equalsIgnoreCase("accept")) {
 				logger.trace(Level.FINER, "Listener peer verification: accept");
 				((SSLServerSocket) this.iServerSocket).setWantClientAuth(true);
 			} else {
@@ -151,22 +152,19 @@ public class HttpServerConnection implements Runnable {
 				((SSLServerSocket) this.iServerSocket).setNeedClientAuth(true);
 			}
 
-			String disableCipherSuites = this.iSessionProperties
-					.getSslListenerCipherSuitesToDisable();
+			String disableCipherSuites = this.iSessionProperties.getSslListenerCipherSuitesToDisable();
 			if (disableCipherSuites != null) {
 				SSLServerSocket sslSock = (SSLServerSocket) this.iServerSocket;
 				String[] currentCipherSuites = sslSock.getEnabledCipherSuites();
-				String[] updatedCipherSuites = Util.getFilteredStringArray(currentCipherSuites,
-						disableCipherSuites);
+				String[] updatedCipherSuites = Util.getFilteredStringArray(currentCipherSuites, disableCipherSuites);
 				sslSock.setEnabledCipherSuites(updatedCipherSuites);
 				int before = currentCipherSuites.length;
 				int after = updatedCipherSuites.length;
-				if (before > 0 && after == 0) logger.trace(Level.WARNING,
-						"All cipher suites disabled for listener!");
-				else if (before > after) logger.trace(Level.FINE, "Some (" + (before - after)
-						+ ") cipher suites disabled for listener");
-				else if (before == after) logger.trace(Level.FINER,
-						"No cipher suites disabled for listener");
+				if (before > 0 && after == 0) logger.trace(Level.WARNING, "All cipher suites disabled for listener!"); else if (
+					before > after
+				) logger.trace(Level.FINE, "Some (" + (before - after) + ") cipher suites disabled for listener"); else if (
+					before == after
+				) logger.trace(Level.FINER, "No cipher suites disabled for listener");
 			}
 		}
 		this.iTimeout = this.iSessionProperties.getListenerHttpTimeout();
@@ -175,7 +173,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Set the name of the thread
-	 * 
+	 *
 	 * @param pName
 	 *            The new value
 	 */
@@ -185,7 +183,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Returns the port
-	 * 
+	 *
 	 * @return The port
 	 */
 	public int getPort() {
@@ -194,7 +192,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Returns the local ip address the socket is bound to
-	 * 
+	 *
 	 * @return The ip address
 	 * @throws UnknownHostException
 	 */
@@ -206,7 +204,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Returns the local hostname the socket is bound to
-	 * 
+	 *
 	 * @return The host name
 	 * @throws UnknownHostException
 	 */
@@ -218,7 +216,7 @@ public class HttpServerConnection implements Runnable {
 
 	/**
 	 * Return whether this connection is SSL secured
-	 * 
+	 *
 	 * @return <code>true</code> if SSL is enabled, <code>false</code> otherwise
 	 */
 	public boolean isSSL() {
@@ -232,12 +230,20 @@ public class HttpServerConnection implements Runnable {
 		if (this.iClose) {
 			this.iClose = false;
 			ThreadGroup group = new ThreadGroup("CIMListener on port " + String.valueOf(this.iPort));
-			this.iDispatcher = new HttpConnectionDispatcher(group, this.iHandler, new ThreadPool(
-					this.iSessionProperties.getListenerMinPoolSize(), this.iSessionProperties
-							.getListenerMaxPoolSize(),
-					this.iSessionProperties.getListenerBacklog(), this.iSessionProperties
-							.getListenerMaxIdle(), group, "Handler "), this.iSessionProperties
-					.getListenerMaxQueueSize());
+			this.iDispatcher =
+				new HttpConnectionDispatcher(
+					group,
+					this.iHandler,
+					new ThreadPool(
+						this.iSessionProperties.getListenerMinPoolSize(),
+						this.iSessionProperties.getListenerMaxPoolSize(),
+						this.iSessionProperties.getListenerBacklog(),
+						this.iSessionProperties.getListenerMaxIdle(),
+						group,
+						"Handler "
+					),
+					this.iSessionProperties.getListenerMaxQueueSize()
+				);
 			this.iDispatcher.start();
 			this.iRunner = new Thread(group, this, this.iServerName);
 			this.iRunner.setDaemon(true);
@@ -254,38 +260,32 @@ public class HttpServerConnection implements Runnable {
 					socket.setTcpNoDelay(true);
 					socket.setSoTimeout(this.iTimeout);
 				} catch (IOException e) {
-					LogAndTraceBroker.getBroker().trace(Level.FINE,
-							"Exception while adjusting socket options", e);
+					LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while adjusting socket options", e);
 				}
 				boolean dispatched = this.iDispatcher.dispatch(socket);
 				if (!dispatched) {
 					MessageWriter writer = new MessageWriter(socket.getOutputStream(), false, false);
 					try {
-						writer.setMethod(new HttpServerMethod(1, 1, 503,
-								"Service temporarily overloaded"));
+						writer.setMethod(new HttpServerMethod(1, 1, 503, "Service temporarily overloaded"));
 						writer.getHeader().addField("Retry-After", "10");
 						writer.close();
 					} catch (IOException e) {
-						LogAndTraceBroker.getBroker().trace(Level.FINE,
-								"Exception while sending HTTP 503", e);
+						LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while sending HTTP 503", e);
 					} finally {
 						socket.close();
 					}
 					LogAndTraceBroker
-							.getBroker()
-							.trace(Level.FINE,
-									"HttpServerConnection failed to dispatch incoming connection, sent 503");
+						.getBroker()
+						.trace(Level.FINE, "HttpServerConnection failed to dispatch incoming connection, sent 503");
 				} else {
-					LogAndTraceBroker.getBroker().trace(Level.FINE,
-							"HttpServerConnection dispatched incoming connection");
+					LogAndTraceBroker.getBroker().trace(Level.FINE, "HttpServerConnection dispatched incoming connection");
 				}
 			} catch (Throwable t) {
 				if (t instanceof SocketException && this.iClose) {
 					break;
 				}
 				try {
-					LogAndTraceBroker.getBroker().trace(Level.FINE,
-							"Exception while waiting for incoming http connections");
+					LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while waiting for incoming http connections");
 				} catch (Throwable t2) {
 					// just give up
 				}
@@ -295,8 +295,7 @@ public class HttpServerConnection implements Runnable {
 		// shutdown
 
 		try {
-			LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Shutting down CIMListener on port " + this.iPort);
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Shutting down CIMListener on port " + this.iPort);
 		} catch (Throwable t) {
 			// do nothing
 		}
@@ -310,8 +309,7 @@ public class HttpServerConnection implements Runnable {
 		try {
 			this.iDispatcher.close();
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker().trace(Level.FINE,
-					"Exception while closing http connection dispatcher", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while closing http connection dispatcher", e);
 		}
 		this.iDispatcher = null;
 		this.iRunner = null;
@@ -327,8 +325,7 @@ public class HttpServerConnection implements Runnable {
 				this.iServerSocket.close();
 				this.iServerSocket = null;
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINE,
-						"Exception while closing server socket", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while closing server socket", e);
 			}
 		}
 	}
@@ -338,10 +335,9 @@ public class HttpServerConnection implements Runnable {
 	 * incoming connections to the handlers. It doesn't execute the handler
 	 * directly but creates a runnable that is submitted to a thread pool which
 	 * takes care of execution.
-	 * 
+	 *
 	 */
 	private static class HttpConnectionDispatcher extends Thread {
-
 		private BlockingQueue<Socket> iConnectionPool;
 
 		private volatile boolean iAlive = true;
@@ -352,7 +348,7 @@ public class HttpServerConnection implements Runnable {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pGroup
 		 *            The thread group to use for this thread and it's children
 		 * @param pHandler
@@ -362,8 +358,12 @@ public class HttpServerConnection implements Runnable {
 		 * @param pQueueSize
 		 *            The fixed capacity for the queue of pending connections
 		 */
-		public HttpConnectionDispatcher(ThreadGroup pGroup, HttpConnectionHandler pHandler,
-				ThreadPool pPool, int pQueueSize) {
+		public HttpConnectionDispatcher(
+			ThreadGroup pGroup,
+			HttpConnectionHandler pHandler,
+			ThreadPool pPool,
+			int pQueueSize
+		) {
 			super(pGroup, "Connection Dispatcher");
 			setDaemon(true);
 			this.iConnectionPool = new ArrayBlockingQueue<Socket>(pQueueSize > 0 ? pQueueSize : 1);
@@ -373,7 +373,7 @@ public class HttpServerConnection implements Runnable {
 
 		/**
 		 * Dispatches a connection
-		 * 
+		 *
 		 * @param pSocket
 		 *            The socket of the connection
 		 * @return true if dispatch was successful
@@ -389,7 +389,7 @@ public class HttpServerConnection implements Runnable {
 
 		/**
 		 * Gets the next pending connection
-		 * 
+		 *
 		 * @return The socket of the connection
 		 */
 		public Socket getConnection() {
@@ -411,8 +411,7 @@ public class HttpServerConnection implements Runnable {
 					}
 				} catch (Throwable t) {
 					try {
-						LogAndTraceBroker.getBroker().trace(Level.FINE,
-								"Exception while submitting worker to thread pool", t);
+						LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while submitting worker to thread pool", t);
 					} catch (Throwable t1) {
 						// forget it
 					}
@@ -421,14 +420,12 @@ public class HttpServerConnection implements Runnable {
 			try {
 				this.iHandler.close();
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINE,
-						"Exception while closing http connection handler", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while closing http connection handler", e);
 			}
 			try {
 				this.iThreadPool.shutdown();
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINE,
-						"Exception during shut down of thread pool", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception during shut down of thread pool", e);
 			}
 		}
 

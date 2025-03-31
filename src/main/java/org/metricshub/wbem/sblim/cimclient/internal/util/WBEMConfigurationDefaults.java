@@ -72,16 +72,17 @@ import org.metricshub.wbem.sblim.cimclient.internal.http.WwwAuthInfo;
 /**
  * Interface WBEMConfigurationDefaults holds the default values for the
  * configuration properties.
- * 
+ *
  */
 public interface WBEMConfigurationDefaults {
-
 	/**
 	 * CONFIG_URL
 	 */
-	public static final String[] CONFIG_URL = new String[] { "file:sblim-cim-client2.properties",
-			"file:" + System.getProperty("user.home") + "/sblim-cim-client2.properties",
-			"file:/etc/java/sblim-cim-client2.properties" };
+	public static final String[] CONFIG_URL = new String[] {
+		"file:sblim-cim-client2.properties",
+		"file:" + System.getProperty("user.home") + "/sblim-cim-client2.properties",
+		"file:/etc/java/sblim-cim-client2.properties"
+	};
 
 	/**
 	 * LOG_FILE_LEVEL

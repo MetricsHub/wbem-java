@@ -49,7 +49,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
@@ -64,7 +63,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, NonVolatileIf {
-
 	private String iName;
 
 	private CIMError iError;
@@ -88,7 +86,7 @@ public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, N
 	 * @param pChild
 	 */
 	public void addChild(Node pChild) {
-	// nothing to do
+		// nothing to do
 	}
 
 	/**
@@ -109,34 +107,44 @@ public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, N
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == ERROR) {
 			String ownedNodeName;
-			if (this.iHasRetVal) ownedNodeName = RETURNVALUE;
-			else if (this.iHasError) ownedNodeName = ERROR;
-			else if (this.iCIMArgAL != null && this.iCIMArgAL.size() > 0) ownedNodeName = PARAMVALUE;
-			else ownedNodeName = null;
-			if (ownedNodeName != null) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has a " + ownedNodeName + " child node!");
+			if (this.iHasRetVal) ownedNodeName = RETURNVALUE; else if (this.iHasError) ownedNodeName = ERROR; else if (
+				this.iCIMArgAL != null && this.iCIMArgAL.size() > 0
+			) ownedNodeName = PARAMVALUE; else ownedNodeName = null;
+			if (ownedNodeName != null) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has a " +
+				ownedNodeName +
+				" child node!"
+			);
 		} else if (pNodeNameEnum == RETURNVALUE) {
 			String ownedNodeName;
-			if (this.iHasRetVal) ownedNodeName = RETURNVALUE;
-			else if (this.iHasError) ownedNodeName = ERROR;
-			else ownedNodeName = null;
-			if (ownedNodeName != null) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has a " + ownedNodeName + " child node!");
+			if (this.iHasRetVal) ownedNodeName = RETURNVALUE; else if (this.iHasError) ownedNodeName =
+				ERROR; else ownedNodeName = null;
+			if (ownedNodeName != null) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has a " +
+				ownedNodeName +
+				" child node!"
+			);
 		} else if (pNodeNameEnum == PARAMVALUE) {
-			if (this.iHasError) throw new SAXException(pNodeNameEnum
-					+ " child node is invalid for " + getNodeName()
-					+ " node, since it already has an ERROR child node!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasError) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has an ERROR child node!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -155,7 +163,7 @@ public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, N
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child
+		// no mandatory child
 	}
 
 	public CIMError getCIMError() {
@@ -167,7 +175,7 @@ public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, N
 	/**
 	 * getCIMArguments : returns the array of parsed parameters and their values
 	 * : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return CIMArgument&lt;?&gt;[]
 	 */
 	public CIMArgument<?>[] getCIMArguments() {
@@ -187,11 +195,10 @@ public class MethodResponseNode extends Node implements ErrorIf, RetValPipeIf, N
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
 		return this.iName;
 	}
-
 }

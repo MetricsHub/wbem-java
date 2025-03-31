@@ -14,14 +14,13 @@
 
 	<bannerLeft>
 		<src>images/metricshub-logo.png</src>
-		<href>https://metricshub.com</href>
+		<href>https://metricshub.org</href>
 	</bannerLeft>
 
 	<body>
 
 		<links>
 			<item name="Fork on GitHub" href="${project.scm.url}" />
-			<!-- <item name="First Link" href="https://metricshub.com" /> -->
 		</links>
 
 		<menu name="User Documentation">

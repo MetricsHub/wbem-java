@@ -60,13 +60,12 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * qualifier type must have the same name and data type. CIM Qualifiers can only
  * be applied to elements that are allowed by the scope defined by the CIM
  * Qualifier Type.
- * 
+ *
  * @param <E>
  *            Type parameter.
  * @see CIMQualifierType
  */
 public class CIMQualifier<E> extends CIMValuedElement<E> {
-
 	private static final long serialVersionUID = 3568987946093931214L;
 
 	private int iFlavor;
@@ -76,7 +75,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	/**
 	 * Constructs a CIM qualifier with the specified name, type, value, and
 	 * flavors.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pType
@@ -97,7 +96,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	/**
 	 * Constructs a CIM qualifier with the specified name, type, value, and
 	 * flavors.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pType
@@ -114,8 +113,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	 *            <code>false</code> otherwise.
 	 * @see CIMFlavor
 	 */
-	public CIMQualifier(String pName, CIMDataType pType, E pValue, int pFlavor,
-			boolean pIsPropagated) {
+	public CIMQualifier(String pName, CIMDataType pType, E pValue, int pFlavor, boolean pIsPropagated) {
 		super(pName, pType, pValue);
 		this.iFlavor = pFlavor;
 		this.iPropagated = pIsPropagated;
@@ -127,7 +125,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	 * the argument is not <code>null</code> and is a <code>CIMQualifier</code>
 	 * that represents the same name, type and value as this
 	 * <code>CIMQualifier</code>.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the input qualifier is equal, otherwise
@@ -143,7 +141,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 
 	/**
 	 * Returns the CIM flavors for this CIM qualifier.
-	 * 
+	 *
 	 * @return A <code>BitSet</code> of CIM flavors in this CIM qualifier.
 	 */
 	public int getFlavor() {
@@ -154,7 +152,7 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	 * Determines if this qualifier is propagated. If the qualifier was
 	 * inherited, this value will be <code>true</code>. If the qualifier was
 	 * applied to the element directly, this value will be <code>false</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if this property is propagated;
 	 *         <code>false</code> otherwise.
 	 */
@@ -168,12 +166,11 @@ public class CIMQualifier<E> extends CIMValuedElement<E> {
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return A string representation of this qualifier.
 	 */
 	@Override
 	public String toString() {
 		return MOF.qualifier(this);
 	}
-
 }

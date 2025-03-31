@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
@@ -75,10 +74,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * DAAdvert message
- * 
+ *
  */
 public class DAAdvert extends ReplyMessage {
-
 	private long iStatelessBootTime;
 
 	private String iURLStr;
@@ -91,22 +89,28 @@ public class DAAdvert extends ReplyMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new DAAdvert(pHdr, pInStr.read16(), pInStr.read32(), pInStr.readString(), pInStr
-				.readStringList(), pInStr.readAttributeList(), pInStr.readStringList());
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new DAAdvert(
+			pHdr,
+			pInStr.read16(),
+			pInStr.read32(),
+			pInStr.readString(),
+			pInStr.readStringList(),
+			pInStr.readAttributeList(),
+			pInStr.readStringList()
+		);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 * @param pStatelessBootTime
 	 * @param pURLStr
@@ -116,15 +120,21 @@ public class DAAdvert extends ReplyMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pSPIList
 	 */
-	public DAAdvert(int pErrorCode, long pStatelessBootTime, String pURLStr,
-			List<String> pScopeList, List<ServiceLocationAttribute> pAttrList, List<String> pSPIList) {
+	public DAAdvert(
+		int pErrorCode,
+		long pStatelessBootTime,
+		String pURLStr,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<String> pSPIList
+	) {
 		super(DA_ADVERT, pErrorCode);
 		init(pStatelessBootTime, pURLStr, pScopeList, pAttrList, pSPIList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pErrorCode
 	 * @param pStatelessBootTime
@@ -135,15 +145,22 @@ public class DAAdvert extends ReplyMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pSPIList
 	 */
-	public DAAdvert(String pLangTag, int pErrorCode, long pStatelessBootTime, String pURLStr,
-			List<String> pScopeList, List<ServiceLocationAttribute> pAttrList, List<String> pSPIList) {
+	public DAAdvert(
+		String pLangTag,
+		int pErrorCode,
+		long pStatelessBootTime,
+		String pURLStr,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<String> pSPIList
+	) {
 		super(DA_ADVERT, pLangTag, pErrorCode);
 		init(pStatelessBootTime, pURLStr, pScopeList, pAttrList, pSPIList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 * @param pStatelessBootTime
@@ -154,8 +171,15 @@ public class DAAdvert extends ReplyMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pSPIList
 	 */
-	public DAAdvert(MsgHeader pHeader, int pErrorCode, long pStatelessBootTime, String pURLStr,
-			List<String> pScopeList, List<ServiceLocationAttribute> pAttrList, List<String> pSPIList) {
+	public DAAdvert(
+		MsgHeader pHeader,
+		int pErrorCode,
+		long pStatelessBootTime,
+		String pURLStr,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<String> pSPIList
+	) {
 		super(pHeader, pErrorCode);
 		init(pStatelessBootTime, pURLStr, pScopeList, pAttrList, pSPIList);
 	}
@@ -167,8 +191,7 @@ public class DAAdvert extends ReplyMessage {
 	@Override
 	public Iterator<DADescriptor> getResultIterator() {
 		ArrayList<DADescriptor> list = new ArrayList<DADescriptor>(1);
-		list.add(new DADescriptor(this.iURLStr, new TreeSet<String>(this.iScopeList),
-				this.iAttrList));
+		list.add(new DADescriptor(this.iURLStr, new TreeSet<String>(this.iScopeList), this.iAttrList));
 		return list.iterator();
 	}
 
@@ -177,14 +200,23 @@ public class DAAdvert extends ReplyMessage {
 	 */
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
-		return pOutStr.write16(getErrorCode()) && pOutStr.write32(this.iStatelessBootTime)
-				&& pOutStr.write(this.iURLStr) && pOutStr.writeStringList(this.iScopeList)
-				&& pOutStr.writeAttributeList(this.iAttrList)
-				&& pOutStr.writeStringList(this.iSPIList);
+		return (
+			pOutStr.write16(getErrorCode()) &&
+			pOutStr.write32(this.iStatelessBootTime) &&
+			pOutStr.write(this.iURLStr) &&
+			pOutStr.writeStringList(this.iScopeList) &&
+			pOutStr.writeAttributeList(this.iAttrList) &&
+			pOutStr.writeStringList(this.iSPIList)
+		);
 	}
 
-	private void init(long pStatelessBootTime, String pURLStr, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList, List<String> pSPIList) {
+	private void init(
+		long pStatelessBootTime,
+		String pURLStr,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<String> pSPIList
+	) {
 		this.iStatelessBootTime = pStatelessBootTime;
 		this.iURLStr = pURLStr;
 		this.iScopeList = pScopeList;
@@ -197,5 +229,4 @@ public class DAAdvert extends ReplyMessage {
 		// this message doesn't have exception table
 		return null;
 	}
-
 }

@@ -46,12 +46,11 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * Class BooleanValue parses and encapsulates a boolean value.
  */
 public class BooleanValue extends Value {
-
 	private boolean iValue;
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pThrow
 	 * @return <code>Value</code> or <code>null</code> if <code>pThrow</code> is
@@ -63,9 +62,8 @@ public class BooleanValue extends Value {
 	public static Value parse(URIString pUriStr, boolean pThrow) throws IllegalArgumentException {
 		URIString uriStr = pUriStr.deepCopy();
 		boolean value;
-		if (uriStr.cutStarting("true", true)) value = true;
-		else if (uriStr.cutStarting("false", true)) value = false;
-		else {
+		if (uriStr.cutStarting("true", true)) value = true; else if (uriStr.cutStarting("false", true)) value =
+			false; else {
 			if (pThrow) {
 				String msg = "Boolean value not found!\n" + uriStr.markPosition();
 				throw new IllegalArgumentException(msg);
@@ -80,7 +78,7 @@ public class BooleanValue extends Value {
 
 	/**
 	 * Parses an untyped boolean value.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return Value
 	 */
@@ -94,7 +92,7 @@ public class BooleanValue extends Value {
 
 	/**
 	 * getValue
-	 * 
+	 *
 	 * @return the <code>boolean</code> value.
 	 */
 	public boolean getValue() {
@@ -103,7 +101,7 @@ public class BooleanValue extends Value {
 
 	/**
 	 * getBoolean
-	 * 
+	 *
 	 * @return Boolean
 	 */
 	public Boolean getBoolean() {
@@ -125,5 +123,4 @@ public class BooleanValue extends Value {
 	public String getTypeInfo() {
 		return MOF.DT_BOOL;
 	}
-
 }

@@ -52,17 +52,16 @@ import org.xml.sax.Attributes;
 
 /**
  * <pre>
- * 
+ *
  * ELEMENT PROPERTY.REFERENCE (QUALIFIER*, (VALUE.REFERENCE)?)
  * ATTLIST PROPERTY.REFERENCE
- *   %CIMName; 
- *   %ReferenceClass; 
+ *   %CIMName;
+ *   %ReferenceClass;
  *   %ClassOrigin;
  *   %Propagated;
  * </pre>
  */
 public class PropertyReferenceNode extends AbstractPropertyNode {
-
 	private String iRefClassName;
 
 	// VALUE.REFERENCE
@@ -108,11 +107,10 @@ public class PropertyReferenceNode extends AbstractPropertyNode {
 
 	@Override
 	public void testCompletness() {
-	//
+		//
 	}
 
 	public CIMDataType getType() {
 		return new CIMDataType(this.iRefClassName != null ? this.iRefClassName : "");
 	}
-
 }

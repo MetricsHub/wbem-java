@@ -53,7 +53,6 @@ import java.io.Serializable;
  * what elements the qualifier can be applied to.
  */
 public class CIMScope extends Object implements Serializable {
-
 	private static final long serialVersionUID = -4563643521754840535l;
 
 	/**
@@ -96,16 +95,14 @@ public class CIMScope extends Object implements Serializable {
 	 */
 	public static final int REFERENCE = 16;
 
-	private static final int[] SCOPES = { ANY, ASSOCIATION, CLASS, INDICATION, METHOD, PARAMETER,
-			PROPERTY, REFERENCE };
+	private static final int[] SCOPES = { ANY, ASSOCIATION, CLASS, INDICATION, METHOD, PARAMETER, PROPERTY, REFERENCE };
 
 	/**
 	 * Returns the complete set of possible scopes.
-	 * 
+	 *
 	 * @return An <code>int</code> array of all scopes.
 	 */
 	public static int[] getScopes() {
 		return SCOPES;
 	}
-
 }

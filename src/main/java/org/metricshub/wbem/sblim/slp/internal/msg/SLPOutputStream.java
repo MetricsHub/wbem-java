@@ -47,7 +47,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
@@ -57,10 +56,9 @@ import org.metricshub.wbem.sblim.slp.internal.TRC;
 
 /**
  * SLPOutputStream helps the building of SLP message bytes
- * 
+ *
  */
 public class SLPOutputStream {
-
 	private static final int MAX_FIELD_SIZE = 65535;
 
 	private static final byte[] EMPTY_BYTES = new byte[0];
@@ -78,7 +76,7 @@ public class SLPOutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStreamLimit
 	 */
 	public SLPOutputStream(int pStreamLimit) {
@@ -87,7 +85,7 @@ public class SLPOutputStream {
 
 	/**
 	 * size
-	 * 
+	 *
 	 * @return int
 	 */
 	public int size() {
@@ -96,7 +94,7 @@ public class SLPOutputStream {
 
 	/**
 	 * freeSpace
-	 * 
+	 *
 	 * @return int
 	 */
 	public int freeSpace() {
@@ -105,7 +103,7 @@ public class SLPOutputStream {
 
 	/**
 	 * toByteArray
-	 * 
+	 *
 	 * @return byte[]
 	 */
 	public byte[] toByteArray() {
@@ -114,7 +112,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write
-	 * 
+	 *
 	 * @param pBytes
 	 * @return boolean
 	 */
@@ -126,7 +124,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write
-	 * 
+	 *
 	 * @param pServType
 	 * @return boolean
 	 */
@@ -169,7 +167,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeURLList
-	 * 
+	 *
 	 * @param pURLList
 	 * @return boolean
 	 */
@@ -190,7 +188,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeServTypeList
-	 * 
+	 *
 	 * @param pServTypeList
 	 * @return boolean
 	 */
@@ -200,21 +198,20 @@ public class SLPOutputStream {
 
 	/**
 	 * writeServTypeList
-	 * 
+	 *
 	 * @param pServTypeItr
 	 * @return boolean
 	 */
 	public boolean writeServTypeList(Iterator<?> pServTypeItr) {
 		if (pServTypeItr == null) return writeStringList((Iterator<String>) null);
 		ArrayList<String> servTypeList = new ArrayList<String>();
-		while (pServTypeItr.hasNext())
-			servTypeList.add(((ServiceType) pServTypeItr.next()).toString());
+		while (pServTypeItr.hasNext()) servTypeList.add(((ServiceType) pServTypeItr.next()).toString());
 		return writeStringList(servTypeList);
 	}
 
 	/**
 	 * writeAttributeList
-	 * 
+	 *
 	 * @param pAttrList
 	 * @return boolean
 	 */
@@ -224,35 +221,34 @@ public class SLPOutputStream {
 
 	/**
 	 * writeAttributeList
-	 * 
+	 *
 	 * @param pAttrItr
 	 * @return boolean
 	 */
 	public boolean writeAttributeList(Iterator<?> pAttrItr) {
 		if (pAttrItr == null) return writeStringList((Iterator<String>) null);
 		ArrayList<String> attrStrList = new ArrayList<String>();
-		while (pAttrItr.hasNext())
-			attrStrList.add(AttributeHandler
-					.buildString((ServiceLocationAttribute) pAttrItr.next()));
+		while (pAttrItr.hasNext()) attrStrList.add(
+			AttributeHandler.buildString((ServiceLocationAttribute) pAttrItr.next())
+		);
 		return writeStringList(attrStrList, null);
 	}
 
 	/**
 	 * # of AttrAuths |(if present) Attribute Authentication Blocks...
-	 * 
+	 *
 	 * @param pAuthBlockList
 	 * @return boolean
 	 */
 	public boolean writeAuthBlockList(List<?> pAuthBlockList) {
 		int cnt = pAuthBlockList == null ? 0 : pAuthBlockList.size();
-		if (cnt != 0) TRC
-				.error("Handling of non empty authentication block list is not implemented!");
+		if (cnt != 0) TRC.error("Handling of non empty authentication block list is not implemented!");
 		return write8(0);
 	}
 
 	/**
 	 * write
-	 * 
+	 *
 	 * @param pStr
 	 * @return boolean
 	 */
@@ -262,14 +258,13 @@ public class SLPOutputStream {
 
 	/**
 	 * write
-	 * 
+	 *
 	 * @param pStr
 	 * @param pReservedChars
 	 * @return boolean
 	 */
 	public boolean write(String pStr, String pReservedChars) {
-		byte[] bytes = pStr == null ? EMPTY_BYTES : Convert.getBytes(Convert.escape(pStr,
-				pReservedChars));
+		byte[] bytes = pStr == null ? EMPTY_BYTES : Convert.getBytes(Convert.escape(pStr, pReservedChars));
 		if (bytes.length > MAX_FIELD_SIZE) return false;
 		if (freeSpace() < bytes.length + 2) return false;
 		writeNoChk16(bytes.length);
@@ -279,7 +274,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeStringList
-	 * 
+	 *
 	 * @param pStrList
 	 * @return boolean
 	 */
@@ -289,7 +284,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeStringList
-	 * 
+	 *
 	 * @param pStrListItr
 	 * @return boolean
 	 */
@@ -299,7 +294,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeStringList
-	 * 
+	 *
 	 * @param pStrList
 	 * @param pReservedChars
 	 * @return boolean
@@ -310,7 +305,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeStringList
-	 * 
+	 *
 	 * @param pStrListItr
 	 * @param pReservedChars
 	 * @return true if all list items are written to the stream, otherwise false
@@ -344,7 +339,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write8
-	 * 
+	 *
 	 * @param pValue
 	 * @return boolean
 	 */
@@ -356,7 +351,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write16
-	 * 
+	 *
 	 * @param pValue
 	 * @return boolean
 	 */
@@ -368,7 +363,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write24
-	 * 
+	 *
 	 * @param pValue
 	 * @return boolean
 	 */
@@ -380,7 +375,7 @@ public class SLPOutputStream {
 
 	/**
 	 * write32
-	 * 
+	 *
 	 * @param pValue
 	 * @return boolean
 	 */
@@ -392,7 +387,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeNoChk
-	 * 
+	 *
 	 * @param pBytes
 	 */
 	public void writeNoChk(byte[] pBytes) {
@@ -401,7 +396,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeNoChk8
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void writeNoChk8(int pValue) {
@@ -410,7 +405,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeNoChk16
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void writeNoChk16(int pValue) {
@@ -420,7 +415,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeNoChk24
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void writeNoChk24(int pValue) {
@@ -430,7 +425,7 @@ public class SLPOutputStream {
 
 	/**
 	 * writeNoChk32
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void writeNoChk32(long pValue) {

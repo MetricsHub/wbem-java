@@ -43,9 +43,8 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 
 import java.io.IOException;
 import java.util.Random;
-
-import org.metricshub.wbem.sblim.slp.internal.Convert;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.Convert;
 
 /*
  * SLP Header: 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
@@ -58,35 +57,35 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Language
  * Tag Length | Language Tag \
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
+ *
  * Message Type Abbreviation Function-ID
- * 
+ *
  * Service Request SrvRqst 1 Service Reply SrvRply 2 Service Registration SrvReg
  * 3 Service Deregister SrvDeReg 4 Service Acknowledge SrvAck 5 Attribute
  * Request AttrRqst 6 Attribute Reply AttrRply 7 DA Advertisement DAAdvert 8
  * Service Type Request SrvTypeRqst 9 Service Type Reply SrvTypeRply 10 SA
  * Advertisement SAAdvert 11
- * 
+ *
  * Length: @2 3 bytes length of the entire SLP message, header included.
- * 
+ *
  * Flags: @5 1 byte OVERFLOW (0x80): is set when a message's length exceeds what
  * can fit into a datagram. FRESH (0x40): is set on every new SrvReg. REQUEST
  * MCAST (0x20): is set when multicasting or broadcasting requests.
- * 
+ *
  * Reserved: @6 1 byte bits MUST be 0.
- * 
+ *
  * Next Extension Offset: @7 3 bytes is set to 0 unless extensions are used. The
  * first extension begins at 'offset' bytes, from the message's beginning. It is
  * placed after the SLP message data.
- * 
+ *
  * XID: @10 2 bytes is set to a unique value for each unique request. If the
  * request is retransmitted, the same XID is used. Replies set the XID to the
  * same value as the xid in the request. Only unsolicited DAAdverts are sent
  * with an XID of 0.
- * 
+ *
  * Language Tag Length: @12 2 bytes is the length in bytes of the Language Tag
  * field.
- * 
+ *
  * Language Tag: @14 The Language Tag in a reply MUST be the same as the
  * Language Tag in the request. This field must be encoded 1*8ALPHA *("-"
  * 1*8ALPHA).
@@ -94,10 +93,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * MsgHeader
- * 
+ *
  */
 public class MsgHeader implements FunctionIDs {
-
 	/**
 	 * VERSION
 	 */
@@ -144,41 +142,40 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pInStr
 	 * @return MsgHeader
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static MsgHeader parse(SLPInputStream pInStr) throws ServiceLocationException,
-			IOException {
+	public static MsgHeader parse(SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		int version = pInStr.read8();
 		int fnID = pInStr.read8();
 		if (fnID < FIRST_ID || fnID > LAST_ID) throw new ServiceLocationException(
-				ServiceLocationException.PARSE_ERROR, "functionID:" + fnID + " is not supported!");
+			ServiceLocationException.PARSE_ERROR,
+			"functionID:" + fnID + " is not supported!"
+		);
 		// int len =
 		pInStr.read24(); // TODO: could be used for sanity checking
 		int flags = pInStr.read16();
 		pInStr.read24(); // skip extension
 		int XID = pInStr.read16();
 		String langTag = pInStr.readString();
-		return new MsgHeader(version, fnID, langTag, (flags & OVERFLOW) > 0, (flags & FRESH) > 0,
-				(flags & MCAST) > 0, XID);
+		return new MsgHeader(version, fnID, langTag, (flags & OVERFLOW) > 0, (flags & FRESH) > 0, (flags & MCAST) > 0, XID);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHdr
 	 */
 	public MsgHeader(MsgHeader pHdr) {
-		this(pHdr.iVersion, pHdr.iFunctionID, pHdr.iLangTag, pHdr.iOverflow, pHdr.iFresh,
-				pHdr.iMCast, pHdr.iXID);
+		this(pHdr.iVersion, pHdr.iFunctionID, pHdr.iLangTag, pHdr.iOverflow, pHdr.iFresh, pHdr.iMCast, pHdr.iXID);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pVersion
 	 * @param pFunctionID
 	 * @param pLangTag
@@ -187,8 +184,15 @@ public class MsgHeader implements FunctionIDs {
 	 * @param pMCast
 	 * @param pXID
 	 */
-	public MsgHeader(int pVersion, int pFunctionID, String pLangTag, boolean pOverflow,
-			boolean pFresh, boolean pMCast, int pXID) {
+	public MsgHeader(
+		int pVersion,
+		int pFunctionID,
+		String pLangTag,
+		boolean pOverflow,
+		boolean pFresh,
+		boolean pMCast,
+		int pXID
+	) {
 		this.iVersion = pVersion;
 		this.iFunctionID = pFunctionID;
 		this.iLangTag = pLangTag;
@@ -200,7 +204,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * getVersion
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getVersion() {
@@ -209,7 +213,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * getFunctionID
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getFunctionID() {
@@ -218,7 +222,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * getLangTag
-	 * 
+	 *
 	 * @return int
 	 */
 	public String getLangTag() {
@@ -227,7 +231,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * overflows
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean overflows() {
@@ -236,7 +240,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * fresh
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean fresh() {
@@ -245,7 +249,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * multicast
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean multicast() {
@@ -264,7 +268,7 @@ public class MsgHeader implements FunctionIDs {
 	/**
 	 * The response have to contain the same XID of the request. So this setter
 	 * can be useful.
-	 * 
+	 *
 	 * @param pXID
 	 */
 	public void setXID(int pXID) {
@@ -273,7 +277,7 @@ public class MsgHeader implements FunctionIDs {
 
 	/**
 	 * getSize
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getSize() {
@@ -287,15 +291,14 @@ public class MsgHeader implements FunctionIDs {
 	 */
 	/**
 	 * serialize
-	 * 
+	 *
 	 * @param pBodyLength
 	 * @param pOverflow
 	 * @param pSetMultiCastFlag
 	 * @param pKeepXID
 	 * @return byte[]
 	 */
-	public byte[] serialize(int pBodyLength, boolean pOverflow, boolean pSetMultiCastFlag,
-			boolean pKeepXID) {
+	public byte[] serialize(int pBodyLength, boolean pOverflow, boolean pSetMultiCastFlag, boolean pKeepXID) {
 		SLPOutputStream outStr = new SLPOutputStream();
 		outStr.writeNoChk8(VERSION);
 		outStr.writeNoChk8(this.iFunctionID);
@@ -335,5 +338,4 @@ public class MsgHeader implements FunctionIDs {
 		if (cXID == 0) ++cXID;
 		return ++cXID;
 	}
-
 }

@@ -51,25 +51,23 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class HttpMethod provides a method to read a line from a given input stream
- * 
+ *
  */
 public abstract class HttpMethod {
 
 	/**
 	 * Reads a line from a given input stream
-	 * 
+	 *
 	 * @param pStream
 	 *            The input stream
 	 * @return The line
 	 * @throws IOException
 	 */
 	public static String readLine(InputStream pStream) throws IOException {
-
 		if (pStream == null) return null;
 
 		char buffer[] = new char[16];
@@ -78,7 +76,6 @@ public abstract class HttpMethod {
 		boolean flag = true;
 
 		for (; (prevChar = pStream.read()) >= 0; buffer[used++] = (char) prevChar) {
-
 			flag = false;
 
 			// @12917 - thschaef
@@ -102,10 +99,11 @@ public abstract class HttpMethod {
 		}
 		if (flag) {
 			LogAndTraceBroker
-					.getBroker()
-					.trace(
-							Level.FINE,
-							"Unexpected EOF trying to read line from input stream - CIMOM closed its end of socket, check it for connection issues");
+				.getBroker()
+				.trace(
+					Level.FINE,
+					"Unexpected EOF trying to read line from input stream - CIMOM closed its end of socket, check it for connection issues"
+				);
 			throw new IOException("Unexpected EOF");
 		}
 

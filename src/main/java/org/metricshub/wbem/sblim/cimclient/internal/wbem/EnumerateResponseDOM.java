@@ -42,9 +42,7 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
@@ -55,17 +53,16 @@ import org.xml.sax.SAXException;
 /**
  * Class EnumerateResponseDOM is responsible for all helper functions of DOM
  * parser related with EnumerateResponse.
- * 
+ *
  * @param <T>
  *            : Type Variable
  */
 public class EnumerateResponseDOM<T> {
-
 	private EnumerateResponse<T> enumResponse;
 
 	/**
 	 * EnumerateResponsePULL
-	 * 
+	 *
 	 * @param pStream
 	 * @param pPath
 	 * @throws IOException
@@ -74,9 +71,8 @@ public class EnumerateResponseDOM<T> {
 	 * @throws WBEMException
 	 */
 	@SuppressWarnings("unchecked")
-	public EnumerateResponseDOM(InputStreamReader pStream, CIMObjectPath pPath) throws IOException,
-			SAXException, ParserConfigurationException, WBEMException {
-
+	public EnumerateResponseDOM(InputStreamReader pStream, CIMObjectPath pPath)
+		throws IOException, SAXException, ParserConfigurationException, WBEMException {
 		String enumContext = null;
 
 		Boolean endOfSequence = null;
@@ -88,8 +84,9 @@ public class EnumerateResponseDOM<T> {
 			iter.hasNext();
 		} catch (RuntimeException e) {
 			iter.close();
-			if (e.getCause() != null && e.getCause() instanceof WBEMException) { throw (WBEMException) e
-					.getCause(); }
+			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
+				throw (WBEMException) e.getCause();
+			}
 			throw e;
 		}
 
@@ -97,39 +94,41 @@ public class EnumerateResponseDOM<T> {
 		List<Object> pOutArgA = ((CloseableIteratorDOM) iter).getParamValues();
 
 		// pOutArgA can never be null
-		if (pOutArgA == null) { throw new IllegalArgumentException(
-				"Output auguments not found during CIM-XML DOM parser"); }
+		if (pOutArgA == null) {
+			throw new IllegalArgumentException("Output auguments not found during CIM-XML DOM parser");
+		}
 
 		for (int i = 0; i < pOutArgA.size(); i++) {
-
 			CIMArgument<?> cimArg = (CIMArgument<?>) pOutArgA.get(i);
 
-			if (cimArg.getName().equals("EnumerationContext")) enumContext = (String) cimArg
-					.getValue();
-			else if (cimArg.getName().equals("EndOfSequence")) endOfSequence = (Boolean) cimArg
-					.getValue();
-			else throw new IllegalArgumentException(
-					"Invalid argument : only EnumerationContext and EndOfSequence are allowed");
+			if (cimArg.getName().equals("EnumerationContext")) enumContext = (String) cimArg.getValue(); else if (
+				cimArg.getName().equals("EndOfSequence")
+			) endOfSequence = (Boolean) cimArg.getValue(); else throw new IllegalArgumentException(
+				"Invalid argument : only EnumerationContext and EndOfSequence are allowed"
+			);
 		}
 		// EndOfSequence can never be null
-		if (endOfSequence == null) { throw new IllegalArgumentException(
-				"Invalid argument : EndOfSequence can never be null"); }
+		if (endOfSequence == null) {
+			throw new IllegalArgumentException("Invalid argument : EndOfSequence can never be null");
+		}
 
 		// EnumerationContext can't be null if there is more data available
-		if ((endOfSequence.booleanValue() == false) && (enumContext == null)) { throw new IllegalArgumentException(
-				"Invalid argument : EnumerationContext cannot be null if there is more data available"); }
+		if ((endOfSequence.booleanValue() == false) && (enumContext == null)) {
+			throw new IllegalArgumentException(
+				"Invalid argument : EnumerationContext cannot be null if there is more data available"
+			);
+		}
 
-		this.enumResponse = new EnumerateResponse<T>(enumContext, (CloseableIterator<T>) iter,
-				endOfSequence.booleanValue());
+		this.enumResponse =
+			new EnumerateResponse<T>(enumContext, (CloseableIterator<T>) iter, endOfSequence.booleanValue());
 	}
 
 	/**
 	 * Returns enumResponse
-	 * 
+	 *
 	 * @return The value of enumResponse.
 	 */
 	public EnumerateResponse<T> getEnumResponse() {
 		return this.enumResponse;
 	}
-
 }

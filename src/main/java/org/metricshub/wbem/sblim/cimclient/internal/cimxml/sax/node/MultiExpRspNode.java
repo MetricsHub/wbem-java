@@ -46,7 +46,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -55,7 +54,6 @@ import org.xml.sax.SAXException;
  * ELEMENT MULTIEXPRSP (SIMPLEEXPRSP, SIMPLEEXPRSP+)
  */
 public class MultiExpRspNode extends AbstractMessageNode {
-
 	private ArrayList<Node> iSimpleExpRspAList;
 
 	/**
@@ -85,20 +83,20 @@ public class MultiExpRspNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != SIMPLEEXPRSP) throw new SAXException(getNodeName()
-				+ " node can have SIMPLEEXPRSP child node only! " + pNodeNameEnum
-				+ " child node is invalid!");
+		if (pNodeNameEnum != SIMPLEEXPRSP) throw new SAXException(
+			getNodeName() + " node can have SIMPLEEXPRSP child node only! " + pNodeNameEnum + " child node is invalid!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iSimpleExpRspAList == null || this.iSimpleExpRspAList.size() < 2) throw new SAXException(
-				getNodeName() + " node must have at least two SIMPLEEXPRSP child nodes!");
+			getNodeName() + " node must have at least two SIMPLEEXPRSP child nodes!"
+		);
 	}
-
 }

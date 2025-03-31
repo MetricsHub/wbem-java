@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
@@ -63,15 +62,14 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | # auth
  * blocks | authentication block (if any) \
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
+ *
  */
 
 /**
  * SAAdvert message
- * 
+ *
  */
 public class SAAdvert extends ReplyMessage {
-
 	private String iURLStr;
 
 	private List<String> iScopeList;
@@ -80,37 +78,34 @@ public class SAAdvert extends ReplyMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new SAAdvert(pHdr, pInStr.readString(), pInStr.readStringList(), pInStr
-				.readAttributeList());
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new SAAdvert(pHdr, pInStr.readString(), pInStr.readStringList(), pInStr.readAttributeList());
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pURLStr
 	 * @param pScopeList
 	 *            - list of scope strings
 	 * @param pAttrList
 	 *            - list of ServiceLocationAttributes
 	 */
-	public SAAdvert(String pURLStr, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList) {
+	public SAAdvert(String pURLStr, List<String> pScopeList, List<ServiceLocationAttribute> pAttrList) {
 		super(SA_ADVERT, 0);
 		init(pURLStr, pScopeList, pAttrList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pURLStr
 	 * @param pScopeList
@@ -118,15 +113,14 @@ public class SAAdvert extends ReplyMessage {
 	 * @param pAttrList
 	 *            - list of ServiceLocationAttributes
 	 */
-	public SAAdvert(String pLangTag, String pURLStr, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList) {
+	public SAAdvert(String pLangTag, String pURLStr, List<String> pScopeList, List<ServiceLocationAttribute> pAttrList) {
 		super(SA_ADVERT, pLangTag, 0);
 		init(pURLStr, pScopeList, pAttrList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pURLStr
 	 * @param pScopeList
@@ -134,8 +128,12 @@ public class SAAdvert extends ReplyMessage {
 	 * @param pAttrList
 	 *            - list of ServiceLocationAttributes
 	 */
-	public SAAdvert(MsgHeader pHeader, String pURLStr, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList) {
+	public SAAdvert(
+		MsgHeader pHeader,
+		String pURLStr,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList
+	) {
 		super(pHeader, 0);
 		init(pURLStr, pScopeList, pAttrList);
 	}
@@ -152,12 +150,14 @@ public class SAAdvert extends ReplyMessage {
 	 */
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
-		return pOutStr.write(this.iURLStr) && pOutStr.writeStringList(this.iScopeList)
-				&& pOutStr.writeAttributeList(this.iAttrList);
+		return (
+			pOutStr.write(this.iURLStr) &&
+			pOutStr.writeStringList(this.iScopeList) &&
+			pOutStr.writeAttributeList(this.iAttrList)
+		);
 	}
 
-	private void init(String pURLStr, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList) {
+	private void init(String pURLStr, List<String> pScopeList, List<ServiceLocationAttribute> pAttrList) {
 		this.iURLStr = pURLStr;
 		this.iScopeList = pScopeList;
 		this.iAttrList = pAttrList;
@@ -168,5 +168,4 @@ public class SAAdvert extends ReplyMessage {
 		// this message doesn't have exception table
 		return null;
 	}
-
 }

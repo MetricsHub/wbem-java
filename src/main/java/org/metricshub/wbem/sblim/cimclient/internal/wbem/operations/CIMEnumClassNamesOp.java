@@ -48,15 +48,14 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMEnumClassNamesOp
- * 
+ *
  */
 public class CIMEnumClassNamesOp extends CIMOperation {
-
 	protected boolean iDeep;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param deep
 	 */
@@ -68,11 +67,10 @@ public class CIMEnumClassNamesOp extends CIMOperation {
 
 	/**
 	 * Returns deep
-	 * 
+	 *
 	 * @return The value of deep
 	 */
 	public boolean isDeep() {
 		return this.iDeep;
 	}
-
 }

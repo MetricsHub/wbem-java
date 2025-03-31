@@ -45,21 +45,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-
 import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 
 /**
  * TCPThread
- * 
+ *
  */
 public class TCPThread extends RecieverThread {
-
 	private ServerSocket iListenerSocket;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pSrvAgent
 	 */
 	public TCPThread(ServiceAgent pSrvAgent) {
@@ -83,12 +81,11 @@ public class TCPThread extends RecieverThread {
 	}
 
 	private class ConnectionThread implements Runnable {
-
 		private Socket iSock;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pSock
 		 */
 		public ConnectionThread(Socket pSock) {
@@ -99,7 +96,6 @@ public class TCPThread extends RecieverThread {
 		public void run() {
 			TCPThread.this.iSrvAgent.processMessage(this.iSock);
 		}
-
 	}
 
 	@Override
@@ -111,5 +107,4 @@ public class TCPThread extends RecieverThread {
 			TRC.error(e);
 		}
 	}
-
 }

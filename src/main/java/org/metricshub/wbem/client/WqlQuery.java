@@ -30,7 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.metricshub.wbem.client.exceptions.WqlQuerySyntaxException;
 
 /**
@@ -39,18 +38,20 @@ import org.metricshub.wbem.client.exceptions.WqlQuerySyntaxException;
  */
 public class WqlQuery {
 
-	private WqlQuery() { }
+	private WqlQuery() {}
 
 	private static final String ID = "[^\\s]+";
 	private static final String LIST_SEPARATOR = "\\s*,\\s*";
 
 	private static final Pattern CHECK_SELECT_PATTERN = Pattern.compile(
-			"^\\s*SELECT\\s+(\\*|(?!SELECT|FROM|WHERE)\\w+|((?!SELECT|FROM|WHERE)\\w+\\s*,\\s*)+((?!SELECT|FROM|WHERE)\\w+))\\s+FROM\\s+((?!SELECT|WHERE|FROM)\\w+)\\s*?$",
-			Pattern.CASE_INSENSITIVE);
+		"^\\s*SELECT\\s+(\\*|(?!SELECT|FROM|WHERE)\\w+|((?!SELECT|FROM|WHERE)\\w+\\s*,\\s*)+((?!SELECT|FROM|WHERE)\\w+))\\s+FROM\\s+((?!SELECT|WHERE|FROM)\\w+)\\s*?$",
+		Pattern.CASE_INSENSITIVE
+	);
 
-	private static final Pattern EXTRACT_SELECT_PATTERN= Pattern.compile(
-			"^\\s*SELECT\\s+(.+)\\s+FROM\\s+("+ID+")\\s*$",
-			Pattern.CASE_INSENSITIVE);
+	private static final Pattern EXTRACT_SELECT_PATTERN = Pattern.compile(
+		"^\\s*SELECT\\s+(.+)\\s+FROM\\s+(" + ID + ")\\s*$",
+		Pattern.CASE_INSENSITIVE
+	);
 	private static final int SELECT_GROUP_CLASSNAME = 2;
 	private static final int SELECT_GROUP_FIELDS = 1;
 	private static final int SELECT_GROUP_COUNT = 2;
@@ -66,7 +67,6 @@ public class WqlQuery {
 	 * @throws WqlQuerySyntaxException On WQL Syntax exception.
 	 */
 	public static WqlQuery parseQuery(final String query) throws WqlQuerySyntaxException {
-
 		Utils.checkNonNull(query, "query");
 
 		if (CHECK_SELECT_PATTERN.matcher(query).find()) {
@@ -82,11 +82,12 @@ public class WqlQuery {
 	}
 
 	public String[] getPropertiesArray() {
-		return properties.isEmpty() ?
-				null :
-				properties.stream()
-					.filter(property -> !WbemCimDataHandler.PATH_PROPERTY.equalsIgnoreCase(property))
-					.toArray(String[]::new);
+		return properties.isEmpty()
+			? null
+			: properties
+				.stream()
+				.filter(property -> !WbemCimDataHandler.PATH_PROPERTY.equalsIgnoreCase(property))
+				.toArray(String[]::new);
 	}
 
 	public Set<String> getProperties() {
@@ -101,35 +102,35 @@ public class WqlQuery {
 		return properties != null && originalProperties != null && properties.size() != originalProperties.size();
 	}
 
-	private void parseSelect(
-			final String query) throws WqlQuerySyntaxException {
-
+	private void parseSelect(final String query) throws WqlQuerySyntaxException {
 		final Matcher matcher = EXTRACT_SELECT_PATTERN.matcher(query);
 		if (!matcher.find()) {
 			throw new WqlQuerySyntaxException(query);
 		}
- 		if (matcher.groupCount() < SELECT_GROUP_COUNT) {
- 			throw new WqlQuerySyntaxException(query);
+		if (matcher.groupCount() < SELECT_GROUP_COUNT) {
+			throw new WqlQuerySyntaxException(query);
 		}
 
- 		className = matcher.group(SELECT_GROUP_CLASSNAME);
+		className = matcher.group(SELECT_GROUP_CLASSNAME);
 
- 		final String fieldsList = matcher.group(SELECT_GROUP_FIELDS);
- 		final String[] fieldArray = Optional.ofNullable(fieldsList)
-				.filter(s -> !"*".equals(s))
-				.map(s -> s.split(LIST_SEPARATOR))
-				.orElse(new String[0]);
+		final String fieldsList = matcher.group(SELECT_GROUP_FIELDS);
+		final String[] fieldArray = Optional
+			.ofNullable(fieldsList)
+			.filter(s -> !"*".equals(s))
+			.map(s -> s.split(LIST_SEPARATOR))
+			.orElse(new String[0]);
 
- 		originalProperties = Stream.of(fieldArray)
-				.map(String::trim)
-				.collect(Collectors.toList());
+		originalProperties = Stream.of(fieldArray).map(String::trim).collect(Collectors.toList());
 
- 		// using a map, so the properties will keep the case and the order of the query.
- 		final Map<String, String> originalMap = new HashMap<>();
- 		originalProperties.stream().forEach(
- 				property -> originalMap.computeIfAbsent(property.toLowerCase(), prop -> property));
+		// using a map, so the properties will keep the case and the order of the query.
+		final Map<String, String> originalMap = new HashMap<>();
+		originalProperties
+			.stream()
+			.forEach(property -> originalMap.computeIfAbsent(property.toLowerCase(), prop -> property));
 
-		properties = originalProperties.stream()
+		properties =
+			originalProperties
+				.stream()
 				.map(property -> originalMap.get(property.toLowerCase()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}

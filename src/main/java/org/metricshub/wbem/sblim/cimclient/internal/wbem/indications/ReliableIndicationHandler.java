@@ -46,10 +46,9 @@ import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
-import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.javax.cim.CIMProperty;
+import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * <code>ReliableIndicationHandler</code> is responsible for determining when to
@@ -57,7 +56,7 @@ import org.metricshub.wbem.javax.cim.CIMProperty;
  * caching all indications for the duration of their sequence identifier
  * lifetime, and logging missing, duplicate and out-of-order indications. This
  * functionality is based on the changes first introduced by DSP1054 v1.1.
- * 
+ *
  * The <code>handleIndication</code>, <code>areAllEmpty</code> and
  * <code>processAll</code> methods need to be synchronized because they are the
  * entry points into <code>ReliableIndicationHandler</code> - the first is the
@@ -65,7 +64,7 @@ import org.metricshub.wbem.javax.cim.CIMProperty;
  * indication, the other two are only called by the DataManager thread and hence
  * protected. All of the private methods are only called from one of the three
  * synchronized methods.
- * 
+ *
  * NOTE: <code>ReliableIndicationHandler</code> does NOT contain any logic for
  * handling sequence number wrapping. It was deemed unnecessary because of the
  * performance impact to each and every indication for a VERY rare occurrence:
@@ -84,7 +83,6 @@ public class ReliableIndicationHandler {
 	 * one sequence context can be in the queue at any one time.
 	 */
 	private class ReliableIndication {
-
 		private long iDiscardTime;
 
 		private String iId;
@@ -95,8 +93,13 @@ public class ReliableIndicationHandler {
 
 		private long iSequenceNumber;
 
-		public ReliableIndication(CIMInstance pIndication, long pSequenceNumber, long pDiscardTime,
-				String pId, InetAddress pInetAddress) {
+		public ReliableIndication(
+			CIMInstance pIndication,
+			long pSequenceNumber,
+			long pDiscardTime,
+			String pId,
+			InetAddress pInetAddress
+		) {
 			this.iIndication = pIndication;
 			this.iSequenceNumber = pSequenceNumber;
 			this.iDiscardTime = pDiscardTime;
@@ -133,7 +136,6 @@ public class ReliableIndicationHandler {
 	 * increasing discard time.
 	 */
 	private class CacheEntry {
-
 		private String iSeqContext;
 
 		private long iSeqNumber;
@@ -183,7 +185,7 @@ public class ReliableIndicationHandler {
 	 * Constructs a <code>ReliableIndicationHandler</code> instance that uses
 	 * the specified event dispatcher and sequence identifier lifetime to handle
 	 * reliable indications.
-	 * 
+	 *
 	 * @param pDispatcher
 	 *            <code>CIMEventDispatcher</code> that does the actual
 	 *            indication dispatching.
@@ -197,15 +199,14 @@ public class ReliableIndicationHandler {
 
 	/**
 	 * Adds a reliable indication to the indication delivery queue.
-	 * 
+	 *
 	 * @param pIndication
 	 *            Reliable indication to be queued for delivery.
 	 */
 	private void addToQueue(ReliableIndication pIndication) {
 		int size = this.iQueue.size();
 
-		if ((size == 0)
-				|| (this.iQueue.getLast().getSequenceNumber()) < pIndication.getSequenceNumber()) {
+		if ((size == 0) || (this.iQueue.getLast().getSequenceNumber()) < pIndication.getSequenceNumber()) {
 			this.iQueue.addLast(pIndication);
 		} else {
 			int i;
@@ -235,8 +236,9 @@ public class ReliableIndicationHandler {
 			ReliableIndication indication = this.iQueue.removeFirst();
 			logMissingQueueEntries(indication.getSequenceNumber());
 
-			this.iDispatcher.dispatchEvent(new CIMEvent(indication.getIndication(), indication
-					.getId(), indication.getInetAddress()));
+			this.iDispatcher.dispatchEvent(
+					new CIMEvent(indication.getIndication(), indication.getId(), indication.getInetAddress())
+				);
 
 			this.iExpectedSequenceNumber = indication.getSequenceNumber() + 1;
 		}
@@ -244,7 +246,7 @@ public class ReliableIndicationHandler {
 
 	/**
 	 * Determines if the indication delivery queue is empty.
-	 * 
+	 *
 	 * @return <code>true</code> if indication delivery queue is empty,
 	 *         <code>false</code> otherwise.
 	 */
@@ -255,7 +257,7 @@ public class ReliableIndicationHandler {
 	/**
 	 * Logs any missing reliable indications at the front of the indication
 	 * delivery queue.
-	 * 
+	 *
 	 * @param pSequenceNumber
 	 *            Sequence number of first indication present in delivery queue.
 	 */
@@ -297,8 +299,9 @@ public class ReliableIndicationHandler {
 			indication = this.iQueue.removeFirst();
 			logMissingQueueEntries(indication.getSequenceNumber());
 
-			this.iDispatcher.dispatchEvent(new CIMEvent(indication.getIndication(), indication
-					.getId(), indication.getInetAddress()));
+			this.iDispatcher.dispatchEvent(
+					new CIMEvent(indication.getIndication(), indication.getId(), indication.getInetAddress())
+				);
 
 			this.iExpectedSequenceNumber = indication.getSequenceNumber() + 1;
 
@@ -310,8 +313,9 @@ public class ReliableIndicationHandler {
 		while (indication.getSequenceNumber() == this.iExpectedSequenceNumber) {
 			indication = this.iQueue.removeFirst();
 
-			this.iDispatcher.dispatchEvent(new CIMEvent(indication.getIndication(), indication
-					.getId(), indication.getInetAddress()));
+			this.iDispatcher.dispatchEvent(
+					new CIMEvent(indication.getIndication(), indication.getId(), indication.getInetAddress())
+				);
 
 			this.iExpectedSequenceNumber++;
 
@@ -322,7 +326,7 @@ public class ReliableIndicationHandler {
 
 	/**
 	 * Adds a reliable indication to the sequence identifier cache.
-	 * 
+	 *
 	 * @param pSequenceContext
 	 *            Sequence context of reliable indication to be cached.
 	 * @param pSequenceNumber
@@ -348,7 +352,6 @@ public class ReliableIndicationHandler {
 			}
 			this.iCache.addFirst(newEntry);
 		}
-
 		// printCache();
 	}
 
@@ -362,7 +365,7 @@ public class ReliableIndicationHandler {
 
 	/**
 	 * Determines if the sequence identifier cache is empty.
-	 * 
+	 *
 	 * @return <code>true</code> if sequence identifier cache is empty,
 	 *         <code>false</code> otherwise.
 	 */
@@ -372,7 +375,7 @@ public class ReliableIndicationHandler {
 
 	/**
 	 * Determines if the sequence context is in the sequence identifier cache.
-	 * 
+	 *
 	 * @param pSequenceContext
 	 *            Sequence context to look for.
 	 * @return <code>true</code> if sequence context is in sequence identifier
@@ -390,7 +393,7 @@ public class ReliableIndicationHandler {
 	/**
 	 * Determines if the sequence identifier (context and number) is in the
 	 * sequence identifier cache.
-	 * 
+	 *
 	 * @param pSequenceContext
 	 *            Sequence context to look for.
 	 * @param pSequenceNumber
@@ -403,8 +406,9 @@ public class ReliableIndicationHandler {
 		Iterator<CacheEntry> iterator = this.iCache.iterator();
 		while (iterator.hasNext()) {
 			CacheEntry entry = iterator.next();
-			if ((entry.getSequenceContext().compareTo(pSequenceContext) == 0)
-					&& (entry.getSequenceNumber() == pSequenceNumber)) return true;
+			if (
+				(entry.getSequenceContext().compareTo(pSequenceContext) == 0) && (entry.getSequenceNumber() == pSequenceNumber)
+			) return true;
 		}
 		return false;
 	}
@@ -439,7 +443,7 @@ public class ReliableIndicationHandler {
 	/**
 	 * Determines if both the indication delivery queue and sequence identifier
 	 * cache are empty.
-	 * 
+	 *
 	 * @return <code>true</code> if both the indication delivery queue and
 	 *         sequence identifier cache are empty, <code>false</code>
 	 *         otherwise.
@@ -471,7 +475,7 @@ public class ReliableIndicationHandler {
 	 * indication is either sent directly to the <code>CIMEventDispatcher</code>
 	 * or placed in the indication delivery queue to be dispatched later. All
 	 * reliable indications are placed in the sequence identifier cache.
-	 * 
+	 *
 	 * @param pIndication
 	 *            Indication.
 	 * @param pId
@@ -479,8 +483,7 @@ public class ReliableIndicationHandler {
 	 * @param pInetAddress
 	 *            Indication server IP.
 	 */
-	public synchronized void handleIndication(CIMInstance pIndication, String pId,
-			InetAddress pInetAddress) {
+	public synchronized void handleIndication(CIMInstance pIndication, String pId, InetAddress pInetAddress) {
 		// Get current time
 		long arrivalTime = System.currentTimeMillis();
 
@@ -491,8 +494,7 @@ public class ReliableIndicationHandler {
 		// At this point indication is reliable or not reliable
 
 		// Indication is not reliable, handle appropriately and deliver
-		if (seqCtxProp == null || seqNumProp == null || seqCtxProp.getValue() == null
-				|| seqNumProp.getValue() == null) {
+		if (seqCtxProp == null || seqNumProp == null || seqCtxProp.getValue() == null || seqNumProp.getValue() == null) {
 			// Handle switch from reliable to not reliable
 			if (this.iLastSequenceContext != null) {
 				// Deliver all enqueued indications from previous context
@@ -520,8 +522,11 @@ public class ReliableIndicationHandler {
 			// this.iLastArrivalTime = arrivalTime;
 
 			// Cache sequence identifier
-			addToCache(this.iLastSequenceContext, this.iLastSequenceNumber.longValue(), arrivalTime
-					+ this.iIndentifierLifetime);
+			addToCache(
+				this.iLastSequenceContext,
+				this.iLastSequenceNumber.longValue(),
+				arrivalTime + this.iIndentifierLifetime
+			);
 
 			// Deliver indication
 			this.iDispatcher.dispatchEvent(new CIMEvent(pIndication, pId, pInetAddress));
@@ -568,15 +573,18 @@ public class ReliableIndicationHandler {
 			// Cached sequence context indicates this indication arrived
 			// out-of-order from previous context, log and ignore
 			if (isInCache(seqCtx)) {
-				this.iLogger.trace(Level.FINE, "Out-of-order indication #" + seqNumVal
-						+ " received from previous context; indication ignored, logged: "
-						+ pIndication.toString());
+				this.iLogger.trace(
+						Level.FINE,
+						"Out-of-order indication #" +
+						seqNumVal +
+						" received from previous context; indication ignored, logged: " +
+						pIndication.toString()
+					);
 
 				return;
 			}
 
-			this.iLogger.trace(Level.FINE,
-					"Discarding knowledge of previous sequence identifier because context changed");
+			this.iLogger.trace(Level.FINE, "Discarding knowledge of previous sequence identifier because context changed");
 
 			// Deliver all enqueued indications from previous context
 			flushQueue();
@@ -600,8 +608,9 @@ public class ReliableIndicationHandler {
 			// Unexpected (non-zero) sequence number, enqueue
 			this.iLastSequenceNumber = Long.valueOf(-1);
 			this.iExpectedSequenceNumber = 0;
-			addToQueue(new ReliableIndication(pIndication, seqNumVal, arrivalTime
-					+ this.iIndentifierLifetime, pId, pInetAddress));
+			addToQueue(
+				new ReliableIndication(pIndication, seqNumVal, arrivalTime + this.iIndentifierLifetime, pId, pInetAddress)
+			);
 
 			return;
 		}
@@ -625,8 +634,7 @@ public class ReliableIndicationHandler {
 
 		// Duplicate indication arrived, log and ignore
 		if (isInCache(seqCtx, seqNumVal)) {
-			this.iLogger.trace(Level.FINE, "Duplicate indication #" + seqNumVal
-					+ " received; indication ignored");
+			this.iLogger.trace(Level.FINE, "Duplicate indication #" + seqNumVal + " received; indication ignored");
 
 			// Cache sequence identifier (duplicate entries okay and much easier
 			// than deleting/adding or moving)
@@ -637,9 +645,15 @@ public class ReliableIndicationHandler {
 
 		// Out-of-order indication arrived, log and ignore
 		if (seqNumVal < this.iExpectedSequenceNumber) {
-			this.iLogger.trace(Level.FINE, "Out-of-order indication #" + seqNumVal + " received (#"
-					+ this.iExpectedSequenceNumber + " expected); indication ignored, logged: "
-					+ pIndication.toString());
+			this.iLogger.trace(
+					Level.FINE,
+					"Out-of-order indication #" +
+					seqNumVal +
+					" received (#" +
+					this.iExpectedSequenceNumber +
+					" expected); indication ignored, logged: " +
+					pIndication.toString()
+				);
 
 			// Cache sequence identifier
 			addToCache(seqCtx, seqNumVal, arrivalTime + this.iIndentifierLifetime);
@@ -650,8 +664,9 @@ public class ReliableIndicationHandler {
 		// Indication with higher sequence number than expected received, cache
 		// and enqueue it
 		addToCache(seqCtx, seqNumVal, arrivalTime + this.iIndentifierLifetime);
-		addToQueue(new ReliableIndication(pIndication, seqNumVal, arrivalTime
-				+ this.iIndentifierLifetime, pId, pInetAddress));
+		addToQueue(
+			new ReliableIndication(pIndication, seqNumVal, arrivalTime + this.iIndentifierLifetime, pId, pInetAddress)
+		);
 
 		return;
 	}

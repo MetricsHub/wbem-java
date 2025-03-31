@@ -57,7 +57,6 @@ import java.math.BigInteger;
  * >DSP004</a>).
  */
 public class UnsignedInteger64 extends Number implements Comparable<UnsignedInteger64> {
-
 	private static final long serialVersionUID = -3734165689168941119L;
 
 	/**
@@ -75,7 +74,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Sets the value of this integer object if it falls within the range of
 	 * minimum and maximum values.
-	 * 
+	 *
 	 * @param pValue
 	 *            The integer.
 	 * @throws NumberFormatException
@@ -92,7 +91,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Constructs an unsigned 64-bit integer object for the specified
 	 * <code>BigInteger</code>. Only the lower 64 bits are considered.
-	 * 
+	 *
 	 * @param pValue
 	 *            The <code>BigInteger</code> to be represented as an unsigned
 	 *            64-bit integer.
@@ -109,7 +108,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Constructs an unsigned 64-bit integer object for the specified array of
 	 * bytes. Only the lower 64 bits are considered.
-	 * 
+	 *
 	 * @param pValue
 	 *            The byte array to be represented as an unsigned 64-bit
 	 *            integer.
@@ -126,7 +125,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Constructs an unsigned 64-bit integer object from the specified string.
 	 * Only the lower 64 bits are considered.
-	 * 
+	 *
 	 * @param pValue
 	 *            The string to be represented as an unsigned 64-bit integer.
 	 * @throws NumberFormatException
@@ -141,7 +140,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Get the value as a <code>BigInteger</code>.
-	 * 
+	 *
 	 * @return <code>BigInteger</code> representation of this object.
 	 */
 	public BigInteger bigIntegerValue() {
@@ -152,7 +151,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	 * Compares this object with the specified object for order. Returns a
 	 * negative integer, zero, or a positive integer as this object is less
 	 * than, equal to, or greater than the specified object.
-	 * 
+	 *
 	 * @param pOther
 	 *            The Object to be compared.
 	 * @return A negative integer, zero, or a positive integer as this object is
@@ -164,8 +163,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	 *             If value is <code>null</code>.
 	 */
 	public int compareTo(UnsignedInteger64 pOther) {
-		if (pOther == null) throw new IllegalArgumentException(
-				"Other UnsignedInteger64 cannot be null!");
+		if (pOther == null) throw new IllegalArgumentException("Other UnsignedInteger64 cannot be null!");
 		UnsignedInteger64 that = pOther;
 		int d = this.iValue.compareTo(that.iValue);
 		if (d == 0) return 0;
@@ -177,7 +175,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is an <code>UnsignedInteger64</code> object that represents the same
 	 * value as this object.
-	 * 
+	 *
 	 * @param pOther
 	 *            The object to compare.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -191,7 +189,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Returns the value of this unsigned integer object as a <code>byte</code>.
-	 * 
+	 *
 	 * @return The <code>byte</code> value of this unsigned integer object.
 	 */
 	@Override
@@ -202,7 +200,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Returns the value of this unsigned integer object as a
 	 * <code>double</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>double</code>.
 	 */
 	@Override
@@ -213,7 +211,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Returns the value of this unsigned integer object as a <code>float</code>
 	 * .
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>float</code>.
 	 */
 	@Override
@@ -223,7 +221,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Computes the hash code for this unsigned integer object.
-	 * 
+	 *
 	 * @return The integer representing the hash code for this unsigned integer
 	 *         object.
 	 */
@@ -234,7 +232,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Returns the value of this unsigned integer object as an <code>int</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as an <code>int</code>.
 	 */
 	@Override
@@ -244,7 +242,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Returns the value of this unsigned integer object as a <code>long</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>long</code>.
 	 */
 	@Override
@@ -255,7 +253,7 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 	/**
 	 * Returns the value of this unsigned integer object as a <code>short</code>
 	 * .
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>short</code>.
 	 */
 	@Override
@@ -265,12 +263,11 @@ public class UnsignedInteger64 extends Number implements Comparable<UnsignedInte
 
 	/**
 	 * Returns the text representation of this unsigned integer object.
-	 * 
+	 *
 	 * @return Text representation of this unsigned integer.
 	 */
 	@Override
 	public String toString() {
 		return this.iValue.toString();
 	}
-
 }

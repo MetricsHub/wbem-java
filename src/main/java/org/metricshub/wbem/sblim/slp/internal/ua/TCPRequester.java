@@ -45,20 +45,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.MsgFactory;
-import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.internal.msg.ReplyMessage;
+import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
 
 /**
  * TCPRequester
- * 
+ *
  */
 public class TCPRequester implements Runnable {
-
 	private InetAddress iDestination;
 
 	private Thread iThread;
@@ -75,15 +73,15 @@ public class TCPRequester implements Runnable {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pResTable
 	 * @param pDestination
 	 * @param pReqMsg
 	 * @param pAsThread
 	 * @throws ServiceLocationException
 	 */
-	public TCPRequester(ResultTable pResTable, InetAddress pDestination, RequestMessage pReqMsg,
-			boolean pAsThread) throws ServiceLocationException {
+	public TCPRequester(ResultTable pResTable, InetAddress pDestination, RequestMessage pReqMsg, boolean pAsThread)
+		throws ServiceLocationException {
 		this.iResTable = pResTable;
 		this.iDestination = pDestination;
 		this.iReqMsg = pReqMsg;
@@ -132,7 +130,6 @@ public class TCPRequester implements Runnable {
 				}
 			}
 		}
-
 	}
 
 	private void handleResponse(Socket pSocket) {
@@ -143,9 +140,8 @@ public class TCPRequester implements Runnable {
 			this.iResTable.addException(e);
 			return;
 		}
-		if (this.iReqMsg.getXID() == replyMsg.getXID()
-				&& this.iReqMsg.isAllowedResponseType(replyMsg)) this.iResTable
-				.addResults(replyMsg);
+		if (
+			this.iReqMsg.getXID() == replyMsg.getXID() && this.iReqMsg.isAllowedResponseType(replyMsg)
+		) this.iResTable.addResults(replyMsg);
 	}
-
 }

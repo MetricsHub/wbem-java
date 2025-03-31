@@ -46,7 +46,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
  * Class UntypedStringValue parses an untyped string value.
  */
 public class StringValue extends Value implements QuotedValue {
-
 	private static final int NORMAL = 0;
 
 	private static final int ESCAPED = 1;
@@ -55,7 +54,7 @@ public class StringValue extends Value implements QuotedValue {
 
 	/**
 	 * Factory method for parsing quoted strings.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return <code>Value</code> instance
 	 * @throws IllegalArgumentException
@@ -128,5 +127,4 @@ public class StringValue extends Value implements QuotedValue {
 	public String getTypeInfo() {
 		return MOF.DT_STR;
 	}
-
 }

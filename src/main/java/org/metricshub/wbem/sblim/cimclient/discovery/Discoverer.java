@@ -43,15 +43,14 @@ package org.metricshub.wbem.sblim.cimclient.discovery;
 
 /**
  * Interface Discoverer offers methodology for discovering WBEM services.
- * 
+ *
  * Implementations SHALL ensure thread-safety
  * @since 2.0.2
  */
 public interface Discoverer {
-
 	/**
 	 * Finds WBEM services using a given list of directory servers
-	 * 
+	 *
 	 * @param pDirectoryUrls
 	 *            An array of directory servers. For SLP this would be a list of
 	 *            DA URLs.
@@ -63,7 +62,7 @@ public interface Discoverer {
 	 * Finds directory services. The semantics of this method might be protocol
 	 * specific. E.g. for SLP this sends a multicast into the local subnet
 	 * looking first for directory agent, second for service agents.
-	 * 
+	 *
 	 * @return A String[] containing the URLs of the directories
 	 * @since 2.0.3
 	 */

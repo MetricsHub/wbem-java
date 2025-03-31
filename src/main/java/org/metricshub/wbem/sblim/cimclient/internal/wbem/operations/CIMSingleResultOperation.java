@@ -46,25 +46,25 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem.operations;
  */
 
 import java.util.Vector;
-
 import org.metricshub.wbem.javax.wbem.WBEMException;
 
 /**
  * CIMSingleResultOperation
- * 
+ *
  */
-abstract public class CIMSingleResultOperation extends CIMOperation {
+public abstract class CIMSingleResultOperation extends CIMOperation {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.wbem.client.operations.CIMOperation#getResult()
 	 */
 	@Override
 	public Object getResult() throws WBEMException {
 		if (this.iResult instanceof Exception) throw (WBEMException) this.iResult;
-		if (this.iResult instanceof Vector && ((Vector<?>) this.iResult).size() > 0) return ((Vector<?>) this.iResult)
-				.elementAt(0);
+		if (this.iResult instanceof Vector && ((Vector<?>) this.iResult).size() > 0) return (
+			(Vector<?>) this.iResult
+		).elementAt(0);
 		return null;
 	}
 }

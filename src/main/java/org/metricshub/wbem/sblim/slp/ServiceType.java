@@ -55,7 +55,6 @@ import java.util.StringTokenizer;
  * abstract service types are all handled.
  */
 public class ServiceType implements Serializable {
-
 	private static final long serialVersionUID = -4850546870881037017L;
 
 	private boolean iIsServiceURL = true;
@@ -67,10 +66,10 @@ public class ServiceType implements Serializable {
 	private String iNamingAuthority = "";
 
 	/**
-	 * 
+	 *
 	 * Constructs a service type object from the service type specifier. Throws
 	 * IllegalArgumentException if the type name is syntactically incorrect.
-	 * 
+	 *
 	 * @param pType
 	 *            The service type name as a String. If the service type is from
 	 *            a service: URL, the "service:" prefix must be intact.
@@ -81,7 +80,7 @@ public class ServiceType implements Serializable {
 
 	/**
 	 * Returns true if the type name contains the "service:" prefix.
-	 * 
+	 *
 	 * @return <code>true</code> if the type name contains the "service:" prefix
 	 */
 	public boolean isServiceURL() {
@@ -90,7 +89,7 @@ public class ServiceType implements Serializable {
 
 	/**
 	 * Returns true if the type name is for an abstract type.
-	 * 
+	 *
 	 * @return <code>true</code> if the type name is for an abstract type
 	 */
 	public boolean isAbstractType() {
@@ -100,7 +99,7 @@ public class ServiceType implements Serializable {
 	/**
 	 * Returns true if the naming authority is the default, i.e. is the empty
 	 * string.
-	 * 
+	 *
 	 * @return <code>true</code> if the naming authority is the default, i.e. is
 	 *         the empty string
 	 */
@@ -113,7 +112,7 @@ public class ServiceType implements Serializable {
 	 * if the service type is not abstract. For example, if the type name is
 	 * "service:printing:ipp", the method returns "ipp". If the type name is
 	 * "service:ftp", the method returns "".
-	 * 
+	 *
 	 * @return <code>true</code> if the service type is not abstract
 	 */
 	public String getConcreteTypeName() {
@@ -125,7 +124,7 @@ public class ServiceType implements Serializable {
 	 * a protocol type, or the URL scheme for a generic URL. For example, in the
 	 * abstract type name "service:printing:ipp", the method returns "printing".
 	 * In the protocol type name "service:ftp", the method returns "ftp".
-	 * 
+	 *
 	 * @return The principle type name
 	 */
 	public String getPrincipleTypeName() {
@@ -138,19 +137,20 @@ public class ServiceType implements Serializable {
 	 * concrete type name or intervening colon. If not an abstract type, returns
 	 * the empty string. For example, in the abstract type name
 	 * "service:printing:ipp", the method returns "service:printing".
-	 * 
+	 *
 	 * @return The abstract type name
 	 */
 	public String getAbstractTypeName() {
-		if (isAbstractType()) return "service:" + this.iPrincipleType
-				+ (this.iNamingAuthority.length() <= 0 ? "" : "." + this.iNamingAuthority);
+		if (isAbstractType()) return (
+			"service:" + this.iPrincipleType + (this.iNamingAuthority.length() <= 0 ? "" : "." + this.iNamingAuthority)
+		);
 		return "";
 	}
 
 	/**
 	 * Return the naming authority name, or the empty string if the naming
 	 * authority is the default.
-	 * 
+	 *
 	 * @return The naming authority
 	 */
 	public String getNamingAuthority() {
@@ -159,9 +159,9 @@ public class ServiceType implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
+	 *
 	 * Overrides Object.equals(). The two objects are equal if they are both
 	 * ServiceType objects and the components of both are equal.
 	 */
@@ -171,35 +171,40 @@ public class ServiceType implements Serializable {
 		if (!(obj instanceof ServiceType)) return false;
 
 		ServiceType servicetype = (ServiceType) obj;
-		return this.iIsServiceURL == servicetype.iIsServiceURL
-				&& this.iPrincipleType.equals(servicetype.iPrincipleType)
-				&& this.iAbstractType.equals(servicetype.iAbstractType)
-				&& this.iNamingAuthority.equals(servicetype.iNamingAuthority);
+		return (
+			this.iIsServiceURL == servicetype.iIsServiceURL &&
+			this.iPrincipleType.equals(servicetype.iPrincipleType) &&
+			this.iAbstractType.equals(servicetype.iAbstractType) &&
+			this.iNamingAuthority.equals(servicetype.iNamingAuthority)
+		);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
-	 * 
+	 *
 	 * Returns the fully formatted type name, including the "service:" if the
 	 * type was originally from a service: URL.
 	 */
 	@Override
 	public String toString() {
 		// TODO: clean up this
-		return (this.iIsServiceURL ? "service:" : "") + this.iPrincipleType
-				+ (this.iNamingAuthority.length() <= 0 ? "" : "." + this.iNamingAuthority)
-				+ (this.iAbstractType.length() <= 0 ? "" : ":" + this.iAbstractType);
+		return (
+			(this.iIsServiceURL ? "service:" : "") +
+			this.iPrincipleType +
+			(this.iNamingAuthority.length() <= 0 ? "" : "." + this.iNamingAuthority) +
+			(this.iAbstractType.length() <= 0 ? "" : ":" + this.iAbstractType)
+		);
 	}
 
 	private int iHashCode = 0;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
-	 * 
+	 *
 	 * Overrides Object.hashCode(). Hashes on the string value of the "service"
 	 * prefix, naming authority, if any, abstract and concrete type names for
 	 * abstract types, protocol type name for protocol types, and URL scheme for
@@ -215,7 +220,6 @@ public class ServiceType implements Serializable {
 		StringTokenizer st = new StringTokenizer(pString, ":.", true);
 		while (true) {
 			try {
-
 				String token = st.nextToken();
 				if (token.equals(":") || token.equals(".")) continue;
 
@@ -263,7 +267,9 @@ public class ServiceType implements Serializable {
 
 		for (int pos = 0; pos < length; pos++) {
 			char ch = str.charAt(pos);
-			if (!Character.isLetterOrDigit(ch) && ch != '+' && ch != '-') { throw new IllegalArgumentException(); }
+			if (!Character.isLetterOrDigit(ch) && ch != '+' && ch != '-') {
+				throw new IllegalArgumentException();
+			}
 		}
 	}
 }

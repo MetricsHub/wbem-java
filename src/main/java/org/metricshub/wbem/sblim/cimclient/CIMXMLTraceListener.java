@@ -44,14 +44,13 @@ import java.util.logging.Level;
 /**
  * The interface CIMXMLTraceListener must be implemented if you want to attach
  * your own CIM-XML logging framework to the CIM Client.
- * 
+ *
  * @see LogAndTraceManager
  */
 public interface CIMXMLTraceListener {
-
 	/**
 	 * Receive a CIM-XML trace message.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the message level identifiers, e.g. FINE
 	 * @param pMessage
@@ -62,5 +61,4 @@ public interface CIMXMLTraceListener {
 	 *            (being sent from server to client)
 	 */
 	public void traceCIMXML(Level pLevel, String pMessage, boolean pOutgoing);
-
 }

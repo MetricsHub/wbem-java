@@ -45,32 +45,30 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 
 import java.io.IOException;
 import java.util.Iterator;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * ServiceAcknowledgment message
- * 
+ *
  */
 public class ServiceAcknowledgment extends ReplyMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		return new ServiceAcknowledgment(pHdr, pInStr.read16());
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 */
 	public ServiceAcknowledgment(int pErrorCode) {
@@ -79,7 +77,7 @@ public class ServiceAcknowledgment extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pErrorCode
 	 */
@@ -89,7 +87,7 @@ public class ServiceAcknowledgment extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 */
@@ -116,5 +114,4 @@ public class ServiceAcknowledgment extends ReplyMessage {
 		// this message doesn't have exception table
 		return null;
 	}
-
 }

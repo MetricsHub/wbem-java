@@ -119,34 +119,45 @@ import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
-
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLHandshakeException;
+import javax.security.auth.Subject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.cim.CIMQualifierType;
+import org.metricshub.wbem.javax.cim.UnsignedInteger32;
+import org.metricshub.wbem.javax.cim.UnsignedInteger64;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.javax.wbem.client.EnumerateResponse;
 import org.metricshub.wbem.javax.wbem.client.PasswordCredential;
 import org.metricshub.wbem.javax.wbem.client.RoleCredential;
 import org.metricshub.wbem.javax.wbem.client.WBEMClient;
+import org.metricshub.wbem.javax.wbem.client.WBEMClientConstants;
 import org.metricshub.wbem.sblim.cimclient.WBEMClientSBLIM;
 import org.metricshub.wbem.sblim.cimclient.WBEMConfigurationProperties;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMHelper;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMClientXML_HelperImpl;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMMessage;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMResponse;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParseException;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParserImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXHelper;
+import org.metricshub.wbem.sblim.cimclient.internal.http.AuthorizationHandler;
 import org.metricshub.wbem.sblim.cimclient.internal.http.AuthorizationInfo;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpClientPool;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader;
+import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader.HeaderEntry;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeaderParser;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpUrlConnection;
-import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader.HeaderEntry;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.DebugInputStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
@@ -155,20 +166,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.logging.TimeStamp;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfigurationDefaults;
-import org.metricshub.wbem.javax.cim.UnsignedInteger32;
-import org.metricshub.wbem.javax.cim.UnsignedInteger64;
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLHandshakeException;
-import javax.security.auth.Subject;
-
-import org.metricshub.wbem.javax.wbem.client.WBEMClientConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMMessage;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.CIMXMLParseException;
-import org.metricshub.wbem.sblim.cimclient.internal.http.AuthorizationHandler;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -179,12 +176,11 @@ import org.xml.sax.SAXException;
  * <code>javax.wbem.client.WBEMClient</code> interface for the CIM-XML protocol
  * including the extensions of the
  * <code>org.metricshub.wbem.sblim.cimclient.WBEMClientSBLIM</code> interface.
- * 
+ *
  * @see WBEMClient
  * @see WBEMClientSBLIM
  */
 public class WBEMClientCIMXML implements WBEMClientSBLIM {
-
 	private final WBEMConfiguration iConfiguration = new WBEMConfiguration(new Properties());
 
 	private Locale[] iLocales; // final
@@ -221,8 +217,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	private synchronized void initializeClient(URI pUri, Subject pSubject, Locale[] pLocales)
-			throws IllegalArgumentException {
-
+		throws IllegalArgumentException {
 		if (this.iInitialized) throw new IllegalStateException("WBEMClient is already initialized");
 
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
@@ -230,34 +225,44 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 
 		try {
 			this.iHttpClientPool = new HttpClientPool(this.iConfiguration);
-			this.iLocales = (pLocales != null && pLocales.length > 0) ? pLocales
-					: WBEMConstants.DEFAULT_LOCALES;
+			this.iLocales = (pLocales != null && pLocales.length > 0) ? pLocales : WBEMConstants.DEFAULT_LOCALES;
 			this.iUri = pUri;
 
 			AuthorizationInfo authInfo = AuthorizationInfo.createAuthorizationInfo(
-					this.iConfiguration.getHttpAuthenticationModule(), Boolean.FALSE, this.iUri
-							.getHost(), this.iUri.getPort(), null, null, null);
+				this.iConfiguration.getHttpAuthenticationModule(),
+				Boolean.FALSE,
+				this.iUri.getHost(),
+				this.iUri.getPort(),
+				null,
+				null,
+				null
+			);
 
-			Principal principal = (pSubject != null && pSubject.getPrincipals() != null && !pSubject
-					.getPrincipals().isEmpty()) ? (Principal) pSubject.getPrincipals().iterator()
-					.next() : null;
-			Object credential = (pSubject != null && pSubject.getPrivateCredentials() != null
-					&& !pSubject.getPrivateCredentials().isEmpty() ? pSubject
-					.getPrivateCredentials().iterator().next() : null);
+			Principal principal = (
+					pSubject != null && pSubject.getPrincipals() != null && !pSubject.getPrincipals().isEmpty()
+				)
+				? (Principal) pSubject.getPrincipals().iterator().next()
+				: null;
+			Object credential =
+				(
+					pSubject != null && pSubject.getPrivateCredentials() != null && !pSubject.getPrivateCredentials().isEmpty()
+						? pSubject.getPrivateCredentials().iterator().next()
+						: null
+				);
 
-			boolean defaultAuthEnabled = WBEMConfiguration.getGlobalConfiguration()
-					.isDefaultAuthorizationEnabled();
+			boolean defaultAuthEnabled = WBEMConfiguration.getGlobalConfiguration().isDefaultAuthorizationEnabled();
 
 			String user = (principal != null) ? principal.getName() : "";
-			String password = (credential != null && credential instanceof PasswordCredential) ? new String(
-					((PasswordCredential) credential).getUserPassword())
-					: ((credential != null && credential instanceof RoleCredential) ? new String(
-							((RoleCredential) credential).getCredential()) : "");
+			String password = (credential != null && credential instanceof PasswordCredential)
+				? new String(((PasswordCredential) credential).getUserPassword())
+				: (
+					(credential != null && credential instanceof RoleCredential)
+						? new String(((RoleCredential) credential).getCredential())
+						: ""
+				);
 
-			if (defaultAuthEnabled && (user == null || user.length() == 0)
-					&& password.length() == 0) {
-				logger.trace(Level.FINER,
-						"Principal and Credential not set - using default authorization!");
+			if (defaultAuthEnabled && (user == null || user.length() == 0) && password.length() == 0) {
+				logger.trace(Level.FINER, "Principal and Credential not set - using default authorization!");
 
 				user = WBEMConfiguration.getGlobalConfiguration().getDefaultPrincipal();
 				password = WBEMConfiguration.getGlobalConfiguration().getDefaultCredentials();
@@ -270,36 +275,37 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			try {
 				this.iXmlHelper = new CIMClientXML_HelperImpl();
 			} catch (ParserConfigurationException e) {
-				logger
-						.trace(Level.FINE, "Exception while instantiating CIMClientXML_HelperImpl",
-								e);
+				logger.trace(Level.FINE, "Exception while instantiating CIMClientXML_HelperImpl", e);
 				logger.message(Messages.CIM_XMLHELPER_FAILED);
 				throw new RuntimeException(e);
 			}
 
 			this.iInitialized = true;
-
 		} finally {
 			logger.exit();
 		}
 	}
 
 	public void initialize(CIMObjectPath pName, Subject pSubject, Locale[] pLocales)
-			throws IllegalArgumentException, WBEMException {
-
+		throws IllegalArgumentException, WBEMException {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
 		try {
 			final URI uri;
 
-			if (pName == null || pName.getHost() == null || pName.getHost().length() == 0) { throw new IllegalArgumentException(
-					"Empty host path"); }
-			if (pName.getScheme() == null || pName.getScheme().length() == 0) { throw new IllegalArgumentException(
-					"Empty scheme"); }
-			if (!pName.getScheme().equalsIgnoreCase(WBEMConstants.HTTP)
-					&& !pName.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)) { throw new IllegalArgumentException(
-					"Protocol not supported"); }
+			if (pName == null || pName.getHost() == null || pName.getHost().length() == 0) {
+				throw new IllegalArgumentException("Empty host path");
+			}
+			if (pName.getScheme() == null || pName.getScheme().length() == 0) {
+				throw new IllegalArgumentException("Empty scheme");
+			}
+			if (
+				!pName.getScheme().equalsIgnoreCase(WBEMConstants.HTTP) &&
+				!pName.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)
+			) {
+				throw new IllegalArgumentException("Protocol not supported");
+			}
 
 			try {
 				uri = CIMHelper.createCimomUri(pName);
@@ -313,22 +319,25 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public void initialize(URI pUri, Subject pSubject, Locale[] pLocales)
-			throws IllegalArgumentException, WBEMException {
-
+	public void initialize(URI pUri, Subject pSubject, Locale[] pLocales) throws IllegalArgumentException, WBEMException {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
 		try {
 			final URI uri;
 
-			if (pUri == null || pUri.getHost() == null || pUri.getHost().length() == 0) { throw new IllegalArgumentException(
-					"Empty host path"); }
-			if (pUri.getScheme() == null || pUri.getScheme().length() == 0) { throw new IllegalArgumentException(
-					"Empty scheme"); }
-			if (!pUri.getScheme().equalsIgnoreCase(WBEMConstants.HTTP)
-					&& !pUri.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)) { throw new IllegalArgumentException(
-					"Protocol not supported"); }
+			if (pUri == null || pUri.getHost() == null || pUri.getHost().length() == 0) {
+				throw new IllegalArgumentException("Empty host path");
+			}
+			if (pUri.getScheme() == null || pUri.getScheme().length() == 0) {
+				throw new IllegalArgumentException("Empty scheme");
+			}
+			if (
+				!pUri.getScheme().equalsIgnoreCase(WBEMConstants.HTTP) &&
+				!pUri.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)
+			) {
+				throw new IllegalArgumentException("Protocol not supported");
+			}
 
 			try {
 				uri = CIMHelper.createCimomUri(pUri);
@@ -399,7 +408,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 		}
 		return this.iConfiguration.getDomainProperty(pKey);
-
 	}
 
 	public void setProperties(Properties pProperties) {
@@ -410,23 +418,18 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		if (pKey.startsWith("javax.wbem.")) {
 			// Process JSR48 properties
 			if (pKey.equals(WBEMClientConstants.PROP_ENABLE_CONSOLE_LOGGING)) {
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.LOG_CONSOLE_LEVEL, pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_CONSOLE_LEVEL, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_ENABLE_FILE_LOGGING)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_LEVEL,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_LEVEL, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_LOG_BYTE_LIMIT)) {
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.LOG_FILE_SIZE_LIMIT, pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_SIZE_LIMIT, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_LOG_DIR)) {
 				StringBuffer NewSblimLog = new StringBuffer(pValue != null ? pValue : "");
-				if (NewSblimLog.length() > 0
-						&& NewSblimLog.charAt(NewSblimLog.length() - 1) != File.separatorChar) {
+				if (NewSblimLog.length() > 0 && NewSblimLog.charAt(NewSblimLog.length() - 1) != File.separatorChar) {
 					NewSblimLog.append(File.separator);
 				}
 
-				String CurSblimLog = this.iConfiguration
-						.getDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION);
+				String CurSblimLog = this.iConfiguration.getDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION);
 				if (CurSblimLog == null) {
 					CurSblimLog = WBEMConfigurationDefaults.LOG_FILE_LOCATION;
 				}
@@ -438,13 +441,11 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 					NewSblimLog.append(CurSblimLog.substring(i + 1));
 				}
 
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.LOG_FILE_LOCATION, NewSblimLog.toString());
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION, NewSblimLog.toString());
 			} else if (pKey.equals(WBEMClientConstants.PROP_LOG_FILENAME)) {
 				StringBuffer NewSblimLog = new StringBuffer(pValue != null ? pValue : "");
 
-				String CurSblimLog = this.iConfiguration
-						.getDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION);
+				String CurSblimLog = this.iConfiguration.getDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION);
 				if (CurSblimLog != null) {
 					int i = getLastSeparator(CurSblimLog);
 					if (i != -1) {
@@ -452,27 +453,22 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 					}
 				}
 
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.LOG_FILE_LOCATION, NewSblimLog.toString());
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_LOCATION, NewSblimLog.toString());
 			} else if (pKey.equals(WBEMClientConstants.PROP_LOG_NUM_FILES)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_COUNT,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.LOG_FILE_COUNT, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_TIMEOUT)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.HTTP_TIMEOUT,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.HTTP_TIMEOUT, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROPERTY_WBEM_CHUNKING)) {
 				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.HTTP_USE_CHUNKING, pValue.equals("0") ? "false"
-								: "true");
+						WBEMConfigurationProperties.HTTP_USE_CHUNKING,
+						pValue.equals("0") ? "false" : "true"
+					);
 			} else if (pKey.equals(WBEMClientConstants.PROP_CLIENT_KEYSTORE)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PATH,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PATH, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_CLIENT_KEYSTORE_PASSWORD)) {
-				this.iConfiguration.setDomainProperty(
-						WBEMConfigurationProperties.KEYSTORE_PASSWORD, pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.KEYSTORE_PASSWORD, pValue);
 			} else if (pKey.equals(WBEMClientConstants.PROP_CLIENT_TRUSTSTORE)) {
-				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.TRUSTSTORE_PATH,
-						pValue);
+				this.iConfiguration.setDomainProperty(WBEMConfigurationProperties.TRUSTSTORE_PATH, pValue);
 			} else {
 				throw new IllegalArgumentException(pKey);
 			}
@@ -481,10 +477,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMObjectPath> associatorNames(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole)
-			throws WBEMException {
-
+	public CloseableIterator<CIMObjectPath> associatorNames(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole
+	)
+		throws WBEMException {
 		final String operation = "AssociatorNames";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -492,33 +492,30 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.associatorNames_request(doc,
-					pObjectName, pAssociationClass, pResultClass, pRole, pResultRole));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.associatorNames_request(doc, pObjectName, pAssociationClass, pResultClass, pRole, pResultRole)
+				);
 
 			InputStreamReader is = transmitRequest("AssociatorNames", hh, doc);
 
 			CloseableIterator<CIMObjectPath> iter = getIterator(is, pObjectName);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -528,10 +525,17 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMClass> associatorClasses(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
+	public CloseableIterator<CIMClass> associatorClasses(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "AssociatorClasses";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -539,34 +543,40 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.associatorClasses_request(doc,
-					pObjectName, pAssociationClass, pResultClass, pRole, pResultRole,
-					pIncludeQualifiers, pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.associatorClasses_request(
+							doc,
+							pObjectName,
+							pAssociationClass,
+							pResultClass,
+							pRole,
+							pResultRole,
+							pIncludeQualifiers,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("Associators", hh, doc);
 
 			CloseableIterator<CIMClass> iter = getIterator(is, pObjectName);
 
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -576,9 +586,16 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMInstance> associatorInstances(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
+	public CloseableIterator<CIMInstance> associatorInstances(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "AssociatorInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -586,33 +603,38 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.associatorInstances_request(doc,
-					pObjectName, pAssociationClass, pResultClass, pRole, pResultRole,
-					pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.associatorInstances_request(
+							doc,
+							pObjectName,
+							pAssociationClass,
+							pResultClass,
+							pRole,
+							pResultRole,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("Associators", hh, doc);
 
 			CloseableIterator<CIMInstance> iter = getIterator(is, pObjectName);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -637,7 +659,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void createClass(CIMClass pClass) throws WBEMException {
-
 		final String operation = "CreateClass";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -645,18 +666,15 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-
-			if (pClass == null || pClass.getObjectPath() == null
-					|| pClass.getObjectPath().getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pClass == null || pClass.getObjectPath() == null || pClass.getObjectPath().getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pClass.getObjectPath().getNamespace(),
-					"UTF-8", "US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pClass.getObjectPath().getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.createClass_request(doc, pClass
-					.getObjectPath(), pClass));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.createClass_request(doc, pClass.getObjectPath(), pClass));
 
 			InputStreamReader is = transmitRequest("CreateClass", hh, doc);
 
@@ -666,15 +684,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			} finally {
 				iter.close();
 			}
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -685,7 +700,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public CIMObjectPath createInstance(CIMInstance pInstance) throws WBEMException {
-
 		final String operation = "CreateInstance";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -693,37 +707,37 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pInstance == null || pInstance.getObjectPath() == null
-					|| pInstance.getObjectPath().getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pInstance == null || pInstance.getObjectPath() == null || pInstance.getObjectPath().getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pInstance.getObjectPath().getNamespace(),
-					"UTF-8", "US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pInstance.getObjectPath().getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.createInstance_request(doc,
-					pInstance.getObjectPath(), pInstance));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.createInstance_request(doc, pInstance.getObjectPath(), pInstance)
+				);
 
 			InputStreamReader is = transmitRequest("CreateInstance", hh, doc);
 
 			CloseableIterator<?> iter = getIterator(is, pInstance.getObjectPath());
 			try {
-				if (iter.hasNext()) { return (CIMObjectPath) iter.next(); }
+				if (iter.hasNext()) {
+					return (CIMObjectPath) iter.next();
+				}
 			} finally {
 				iter.close();
 			}
 
 			return null;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -734,7 +748,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void deleteClass(CIMObjectPath pPath) throws WBEMException {
-
 		final String operation = "DeleteClass";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -742,8 +755,9 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
@@ -761,15 +775,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -780,7 +791,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void deleteInstance(CIMObjectPath pPath) throws WBEMException {
-
 		final String operation = "DeleteInstance";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -788,16 +798,16 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper
-					.deleteInstance_request(doc, pPath));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.deleteInstance_request(doc, pPath));
 
 			InputStreamReader is = transmitRequest("DeleteInstance", hh, doc);
 
@@ -809,15 +819,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -828,7 +835,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void deleteQualifierType(CIMObjectPath pPath) throws WBEMException {
-
 		final String operation = "DeleteQualifierType";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -836,15 +842,15 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.deleteQualifierType_request(doc,
-					pPath));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.deleteQualifierType_request(doc, pPath));
 
 			InputStreamReader is = transmitRequest("DeleteQualifierType", hh, doc);
 
@@ -856,15 +862,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -874,9 +877,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMObjectPath> enumerateClassNames(CIMObjectPath pPath, boolean pDeep)
-			throws WBEMException {
-
+	public CloseableIterator<CIMObjectPath> enumerateClassNames(CIMObjectPath pPath, boolean pDeep) throws WBEMException {
 		final String operation = "EnumerateClassNames";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -884,29 +885,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateClassNames_request(doc,
-					pPath, pDeep));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateClassNames_request(doc, pPath, pDeep));
 
 			InputStreamReader is = transmitRequest("EnumerateClassNames", hh, doc);
 
 			CloseableIterator<CIMObjectPath> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -916,10 +914,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMClass> enumerateClasses(CIMObjectPath pPath, boolean pDeep,
-			boolean pPropagated, boolean pIncludeQualifiers, boolean pIncludeClassOrigin)
-			throws WBEMException {
-
+	public CloseableIterator<CIMClass> enumerateClasses(
+		CIMObjectPath pPath,
+		boolean pDeep,
+		boolean pPropagated,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin
+	)
+		throws WBEMException {
 		final String operation = "EnumerateClasses";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -927,29 +929,36 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateClasses_request(doc,
-					pPath, pDeep, pPropagated, pIncludeQualifiers, pIncludeClassOrigin));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.enumerateClasses_request(
+							doc,
+							pPath,
+							pDeep,
+							pPropagated,
+							pIncludeQualifiers,
+							pIncludeClassOrigin
+						)
+				);
 
 			InputStreamReader is = transmitRequest("EnumerateClasses", hh, doc);
 
 			CloseableIterator<CIMClass> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -959,9 +968,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMObjectPath> enumerateInstanceNames(CIMObjectPath pPath)
-			throws WBEMException {
-
+	public CloseableIterator<CIMObjectPath> enumerateInstanceNames(CIMObjectPath pPath) throws WBEMException {
 		final String operation = "EnumerateInstanceNames";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -969,29 +976,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateInstanceNames_request(
-					doc, pPath));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateInstanceNames_request(doc, pPath));
 
 			InputStreamReader is = transmitRequest("EnumerateInstanceNames", hh, doc);
 
 			CloseableIterator<CIMObjectPath> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1001,10 +1005,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMInstance> enumerateInstances(CIMObjectPath pPath, boolean pDeep,
-			boolean pPropagated, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public CloseableIterator<CIMInstance> enumerateInstances(
+		CIMObjectPath pPath,
+		boolean pDeep,
+		boolean pPropagated,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "EnumerateInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1012,29 +1020,37 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null || pPath.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumerateInstances_request(doc,
-					pPath, pDeep, pPropagated, false, pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.enumerateInstances_request(
+							doc,
+							pPath,
+							pDeep,
+							pPropagated,
+							false,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("EnumerateInstances", hh, doc);
 
 			CloseableIterator<CIMInstance> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1048,14 +1064,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	// the name of this Interop Namespace shall be either "interop" (preferred)
 	// or "root/interop" while OpenPegasus 2.11 and earlier implemented
 	// "root/PG_InterOp" prior to adopting DSP1033.
-	private static final String[] InteropNamespaces = { "interop", "root/interop",
-			"root/PG_InterOp" };
+	private static final String[] InteropNamespaces = { "interop", "root/interop", "root/PG_InterOp" };
 
 	private CloseableIterator<CIMObjectPath> enumerateNamespace(String pNamespace) {
 		if (pNamespace != null && pNamespace.trim().length() > 0) {
 			try {
-				CloseableIterator<CIMObjectPath> result = enumerateInstanceNames(new CIMObjectPath(
-						null, null, null, pNamespace, "CIM_Namespace", null));
+				CloseableIterator<CIMObjectPath> result = enumerateInstanceNames(
+					new CIMObjectPath(null, null, null, pNamespace, "CIM_Namespace", null)
+				);
 				if (result != null) return result;
 			} catch (Exception e) {
 				// namespace may not exist
@@ -1064,8 +1080,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		return null;
 	}
 
-	public CloseableIterator<CIMObjectPath> enumerateNamespaces(String pNamespace)
-			throws WBEMException {
+	public CloseableIterator<CIMObjectPath> enumerateNamespaces(String pNamespace) throws WBEMException {
 		CloseableIterator<CIMObjectPath> result;
 
 		// First, try the user's specified namespace (if any)
@@ -1090,13 +1105,13 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 		}
 
-		throw new WBEMException(WBEMException.CIM_ERR_FAILED,
-				"Interop namespaces do not exist, CIMOM may not support DSP1033");
+		throw new WBEMException(
+			WBEMException.CIM_ERR_FAILED,
+			"Interop namespaces do not exist, CIMOM may not support DSP1033"
+		);
 	}
 
-	public CloseableIterator<CIMQualifierType<?>> enumerateQualifierTypes(CIMObjectPath pPath)
-			throws WBEMException {
-
+	public CloseableIterator<CIMQualifierType<?>> enumerateQualifierTypes(CIMObjectPath pPath) throws WBEMException {
 		final String operation = "EnumerateQualifiers";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1106,29 +1121,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		try {
 			// enumerateQualifierTypes does not need class name, as it lists all
 			// qualifiers in namespace
-			if (pPath == null || pPath.getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumQualifierTypes_request(doc,
-					pPath));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.enumQualifierTypes_request(doc, pPath));
 
 			InputStreamReader is = transmitRequest("EnumerateQualifiers", hh, doc);
 
 			CloseableIterator<CIMQualifierType<?>> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1138,9 +1150,8 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMInstance> execQuery(CIMObjectPath pPath, String pQuery,
-			String pQueryLanguage) throws WBEMException {
-
+	public CloseableIterator<CIMInstance> execQuery(CIMObjectPath pPath, String pQuery, String pQueryLanguage)
+		throws WBEMException {
 		final String operation = "ExecQuery";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1148,29 +1159,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pPath == null || pPath.getNamespace() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pPath == null || pPath.getNamespace() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pPath.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.execQuery_request(doc, pPath,
-					pQuery, pQueryLanguage));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.execQuery_request(doc, pPath, pQuery, pQueryLanguage));
 
 			InputStreamReader is = transmitRequest("ExecQuery", hh, doc);
 
 			CloseableIterator<CIMInstance> iter = getIterator(is, pPath);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1180,9 +1188,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CIMClass getClass(CIMObjectPath pName, boolean pPropagated, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public CIMClass getClass(
+		CIMObjectPath pName,
+		boolean pPropagated,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "GetClass";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1190,35 +1203,44 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.getClass_request(doc, pName,
-					pPropagated, pIncludeQualifiers, pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.getClass_request(
+							doc,
+							pName,
+							pPropagated,
+							pIncludeQualifiers,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("GetClass", hh, doc);
 
 			CloseableIterator<?> iter = getIterator(is, pName);
 			try {
-				if (iter.hasNext()) { return (CIMClass) iter.next(); }
+				if (iter.hasNext()) {
+					return (CIMClass) iter.next();
+				}
 			} finally {
 				iter.close();
 			}
 
 			return null;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1228,9 +1250,13 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CIMInstance getInstance(CIMObjectPath pName, boolean pPropagated,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public CIMInstance getInstance(
+		CIMObjectPath pName,
+		boolean pPropagated,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "GetInstance";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1238,15 +1264,18 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.getInstance_request(doc, pName,
-					pPropagated, false, pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.getInstance_request(doc, pName, pPropagated, false, pIncludeClassOrigin, pPropertyList)
+				);
 
 			InputStreamReader is = transmitRequest("GetInstance", hh, doc);
 
@@ -1261,15 +1290,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return null;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1280,7 +1306,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public CIMQualifierType<?> getQualifierType(CIMObjectPath pName) throws WBEMException {
-
 		final String operation = "GetQualifier";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1288,35 +1313,34 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(pName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.getQualifier_request(doc, pName,
-					pName.getObjectName()));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.getQualifier_request(doc, pName, pName.getObjectName()));
 
 			InputStreamReader is = transmitRequest("GetQualifier", hh, doc);
 
 			CloseableIterator<?> iter = getIterator(is, pName);
 			try {
-				if (iter.hasNext()) { return (CIMQualifierType<?>) iter.next(); }
+				if (iter.hasNext()) {
+					return (CIMQualifierType<?>) iter.next();
+				}
 			} finally {
 				iter.close();
 			}
 
 			return null;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1326,10 +1350,13 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public Object invokeMethod(CIMObjectPath pName, String pMethodName,
-			CIMArgument<?>[] pInputArguments, CIMArgument<?>[] pOutputArguments)
-			throws WBEMException {
-
+	public Object invokeMethod(
+		CIMObjectPath pName,
+		String pMethodName,
+		CIMArgument<?>[] pInputArguments,
+		CIMArgument<?>[] pOutputArguments
+	)
+		throws WBEMException {
 		final String operation = "InvokeMethod";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1337,28 +1364,33 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pName == null || pName.getNamespace() == null || pName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(MOF.objectHandle(pName, false, true),
-					"UTF-8", "US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(MOF.objectHandle(pName, false, true), "UTF-8", "US-ASCII"));
 
 			// sfcb needs pragma set for UpdateExpiredPassword call
-			if (pMethodName != null && pMethodName.equalsIgnoreCase("UpdateExpiredPassword")) hh
-					.addField("Pragma", "UpdateExpiredPassword");
+			if (pMethodName != null && pMethodName.equalsIgnoreCase("UpdateExpiredPassword")) hh.addField(
+				"Pragma",
+				"UpdateExpiredPassword"
+			);
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.invokeMethod_request(doc, pName,
-					pMethodName, pInputArguments));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.invokeMethod_request(doc, pName, pMethodName, pInputArguments)
+				);
 
 			InputStreamReader is = transmitRequest(pMethodName, hh, doc);
 
 			CIMResponse response = null;
 			String parser = this.iConfiguration.getCimXmlParser();
 			// TODO: set the local namespace for parsers
-			if (WBEMConstants.SAX.equals(parser) || WBEMConstants.PULL.equals(parser)) { return SAXHelper
-					.parseInvokeMethodResponse(is, pOutputArguments, null); }
+			if (WBEMConstants.SAX.equals(parser) || WBEMConstants.PULL.equals(parser)) {
+				return SAXHelper.parseInvokeMethodResponse(is, pOutputArguments, null);
+			}
 			// DOM parser
 			response = getSingleResponse(is, null);
 			response.checkError();
@@ -1369,12 +1401,11 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			List<Object> outParamValues = response.getParamValues();
 			if (pOutputArguments != null && outParamValues != null) {
 				Iterator<Object> itr = outParamValues.iterator();
-				for (int i = 0; i < pOutputArguments.length; i++)
-					if (itr.hasNext()) {
-						pOutputArguments[i] = (CIMArgument<?>) itr.next();
-					} else {
-						break;
-					}
+				for (int i = 0; i < pOutputArguments.length; i++) if (itr.hasNext()) {
+					pOutputArguments[i] = (CIMArgument<?>) itr.next();
+				} else {
+					break;
+				}
 			}
 			return rc;
 		} catch (WBEMException e) {
@@ -1382,9 +1413,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1399,7 +1428,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void modifyClass(CIMClass pClass) throws WBEMException {
-
 		final String operation = "ModifyClass";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1407,18 +1435,20 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pClass == null || pClass.getObjectPath() == null
-					|| pClass.getObjectPath().getNamespace() == null
-					|| pClass.getObjectPath().getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (
+				pClass == null ||
+				pClass.getObjectPath() == null ||
+				pClass.getObjectPath().getNamespace() == null ||
+				pClass.getObjectPath().getObjectName() == null
+			) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pClass.getObjectPath().getNamespace(),
-					"UTF-8", "US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pClass.getObjectPath().getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.setClass_request(doc, pClass
-					.getObjectPath(), pClass));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.setClass_request(doc, pClass.getObjectPath(), pClass));
 
 			InputStreamReader is = transmitRequest("ModifyClass", hh, doc);
 
@@ -1430,15 +1460,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1453,18 +1480,21 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 		checkState();
-		if (pInst == null || pInst.getObjectPath() == null
-				|| pInst.getObjectPath().getNamespace() == null
-				|| pInst.getObjectPath().getObjectName() == null) { throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+		if (
+			pInst == null ||
+			pInst.getObjectPath() == null ||
+			pInst.getObjectPath().getNamespace() == null ||
+			pInst.getObjectPath().getObjectName() == null
+		) {
+			throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+		}
 		final CIMObjectPath path = pInst.getObjectPath();
 		try {
 			HttpHeader hh = new HttpHeader();
 			hh.addField("CIMObject", HttpHeader.encode(path.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.setInstance_request(doc, path,
-					pInst, true, pPropertyList));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.setInstance_request(doc, path, pInst, true, pPropertyList));
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 
 			CloseableIterator<?> iter = getIterator(is, path);
@@ -1479,9 +1509,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1491,10 +1519,15 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMClass> referenceClasses(CIMObjectPath pObjectName,
-			String pResultClass, String pRole, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public CloseableIterator<CIMClass> referenceClasses(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "ReferenceClasses";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1502,31 +1535,36 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.referenceClasses_request(doc,
-					pObjectName, pResultClass, pRole, pIncludeQualifiers, pIncludeClassOrigin,
-					pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.referenceClasses_request(
+							doc,
+							pObjectName,
+							pResultClass,
+							pRole,
+							pIncludeQualifiers,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("References", hh, doc);
 
 			return getIterator(is, pObjectName);
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1536,10 +1574,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMInstance> referenceInstances(CIMObjectPath pObjectName,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public CloseableIterator<CIMInstance> referenceInstances(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		final String operation = "ReferenceInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1547,30 +1589,35 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.referenceInstances_request(doc,
-					pObjectName, pResultClass, pRole, pIncludeClassOrigin, pPropertyList));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.referenceInstances_request(
+							doc,
+							pObjectName,
+							pResultClass,
+							pRole,
+							pIncludeClassOrigin,
+							pPropertyList
+						)
+				);
 
 			InputStreamReader is = transmitRequest("References", hh, doc);
 
 			return getIterator(is, pObjectName);
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1580,9 +1627,8 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public CloseableIterator<CIMObjectPath> referenceNames(CIMObjectPath pObjectName,
-			String pResultClass, String pRole) throws WBEMException {
-
+	public CloseableIterator<CIMObjectPath> referenceNames(CIMObjectPath pObjectName, String pResultClass, String pRole)
+		throws WBEMException {
 		final String operation = "ReferenceNames";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1590,31 +1636,29 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.referenceNames_request(doc,
-					pObjectName, pResultClass, pRole));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.referenceNames_request(doc, pObjectName, pResultClass, pRole)
+				);
 
 			InputStreamReader is = transmitRequest("ReferenceNames", hh, doc);
 
 			CloseableIterator<CIMObjectPath> iter = getIterator(is, pObjectName);
 			return iter;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1625,12 +1669,10 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	}
 
 	public void setLocales(Locale[] pLocales) {
-		this.iLocales = (pLocales != null && pLocales.length > 0) ? pLocales
-				: WBEMConstants.DEFAULT_LOCALES;
+		this.iLocales = (pLocales != null && pLocales.length > 0) ? pLocales : WBEMConstants.DEFAULT_LOCALES;
 	}
 
 	public void setQualifierType(CIMQualifierType<?> pQualifierType) throws WBEMException {
-
 		final String operation = "SetQualifierType";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -1638,18 +1680,23 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pQualifierType == null || pQualifierType.getObjectPath() == null
-					|| pQualifierType.getObjectPath().getNamespace() == null
-					|| pQualifierType.getObjectPath().getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (
+				pQualifierType == null ||
+				pQualifierType.getObjectPath() == null ||
+				pQualifierType.getObjectPath().getNamespace() == null ||
+				pQualifierType.getObjectPath().getObjectName() == null
+			) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pQualifierType.getObjectPath()
-					.getNamespace(), "UTF-8", "US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pQualifierType.getObjectPath().getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.setQualifierType_request(doc,
-					pQualifierType.getObjectPath(), pQualifierType));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.setQualifierType_request(doc, pQualifierType.getObjectPath(), pQualifierType)
+				);
 
 			InputStreamReader is = transmitRequest("SetQualifierType", hh, doc);
 
@@ -1661,15 +1708,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			}
 
 			return;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -1703,20 +1747,24 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		return null;
 	}
 
-	private InputStreamReader transmitRequest(String pCimMethod, HttpHeader pHeader,
-			Document pDocument) throws IOException, ProtocolException, WBEMException {
-		return transmitRequestWorker(false, this.iUri, this.iHttpClientPool, pCimMethod, pHeader,
-				pDocument);
+	private InputStreamReader transmitRequest(String pCimMethod, HttpHeader pHeader, Document pDocument)
+		throws IOException, ProtocolException, WBEMException {
+		return transmitRequestWorker(false, this.iUri, this.iHttpClientPool, pCimMethod, pHeader, pDocument);
 	}
 
 	/*
 	 * Worker for both transmitRequest() (pIsIndication == false) and
 	 * transmitIndicationRequest() (pIsIndication == true).
 	 */
-	private InputStreamReader transmitRequestWorker(boolean pIsIndication, URI pRecipient,
-			HttpClientPool pClientPool, String pCimMethod, HttpHeader pHeader, Document pDocument)
-			throws IOException, ProtocolException, WBEMException {
-
+	private InputStreamReader transmitRequestWorker(
+		boolean pIsIndication,
+		URI pRecipient,
+		HttpClientPool pClientPool,
+		String pCimMethod,
+		HttpHeader pHeader,
+		Document pDocument
+	)
+		throws IOException, ProtocolException, WBEMException {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
@@ -1728,8 +1776,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			this.iCurrentTime = System.currentTimeMillis();
 			if ((this.iCurrentTime - this.iMPostFailTime) > 24 * 60 * 60 * 1000) this.iMPostFailed = false;
 		}
-		boolean useMPost = this.iMPostFailed || pIsIndication ? false : this.iConfiguration
-				.isHttpMPost();
+		boolean useMPost = this.iMPostFailed || pIsIndication ? false : this.iConfiguration.isHttpMPost();
 		int retries = this.iConfiguration.getHttpConnectRetriesCount();
 		do {
 			logger.trace(Level.FINE, "Attempting to connect.. number of attempts left:" + retries);
@@ -1738,8 +1785,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			connection = newConnection(pIsIndication, pRecipient, pClientPool, pCimMethod, pHeader,
-					useMPost);
+			connection = newConnection(pIsIndication, pRecipient, pClientPool, pCimMethod, pHeader, useMPost);
 			try {
 				logger.trace(Level.FINE, "Connecting...");
 				connection.connect();
@@ -1748,22 +1794,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			} catch (SocketException e) {
 				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "Unable to connect", null, e);
 			} catch (SSLHandshakeException e) {
-				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "SSL handshake exception",
-						null, e);
+				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "SSL handshake exception", null, e);
 			}
 
 			OutputStream os = connection.getOutputStream();
 
-			if (this.iConfiguration.isCimXmlTracingEnabled()
-					|| LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) {
+			if (
+				this.iConfiguration.isCimXmlTracingEnabled() ||
+				LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)
+			) {
 				OutputStream pos = new ByteArrayOutputStream();
-				CIMClientXML_HelperImpl.dumpDocument(pos, pDocument,
-						pIsIndication ? "indication request" : "request");
+				CIMClientXML_HelperImpl.dumpDocument(pos, pDocument, pIsIndication ? "indication request" : "request");
 				OutputStream debugStream = LogAndTraceBroker.getBroker().getXmlTraceStream();
-				if (this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) debugStream
-						.write(pos.toString().getBytes());
-				if (LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) logger
-						.traceCIMXML(Level.FINEST, pos.toString(), true);
+				if (this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) debugStream.write(
+					pos.toString().getBytes()
+				);
+				if (LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) logger.traceCIMXML(
+					Level.FINEST,
+					pos.toString(),
+					true
+				);
 			}
 			CIMClientXML_HelperImpl.serialize(os, pDocument);
 			os.flush();
@@ -1777,12 +1827,10 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "Unable to connect", null, e);
 			} catch (SocketTimeoutException e) {
 				connection.disconnect();
-				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "Connection timed out", null,
-						e);
+				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "Connection timed out", null, e);
 			} catch (SSLHandshakeException e) {
 				connection.disconnect();
-				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "SSL handshake exception",
-						null, e);
+				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "SSL handshake exception", null, e);
 			}
 
 			HttpHeader headers = parseHeaders(connection);
@@ -1795,7 +1843,6 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 
 			switch (resultCode) {
 				case HttpURLConnection.HTTP_OK: // 200
-
 					if (this.iConfiguration.isHttpContentLengthRetryEnabled()) {
 						String contentLengthField = headers.getField("Content-length");
 						if (contentLengthField != null && contentLengthField.trim().length() > 0) {
@@ -1803,8 +1850,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 							int lengthToCheck = this.iConfiguration.getHttpContentLengthThreshold();
 
 							if (contentLength < lengthToCheck) {
-								logger.trace(Level.FINE, "Content Length below " + lengthToCheck
-										+ ", retrying");
+								logger.trace(Level.FINE, "Content Length below " + lengthToCheck + ", retrying");
 								break;
 							}
 						}
@@ -1814,14 +1860,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 
 					InputStream is = connection.getInputStream();
 					OutputStream debugStream = LogAndTraceBroker.getBroker().getXmlTraceStream();
-					if ((this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null)
-							|| LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) {
-						is = new DebugInputStream(is, debugStream,
-								pIsIndication ? "indication response" : "response");
+					if (
+						(this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) ||
+						LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)
+					) {
+						is = new DebugInputStream(is, debugStream, pIsIndication ? "indication response" : "response");
 					}
 
 					return new InputStreamReader(is, charset);
-
 				case HttpURLConnection.HTTP_NOT_IMPLEMENTED: // 501
 					// TODO if there is an error with the default xml
 					// encoder/decoder, load the correct version
@@ -1829,11 +1875,8 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 					// version, CIM version or Protocol Version
 					// that is expecting
 					String cimProtocolVersion = headers.getField("CIMProtocolVersion");
-					if (cimProtocolVersion == null && headers.getField("CIMError") == null
-							&& useMPost) {
-						logger
-								.trace(Level.FINER,
-										"Received HTTP Error 501 - NOT IMPLEMENTED with M-POST, falling back to POST");
+					if (cimProtocolVersion == null && headers.getField("CIMError") == null && useMPost) {
+						logger.trace(Level.FINER, "Received HTTP Error 501 - NOT IMPLEMENTED with M-POST, falling back to POST");
 						this.iMPostFailTime = System.currentTimeMillis();
 						useMPost = false;
 						this.iMPostFailed = true;
@@ -1841,38 +1884,30 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 						break;
 					}
 
-					logger.trace(Level.FINER,
-							"Received HTTP Error 501 - NOT IMPLEMENTED, skipping retries");
+					logger.trace(Level.FINER, "Received HTTP Error 501 - NOT IMPLEMENTED, skipping retries");
 					retries = 0;
 					break;
-
 				case HttpURLConnection.HTTP_BAD_REQUEST: // 400
 				case HttpURLConnection.HTTP_FORBIDDEN: // 403
 				case HttpURLConnection.HTTP_BAD_METHOD: // 405
-					logger.trace(Level.FINER, "Received HTTP Error "
-							+ getHttpErrorString(resultCode) + ", skipping retries");
+					logger.trace(Level.FINER, "Received HTTP Error " + getHttpErrorString(resultCode) + ", skipping retries");
 					retries = 0;
 					break;
-
 				case HttpURLConnection.HTTP_UNAUTHORIZED: // 401
 				case HttpURLConnection.HTTP_PROXY_AUTH: // 407
-					logger.trace(Level.FINER, "Received HTTP Error "
-							+ getHttpErrorString(resultCode) + ", skipping retries");
+					logger.trace(Level.FINER, "Received HTTP Error " + getHttpErrorString(resultCode) + ", skipping retries");
 					exceptionNum = WBEMException.CIM_ERR_ACCESS_DENIED;
 					retries = 0;
 					break;
-
 				default:
 					if (useMPost) {
-						logger.trace(Level.FINER, "Received HTTP Error " + resultCode
-								+ " with M-POST, falling back to POST");
+						logger.trace(Level.FINER, "Received HTTP Error " + resultCode + " with M-POST, falling back to POST");
 						this.iMPostFailTime = System.currentTimeMillis();
 						useMPost = false;
 						this.iMPostFailed = true;
 						++retries;
 					} else {
-						logger.trace(Level.FINER, "Received HTTP Error " + resultCode
-								+ ", retrying");
+						logger.trace(Level.FINER, "Received HTTP Error " + resultCode + ", retrying");
 					}
 			}
 
@@ -1882,8 +1917,10 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			// sending multiple requests without any response)
 			if (retries > 0) {
 				OutputStream debugStream = LogAndTraceBroker.getBroker().getXmlTraceStream();
-				if ((this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null)
-						|| LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) {
+				if (
+					(this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) ||
+					LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)
+				) {
 					StringBuilder resultStr = new StringBuilder("<--- error response begin ");
 					resultStr.append(TimeStamp.formatWithMillis(System.currentTimeMillis()));
 					resultStr.append(" ----\nHTTP ");
@@ -1891,10 +1928,14 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 					resultStr.append(' ');
 					resultStr.append(connection.getResponseMessage());
 					resultStr.append(" (retrying request)\n---- error response end ----->\n");
-					if (this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) debugStream
-							.write(resultStr.toString().getBytes());
-					if (LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) logger
-							.traceCIMXML(Level.FINEST, resultStr.toString(), false);
+					if (this.iConfiguration.isCimXmlTracingEnabled() && debugStream != null) debugStream.write(
+						resultStr.toString().getBytes()
+					);
+					if (LogAndTraceBroker.getBroker().isLoggableCIMXMLTrace(Level.FINEST)) logger.traceCIMXML(
+						Level.FINEST,
+						resultStr.toString(),
+						false
+					);
 				}
 			}
 		} while (retries-- > 0);
@@ -1914,8 +1955,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 				} catch (Exception e) {
 					errorDescriptionCIM = null;
 				}
-				logger.trace(Level.FINER, "Found CIMErrorDescription field with value \""
-						+ errorDescriptionCIM + "\"");
+				logger.trace(Level.FINER, "Found CIMErrorDescription field with value \"" + errorDescriptionCIM + "\"");
 			}
 		}
 
@@ -1940,8 +1980,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			} catch (Exception e) {
 				errorSFCB = null;
 			}
-			logger.trace(Level.FINER, "Found SFCBErrorDetail field with value \"" + errorSFCB
-					+ "\"");
+			logger.trace(Level.FINER, "Found SFCBErrorDetail field with value \"" + errorSFCB + "\"");
 		}
 
 		// If CIMErrorDescription present, format of WBEMException is:
@@ -1953,7 +1992,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		//
 		// HTTP StatusCode - ReasonPhrase (CIMError: "ErrorString", OpenPegasus
 		// Error: "ErrorString", SFCB Error: "ErrorString")
-		// 
+		//
 		// For example:
 		// HTTP 503 - Service Unavailable (SFCB Error:
 		// "Max Session Limit Exceeded")
@@ -1994,22 +2033,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		throw new WBEMException(exceptionNum, errorMsg.toString());
 	}
 
-	private HttpUrlConnection newConnection(boolean pIsIndication, URI pRecipient,
-			HttpClientPool pClientPool, String pCimMethod, HttpHeader pHeader, boolean pUseMPost) {
-
+	private HttpUrlConnection newConnection(
+		boolean pIsIndication,
+		URI pRecipient,
+		HttpClientPool pClientPool,
+		String pCimMethod,
+		HttpHeader pHeader,
+		boolean pUseMPost
+	) {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
-		HttpUrlConnection connection = new HttpUrlConnection(pRecipient, pClientPool,
-				this.iAuthorizationHandler);
+		HttpUrlConnection connection = new HttpUrlConnection(pRecipient, pClientPool, this.iAuthorizationHandler);
 		if (pUseMPost) {
 			connection.setRequestMethod(WBEMConstants.HTTP_MPOST);
 		} else connection.setRequestMethod(WBEMConstants.HTTP_POST);
 		connection.useHttp11("1.1".equals(this.iConfiguration.getHttpVersion()));
 
 		String firstLocaleStr = this.iLocales[0].getLanguage();
-		if (this.iLocales[0].getCountry().length() > 0) firstLocaleStr = firstLocaleStr + '-'
-				+ this.iLocales[0].getCountry();
+		if (this.iLocales[0].getCountry().length() > 0) firstLocaleStr =
+			firstLocaleStr + '-' + this.iLocales[0].getCountry();
 		StringBuilder restLocaleStrBld = new StringBuilder("");
 		for (int i = 1; i < this.iLocales.length; i++) {
 			if (this.iLocales[i] != null && this.iLocales[i].getLanguage().length() > 0) {
@@ -2028,26 +2071,21 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		connection.setRequestProperty("Accept", "text/html, text/xml, application/xml");
 		connection.setRequestProperty("Cache-Control", "no-cache");
 		connection.setRequestProperty("Content-Language", firstLocaleStr);
-		connection.setRequestProperty("Accept-Language", firstLocaleStr
-				+ restLocaleStrBld.toString() + ", *");
-		if (this.iAuthorization != null) connection.setRequestProperty("Authorization",
-				this.iAuthorization);
+		connection.setRequestProperty("Accept-Language", firstLocaleStr + restLocaleStrBld.toString() + ", *");
+		if (this.iAuthorization != null) connection.setRequestProperty("Authorization", this.iAuthorization);
 
 		String prefix = "";
 		if (connection.getRequestMethod().equalsIgnoreCase(WBEMConstants.HTTP_MPOST)) {
 			String ns = getNextNs();
-			connection.setRequestProperty("Man", "http://www.dmtf.org/cim/mapping/http/v1.0;ns="
-					+ ns);
+			connection.setRequestProperty("Man", "http://www.dmtf.org/cim/mapping/http/v1.0;ns=" + ns);
 			prefix = ns + "-";
 		}
 		connection.setRequestProperty(prefix + "CIMProtocolVersion", "1.0");
 
 		if (pIsIndication) {
 			try {
-				connection.setRequestProperty("CIMExport", HttpHeader.encode("MethodRequest",
-						"UTF-8", "US-ASCII"));
-				connection.setRequestProperty("CIMExportMethod", HttpHeader.encode(
-						"ExportIndication", "UTF-8", "US-ASCII"));
+				connection.setRequestProperty("CIMExport", HttpHeader.encode("MethodRequest", "UTF-8", "US-ASCII"));
+				connection.setRequestProperty("CIMExportMethod", HttpHeader.encode("ExportIndication", "UTF-8", "US-ASCII"));
 			} catch (UnsupportedEncodingException e) {
 				logger.trace(Level.FINE, "Exception while encoding http header", e);
 				connection.setRequestProperty("CIMExport", "MethodRequest");
@@ -2056,8 +2094,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		} else {
 			connection.setRequestProperty(prefix + "CIMOperation", "MethodCall");
 			try {
-				connection.setRequestProperty(prefix + "CIMMethod", HttpHeader.encode(pCimMethod,
-						"UTF-8", "US-ASCII"));
+				connection.setRequestProperty(prefix + "CIMMethod", HttpHeader.encode(pCimMethod, "UTF-8", "US-ASCII"));
 			} catch (UnsupportedEncodingException e) {
 				logger.trace(Level.FINE, "Exception while encoding http header", e);
 				connection.setRequestProperty(prefix + "CIMMethod", pCimMethod);
@@ -2066,8 +2103,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		Iterator<Entry<HeaderEntry, String>> iter = pHeader.iterator();
 		while (iter.hasNext()) {
 			Entry<HeaderEntry, String> entry = iter.next();
-			connection.setRequestProperty(prefix + entry.getKey().toString(), entry.getValue()
-					.toString());
+			connection.setRequestProperty(prefix + entry.getKey().toString(), entry.getValue().toString());
 		}
 
 		logger.exit();
@@ -2087,17 +2123,19 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		String ns = null;
 
 		HttpHeaderParser manOptHeader = null;
-		if (man != null && man.length() > 0) manOptHeader = new HttpHeaderParser(man);
-		else if (opt != null && opt.length() > 0) manOptHeader = new HttpHeaderParser(opt);
+		if (man != null && man.length() > 0) manOptHeader = new HttpHeaderParser(man); else if (
+			opt != null && opt.length() > 0
+		) manOptHeader = new HttpHeaderParser(opt);
 		if (manOptHeader != null) ns = manOptHeader.getValue("ns");
 
 		if (ns != null) {
 			i = 0;
 			String key;
 			while ((key = pConnection.getHeaderFieldKey(++i)) != null) {
-				if (key.startsWith(ns + "-")) headers.addParsedField(key.substring(3), pConnection
-						.getHeaderField(i));
-				else headers.addParsedField(key, pConnection.getHeaderField(i));
+				if (key.startsWith(ns + "-")) headers.addParsedField(
+					key.substring(3),
+					pConnection.getHeaderField(i)
+				); else headers.addParsedField(key, pConnection.getHeaderField(i));
 			}
 		} else {
 			i = 0;
@@ -2122,7 +2160,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 
 	/**
 	 * getIterator : get generic CloseableIterator<T>
-	 * 
+	 *
 	 * @param <T>
 	 *            : Type Parameter
 	 * @param pStream
@@ -2139,8 +2177,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 	// :TODO : try to find solution of "unchecked" warning
 	@SuppressWarnings("unchecked")
 	private <T> CloseableIterator<T> getIterator(InputStreamReader pStream, CIMObjectPath pPath)
-			throws IOException, SAXException, ParserConfigurationException, WBEMException {
-
+		throws IOException, SAXException, ParserConfigurationException, WBEMException {
 		String parser = this.iConfiguration.getCimXmlParser();
 
 		CloseableIterator<?> iter = null;
@@ -2152,8 +2189,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		} else if (WBEMConstants.DOM.equals(parser)) {
 			iter = new CloseableIteratorDOM(pStream, pPath);
 		} else {
-			throw new IllegalArgumentException("Invalid CIM-XML parser configured (\"" + parser
-					+ "\") ");
+			throw new IllegalArgumentException("Invalid CIM-XML parser configured (\"" + parser + "\") ");
 		}
 		try {
 			// check for CIMExceptions
@@ -2161,31 +2197,26 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			return (CloseableIterator<T>) iter;
 		} catch (RuntimeException e) {
 			iter.close();
-			if (e.getCause() != null && e.getCause() instanceof WBEMException) { throw (WBEMException) e
-					.getCause(); }
+			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
+				throw (WBEMException) e.getCause();
+			}
 			throw e;
 		}
 	}
 
-	private <T> EnumerateResponse<T> getEnumerateResponse(InputStreamReader pStream,
-			CIMObjectPath pPath) throws IOException, SAXException, ParserConfigurationException,
-			WBEMException {
-
+	private <T> EnumerateResponse<T> getEnumerateResponse(InputStreamReader pStream, CIMObjectPath pPath)
+		throws IOException, SAXException, ParserConfigurationException, WBEMException {
 		String parser = this.iConfiguration.getCimXmlParser();
 
 		if (WBEMConstants.SAX.equals(parser)) return new EnumerateResponseSAX<T>(pStream, pPath)
-				.getEnumResponse();
-		else if (WBEMConstants.PULL.equals(parser)) return new EnumerateResponsePULL<T>(pStream,
-				pPath).getEnumResponse();
-		else if (WBEMConstants.DOM.equals(parser)) return new EnumerateResponseDOM<T>(pStream,
-				pPath).getEnumResponse();
+		.getEnumResponse(); else if (WBEMConstants.PULL.equals(parser)) return new EnumerateResponsePULL<T>(pStream, pPath)
+		.getEnumResponse(); else if (WBEMConstants.DOM.equals(parser)) return new EnumerateResponseDOM<T>(pStream, pPath)
+		.getEnumResponse();
 
-		throw new IllegalArgumentException("Invalid CIM-XML parser configured (\"" + parser
-				+ "\") ");
+		throw new IllegalArgumentException("Invalid CIM-XML parser configured (\"" + parser + "\") ");
 	}
 
-	private CIMResponse getSingleResponse(InputStreamReader pStream, CIMObjectPath pLocalPath)
-			throws WBEMException {
+	private CIMResponse getSingleResponse(InputStreamReader pStream, CIMObjectPath pLocalPath) throws WBEMException {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		Document dom;
@@ -2237,11 +2268,19 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		throw new IllegalStateException("WBEMClient is " + state);
 	}
 
-	public EnumerateResponse<CIMObjectPath> associatorPaths(CIMObjectPath pObjectName,
-			String pAssociationClass, String pResultClass, String pRole, String pResultRole,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMObjectPath> associatorPaths(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenAssociatorInstancePaths";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2249,34 +2288,42 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper
-					.OpenAssociatorInstancePaths_request(doc, pObjectName, pAssociationClass,
-							pResultClass, pRole, pResultRole, pFilterQueryLanguage, pFilterQuery,
-							pTimeout, pContinueOnError, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenAssociatorInstancePaths_request(
+							doc,
+							pObjectName,
+							pAssociationClass,
+							pResultClass,
+							pRole,
+							pResultRole,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 
 			EnumerateResponse<CIMObjectPath> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2286,12 +2333,21 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> associators(CIMObjectPath pObjectName,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList, String pFilterQueryLanguage,
-			String pFilterQuery, UnsignedInteger32 pTimeout, boolean pContinueOnError,
-			UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> associators(
+		CIMObjectPath pObjectName,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenAssociatorInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2299,34 +2355,44 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.OpenAssociatorInstances_request(
-					doc, pObjectName, pAssocClass, pResultClass, pRole, pResultRole,
-					pIncludeClassOrigin, pPropertyList, pFilterQueryLanguage, pFilterQuery,
-					pTimeout, pContinueOnError, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenAssociatorInstances_request(
+							doc,
+							pObjectName,
+							pAssocClass,
+							pResultClass,
+							pRole,
+							pResultRole,
+							pIncludeClassOrigin,
+							pPropertyList,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2336,9 +2402,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public void closeEnumeration(CIMObjectPath pObjectName, String pEnumerationContext)
-			throws WBEMException {
-
+	public void closeEnumeration(CIMObjectPath pObjectName, String pEnumerationContext) throws WBEMException {
 		final String operation = "CloseEnumeration";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2346,18 +2410,19 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.CloseEnumeration_request(doc,
-					pObjectName, pEnumerationContext));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.CloseEnumeration_request(doc, pObjectName, pEnumerationContext)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 
@@ -2374,9 +2439,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2384,13 +2447,17 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		} finally {
 			logger.exit();
 		}
-
 	}
 
-	public EnumerateResponse<CIMObjectPath> enumerateInstancePaths(CIMObjectPath pObjectName,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMObjectPath> enumerateInstancePaths(
+		CIMObjectPath pObjectName,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenEnumerateInstancePaths";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2398,33 +2465,38 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper
-					.OpenEnumerateInstancePaths_request(doc, pObjectName, pFilterQueryLanguage,
-							pFilterQuery, pTimeout, pContinueOnError, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenEnumerateInstancePaths_request(
+							doc,
+							pObjectName,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 
 			EnumerateResponse<CIMObjectPath> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2434,11 +2506,18 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> enumerateInstances(CIMObjectPath pObjectName,
-			boolean pDeepInheritance, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> enumerateInstances(
+		CIMObjectPath pObjectName,
+		boolean pDeepInheritance,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenEnumerateInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2446,32 +2525,40 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.OpenEnumerateInstances_request(
-					doc, pObjectName, pDeepInheritance, pIncludeClassOrigin, pPropertyList,
-					pFilterQueryLanguage, pFilterQuery, pTimeout, pContinueOnError, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenEnumerateInstances_request(
+							doc,
+							pObjectName,
+							pDeepInheritance,
+							pIncludeClassOrigin,
+							pPropertyList,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2483,7 +2570,7 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 
 	// not supported yet
 	public UnsignedInteger64 enumerationCount(CIMObjectPath pObjectName, String pEnumerationContext)
-			throws WBEMException {
+		throws WBEMException {
 		final String operation = "EnumerationCount";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2491,18 +2578,19 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.EnumerationCount_request(doc,
-					pObjectName, pEnumerationContext));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.EnumerationCount_request(doc, pObjectName, pEnumerationContext)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			// Currently this is not supported by server. Server returns
@@ -2517,15 +2605,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 			// this exception will be thrown only if server starts to support
 			// enumerationCount
 			throw new WBEMException(operation + " is currently not supported by client");
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2535,11 +2620,17 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> execQueryInstances(CIMObjectPath pObjectName,
-			String pFilterQuery, String pFilterQueryLanguage, boolean pReturnQueryResultClass,
-			UnsignedInteger32 pTimeout, boolean pContinueOnError, UnsignedInteger32 pMaxObjects,
-			CIMClass pQueryResultClass) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> execQueryInstances(
+		CIMObjectPath pObjectName,
+		String pFilterQuery,
+		String pFilterQueryLanguage,
+		boolean pReturnQueryResultClass,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects,
+		CIMClass pQueryResultClass
+	)
+		throws WBEMException {
 		final String operation = "OpenQueryInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2547,32 +2638,39 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.OpenQueryInstances_request(doc,
-					pObjectName, pFilterQuery, pFilterQueryLanguage, pReturnQueryResultClass,
-					pTimeout, pContinueOnError, pMaxObjects, pQueryResultClass));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenQueryInstances_request(
+							doc,
+							pObjectName,
+							pFilterQuery,
+							pFilterQueryLanguage,
+							pReturnQueryResultClass,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects,
+							pQueryResultClass
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2582,9 +2680,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMObjectPath> getInstancePaths(CIMObjectPath pObjectName,
-			String pContext, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMObjectPath> getInstancePaths(
+		CIMObjectPath pObjectName,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "PullInstancePaths";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2592,31 +2693,29 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.PullInstancePaths_request(doc,
-					pObjectName, pContext, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.PullInstancePaths_request(doc, pObjectName, pContext, pMaxObjects)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMObjectPath> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2626,9 +2725,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> getInstances(CIMObjectPath pObjectName, String pContext,
-			UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> getInstances(
+		CIMObjectPath pObjectName,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "PullInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2636,31 +2738,29 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.PullInstances_request(doc,
-					pObjectName, pContext, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.PullInstances_request(doc, pObjectName, pContext, pMaxObjects)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2670,9 +2770,12 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> getInstancesWithPath(CIMObjectPath pObjectName,
-			String pContext, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> getInstancesWithPath(
+		CIMObjectPath pObjectName,
+		String pContext,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "PullInstancesWithPath";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2680,31 +2783,29 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.PullInstancesWithPath_request(
-					doc, pObjectName, pContext, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.PullInstancesWithPath_request(doc, pObjectName, pContext, pMaxObjects)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2714,11 +2815,17 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMObjectPath> referencePaths(CIMObjectPath pObjectName,
-			String pResultClass, String pRole, String pFilterQueryLanguage, String pFilterQuery,
-			UnsignedInteger32 pTimeout, boolean pContinueOnError, UnsignedInteger32 pMaxObjects)
-			throws WBEMException {
-
+	public EnumerateResponse<CIMObjectPath> referencePaths(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenReferenceInstancePaths";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2726,33 +2833,39 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper
-					.OpenReferenceInstancePaths_request(doc, pObjectName, pResultClass, pRole,
-							pFilterQueryLanguage, pFilterQuery, pTimeout, pContinueOnError,
-							pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenReferenceInstancePaths_request(
+							doc,
+							pObjectName,
+							pResultClass,
+							pRole,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMObjectPath> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2762,11 +2875,19 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	public EnumerateResponse<CIMInstance> references(CIMObjectPath pObjectName,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjects) throws WBEMException {
-
+	public EnumerateResponse<CIMInstance> references(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjects
+	)
+		throws WBEMException {
 		final String operation = "OpenReferenceInstances";
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
@@ -2774,33 +2895,41 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-
-			if (pObjectName == null || pObjectName.getNamespace() == null
-					|| pObjectName.getObjectName() == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path"); }
+			if (pObjectName == null || pObjectName.getNamespace() == null || pObjectName.getObjectName() == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid object path");
+			}
 
 			HttpHeader hh = new HttpHeader();
-			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8",
-					"US-ASCII"));
+			hh.addField("CIMObject", HttpHeader.encode(pObjectName.getNamespace(), "UTF-8", "US-ASCII"));
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.OpenReferenceInstances_request(
-					doc, pObjectName, pResultClass, pRole, pIncludeClassOrigin, pPropertyList,
-					pFilterQueryLanguage, pFilterQuery, pTimeout, pContinueOnError, pMaxObjects));
+			this.iXmlHelper.createCIMMessage(
+					doc,
+					this.iXmlHelper.OpenReferenceInstances_request(
+							doc,
+							pObjectName,
+							pResultClass,
+							pRole,
+							pIncludeClassOrigin,
+							pPropertyList,
+							pFilterQueryLanguage,
+							pFilterQuery,
+							pTimeout,
+							pContinueOnError,
+							pMaxObjects
+						)
+				);
 
 			InputStreamReader is = transmitRequest(operation, hh, doc);
 			EnumerateResponse<CIMInstance> enumResp = getEnumerateResponse(is, pObjectName);
 			return enumResp;
-
 		} catch (WBEMException e) {
 			logger.trace(Level.FINE, operation + " request resulted in CIM Error", e);
 			throw e;
 		} catch (Exception e) {
 			if (e.getCause() != null && e.getCause() instanceof WBEMException) {
-				logger
-						.trace(Level.FINE, operation + " request resulted in CIM Error", e
-								.getCause());
+				logger.trace(Level.FINE, operation + " request resulted in CIM Error", e.getCause());
 				throw (WBEMException) e.getCause();
 			}
 			logger.trace(Level.FINE, operation + " request failed", e);
@@ -2810,9 +2939,13 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		}
 	}
 
-	private InputStreamReader transmitIndicationRequest(URI pRecipient, HttpClientPool pClientPool,
-			HttpHeader pHeader, Document pDocument) throws IOException, ProtocolException,
-			WBEMException {
+	private InputStreamReader transmitIndicationRequest(
+		URI pRecipient,
+		HttpClientPool pClientPool,
+		HttpHeader pHeader,
+		Document pDocument
+	)
+		throws IOException, ProtocolException, WBEMException {
 		return transmitRequestWorker(true, pRecipient, pClientPool, null, pHeader, pDocument);
 	}
 
@@ -2823,28 +2956,40 @@ public class WBEMClientCIMXML implements WBEMClientSBLIM {
 		checkState();
 
 		try {
-			if (pRecipient == null || pRecipient.getScheme() == null
-					|| pRecipient.getHost() == null || pRecipient.getPort() <= 0) { throw new WBEMException(
+			if (
+				pRecipient == null ||
+				pRecipient.getScheme() == null ||
+				pRecipient.getHost() == null ||
+				pRecipient.getPort() <= 0
+			) {
+				throw new WBEMException(
 					WBEMException.CIM_ERR_INVALID_PARAMETER,
-					"Invalid recipient URI, must contain valid scheme://host:port"); }
+					"Invalid recipient URI, must contain valid scheme://host:port"
+				);
+			}
 
-			if (!pRecipient.getScheme().equalsIgnoreCase(WBEMConstants.HTTP)
-					&& !pRecipient.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)) throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid scheme "
-							+ pRecipient.getScheme() + ", must be http or https");
+			if (
+				!pRecipient.getScheme().equalsIgnoreCase(WBEMConstants.HTTP) &&
+				!pRecipient.getScheme().equalsIgnoreCase(WBEMConstants.HTTPS)
+			) throw new WBEMException(
+				WBEMException.CIM_ERR_INVALID_PARAMETER,
+				"Invalid scheme " + pRecipient.getScheme() + ", must be http or https"
+			);
 
-			if (pIndication == null) { throw new WBEMException(
-					WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid indication, must not be null"); }
+			if (pIndication == null) {
+				throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "Invalid indication, must not be null");
+			}
 
-			logger.trace(Level.FINER, "Attempting to send following indication to "
-					+ pRecipient.toString() + ":\n" + pIndication.toString());
+			logger.trace(
+				Level.FINER,
+				"Attempting to send following indication to " + pRecipient.toString() + ":\n" + pIndication.toString()
+			);
 
 			HttpHeader hh = new HttpHeader();
 
 			Document doc = this.iXmlHelper.newDocument();
 
-			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.sendIndication_request(doc,
-					pIndication));
+			this.iXmlHelper.createCIMMessage(doc, this.iXmlHelper.sendIndication_request(doc, pIndication));
 
 			HttpClientPool indPool = new HttpClientPool(this.iConfiguration);
 

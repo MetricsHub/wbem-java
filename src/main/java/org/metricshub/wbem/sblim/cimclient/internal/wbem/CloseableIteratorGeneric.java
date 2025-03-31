@@ -38,26 +38,24 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem;
  */
 
 import java.util.Iterator;
-
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 
 /**
  * Class CloseableIteratorGeneric creates new CloseableIterator from an Iterator
  * and WBEMException.
- * 
+ *
  * @param <E>
  *            : Type
  */
 public class CloseableIteratorGeneric<E> implements CloseableIterator<Object> {
-
 	private Iterator<E> iterator;
 
 	private WBEMException iWBEMException;
 
 	/**
 	 * Ctor. : creates new CloseableIterator from an Iterator and WBEMException.
-	 * 
+	 *
 	 * @param pIterator
 	 *            : Iterator to be used in closeableIterator
 	 * @param pException
@@ -70,7 +68,7 @@ public class CloseableIteratorGeneric<E> implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor. : creates new CloseableIterator from an Iterator.
-	 * 
+	 *
 	 * @param pIterator
 	 *            : Iterator to be used in closeableIterator
 	 */
@@ -85,9 +83,9 @@ public class CloseableIteratorGeneric<E> implements CloseableIterator<Object> {
 
 	/**
 	 * Returns WBEMException
-	 * 
+	 *
 	 * @return WBEMException : This can be null
-	 * 
+	 *
 	 */
 	public WBEMException getWBEMException() {
 		return this.iWBEMException;

@@ -59,7 +59,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ParameterRefArrayNode extends AbstractParameterNode {
-
 	private CIMDataType iType;
 
 	/**
@@ -73,14 +72,14 @@ public class ParameterRefArrayNode extends AbstractParameterNode {
 	protected void specificInit(Attributes pAttribs) throws SAXException {
 		String refClass = getReferenceClass(pAttribs);
 		this.iType = new CIMDataType(refClass != null ? refClass : "", getArraySize(pAttribs));
-
 	}
 
 	@Override
-	public void testCompletness() { /* */}
+	public void testCompletness() {
+		/* */
+	}
 
 	public CIMDataType getType() {
 		return this.iType;
 	}
-
 }

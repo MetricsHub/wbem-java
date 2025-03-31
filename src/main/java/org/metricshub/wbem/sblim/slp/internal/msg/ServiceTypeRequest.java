@@ -45,7 +45,6 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.io.IOException;
 import java.util.List;
 import java.util.SortedSet;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /*
@@ -62,49 +61,48 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  */
 /**
  * ServiceTypeRequest message
- * 
+ *
  */
 public class ServiceTypeRequest extends RequestMessage {
-
 	private String iNamingAuth;
 
 	private static final int[] ALLOWED_RSPS = { SRV_TYPE_RPLY };
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new ServiceTypeRequest(pHdr, pInStr.readStringSet(), // prevResponderSet
-				pInStr.readString(), // naming authority
-				pInStr.readStringList() // scope list
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new ServiceTypeRequest(
+			pHdr,
+			pInStr.readStringSet(), // prevResponderSet
+			pInStr.readString(), // naming authority
+			pInStr.readStringList() // scope list
 		);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pPrevResponderSet
 	 *            - set of address strings
 	 * @param pNamingAuth
 	 * @param pScopeList
 	 *            - set of scope strings
 	 */
-	public ServiceTypeRequest(SortedSet<String> pPrevResponderSet, String pNamingAuth,
-			List<String> pScopeList) {
+	public ServiceTypeRequest(SortedSet<String> pPrevResponderSet, String pNamingAuth, List<String> pScopeList) {
 		super(SRV_TYPE_RQST, pPrevResponderSet, pScopeList);
 		init(pNamingAuth);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pPrevResponderSet
 	 *            - set of address strings
@@ -112,15 +110,19 @@ public class ServiceTypeRequest extends RequestMessage {
 	 * @param pScopeList
 	 *            - set of scope strings
 	 */
-	public ServiceTypeRequest(String pLangTag, SortedSet<String> pPrevResponderSet,
-			String pNamingAuth, List<String> pScopeList) {
+	public ServiceTypeRequest(
+		String pLangTag,
+		SortedSet<String> pPrevResponderSet,
+		String pNamingAuth,
+		List<String> pScopeList
+	) {
 		super(SRV_TYPE_RQST, pLangTag, pPrevResponderSet, pScopeList);
 		init(pNamingAuth);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pPrevResponderSet
 	 *            - set of address strings
@@ -128,8 +130,12 @@ public class ServiceTypeRequest extends RequestMessage {
 	 * @param pScopeList
 	 *            - set of scope strings
 	 */
-	public ServiceTypeRequest(MsgHeader pHeader, SortedSet<String> pPrevResponderSet,
-			String pNamingAuth, List<String> pScopeList) {
+	public ServiceTypeRequest(
+		MsgHeader pHeader,
+		SortedSet<String> pPrevResponderSet,
+		String pNamingAuth,
+		List<String> pScopeList
+	) {
 		super(pHeader, pPrevResponderSet, pScopeList);
 		init(pNamingAuth);
 	}
@@ -147,5 +153,4 @@ public class ServiceTypeRequest extends RequestMessage {
 	private void init(String pNamingAuth) {
 		this.iNamingAuth = pNamingAuth;
 	}
-
 }

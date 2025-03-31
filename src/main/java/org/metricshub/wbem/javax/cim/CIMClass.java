@@ -60,7 +60,6 @@ package org.metricshub.wbem.javax.cim;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMElementSorter;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInterfaceImpl;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
@@ -80,9 +79,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * <li>an array of methods</li>
  * </ul>
  */
-public class CIMClass extends CIMElement implements CIMQualifiedElementInterface,
-		CIMNamedElementInterface {
-
+public class CIMClass extends CIMElement implements CIMQualifiedElementInterface, CIMNamedElementInterface {
 	private static final long serialVersionUID = -5634561913210025100L;
 
 	private CIMQualifiedElementInterfaceImpl iQualiImpl;
@@ -105,7 +102,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * <code>pIsKeyed</code> parameters. If an invalid value is supplied (i.e.
 	 * the class is an association, but the <code>pIsAssociation</code> was set
 	 * to <code>false</code>), it may or may not be corrected.
-	 * 
+	 *
 	 * @param pPath
 	 *            Object Name of the CIM class.
 	 * @param pSuperClass
@@ -124,11 +121,17 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 *            <code>false</code> otherwise.
 	 * @throws IllegalArgumentException
 	 *             If pPath is null.
-	 * 
+	 *
 	 */
-	public CIMClass(CIMObjectPath pPath, String pSuperClass, CIMQualifier<?>[] pQualifiers,
-			CIMClassProperty<?>[] pProperties, CIMMethod<?>[] pMethods, boolean pIsAssociation,
-			boolean pIsKeyed) {
+	public CIMClass(
+		CIMObjectPath pPath,
+		String pSuperClass,
+		CIMQualifier<?>[] pQualifiers,
+		CIMClassProperty<?>[] pProperties,
+		CIMMethod<?>[] pMethods,
+		boolean pIsAssociation,
+		boolean pIsKeyed
+	) {
 		this(pPath, pSuperClass, pQualifiers, pProperties, pMethods);
 		// if (this.isAssociation() != pIsAssociation) {
 		// throw new IllegalArgumentException(
@@ -153,7 +156,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * Creates and instantiates a Java object representing a CIM Class. This
 	 * constructor will inspect the class to determine if it is an association
 	 * or has keys.
-	 * 
+	 *
 	 * @param pName
 	 *            Name of the CIM class.
 	 * @param pSuperClass
@@ -167,10 +170,14 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * @throws IllegalArgumentException
 	 *             If pName is null.
 	 */
-	public CIMClass(String pName, String pSuperClass, CIMQualifier<?>[] pQualifiers,
-			CIMClassProperty<?>[] pProperties, CIMMethod<?>[] pMethods) {
-		this(new CIMObjectPath(null, null, null, null, pName, null), pSuperClass, pQualifiers,
-				pProperties, pMethods);
+	public CIMClass(
+		String pName,
+		String pSuperClass,
+		CIMQualifier<?>[] pQualifiers,
+		CIMClassProperty<?>[] pProperties,
+		CIMMethod<?>[] pMethods
+	) {
+		this(new CIMObjectPath(null, null, null, null, pName, null), pSuperClass, pQualifiers, pProperties, pMethods);
 	}
 
 	/**
@@ -179,8 +186,13 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * on whether there is qualifier with name="Association" and value=true and
 	 * a property with a qualifier with name="Key" and value=true, respectively.
 	 */
-	private CIMClass(CIMObjectPath pPath, String pSuperClass, CIMQualifier<?>[] pQualifiers,
-			CIMClassProperty<?>[] pProperties, CIMMethod<?>[] pMethods) {
+	private CIMClass(
+		CIMObjectPath pPath,
+		String pSuperClass,
+		CIMQualifier<?>[] pQualifiers,
+		CIMClassProperty<?>[] pProperties,
+		CIMMethod<?>[] pMethods
+	) {
 		super(pPath == null ? null : pPath.getObjectName());
 		this.iObjPath = pPath;
 		this.iSuperClass = pSuperClass;
@@ -194,7 +206,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	/**
 	 * Indicates whether the specified <code>CIMClass</code> is equal to this
 	 * <code>CIMClass</code>.
-	 * 
+	 *
 	 * @param pObj
 	 *            The <code>CIMClass</code> object with which to compare.
 	 * @return <code>true</code> if this object is the same as the
@@ -205,11 +217,16 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 		if (!(pObj instanceof CIMClass)) return false;
 		CIMClass that = (CIMClass) pObj;
 		if (!super.equals(that)) return false;
-		if (this.iSuperClass == null ? that.iSuperClass != null : !this.iSuperClass
-				.equalsIgnoreCase(that.iSuperClass)) return false;
-		if (!this.iQualiImpl.equals(that.iQualiImpl) || !Arrays.equals(this.iProps, that.iProps)
-				|| !Arrays.equals(this.iMethods, that.iMethods) || this.iIsAssoc != that.iIsAssoc
-				|| isKeyed() != that.isKeyed()) return false;
+		if (
+			this.iSuperClass == null ? that.iSuperClass != null : !this.iSuperClass.equalsIgnoreCase(that.iSuperClass)
+		) return false;
+		if (
+			!this.iQualiImpl.equals(that.iQualiImpl) ||
+			!Arrays.equals(this.iProps, that.iProps) ||
+			!Arrays.equals(this.iMethods, that.iMethods) ||
+			this.iIsAssoc != that.iIsAssoc ||
+			isKeyed() != that.isKeyed()
+		) return false;
 		return true;
 	}
 
@@ -218,7 +235,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * according to the input parameters. Inclusion of class origin and
 	 * qualifiers can also be controlled. Methods will not be included in the
 	 * class returned.
-	 * 
+	 *
 	 * @param pLocalOnly
 	 *            If <code>true</code> only the elements defined in this class
 	 *            are included; otherwise all elements are included.
@@ -241,35 +258,49 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 *            invalid property names, they are ignored.
 	 * @return <code>CIMClass</code> matching the requested criteria.
 	 */
-	public CIMClass filterProperties(boolean pLocalOnly, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) {
+	public CIMClass filterProperties(
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	) {
 		ArrayList<CIMClassProperty<?>> newPropAList = new ArrayList<CIMClassProperty<?>>();
 		// place pPropertyList into a set, for easy and fast search
 		TreeSet<String> set;
 		if (pPropertyList != null) {
 			set = new TreeSet<String>();
-			for (int i = 0; i < pPropertyList.length; i++)
-				set.add(pPropertyList[i].toUpperCase());
+			for (int i = 0; i < pPropertyList.length; i++) set.add(pPropertyList[i].toUpperCase());
 		} else set = null;
 		for (int i = 0; i < getPropertyCount(); i++) {
 			CIMClassProperty<?> refProp = getProperty(i);
 			if (pLocalOnly && refProp.isPropagated()) continue;
-			if (set == null || set.contains(refProp.getName().toUpperCase())) newPropAList
-					.add(new CIMClassProperty<Object>(refProp.getName(), refProp.getDataType(),
-							refProp.getValue(),
-							pIncludeQualifiers ? refProp.getQualifiers() : null,
-							pIncludeQualifiers ? refProp.isKey() : false, // FIXME:
-							// Should it depend on pIncludeQualifiers?
-							refProp.isPropagated(), pIncludeClassOrigin ? refProp.getOriginClass()
-									: null));
+			if (set == null || set.contains(refProp.getName().toUpperCase())) newPropAList.add(
+				new CIMClassProperty<Object>(
+					refProp.getName(),
+					refProp.getDataType(),
+					refProp.getValue(),
+					pIncludeQualifiers ? refProp.getQualifiers() : null,
+					pIncludeQualifiers ? refProp.isKey() : false, // FIXME:
+					// Should it depend on pIncludeQualifiers?
+					refProp.isPropagated(),
+					pIncludeClassOrigin ? refProp.getOriginClass() : null
+				)
+			);
 		}
-		return new CIMClass(getObjectPath(), getSuperClassName(), getQualifiers(), newPropAList
-				.toArray(new CIMClassProperty[0]), null, isAssociation(), isKeyed());
+		return new CIMClass(
+			getObjectPath(),
+			getSuperClassName(),
+			getQualifiers(),
+			newPropAList.toArray(new CIMClassProperty[0]),
+			null,
+			isAssociation(),
+			isKeyed()
+		);
 	}
 
 	/**
 	 * Returns a list of key properties for this CIM class.
-	 * 
+	 *
 	 * @return The list of CIM properties that are keys for this CIM class.
 	 */
 	public CIMClassProperty<?>[] getKeys() {
@@ -283,7 +314,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get a method by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the method to retrieve.
 	 * @return The <code>CIMMethod</code> at the specified index.
@@ -295,7 +326,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Returns the specified CIM method in this CIM class.
-	 * 
+	 *
 	 * @param pName
 	 *            The string name of the method to retrieve. The name may be
 	 *            specified in the form <code>"originClass.methodName"</code>.
@@ -310,7 +341,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	/**
 	 * Returns the CIM method specified by its name and optionally, its origin
 	 * class. The origin class is the class in which the method is defined.
-	 * 
+	 *
 	 * @param pName
 	 *            The string name of the method to get.
 	 * @param pOriginClass
@@ -327,7 +358,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get the number of methods defined in this CIM class.
-	 * 
+	 *
 	 * @return The number of methods defined in the CIM class.
 	 */
 	public int getMethodCount() {
@@ -336,7 +367,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get the CIM methods defined in this CIM class.
-	 * 
+	 *
 	 * @return The methods in this CIM class.
 	 */
 	public CIMMethod<?>[] getMethods() {
@@ -346,7 +377,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	/**
 	 * This method returns the <code>CIMObjectPath</code> that represents this
 	 * CIM class.
-	 * 
+	 *
 	 * @return The <code>CIMObjectPath</code> that represents this CIM class.
 	 */
 	public CIMObjectPath getObjectPath() {
@@ -355,7 +386,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get the properties defined for this CIM class.
-	 * 
+	 *
 	 * @return The properties for this class.
 	 */
 	public CIMClassProperty<?>[] getProperties() {
@@ -364,7 +395,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get a class property by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the class property to retrieve.
 	 * @return The <code>CIMClassProperty</code> at the specified index.
@@ -376,7 +407,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Gets the specified property.
-	 * 
+	 *
 	 * @param pName
 	 *            The text string for the name of the property.
 	 * @return The property requested or <code>null</code> if the property does
@@ -388,7 +419,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Gets the specified property.
-	 * 
+	 *
 	 * @param pName
 	 *            The string name of the property to get.
 	 * @param pOriginClass
@@ -405,7 +436,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get the number of properties defined in this <code>CIMClass</code>.
-	 * 
+	 *
 	 * @return The number of properties defined in the <code>CIMClass</code>.
 	 */
 	public int getPropertyCount() {
@@ -414,7 +445,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get a qualifier by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the qualifier to retrieve.
 	 * @return The qualifier at the specified index.
@@ -426,7 +457,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Gets a qualifier by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return The qualifier requested or <code>null</code> if the qualifier
@@ -438,7 +469,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Get the number of qualifiers defined in this CIM class.
-	 * 
+	 *
 	 * @return The number of qualifiers defined in the CIM class.
 	 */
 	public int getQualifierCount() {
@@ -447,7 +478,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Returns the list of qualifiers for the CIM class.
-	 * 
+	 *
 	 * @return Qualifiers for this class.
 	 */
 	public CIMQualifier<?>[] getQualifiers() {
@@ -456,7 +487,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Gets a qualifier value by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist or value is
@@ -469,7 +500,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Gets the name of the parent of this CIM class.
-	 * 
+	 *
 	 * @return The name of the parent class.
 	 */
 	public String getSuperClassName() {
@@ -479,7 +510,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	/**
 	 * Checks whether the specified qualifier is one of the qualifiers in this
 	 * CIM class.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @return <code>true</code> if the qualifier exists in this CIM class,
@@ -494,7 +525,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * for this class with the specified value. This method will return
 	 * <code>false</code> if the qualifier is not applied or if the value does
 	 * not match.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pValue
@@ -512,7 +543,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * two or more classes. The properties of an association class include
 	 * references, or pointers, to the two or more instances. All CIM classes
 	 * can be included in one or more associations.
-	 * 
+	 *
 	 * @return <code>true</code> if this CIM class is an association; otherwise,
 	 *         <code>false</code>.
 	 */
@@ -524,7 +555,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * Identifies whether or not this class is keyed. Only keyed classes can
 	 * have instances. Returns <code>true</code> if this CIM class has one or
 	 * more key properties. Otherwise, returns <code>false</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if this CIM class has a key property, otherwise
 	 *         returns <code>false</code>.
 	 */
@@ -535,7 +566,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	/**
 	 * Returns a new CIM instance initialized with the default CIM properties,
 	 * values and name of this CIM class.
-	 * 
+	 *
 	 * @return A CIM instance of this CIM class.
 	 */
 	public CIMInstance newInstance() {
@@ -547,7 +578,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 * method is intended to be used only for debugging purposes, and the format
 	 * of the returned string may vary between implementations. The returned
 	 * string may be empty but may not be <code>null</code>.
-	 * 
+	 *
 	 * @return A <code>String</code> representation of this CIM class.
 	 */
 	@Override
@@ -557,7 +588,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 
 	/**
 	 * Checks whether an array of properties contains a key.
-	 * 
+	 *
 	 * @param pProps
 	 *            Array of properties.
 	 * @return <code>true</code> if at least one of the class properties is a
@@ -565,9 +596,7 @@ public class CIMClass extends CIMElement implements CIMQualifiedElementInterface
 	 */
 	private static boolean hasKey(CIMClassProperty<?>[] pProps) {
 		if (pProps == null) return false;
-		for (int i = 0; i < pProps.length; i++)
-			if (pProps[i].isKey()) return true;
+		for (int i = 0; i < pProps.length; i++) if (pProps[i].isKey()) return true;
 		return false;
 	}
-
 }

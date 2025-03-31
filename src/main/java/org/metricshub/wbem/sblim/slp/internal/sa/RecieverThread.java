@@ -41,16 +41,14 @@ package org.metricshub.wbem.sblim.slp.internal.sa;
  */
 
 import java.io.IOException;
-
-import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.TRC;
 
 /**
  * RecieverThread
- * 
+ *
  */
 public abstract class RecieverThread implements Runnable {
-
 	private Thread iThread;
 
 	private volatile boolean iStop;
@@ -63,7 +61,7 @@ public abstract class RecieverThread implements Runnable {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pName
 	 * @param pSrvAgent
 	 */
@@ -103,7 +101,7 @@ public abstract class RecieverThread implements Runnable {
 
 	/**
 	 * stop
-	 * 
+	 *
 	 * @param pWait
 	 */
 	public void stop(boolean pWait) {
@@ -171,5 +169,4 @@ public abstract class RecieverThread implements Runnable {
 			TRC.error(e);
 		}
 	}
-
 }

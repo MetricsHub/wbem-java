@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.logging.Level;
-
+import org.metricshub.wbem.sblim.cimclient.discovery.Discoverer;
 import org.metricshub.wbem.sblim.cimclient.discovery.WBEMServiceAdvertisement;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.slp.Locator;
@@ -62,16 +62,14 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationManager;
 import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
-import org.metricshub.wbem.sblim.cimclient.discovery.Discoverer;
 
 /**
  * Class DiscovererSLP is the SLP specific implementation of the Discoverer
  * interface.
- * 
+ *
  * @since 2.0.2
  */
 public class DiscovererSLP extends Object implements Discoverer {
-
 	private static final String SERVICE_WBEM = "service:wbem";
 
 	private static final ServiceType SERVICE_TYPE = new ServiceType(SERVICE_WBEM);
@@ -84,7 +82,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLocale
 	 *            The locale setting to use for the Locator
 	 */
@@ -96,7 +94,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/**
 	 * Returns locale
-	 * 
+	 *
 	 * @return The value of locale.
 	 */
 	public Locale getLocale() {
@@ -105,7 +103,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/**
 	 * Sets locale
-	 * 
+	 *
 	 * @param pLocale
 	 *            The new value of locale.
 	 */
@@ -115,7 +113,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/**
 	 * Returns scopes
-	 * 
+	 *
 	 * @return The value of scopes.
 	 */
 	public Vector<String> getScopes() {
@@ -124,7 +122,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/**
 	 * Sets scopes
-	 * 
+	 *
 	 * @param pScopes
 	 *            The new value of scopes.
 	 */
@@ -134,11 +132,10 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sblim.cimclient.discovery.Discoverer#findWbemServices(String[])
 	 */
 	public WBEMServiceAdvertisement[] findWbemServices(final String[] pDirectoryUrls) {
-
 		List<WBEMServiceAdvertisement> advertisements = new ArrayList<WBEMServiceAdvertisement>();
 
 		if (pDirectoryUrls != null && pDirectoryUrls.length > 0) {
@@ -157,12 +154,13 @@ public class DiscovererSLP extends Object implements Discoverer {
 		logger.entry();
 		logger.trace(Level.FINEST, "SLP discovery started on DA " + pDA);
 		try {
-
 			Vector<InetAddress> agents;
 			if (pDA != null) {
 				agents = new Vector<InetAddress>();
 				InetAddress address = InetAddress.getByName(pDA);
-				if (address == null) { return new LinkedList<WBEMServiceAdvertisement>(); }
+				if (address == null) {
+					return new LinkedList<WBEMServiceAdvertisement>();
+				}
 				agents.add(address);
 			} else {
 				agents = null;
@@ -171,8 +169,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 			final Locator locator = ServiceLocationManager.getLocator(this.iLocale);
 
 			List<WBEMServiceAdvertisement> advertisements = new ArrayList<WBEMServiceAdvertisement>();
-			Enumeration<?> serviceEnum = locator.findServices(SERVICE_TYPE, this.iScopes, "",
-					agents);
+			Enumeration<?> serviceEnum = locator.findServices(SERVICE_TYPE, this.iScopes, "", agents);
 
 			while (serviceEnum != null && serviceEnum.hasMoreElements()) {
 				ServiceURL url;
@@ -182,8 +179,7 @@ public class DiscovererSLP extends Object implements Discoverer {
 					logger.trace(Level.FINE, e.getMessage(), e);
 					continue;
 				}
-				Enumeration<?> attributeEnum = locator.findAttributes(url, this.iScopes,
-						ATTRIBUTES, agents);
+				Enumeration<?> attributeEnum = locator.findAttributes(url, this.iScopes, ATTRIBUTES, agents);
 				List<String> attributes = new ArrayList<String>();
 				while (attributeEnum != null && attributeEnum.hasMoreElements()) {
 					try {
@@ -195,16 +191,16 @@ public class DiscovererSLP extends Object implements Discoverer {
 				}
 				advertisements.add(new WBEMServiceAdvertisementSLP(pDA, url, attributes));
 			}
-			logger.trace(Level.FINEST, "SLP discovery completed on DA " + pDA + ". "
-					+ advertisements.size() + " WBEM services found");
+			logger.trace(
+				Level.FINEST,
+				"SLP discovery completed on DA " + pDA + ". " + advertisements.size() + " WBEM services found"
+			);
 			logger.exit();
 			return advertisements;
-
 		} catch (ServiceLocationException e) {
 			LogAndTraceBroker.getBroker().trace(Level.FINE, "SLP discovery failed with error", e);
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker()
-					.trace(Level.FINE, "Exception during service discovery", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception during service discovery", e);
 		}
 		logger.exit();
 		return new LinkedList<WBEMServiceAdvertisement>();
@@ -218,16 +214,17 @@ public class DiscovererSLP extends Object implements Discoverer {
 
 			final Locator locator = ServiceLocationManager.getLocator(this.iLocale);
 
-			Enumeration<?> serviceEnum = locator.findServices(SLPDefaults.DA_SERVICE_TYPE,
-					this.iScopes, "");
+			Enumeration<?> serviceEnum = locator.findServices(SLPDefaults.DA_SERVICE_TYPE, this.iScopes, "");
 
 			while (serviceEnum != null && serviceEnum.hasMoreElements()) {
 				ServiceURL url = (ServiceURL) serviceEnum.nextElement();
 				agents.add(url.getHost());
 			}
 
-			logger.trace(Level.FINER, "SLP DA discovery completed in local subnet. "
-					+ agents.size() + " DAs found:" + agents.toString());
+			logger.trace(
+				Level.FINER,
+				"SLP DA discovery completed in local subnet. " + agents.size() + " DAs found:" + agents.toString()
+			);
 			if (agents.size() == 0) {
 				serviceEnum = locator.findServices(SLPDefaults.SA_SERVICE_TYPE, this.iScopes, "");
 
@@ -235,18 +232,18 @@ public class DiscovererSLP extends Object implements Discoverer {
 					ServiceURL url = (ServiceURL) serviceEnum.nextElement();
 					agents.add(url.getHost());
 				}
-				logger.trace(Level.FINER, "SLP SA discovery completed in local subnet. "
-						+ agents.size() + " SAs found:" + agents.toString());
+				logger.trace(
+					Level.FINER,
+					"SLP SA discovery completed in local subnet. " + agents.size() + " SAs found:" + agents.toString()
+				);
 			}
 
 			logger.exit();
 			return agents.toArray(new String[agents.size()]);
-
 		} catch (ServiceLocationException e) {
 			LogAndTraceBroker.getBroker().trace(Level.FINE, "SLP discovery failed with error", e);
 		} catch (Exception e) {
-			LogAndTraceBroker.getBroker()
-					.trace(Level.FINE, "Exception during service discovery", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception during service discovery", e);
 		}
 		logger.exit();
 		return new String[0];

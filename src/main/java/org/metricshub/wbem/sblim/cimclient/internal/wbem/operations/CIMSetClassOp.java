@@ -49,15 +49,14 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMSetClassOp
- * 
+ *
  */
 public class CIMSetClassOp extends CIMOperation {
-
 	protected CIMClass iCimClass;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param cimClass
 	 */
@@ -69,11 +68,10 @@ public class CIMSetClassOp extends CIMOperation {
 
 	/**
 	 * Returns cimClass
-	 * 
+	 *
 	 * @return The value of cimClass.
 	 */
 	public CIMClass getCimClass() {
 		return this.iCimClass;
 	}
-
 }

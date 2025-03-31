@@ -25,8 +25,6 @@
 
 package org.metricshub.wbem.javax.wbem.listener;
 
-import org.metricshub.wbem.sblim.cimclient.WBEMListenerSBLIM;
-
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -48,39 +46,41 @@ import org.metricshub.wbem.sblim.cimclient.WBEMListenerSBLIM;
  */
 
 import org.metricshub.wbem.javax.wbem.client.WBEMClientConstants;
+import org.metricshub.wbem.sblim.cimclient.WBEMListenerSBLIM;
 
 //Sync'd against JSR48 1.0.0 javadoc (build 1.5.0_10) on Wed Jan 20 02:20:59 EST 2010
 /**
  * This class is a factory for getting a <code>WBEMListener</code>
  * implementation for a specified protocol. An example of how to use the factory
  * is included below.
- * 
+ *
  * <pre>
  * ...
  * class MyListener implements IndicationListener {
- * 
+ *
  *   public void indicationOccured(String pIndicationURL, CIMInstance pIndication) {
  *     System.out.println(pIndication);
  * 	 }
  * }
- * 
+ *
  * String protocol = WBEMClientConstants.PROTOCOL_CIMXML;
  * WBEMListener api = WBEMListenerFactory.getListener(protocol);
  * int port = api.addListener(MyListener, 1234, protocol);
  * </pre>
  */
 public class WBEMListenerFactory extends Object {
-
 	private static final String[] PROTOCOLS = { WBEMClientConstants.PROTOCOL_CIMXML };
 
 	/**
 	 *
 	 */
-	public WBEMListenerFactory() { /**/}
+	public WBEMListenerFactory() {
+		/**/
+	}
 
 	/**
 	 * Get a WBEM Listener implementation for the specified protocol.
-	 * 
+	 *
 	 * @param pProtocol
 	 *            The protocol name.
 	 * @return Implementation of <code>WBEMListener</code>.
@@ -88,16 +88,17 @@ public class WBEMListenerFactory extends Object {
 	 *             Could not load protocol implementation.
 	 */
 	public static WBEMListener getListener(String pProtocol) throws IllegalArgumentException {
-
-		if (WBEMClientConstants.PROTOCOL_CIMXML.equalsIgnoreCase(pProtocol)) { return new WBEMListenerSBLIM(); }
-		throw new IllegalArgumentException("Protocol: " + pProtocol
-				+ " is not supported! Invoke getProtocols() for the list of "
-				+ "supported protocols.");
+		if (WBEMClientConstants.PROTOCOL_CIMXML.equalsIgnoreCase(pProtocol)) {
+			return new WBEMListenerSBLIM();
+		}
+		throw new IllegalArgumentException(
+			"Protocol: " + pProtocol + " is not supported! Invoke getProtocols() for the list of " + "supported protocols."
+		);
 	}
 
 	/**
 	 * Get the names of the supported protocols.
-	 * 
+	 *
 	 * @return A string array of the protocol names supported.
 	 */
 	public static String[] getProtocols() {

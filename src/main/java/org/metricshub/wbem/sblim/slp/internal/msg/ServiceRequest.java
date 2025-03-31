@@ -45,9 +45,8 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.io.IOException;
 import java.util.List;
 import java.util.SortedSet;
-
-import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceType;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -77,10 +76,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * ServiceRequest message
- * 
+ *
  */
 public class ServiceRequest extends RequestMessage {
-
 	private ServiceType iServiceType;
 
 	private String iPredicate, iSlpSpi;
@@ -89,26 +87,27 @@ public class ServiceRequest extends RequestMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new ServiceRequest(pHdr, pInStr.readStringSet(), // prevResponders
-				pInStr.readServiceType(), // serviceType
-				pInStr.readStringList(), // scopeList
-				pInStr.readString(), // predicate
-				pInStr.readString() // SlpSpi
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new ServiceRequest(
+			pHdr,
+			pInStr.readStringSet(), // prevResponders
+			pInStr.readServiceType(), // serviceType
+			pInStr.readStringList(), // scopeList
+			pInStr.readString(), // predicate
+			pInStr.readString() // SlpSpi
 		);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pPrevResponderSet
 	 *            - set of address strings
@@ -118,15 +117,21 @@ public class ServiceRequest extends RequestMessage {
 	 * @param pPredicate
 	 * @param pSlpSpi
 	 */
-	public ServiceRequest(String pLangTag, SortedSet<String> pPrevResponderSet,
-			ServiceType pServiceType, List<String> pScopeList, String pPredicate, String pSlpSpi) {
+	public ServiceRequest(
+		String pLangTag,
+		SortedSet<String> pPrevResponderSet,
+		ServiceType pServiceType,
+		List<String> pScopeList,
+		String pPredicate,
+		String pSlpSpi
+	) {
 		super(SRV_RQST, pLangTag, pPrevResponderSet, pScopeList);
 		init(pServiceType, pPredicate, pSlpSpi);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pPrevResponderSet
 	 *            - set of address strings
 	 * @param pServiceType
@@ -135,8 +140,13 @@ public class ServiceRequest extends RequestMessage {
 	 * @param pPredicate
 	 * @param pSlpSpi
 	 */
-	public ServiceRequest(SortedSet<String> pPrevResponderSet, ServiceType pServiceType,
-			List<String> pScopeList, String pPredicate, String pSlpSpi) {
+	public ServiceRequest(
+		SortedSet<String> pPrevResponderSet,
+		ServiceType pServiceType,
+		List<String> pScopeList,
+		String pPredicate,
+		String pSlpSpi
+	) {
 		super(SRV_RQST, pPrevResponderSet, pScopeList);
 		init(pServiceType, pPredicate, pSlpSpi);
 	}
@@ -152,15 +162,21 @@ public class ServiceRequest extends RequestMessage {
 	 *            - LDAPv3 search filter
 	 * @param pSlpSpi
 	 */
-	public ServiceRequest(MsgHeader pHeader, SortedSet<String> pPrevResponderSet,
-			ServiceType pServiceType, List<String> pScopeList, String pPredicate, String pSlpSpi) {
+	public ServiceRequest(
+		MsgHeader pHeader,
+		SortedSet<String> pPrevResponderSet,
+		ServiceType pServiceType,
+		List<String> pScopeList,
+		String pPredicate,
+		String pSlpSpi
+	) {
 		super(pHeader, pPrevResponderSet, pScopeList);
 		init(pServiceType, pPredicate, pSlpSpi);
 	}
 
 	/**
 	 * getServiceType
-	 * 
+	 *
 	 * @return ServiceType
 	 */
 	public ServiceType getServiceType() {
@@ -169,8 +185,12 @@ public class ServiceRequest extends RequestMessage {
 
 	@Override
 	protected boolean serializeRequestBody(SLPOutputStream pOutStr) {
-		return pOutStr.write(this.iServiceType) && pOutStr.writeStringList(getScopeList())
-				&& pOutStr.write(this.iPredicate) && pOutStr.write(this.iSlpSpi);
+		return (
+			pOutStr.write(this.iServiceType) &&
+			pOutStr.writeStringList(getScopeList()) &&
+			pOutStr.write(this.iPredicate) &&
+			pOutStr.write(this.iSlpSpi)
+		);
 	}
 
 	@Override
@@ -183,5 +203,4 @@ public class ServiceRequest extends RequestMessage {
 		this.iPredicate = pPredicate;
 		this.iSlpSpi = pSlpSpi;
 	}
-
 }

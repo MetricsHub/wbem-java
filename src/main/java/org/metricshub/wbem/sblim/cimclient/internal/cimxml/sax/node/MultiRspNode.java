@@ -45,7 +45,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -54,7 +53,6 @@ import org.xml.sax.SAXException;
  * ELEMENT MULTIRSP (SIMPLERSP, SIMPLERSP+)
  */
 public class MultiRspNode extends AbstractMessageNode {
-
 	private ArrayList<Node> iSimpleRspAList;
 
 	/**
@@ -84,20 +82,21 @@ public class MultiRspNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != SIMPLERSP) throw new SAXException(getNodeName() + " node cannot have "
-				+ pNodeNameEnum + " child node!");
+		if (pNodeNameEnum != SIMPLERSP) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iSimpleRspAList == null || this.iSimpleRspAList.size() < 2) throw new SAXException(
-				getNodeName() + " node must have at least two SIMPLERSP child nodes!");
+			getNodeName() + " node must have at least two SIMPLERSP child nodes!"
+		);
 	}
-
 }

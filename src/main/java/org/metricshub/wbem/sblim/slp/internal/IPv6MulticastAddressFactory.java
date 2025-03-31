@@ -42,7 +42,6 @@ package org.metricshub.wbem.sblim.slp.internal;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.internal.msg.AttributeRequest;
 import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
@@ -55,30 +54,26 @@ import org.metricshub.wbem.sblim.slp.internal.msg.ServiceTypeRequest;
  *  - SRVTYPERQST Service Type Request
  *  - ATTRRQST Attribute Request
  *  - UA sends too
- *  
+ *
  * SVRLOC-DA group-id : FF0X:0:0:0:0:0:0:123
  *  - SRVRQST for the &quot;service:directory-agent&quot; service type
  *  - UA sends too
- * 
+ *
  * 1000 - 13FF: SRVRQST : FF0X:0:0:0:0:0:1:....
  *  - the ID is the hashcode of the Service Type string used in the SrvRqst.
  *  - UA sends too
  * </pre>
  */
 public class IPv6MulticastAddressFactory {
+	private static final byte[] SRVLOC = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, (byte) 0x16 };
 
-	private static final byte[] SRVLOC = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-			(byte) 0x16 };
+	private static final byte[] SRVLOC_DA = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, (byte) 0x23 };
 
-	private static final byte[] SRVLOC_DA = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			1, (byte) 0x23 };
-
-	private static final byte[] SRV_RQST = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-			0 };
+	private static final byte[] SRV_RQST = { (byte) 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 };
 
 	/**
 	 * getSrvLocAddress
-	 * 
+	 *
 	 * @param pScope
 	 * @return InetAddress
 	 * @throws UnknownHostException
@@ -90,25 +85,28 @@ public class IPv6MulticastAddressFactory {
 
 	/**
 	 * get
-	 * 
+	 *
 	 * @param pScope
 	 * @param pMsg
 	 * @return InetAddress
 	 * @throws UnknownHostException
 	 */
 	public static InetAddress get(int pScope, SLPMessage pMsg) throws UnknownHostException {
-		if (pMsg instanceof ServiceTypeRequest || pMsg instanceof AttributeRequest) { return getSrvLocAddress(pScope); }
+		if (pMsg instanceof ServiceTypeRequest || pMsg instanceof AttributeRequest) {
+			return getSrvLocAddress(pScope);
+		}
 		if (pMsg instanceof ServiceRequest) {
 			ServiceRequest srvRqst = (ServiceRequest) pMsg;
 			return get(pScope, srvRqst.getServiceType());
 		}
-		throw new IllegalArgumentException("Cannot determine IPv6 multicast address for "
-				+ pMsg.getClass().getName() + " !");
+		throw new IllegalArgumentException(
+			"Cannot determine IPv6 multicast address for " + pMsg.getClass().getName() + " !"
+		);
 	}
 
 	/**
 	 * get
-	 * 
+	 *
 	 * @param pScope
 	 * @param pSrvType
 	 * @return InetAddress
@@ -124,7 +122,7 @@ public class IPv6MulticastAddressFactory {
 
 	/**
 	 * get
-	 * 
+	 *
 	 * @param pScope
 	 * @param pSrvHash
 	 * @return InetAddress
@@ -149,7 +147,7 @@ public class IPv6MulticastAddressFactory {
 	 *    return (0x3FF &amp; h); // round to a range of 0-1023
 	 *   }
 	 * </pre>
-	 * 
+	 *
 	 * @param pServiceType
 	 * @return int
 	 */
@@ -163,5 +161,4 @@ public class IPv6MulticastAddressFactory {
 		}
 		return (0x3ff & hash) + 0x1000;
 	}
-
 }

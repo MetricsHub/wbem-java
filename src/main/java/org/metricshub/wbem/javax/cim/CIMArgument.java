@@ -51,14 +51,13 @@ package org.metricshub.wbem.javax.cim;
  * method invocation. A <code>CIMArgument</code> has a name, data type and
  * value. A <code>CIMArgument</code> corresponds to a <code>CIMParameter</code>
  * defined for a <code>CIMMethod</code>.
- * 
+ *
  * @param <E>
  *            Type parameter.
- * 
+ *
  * @see CIMParameter
  */
 public class CIMArgument<E> extends CIMValuedElement<E> {
-
 	private static final long serialVersionUID = 4727439564059428267L;
 
 	/**
@@ -66,7 +65,7 @@ public class CIMArgument<E> extends CIMValuedElement<E> {
 	 * A <code>CIMArgument</code> corresponds to a <code>CIMParameter</code>.
 	 * For each <code>CIMParameter</code> being populated during a method
 	 * invocation a <code>CIMArgument</code> object must be created.
-	 * 
+	 *
 	 * @param pName
 	 *            Name of the CIM argument.
 	 * @param pType
@@ -86,7 +85,7 @@ public class CIMArgument<E> extends CIMValuedElement<E> {
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMArgument</code> that represents the same name, type and
 	 * value as this <code>CIMArgument</code>.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare with.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>

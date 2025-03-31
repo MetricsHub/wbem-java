@@ -42,12 +42,11 @@ import org.metricshub.wbem.javax.wbem.CloseableIterator;
 //Sync'd against JSR48 1.0.0 javadoc (build 1.5.0_10) on Wed Jan 20 02:20:59 EST 2010
 /**
  * This class is a container that stores the information from a Pull request.
- * 
+ *
  * @param <E>
  *            Type parameter.
  */
 public class EnumerateResponse<E> {
-
 	private String iContext;
 
 	private CloseableIterator<E> iResponses;
@@ -56,7 +55,7 @@ public class EnumerateResponse<E> {
 
 	/**
 	 * Creates an <code>EnumerateResponse</code>.
-	 * 
+	 *
 	 * @param pContext
 	 *            The enumeration context returned. This will be used for any
 	 *            future calls for this particular enumeration.
@@ -74,7 +73,7 @@ public class EnumerateResponse<E> {
 
 	/**
 	 * Get the context that can be used for a subsequent pull request.
-	 * 
+	 *
 	 * @return The Enumeration Context returned from the server.
 	 */
 	public String getContext() {
@@ -83,7 +82,7 @@ public class EnumerateResponse<E> {
 
 	/**
 	 * Get the <code>CloseableIterator</code> for the returned CIM Elements.
-	 * 
+	 *
 	 * @return <code>CloseableIterator</code> for the elements returned.
 	 */
 	public CloseableIterator<E> getResponses() {
@@ -92,14 +91,13 @@ public class EnumerateResponse<E> {
 
 	/**
 	 * If <code>true</code>, there are no more elements to be returned.
-	 * 
+	 *
 	 * @return <code>true</code> if this is the last of the results;
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean isEnd() {
 		return this.iEnd;
 	}
-
 	/*
 	  This iterates over the responses. As a side effect,
 	  CloseableIterator.hasNext() will not return anything after this is

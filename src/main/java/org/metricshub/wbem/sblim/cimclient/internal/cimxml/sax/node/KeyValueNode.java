@@ -53,12 +53,12 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
 import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
+import org.metricshub.wbem.javax.cim.UnsignedInteger64;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.CIMObjectFactory;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
-import org.metricshub.wbem.javax.cim.UnsignedInteger64;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -67,7 +67,6 @@ import org.xml.sax.SAXException;
  * numeric) "string" %CIMType; #IMPLIED
  */
 public class KeyValueNode extends AbstractScalarValueNode {
-
 	private CIMDataType iType;
 
 	private String iValueTypeStr;
@@ -119,12 +118,12 @@ public class KeyValueNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child
+		// no child
 	}
 
 	@Override
 	public void testCompletness() {
-	// nothing to do
+		// nothing to do
 	}
 
 	public Object getValue() {
@@ -144,18 +143,27 @@ public class KeyValueNode extends AbstractScalarValueNode {
 
 		if (this.iValueTypeStr.equals("numeric")) {
 			if (!setUInt64(pValue) && !setSInt64(pValue) && !setReal64(pValue)) throw new SAXException(
-					"Unparseable \"number\" value in " + getNodeName() + " node: " + pValue + "!");
+				"Unparseable \"number\" value in " + getNodeName() + " node: " + pValue + "!"
+			);
 		} else if (this.iValueTypeStr.equals(MOF.DT_STR)) {
 			if (!setDTAbsolute(pValue) && !setDTInterval(pValue)) {
 				this.iValue = pValue;
 				this.iType = CIMDataType.STRING_T;
 			}
 		} else if (this.iValueTypeStr.equals(MOF.DT_BOOL)) {
-			if (!setBoolean(pValue)) throw new SAXException("Unparseable \"boolean\" value in "
-					+ getNodeName() + " node: " + pValue + "!");
+			if (!setBoolean(pValue)) throw new SAXException(
+				"Unparseable \"boolean\" value in " + getNodeName() + " node: " + pValue + "!"
+			);
 		} else {
-			throw new SAXException("KEYVALUE node's VALUETYPE attribute must be " + MOF.DT_STR
-					+ ", " + MOF.DT_BOOL + " or numeric! " + pValue + " is not allowed!");
+			throw new SAXException(
+				"KEYVALUE node's VALUETYPE attribute must be " +
+				MOF.DT_STR +
+				", " +
+				MOF.DT_BOOL +
+				" or numeric! " +
+				pValue +
+				" is not allowed!"
+			);
 		}
 	}
 
@@ -217,5 +225,4 @@ public class KeyValueNode extends AbstractScalarValueNode {
 		this.iType = CIMDataType.DATETIME_T;
 		return true;
 	}
-
 }

@@ -50,15 +50,14 @@ import java.util.Iterator;
 
 /**
  * Class AuthorizationHandler manages AdAuthorizationInfo instances
- * 
+ *
  */
 public class AuthorizationHandler {
-
 	private ArrayList<AuthorizationInfo> iAuthList = new ArrayList<AuthorizationInfo>();
 
 	/**
 	 * Adds an AuthorizationInfo to the handler
-	 * 
+	 *
 	 * @param pAuthorizationInfo
 	 *            The AuthorizationInfo to add
 	 */
@@ -68,7 +67,7 @@ public class AuthorizationHandler {
 
 	/**
 	 * Returns the corresponding AuthorizationInfo for a given set of parameters
-	 * 
+	 *
 	 * @param pAuthorizationModule
 	 *            The authorization module
 	 * @param pProxy
@@ -85,25 +84,37 @@ public class AuthorizationHandler {
 	 *            Scheme
 	 * @return The AuthorizationInfo or <code>null</code> if none fits
 	 */
-	public synchronized AuthorizationInfo getAuthorizationInfo(String pAuthorizationModule,
-			Boolean pProxy, String pAddr, int pPort, String pProtocol, String pRealm, String pScheme) {
-
-		AuthorizationInfo request = AuthorizationInfo.createAuthorizationInfo(pAuthorizationModule,
-				pProxy, pAddr, pPort, pProtocol, pRealm, pScheme);
+	public synchronized AuthorizationInfo getAuthorizationInfo(
+		String pAuthorizationModule,
+		Boolean pProxy,
+		String pAddr,
+		int pPort,
+		String pProtocol,
+		String pRealm,
+		String pScheme
+	) {
+		AuthorizationInfo request = AuthorizationInfo.createAuthorizationInfo(
+			pAuthorizationModule,
+			pProxy,
+			pAddr,
+			pPort,
+			pProtocol,
+			pRealm,
+			pScheme
+		);
 
 		Iterator<AuthorizationInfo> iter = this.iAuthList.iterator();
 		while (iter.hasNext()) {
 			AuthorizationInfo authInfo = iter.next();
 
 			if (authInfo.match(request)) return authInfo;
-
 		}
 		return null;
 	}
 
 	/**
 	 * Returns the AuthorizationInfo at a given index
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index
 	 * @return The AuthorizationInfo

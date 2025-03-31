@@ -54,9 +54,9 @@ import org.xml.sax.SAXException;
 /**
  * FIXME: Why hasn't it got TYPE attribute? For VALUE and VALUE.ARRAY it would
  * be necessary.
- * 
+ *
  * <pre>
- * 
+ *
  * ELEMENT IPARAMVALUE (VALUE | VALUE.ARRAY | VALUE.REFERENCE | INSTANCENAME | CLASSNAME |
  *   QUALIFIER.DECLARATION | CLASS | INSTANCE | VALUE.NAMEDINSTANCE)?
  * ATTLIST IPARAMVALUE
@@ -64,7 +64,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class IParamValueNode extends AbstractParamValueNode {
-
 	private String iName;
 
 	/**
@@ -98,11 +97,20 @@ public class IParamValueNode extends AbstractParamValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { VALUE, VALUE_ARRAY, VALUE_REFERENCE,
-			INSTANCENAME, CLASSNAME, QUALIFIER_DECLARATION, CLASS, INSTANCE, VALUE_NAMEDINSTANCE };
+	private static final String[] ALLOWED_CHILDREN = {
+		VALUE,
+		VALUE_ARRAY,
+		VALUE_REFERENCE,
+		INSTANCENAME,
+		CLASSNAME,
+		QUALIFIER_DECLARATION,
+		CLASS,
+		INSTANCE,
+		VALUE_NAMEDINSTANCE
+	};
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
@@ -113,31 +121,28 @@ public class IParamValueNode extends AbstractParamValueNode {
 				break;
 			}
 		}
-		if (!allowed) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+		if (!allowed) throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 		/*
 		 * this kind of check is not so strict (ValueNode.getValue() can return
 		 * null)
 		 */
-		if (this.iValue != null) throw new SAXException(getNodeName()
-				+ " node cannot have more than one child node!");
-
+		if (this.iValue != null) throw new SAXException(getNodeName() + " node cannot have more than one child node!");
 	}
 
 	@Override
 	public void childParsed(Node pChild) {
 		this.iValue = ((ValueIf) pChild).getValue();
 		this.iIsArray = pChild instanceof ArrayIf;
-		if (pChild instanceof TypedIf) this.iType = ((TypedIf) pChild).getType();
-		else if (pChild instanceof ObjectPathIf) this.iType = CIMDataType
-				.getDataType(((ObjectPathIf) pChild).getCIMObjectPath());
-		else if (pChild instanceof ValueIf) this.iType = CIMDataType.getDataType(((ValueIf) pChild)
-				.getValue());
+		if (pChild instanceof TypedIf) this.iType = ((TypedIf) pChild).getType(); else if (
+			pChild instanceof ObjectPathIf
+		) this.iType = CIMDataType.getDataType(((ObjectPathIf) pChild).getCIMObjectPath()); else if (
+			pChild instanceof ValueIf
+		) this.iType = CIMDataType.getDataType(((ValueIf) pChild).getValue());
 	}
 
 	@Override
 	public void testCompletness() {
-	// child node is optional
+		// child node is optional
 	}
 
 	@Override
@@ -147,7 +152,7 @@ public class IParamValueNode extends AbstractParamValueNode {
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -155,12 +160,10 @@ public class IParamValueNode extends AbstractParamValueNode {
 	}
 
 	public CIMDataType getType() {
-		return this.iType == null ? (this.iIsArray ? CIMDataType.STRING_ARRAY_T
-				: CIMDataType.STRING_T) : this.iType;
+		return this.iType == null ? (this.iIsArray ? CIMDataType.STRING_ARRAY_T : CIMDataType.STRING_T) : this.iType;
 	}
 
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

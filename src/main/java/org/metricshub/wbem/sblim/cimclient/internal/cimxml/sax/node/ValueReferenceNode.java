@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * INSTANCEPATH | LOCALINSTANCEPATH | INSTANCENAME)
  */
 public class ValueReferenceNode extends AbstractScalarValueNode implements ObjectPathIf {
-
 	private CIMObjectPath iCIMObjPath;
 
 	private String iChildNodeName = null;
@@ -72,14 +71,22 @@ public class ValueReferenceNode extends AbstractScalarValueNode implements Objec
 	@Override
 	public void childParsed(Node pChild) {
 		this.iCIMObjPath = ((AbstractPathNode) pChild).getCIMObjectPath();
-		if ((CLASSNAME.equalsIgnoreCase(this.iChildNodeName) || INSTANCENAME
-				.equalsIgnoreCase(this.iChildNodeName))
-				&& this.iCIMObjPath.getNamespace() != null) {
+		if (
+			(CLASSNAME.equalsIgnoreCase(this.iChildNodeName) || INSTANCENAME.equalsIgnoreCase(this.iChildNodeName)) &&
+			this.iCIMObjPath.getNamespace() != null
+		) {
 			// LocalPathBuilder includes default namespace in CLASSNAME and
 			// INSTANCENAME elements, needs to be stripped
-			this.iCIMObjPath = new CIMObjectPath(this.iCIMObjPath.getScheme(), this.iCIMObjPath
-					.getHost(), this.iCIMObjPath.getPort(), null, this.iCIMObjPath.getObjectName(),
-					this.iCIMObjPath.getKeys(), this.iCIMObjPath.getXmlSchemaName());
+			this.iCIMObjPath =
+				new CIMObjectPath(
+					this.iCIMObjPath.getScheme(),
+					this.iCIMObjPath.getHost(),
+					this.iCIMObjPath.getPort(),
+					null,
+					this.iCIMObjPath.getObjectName(),
+					this.iCIMObjPath.getKeys(),
+					this.iCIMObjPath.getXmlSchemaName()
+				);
 		}
 	}
 
@@ -99,30 +106,40 @@ public class ValueReferenceNode extends AbstractScalarValueNode implements Objec
 	 */
 	@Override
 	public void parseData(String pData) {
-	// there is no data
+		// there is no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { CLASSPATH, LOCALCLASSPATH, CLASSNAME,
-			INSTANCEPATH, LOCALINSTANCEPATH, INSTANCENAME };
+	private static final String[] ALLOWED_CHILDREN = {
+		CLASSPATH,
+		LOCALCLASSPATH,
+		CLASSNAME,
+		INSTANCEPATH,
+		LOCALINSTANCEPATH,
+		INSTANCENAME
+	};
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iCIMObjPath != null) throw new SAXException("Child node " + pNodeNameEnum
-				+ " is illegal, since VALUE.REFERENCE already has a child!");
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (ALLOWED_CHILDREN[i] == pNodeNameEnum) {
-				this.iChildNodeName = pNodeNameEnum;
-				return;
-			}
-		throw new SAXException("Invalid child node in " + getNodeName() + " node: " + pNodeNameEnum
-				+ "! Valid nodes are CLASSPATH, LOCALCLASSPATH, CLASSNAME, "
-				+ "INSTANCEPATH, LOCALINSTANCEPATH, INSTANCENAME");
+		if (this.iCIMObjPath != null) throw new SAXException(
+			"Child node " + pNodeNameEnum + " is illegal, since VALUE.REFERENCE already has a child!"
+		);
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (ALLOWED_CHILDREN[i] == pNodeNameEnum) {
+			this.iChildNodeName = pNodeNameEnum;
+			return;
+		}
+		throw new SAXException(
+			"Invalid child node in " +
+			getNodeName() +
+			" node: " +
+			pNodeNameEnum +
+			"! Valid nodes are CLASSPATH, LOCALCLASSPATH, CLASSNAME, " +
+			"INSTANCEPATH, LOCALINSTANCEPATH, INSTANCENAME"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iCIMObjPath == null) throw new SAXException(
-				"VALUE.REFERENCE node must have a child node!");
+		if (this.iCIMObjPath == null) throw new SAXException("VALUE.REFERENCE node must have a child node!");
 	}
 
 	/**
@@ -140,5 +157,4 @@ public class ValueReferenceNode extends AbstractScalarValueNode implements Objec
 	public CIMObjectPath getCIMObjectPath() {
 		return this.iCIMObjPath;
 	}
-
 }

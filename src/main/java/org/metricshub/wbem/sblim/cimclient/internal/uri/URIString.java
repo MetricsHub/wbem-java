@@ -51,16 +51,26 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pCharArray
 	 * @param pStart
 	 * @param pEnd
 	 */
 	public URIString(char[] pCharArray, int pStart, int pEnd) {
 		if (pEnd < pStart) throw new IndexOutOfBoundsException("end:" + pEnd + " < start:" + pStart);
-		if (pEnd > pCharArray.length) throw new IndexOutOfBoundsException("charArray.length:"
-				+ pCharArray.length + ", start:" + pStart + ", end:" + pEnd + "\n" + "end:" + pEnd
-				+ " > charArray.length:" + pCharArray.length);
+		if (pEnd > pCharArray.length) throw new IndexOutOfBoundsException(
+			"charArray.length:" +
+			pCharArray.length +
+			", start:" +
+			pStart +
+			", end:" +
+			pEnd +
+			"\n" +
+			"end:" +
+			pEnd +
+			" > charArray.length:" +
+			pCharArray.length
+		);
 		this.iCA = pCharArray;
 		this.iInitStart = this.iStart = pStart;
 		this.iEnd = pEnd;
@@ -68,7 +78,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pCharArray
 	 */
 	public URIString(char[] pCharArray) {
@@ -77,7 +87,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStr
 	 */
 	public URIString(String pStr) {
@@ -86,7 +96,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pUriStr
 	 */
 	public URIString(URIString pUriStr) {
@@ -95,7 +105,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * set
-	 * 
+	 *
 	 * @param pUriStr
 	 */
 	public void set(URIString pUriStr) {
@@ -106,7 +116,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * deepCopy
-	 * 
+	 *
 	 * @return <code>URIString</code> instance
 	 */
 	public URIString deepCopy() {
@@ -115,13 +125,12 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * find
-	 * 
+	 *
 	 * @param pChar
 	 * @return Position of <code>pChar</code> or -1 if not found.
 	 */
 	public int find(char pChar) {
-		for (int i = 0; i < length(); i++)
-			if (charAt(i) == pChar) return i;
+		for (int i = 0; i < length(); i++) if (charAt(i) == pChar) return i;
 		return -1;
 	}
 
@@ -156,7 +165,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * toInitString
-	 * 
+	 *
 	 * @return The String which was used for initializing this instance.
 	 */
 	public String toInitString() {
@@ -165,7 +174,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * getPos
-	 * 
+	 *
 	 * @return The position of parsing.
 	 */
 	public int getPos() {
@@ -174,7 +183,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * markPosition
-	 * 
+	 *
 	 * @return a String which marks the position of parsing.
 	 */
 	public String markPosition() {
@@ -183,15 +192,14 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * markPosition
-	 * 
+	 *
 	 * @param pPos
 	 * @return a String which marks position pPos.
 	 */
 	public String markPosition(int pPos) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(toInitString() + '\n');
-		for (int i = 0; i < pPos; i++)
-			buf.append(' ');
+		for (int i = 0; i < pPos; i++) buf.append(' ');
 		buf.append("^\n");
 		return buf.toString();
 	}
@@ -200,7 +208,7 @@ public class URIString extends Object implements CharSequence {
 	 * Returns a new string that is a substring of this string. The substring
 	 * begins at the specified pBeginIdx and extends to the character at index
 	 * pEndIdx - 1. Thus the length of the substring is pEndIdx-pBeginIdx.
-	 * 
+	 *
 	 * @param pBeginIdx
 	 * @param pEndIdx
 	 * @return String
@@ -211,7 +219,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * startsWith
-	 * 
+	 *
 	 * @param pC
 	 * @return <code>true</code> if the first character is <code>pC</code>.
 	 */
@@ -229,7 +237,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Cuts out the first character if it is <code>pC</code>.
-	 * 
+	 *
 	 * @param pC
 	 * @return <code>true</code> if cut is done.
 	 */
@@ -243,21 +251,20 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Cuts out <code>pSeq</code> from the beginning if it is there.
-	 * 
+	 *
 	 * @param pSeq
 	 * @return <code>true</code> if cut is done.
 	 */
 	public boolean cutStarting(CharSequence pSeq) {
 		if (pSeq.length() > length()) return false;
-		for (int i = 0; i < pSeq.length(); i++)
-			if (charAt(i) != pSeq.charAt(i)) return false;
+		for (int i = 0; i < pSeq.length(); i++) if (charAt(i) != pSeq.charAt(i)) return false;
 		this.iStart += pSeq.length();
 		return true;
 	}
 
 	/**
 	 * Cuts out <code>pStr</code> from the beginning if it is there.
-	 * 
+	 *
 	 * @param pStr
 	 * @param pIgnoreCase
 	 * @return <code>true</code> if cut is done.
@@ -274,12 +281,11 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * Cuts out pChars pieces of characters from the beginning.
-	 * 
+	 *
 	 * @param pChars
 	 */
 	public void cutStarting(int pChars) {
-		if (pChars > length()) throw new IndexOutOfBoundsException("chars:" + pChars
-				+ " > length()" + length());
+		if (pChars > length()) throw new IndexOutOfBoundsException("chars:" + pChars + " > length()" + length());
 		this.iStart += pChars;
 	}
 
@@ -287,7 +293,7 @@ public class URIString extends Object implements CharSequence {
 	 * Removes the beginning of the string till the first occurrence of pChar or
 	 * removes the whole string if it doesn't contain pChar and pMustFound is
 	 * false.
-	 * 
+	 *
 	 * @param pChar
 	 * @param pRemoveChar
 	 *            if <code>true pChar</code> will be removed too
@@ -309,7 +315,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * removeTill(pChar, pRemoveChar, false);
-	 * 
+	 *
 	 * @param pChar
 	 * @param pRemoveChar
 	 * @return String
@@ -321,7 +327,7 @@ public class URIString extends Object implements CharSequence {
 
 	/**
 	 * removeTill(pChar, false, false);
-	 * 
+	 *
 	 * @param pChar
 	 * @return String
 	 * @see #removeTill(char, boolean, boolean)
@@ -333,7 +339,7 @@ public class URIString extends Object implements CharSequence {
 	/**
 	 * Matches pattern <code>pPat</code> and cuts out the beginning till the end
 	 * of matcher group <code>pGroup</code>.
-	 * 
+	 *
 	 * @param pPat
 	 * @param pGroup
 	 * @return <code>true</code> if pattern is matched and cut was done.
@@ -360,5 +366,4 @@ public class URIString extends Object implements CharSequence {
 	private int iInitStart, iStart, iEnd;
 
 	private Matcher iM;
-
 }

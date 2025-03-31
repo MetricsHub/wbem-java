@@ -51,7 +51,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ChunkedOutputStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.PersistentOutputStream;
@@ -59,10 +58,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class MessageWriter is responsible for creating http messages
- * 
+ *
  */
 public class MessageWriter {
-
 	HttpHeader iHeader = null;
 
 	HttpServerMethod iMethod = null;
@@ -81,7 +79,7 @@ public class MessageWriter {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 * @param pPersistent
 	 * @param pChunked
@@ -92,15 +90,14 @@ public class MessageWriter {
 		this.iPersistent = pPersistent;
 		this.iBufferedOS = new ByteArrayOutputStream();
 		if (pChunked) {
-			this.iClientOS = new ASCIIPrintStream(new ChunkedOutputStream(
-					new PersistentOutputStream(this.iBufferedOS, pPersistent), 512));
+			this.iClientOS =
+				new ASCIIPrintStream(new ChunkedOutputStream(new PersistentOutputStream(this.iBufferedOS, pPersistent), 512));
 		} else {
-			this.iClientOS = new ASCIIPrintStream(new PersistentOutputStream(this.iBufferedOS,
-					pPersistent));
+			this.iClientOS = new ASCIIPrintStream(new PersistentOutputStream(this.iBufferedOS, pPersistent));
 		}
 		this.iHeader = new HttpHeader();
-		this.iMethod = new HttpServerMethod(HttpConnectionHandler.MAJOR_VERSION,
-				HttpConnectionHandler.MINOR_VERSION, 200, "OK");
+		this.iMethod =
+			new HttpServerMethod(HttpConnectionHandler.MAJOR_VERSION, HttpConnectionHandler.MINOR_VERSION, 200, "OK");
 	}
 
 	/**
@@ -112,7 +109,7 @@ public class MessageWriter {
 
 	/**
 	 * Sets the http header
-	 * 
+	 *
 	 * @param header
 	 *            The new value
 	 */
@@ -122,7 +119,7 @@ public class MessageWriter {
 
 	/**
 	 * Sets the http server method
-	 * 
+	 *
 	 * @param method
 	 *            The new value
 	 */
@@ -132,7 +129,7 @@ public class MessageWriter {
 
 	/**
 	 * Returns the http header
-	 * 
+	 *
 	 * @return The http header
 	 */
 	public HttpHeader getHeader() {
@@ -141,7 +138,7 @@ public class MessageWriter {
 
 	/**
 	 * Returns the http server method
-	 * 
+	 *
 	 * @return The http server method
 	 */
 	public HttpServerMethod getMethod() {
@@ -150,7 +147,7 @@ public class MessageWriter {
 
 	/**
 	 * Returns the output stream
-	 * 
+	 *
 	 * @return The output stream
 	 */
 	public ASCIIPrintStream getOutputStream() {
@@ -159,29 +156,32 @@ public class MessageWriter {
 
 	/**
 	 * Write the message and flushes the streams
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void close() throws IOException {
 		this.iMethod.write(this.iRealOS);
 		this.iRealOS.flush();
-		if (!this.iChunked) this.iHeader.removeField("Transfer-Encoding");
-		else this.iHeader.addField("Transfer-Encoding", "chunked");
-		if (this.iPersistent) this.iHeader.addField("Connection", "Keep-iAlive");
-		else this.iHeader.addField("Connection", "close");
+		if (!this.iChunked) this.iHeader.removeField("Transfer-Encoding"); else this.iHeader.addField(
+				"Transfer-Encoding",
+				"chunked"
+			);
+		if (this.iPersistent) this.iHeader.addField("Connection", "Keep-iAlive"); else this.iHeader.addField(
+				"Connection",
+				"close"
+			);
 
 		this.iHeader.addField("Content-Type", "application/xml;charset=\"utf-8\"");
-		if (!this.iChunked) this.iHeader.addField("Content-length", Integer
-				.toString(this.iBufferedOS.size()));
-		LogAndTraceBroker.getBroker().trace(Level.FINER,
-				"Indication Response HTTP Headers= " + this.iHeader.toString());
+		if (!this.iChunked) this.iHeader.addField("Content-length", Integer.toString(this.iBufferedOS.size()));
+		LogAndTraceBroker.getBroker().trace(Level.FINER, "Indication Response HTTP Headers= " + this.iHeader.toString());
 		this.iHeader.write(this.iRealOS);
 		this.iRealOS.flush();
 		if (this.iChunked) this.iClientOS.close();
 		this.iBufferedOS.writeTo(this.iRealOS);
 		if (this.iChunked && (this.iTrailer != null)) {
-			LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"Indication Response HTTP Trailer Headers= " + this.iTrailer.toString());
+			LogAndTraceBroker
+				.getBroker()
+				.trace(Level.FINER, "Indication Response HTTP Trailer Headers= " + this.iTrailer.toString());
 			this.iTrailer.write(this.iRealOS);
 		}
 		this.iRealOS.flush();
@@ -189,7 +189,7 @@ public class MessageWriter {
 
 	/**
 	 * Sets the trailer
-	 * 
+	 *
 	 * @param pTrailer
 	 *            The new value
 	 */

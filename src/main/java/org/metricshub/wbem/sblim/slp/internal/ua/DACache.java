@@ -47,26 +47,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.msg.DADescriptor;
 
 /**
  * DACache caches the discovered DA list in order to eliminate frequent DA
  * discovery network traffic.
- * 
+ *
  */
 public class DACache {
 
 	private static class ScopeEntry {
-
 		private long iTimeOfDiscovery;
 
 		private TreeSet<DADescriptor> iDADescriptors;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pDADescriptors
 		 */
 		public ScopeEntry(TreeSet<DADescriptor> pDADescriptors) {
@@ -76,7 +74,7 @@ public class DACache {
 
 		/**
 		 * valid
-		 * 
+		 *
 		 * @return boolean
 		 */
 		public boolean valid() {
@@ -85,13 +83,12 @@ public class DACache {
 
 		/**
 		 * getDADescriptorItr
-		 * 
+		 *
 		 * @return Iterator
 		 */
 		public Iterator<DADescriptor> getDADescriptorItr() {
 			return this.iDADescriptors == null ? null : this.iDADescriptors.iterator();
 		}
-
 	}
 
 	/**
@@ -147,8 +144,7 @@ public class DACache {
 	 * @param pDADescriptors
 	 *            - DADescriptors of the discovered DAs
 	 */
-	public static synchronized void setDAList(List<String> pScopes,
-			List<DADescriptor> pDADescriptors) {
+	public static synchronized void setDAList(List<String> pScopes, List<DADescriptor> pDADescriptors) {
 		if (pScopes == null || pDADescriptors == null) return;
 		Iterator<String> scopeItr = pScopes.iterator();
 		while (scopeItr.hasNext()) {
@@ -169,5 +165,4 @@ public class DACache {
 	static long getSecs() {
 		return new Date().getTime() / 1000;
 	}
-
 }

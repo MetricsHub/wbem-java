@@ -29,11 +29,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.security.auth.Subject;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.javax.wbem.client.EnumerateResponse;
@@ -42,15 +41,13 @@ import org.metricshub.wbem.javax.wbem.client.UserPrincipal;
 import org.metricshub.wbem.javax.wbem.client.WBEMClient;
 import org.metricshub.wbem.javax.wbem.client.WBEMClientConstants;
 import org.metricshub.wbem.javax.wbem.client.WBEMClientFactory;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 
 /**
  * Matsya WBEM client for query execution.
  *
  */
 public class WbemClient implements AutoCloseable {
-
-	private static final Locale[] FIXED_AVAILABLE_LOCALES_ARRAY = {Locale.ENGLISH};
+	private static final Locale[] FIXED_AVAILABLE_LOCALES_ARRAY = { Locale.ENGLISH };
 
 	private WBEMClient client;
 
@@ -65,23 +62,19 @@ public class WbemClient implements AutoCloseable {
 	 * @param timeout
 	 * @throws WBEMException
 	 */
-	public void connect(
-			final URL url,
-			final String username,
-			final char[] password,
-			int timeout) throws WBEMException {
-
+	public void connect(final URL url, final String username, final char[] password, int timeout) throws WBEMException {
 		Utils.checkNonNull(url, "url");
 		Utils.checkNonNull(username, "username");
 		Utils.checkNonNull(password, "password");
 
 		final CIMObjectPath cimObjectPath = new CIMObjectPath(
-				url.getProtocol(),
-				url.getHost(),
-				String.valueOf(url.getPort()),
-				null,
-				null,
-				null);
+			url.getProtocol(),
+			url.getHost(),
+			String.valueOf(url.getPort()),
+			null,
+			null,
+			null
+		);
 
 		final Subject subject = new Subject();
 		subject.getPrincipals().add(new UserPrincipal(username));
@@ -112,11 +105,8 @@ public class WbemClient implements AutoCloseable {
 	 * @return
 	 * @throws WBEMException
 	 */
-	public WbemQueryResult executeWql(
-			final WqlQuery wqlQuery,
-			final String namespace,
-			final String arraySeparator) throws WBEMException {
-
+	public WbemQueryResult executeWql(final WqlQuery wqlQuery, final String namespace, final String arraySeparator)
+		throws WBEMException {
 		Utils.checkNonNull(wqlQuery, "wqlQuery");
 		Utils.checkNonNull(namespace, "namespace");
 
@@ -124,12 +114,14 @@ public class WbemClient implements AutoCloseable {
 			throw new IllegalStateException("client must be connected first.");
 		}
 
-		iterator = client.enumerateInstances(
+		iterator =
+			client.enumerateInstances(
 				new CIMObjectPath(null, null, null, namespace, wqlQuery.getClassName(), null),
 				true,
 				false,
 				true,
-				wqlQuery.getPropertiesArray());
+				wqlQuery.getPropertiesArray()
+			);
 
 		return enumerateInstances(wqlQuery, iterator, arraySeparator);
 	}
@@ -143,10 +135,11 @@ public class WbemClient implements AutoCloseable {
 	 * @throws WBEMException
 	 */
 	public WbemQueryResult getAssociators(
-			final WqlQuery wqlQuery,
-			final String objectPathAssociators,
-			final String arraySeparator) throws WBEMException {
-
+		final WqlQuery wqlQuery,
+		final String objectPathAssociators,
+		final String arraySeparator
+	)
+		throws WBEMException {
 		Utils.checkNonNull(wqlQuery, "wqlQuery");
 		Utils.checkNonNull(objectPathAssociators, "objectPathAssociators");
 
@@ -155,28 +148,30 @@ public class WbemClient implements AutoCloseable {
 		}
 
 		final EnumerateResponse<CIMInstance> response = client.associators(
-				new CIMObjectPath(objectPathAssociators),
-				wqlQuery.getClassName(),
-				null,
-				null,
-				null,
-				false,
-				wqlQuery.getPropertiesArray(),
-				null,
-				null,
-				null,
-				false,
-				null);
+			new CIMObjectPath(objectPathAssociators),
+			wqlQuery.getClassName(),
+			null,
+			null,
+			null,
+			false,
+			wqlQuery.getPropertiesArray(),
+			null,
+			null,
+			null,
+			false,
+			null
+		);
 		iterator = response.getResponses();
 
 		return enumerateInstances(wqlQuery, iterator, arraySeparator);
 	}
 
 	public static WbemQueryResult enumerateInstances(
-			final WqlQuery wqlQuery,
-			final CloseableIterator<CIMInstance> iterator,
-			final String arraySeparator) {
-		if (iterator == null)  {
+		final WqlQuery wqlQuery,
+		final CloseableIterator<CIMInstance> iterator,
+		final String arraySeparator
+	) {
+		if (iterator == null) {
 			return new WbemQueryResult(new ArrayList<>(), new ArrayList<>());
 		}
 
@@ -189,32 +184,41 @@ public class WbemClient implements AutoCloseable {
 
 			if (properties == null) {
 				properties =
-						wqlQuery.getProperties().isEmpty() ?
-						Stream.of(cimInstance.getProperties())
-								.map(CIMProperty::getName)
-								.collect(Collectors.toCollection(LinkedHashSet::new)) :
-						wqlQuery.getProperties();
+					wqlQuery.getProperties().isEmpty()
+						? Stream
+							.of(cimInstance.getProperties())
+							.map(CIMProperty::getName)
+							.collect(Collectors.toCollection(LinkedHashSet::new))
+						: wqlQuery.getProperties();
 			}
 
 			if (originalProperties == null) {
-				originalProperties = wqlQuery.hasDuplicateProperties() ?
-						wqlQuery.getOriginalProperties() :
-						properties.stream().collect(Collectors.toList());
+				originalProperties =
+					wqlQuery.hasDuplicateProperties()
+						? wqlQuery.getOriginalProperties()
+						: properties.stream().collect(Collectors.toList());
 			}
 
 			final List<String> row;
 			if (wqlQuery.hasDuplicateProperties()) {
+				final Map<String, String> cimProperties = properties
+					.stream()
+					.collect(
+						Collectors.toMap(
+							String::toLowerCase,
+							property -> WbemCimDataHandler.getCimPropertyAsString(property, cimInstance, arraySeparator)
+						)
+					);
 
-				final Map<String, String> cimProperties = properties.stream().collect(Collectors.toMap(
-						String::toLowerCase,
-						property -> WbemCimDataHandler.getCimPropertyAsString(property, cimInstance, arraySeparator)));
-
-				row = originalProperties.stream()
+				row =
+					originalProperties
+						.stream()
 						.map(property -> cimProperties.get(property.toLowerCase()))
 						.collect(Collectors.toList());
-
 			} else {
-				row = properties.stream()
+				row =
+					properties
+						.stream()
 						.map(property -> WbemCimDataHandler.getCimPropertyAsString(property, cimInstance, arraySeparator))
 						.collect(Collectors.toList());
 			}

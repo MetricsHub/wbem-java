@@ -63,7 +63,6 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMElementSorter;
 import org.metricshub.wbem.sblim.cimclient.internal.uri.BooleanValue;
 import org.metricshub.wbem.sblim.cimclient.internal.uri.CharValue;
@@ -118,7 +117,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * <code>CreationClassName=My_ComputerSystem</code></li> </ul>
  */
 public class CIMObjectPath extends Object implements Serializable {
-
 	private static final long serialVersionUID = 4593259690658425064L;
 
 	private String iScheme, iHost, iPort, iNamespace, iObjectName, iXmlSchemaName;
@@ -128,17 +126,16 @@ public class CIMObjectPath extends Object implements Serializable {
 	/**
 	 * Class TypeValuePair represents a type-value pair with special
 	 * identification functionality for integer and real numbers.
-	 * 
+	 *
 	 */
 	private static class TypeValuePair {
-
 		private CIMDataType iType;
 
 		private Object iValue;
 
 		/**
 		 * Constructs a type-value pair with the specified type and value.
-		 * 
+		 *
 		 * @param pType
 		 *            Type.
 		 * @param pValue
@@ -151,7 +148,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 		/**
 		 * Constructs a type-value pair with the specified integer value.
-		 * 
+		 *
 		 * @param intVal
 		 *            Integer value.
 		 */
@@ -174,7 +171,6 @@ public class CIMObjectPath extends Object implements Serializable {
 						this.iType = CIMDataType.SINT64_T;
 						this.iValue = Long.valueOf(intVal.longValue());
 				}
-
 			} else { // unsigned integers
 				switch (intVal.getBitWidth()) {
 					case 8:
@@ -198,7 +194,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 		/**
 		 * Constructs a type-value pair with the specified real value.
-		 * 
+		 *
 		 * @param pRealVal
 		 *            Real value.
 		 */
@@ -215,7 +211,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 		/**
 		 * Returns the type of the type-value pair.
-		 * 
+		 *
 		 * @return Type of type-value pair.
 		 */
 		public CIMDataType getType() {
@@ -224,18 +220,17 @@ public class CIMObjectPath extends Object implements Serializable {
 
 		/**
 		 * Returns the value of the type-value pair.
-		 * 
+		 *
 		 * @return Value of type-value pair.
 		 */
 		public Object getValue() {
 			return this.iValue;
 		}
-
 	}
 
 	/**
 	 * Extracts and returns sorted list of key-value pairs from the URI.
-	 * 
+	 *
 	 * @param pURI
 	 *            The Uniform Resource Identifier.
 	 * @return Sorted array of keys in URI.
@@ -256,24 +251,20 @@ public class CIMObjectPath extends Object implements Serializable {
 				CIMObjectPath op = new CIMObjectPath(refVal.getRef());
 				typeValue = new TypeValuePair(new CIMDataType(op.getObjectName()), op);
 			} else if (uriVal instanceof BooleanValue) {
-				typeValue = new TypeValuePair(CIMDataType.BOOLEAN_T, ((BooleanValue) uriVal)
-						.getBoolean());
+				typeValue = new TypeValuePair(CIMDataType.BOOLEAN_T, ((BooleanValue) uriVal).getBoolean());
 			} else if (uriVal instanceof CharValue) {
-				typeValue = new TypeValuePair(CIMDataType.CHAR16_T, ((CharValue) uriVal)
-						.getCharacter());
+				typeValue = new TypeValuePair(CIMDataType.CHAR16_T, ((CharValue) uriVal).getCharacter());
 			} else if (uriVal instanceof IntegerValue) {
 				typeValue = new TypeValuePair((IntegerValue) uriVal);
 			} else if (uriVal instanceof RealValue) {
 				typeValue = new TypeValuePair((RealValue) uriVal);
 			} else if (uriVal instanceof DateTimeValue) {
-				typeValue = new TypeValuePair(CIMDataType.DATETIME_T, ((DateTimeValue) uriVal)
-						.getDateTime());
+				typeValue = new TypeValuePair(CIMDataType.DATETIME_T, ((DateTimeValue) uriVal).getDateTime());
 			} else {
 				// TODO: error or warning tracing
 				typeValue = new TypeValuePair(CIMDataType.INVALID_T, null);
 			}
-			keys[i] = new CIMProperty<Object>(name, typeValue.getType(), typeValue.getValue(),
-					true, false, null);
+			keys[i] = new CIMProperty<Object>(name, typeValue.getType(), typeValue.getValue(), true, false, null);
 		}
 		return (CIMProperty[]) CIMElementSorter.sort(keys);
 	}
@@ -281,7 +272,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	/**
 	 * Initializes the elements of the <code>CIMObjectPath</code> from the given
 	 * URI.
-	 * 
+	 *
 	 * @param pURI
 	 *            The Uniform Resource Identifier.
 	 */
@@ -297,7 +288,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	/**
 	 * Constructs a CIM Object Path referencing an instance of the specified CIM
 	 * element in the given URI.
-	 * 
+	 *
 	 * @param pURI
 	 *            The Uniform Resource Identifier.
 	 */
@@ -320,7 +311,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * //myserver.org/root/cimv2:My_ComputerSystem<br>
 	 * /root/cimv2:My_ComputerSystem
 	 * </code>
-	 * 
+	 *
 	 * @param pObjectPath
 	 *            The string representation of an object path for a CIM element
 	 *            that will be parsed and used to initialize the object.
@@ -332,8 +323,7 @@ public class CIMObjectPath extends Object implements Serializable {
 		URI uri;
 
 		if (pObjectPath == null) throw new IllegalArgumentException("ObjectPath is null!");
-		if (pObjectPath.trim().length() == 0) throw new IllegalArgumentException(
-				"ObjectPath is empty!");
+		if (pObjectPath.trim().length() == 0) throw new IllegalArgumentException("ObjectPath is empty!");
 
 		try {
 			uri = URI.parse(pObjectPath);
@@ -344,11 +334,15 @@ public class CIMObjectPath extends Object implements Serializable {
 				try {
 					uri = URI.parseRef(new URIString(pObjectPath), true);
 				} catch (IllegalArgumentException asTypedRef) {
-					String msg = "Parsing of ObjectPath string has failed!\n"
-							+ "Nested error messages:\n" + "When parsing as normal URI string:\n"
-							+ asURI.getMessage() + "When parsing as untyped reference:\n"
-							+ asUntypedRef.getMessage() + "When parsing as typed reference:\n"
-							+ asTypedRef.getMessage();
+					String msg =
+						"Parsing of ObjectPath string has failed!\n" +
+						"Nested error messages:\n" +
+						"When parsing as normal URI string:\n" +
+						asURI.getMessage() +
+						"When parsing as untyped reference:\n" +
+						asUntypedRef.getMessage() +
+						"When parsing as typed reference:\n" +
+						asTypedRef.getMessage();
 					// TODO: tracing
 					throw new IllegalArgumentException(msg);
 				}
@@ -368,7 +362,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * preceding '/' in the namespace parameter. For example, OpenPegasus will
 	 * accept <code>"root/cimv2"</code> as a namespace but will not accept
 	 * <code>"/root/cimv2"</code>.
-	 * 
+	 *
 	 * @param pScheme
 	 *            The connection scheme to the host (e.g. http, https, ...)
 	 * @param pHost
@@ -383,17 +377,23 @@ public class CIMObjectPath extends Object implements Serializable {
 	 *            The keys and their corresponding values that identify an
 	 *            instance of the CIM element.
 	 */
-	public CIMObjectPath(String pScheme, String pHost, String pPort, String pNamespace,
-			String pObjectName, CIMProperty<?>[] pKeys) {
+	public CIMObjectPath(
+		String pScheme,
+		String pHost,
+		String pPort,
+		String pNamespace,
+		String pObjectName,
+		CIMProperty<?>[] pKeys
+	) {
 		this.iScheme = pScheme;
 		this.iHost = pHost;
 		this.iPort = pPort;
 		this.iNamespace = pNamespace;
 		this.iObjectName = pObjectName;
 		if (pKeys != null) {
-			for (int i = 0; i < pKeys.length; i++)
-				if (!pKeys[i].isKey()) throw new IllegalArgumentException(
-						"All CIMObjectPath properties must be keys!");
+			for (int i = 0; i < pKeys.length; i++) if (!pKeys[i].isKey()) throw new IllegalArgumentException(
+				"All CIMObjectPath properties must be keys!"
+			);
 		}
 		this.iKeys = (CIMProperty[]) CIMElementSorter.sort(pKeys);
 	}
@@ -409,7 +409,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * preceding '/' in the namespace parameter. For example, OpenPegasus will
 	 * accept <code>"root/cimv2"</code> as a namespace but will not accept
 	 * <code>"/root/cimv2"</code>.
-	 * 
+	 *
 	 * @param pScheme
 	 *            The connection scheme to the host (e.g. http, https, ...)
 	 * @param pHost
@@ -427,8 +427,15 @@ public class CIMObjectPath extends Object implements Serializable {
 	 *            The name of the XML Schema for this object. This is only
 	 *            needed for protocols that require this information.
 	 */
-	public CIMObjectPath(String pScheme, String pHost, String pPort, String pNamespace,
-			String pObjectName, CIMProperty<?>[] pKeys, String pXmlSchemaName) {
+	public CIMObjectPath(
+		String pScheme,
+		String pHost,
+		String pPort,
+		String pNamespace,
+		String pObjectName,
+		CIMProperty<?>[] pKeys,
+		String pXmlSchemaName
+	) {
 		this(pScheme, pHost, pPort, pNamespace, pObjectName, pKeys);
 		if (pXmlSchemaName != null) {
 			try {
@@ -443,7 +450,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	/**
 	 * Compares this CIM object path with the specified CIM object path for
 	 * equality.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare to this CIM object path. Only the model
 	 *            paths are compared.
@@ -461,13 +468,14 @@ public class CIMObjectPath extends Object implements Serializable {
 		// hostname information is not any longer part of the comparison, since
 		// there is no reliable way to attach hostnames
 		if (pIncludeNamespacePath) {
-			boolean namespaceEqual = (this.iNamespace == null ? that.iNamespace == null
-					: this.iNamespace.equalsIgnoreCase(that.iNamespace));
+			boolean namespaceEqual =
+				(this.iNamespace == null ? that.iNamespace == null : this.iNamespace.equalsIgnoreCase(that.iNamespace));
 			if (!namespaceEqual) return false;
 		}
-		return (this.iObjectName == null ? that.iObjectName == null : this.iObjectName
-				.equalsIgnoreCase(that.iObjectName))
-				&& keysEqual(that);
+		return (
+			(this.iObjectName == null ? that.iObjectName == null : this.iObjectName.equalsIgnoreCase(that.iObjectName)) &&
+			keysEqual(that)
+		);
 	}
 
 	/**
@@ -476,7 +484,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * <br>
 	 * NOTE: <code>CIMProperty.equals()</code> shouldn't be used for keys,
 	 * because the XML doesn't contain originClass and propagated information.
-	 * 
+	 *
 	 * @param pThat
 	 *            The object path whose keys are to be compared to this CIM
 	 *            object path's keys.
@@ -490,14 +498,16 @@ public class CIMObjectPath extends Object implements Serializable {
 		if (this.iKeys.length != pThat.iKeys.length) return false;
 		for (int i = 0; i < this.iKeys.length; i++) {
 			CIMProperty<?> thisKey = this.iKeys[i], thatKey = pThat.iKeys[i];
-			if (!equals(thisKey, thatKey)) { return false; }
+			if (!equals(thisKey, thatKey)) {
+				return false;
+			}
 		}
 		return true;
 	}
 
 	/**
 	 * Compares two properties for equality.
-	 * 
+	 *
 	 * @param pThis
 	 *            First property.
 	 * @param pThat
@@ -506,20 +516,23 @@ public class CIMObjectPath extends Object implements Serializable {
 	 *         otherwise.
 	 */
 	private boolean equals(CIMProperty<?> pThis, CIMProperty<?> pThat) {
-		if (pThis.getDataType() != null && pThis.getDataType().isArray()) { return ncEqualsIC(pThis
-				.getName(), pThat.getName())
-				&& ncEquals(pThis.getDataType(), pThat.getDataType())
-				&& Arrays.equals((Object[]) pThis.getValue(), (Object[]) pThat.getValue());
-
+		if (pThis.getDataType() != null && pThis.getDataType().isArray()) {
+			return (
+				ncEqualsIC(pThis.getName(), pThat.getName()) &&
+				ncEquals(pThis.getDataType(), pThat.getDataType()) &&
+				Arrays.equals((Object[]) pThis.getValue(), (Object[]) pThat.getValue())
+			);
 		}
-		return ncEqualsIC(pThis.getName(), pThat.getName())
-				&& ncEquals(pThis.getDataType(), pThat.getDataType())
-				&& ncEquals(pThis.getValue(), pThat.getValue());
+		return (
+			ncEqualsIC(pThis.getName(), pThat.getName()) &&
+			ncEquals(pThis.getDataType(), pThat.getDataType()) &&
+			ncEquals(pThis.getValue(), pThat.getValue())
+		);
 	}
 
 	/**
 	 * Compares two objects for equality.
-	 * 
+	 *
 	 * @param pThis
 	 *            First object.
 	 * @param pThat
@@ -533,7 +546,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Compares two strings for equality, ignoring case.
-	 * 
+	 *
 	 * @param pThis
 	 *            First string.
 	 * @param pThat
@@ -550,7 +563,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * the model path includes references, then the references will also be
 	 * compared for the model path (i.e. the namespace part of the object path
 	 * will be ignored).
-	 * 
+	 *
 	 * @param pModelPath
 	 *            The object to compare.
 	 * @return <code>true</code> if the specified path references the same
@@ -562,7 +575,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Gets the host.
-	 * 
+	 *
 	 * @return The name of the host.
 	 */
 	public String getHost() {
@@ -571,7 +584,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Gets a key property by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the key property to retrieve.
 	 * @return The <code>CIMProperty</code> with the given name, or
@@ -583,7 +596,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Gets all key properties.
-	 * 
+	 *
 	 * @return The container of key properties.
 	 */
 	public CIMProperty<?>[] getKeys() {
@@ -602,7 +615,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Gets the namespace.
-	 * 
+	 *
 	 * @return The name of the namespace.
 	 */
 	public String getNamespace() {
@@ -612,7 +625,7 @@ public class CIMObjectPath extends Object implements Serializable {
 	/**
 	 * Gets the object name. Depending on the type of CIM element referenced,
 	 * this may be either a class name or a qualifier type name.
-	 * 
+	 *
 	 * @return The name of this CIM element.
 	 */
 	public String getObjectName() {
@@ -621,7 +634,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Gets the the port on the host to which the connection was established.
-	 * 
+	 *
 	 * @return The port on the host.
 	 */
 	public String getPort() {
@@ -630,7 +643,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Get the connection scheme.
-	 * 
+	 *
 	 * @return The connection scheme (e.g. http, https,...)
 	 */
 	public String getScheme() {
@@ -639,7 +652,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Get the XML Schema for this object (optional).
-	 * 
+	 *
 	 * @return The XML Schema name.
 	 */
 	public String getXmlSchemaName() {
@@ -648,7 +661,7 @@ public class CIMObjectPath extends Object implements Serializable {
 
 	/**
 	 * Computes the hash code for this object path.
-	 * 
+	 *
 	 * @return The integer representing the hash code for this object path.
 	 */
 	@Override
@@ -661,12 +674,11 @@ public class CIMObjectPath extends Object implements Serializable {
 	 * method is intended to be used only for debugging purposes. The format of
 	 * the value returned may vary between implementations. The string returned
 	 * may be empty but may not be <code>null</code>.
-	 * 
+	 *
 	 * @return A string representation of this CIM object path.
 	 */
 	@Override
 	public String toString() {
 		return MOF.objectHandle(this, false, false);
 	}
-
 }

@@ -46,24 +46,22 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
-
 import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 
 /**
  * DatagramThread
- * 
+ *
  */
 public class DatagramThread extends RecieverThread {
-
 	private static MulticastSocket cMCastSocket;
 
 	private DatagramPacket iPacket = new DatagramPacket(new byte[SLPDefaults.MTU], SLPDefaults.MTU);
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pSrvAgent
 	 */
 	public DatagramThread(ServiceAgent pSrvAgent) {
@@ -72,7 +70,7 @@ public class DatagramThread extends RecieverThread {
 
 	/**
 	 * joinGroup
-	 * 
+	 *
 	 * @param pGroup
 	 * @throws IOException
 	 */
@@ -83,7 +81,7 @@ public class DatagramThread extends RecieverThread {
 
 	/**
 	 * leaveGroup
-	 * 
+	 *
 	 * @param pGroup
 	 * @throws IOException
 	 */
@@ -118,5 +116,4 @@ public class DatagramThread extends RecieverThread {
 		cMCastSocket.close();
 		cMCastSocket = null;
 	}
-
 }

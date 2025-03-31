@@ -58,12 +58,11 @@ package org.metricshub.wbem.javax.cim;
  * is a key property (used as part of the name of the CIM element), a flag to
  * signify whether it was propagated from a parent class and the class origin
  * information (where the property was originally defined).
- * 
+ *
  * @param <E>
  *            Type parameter.
  */
 public class CIMProperty<E> extends CIMValuedElement<E> {
-
 	private static final long serialVersionUID = -4741931597423829396L;
 
 	private boolean iKey, iPropagated;
@@ -75,7 +74,7 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 	 * <code>CIMClass</code>, <code>CIMClassProperty</code> shall be used. This
 	 * can only be used for non-Key properties, non-propagated properties and
 	 * when the the origin class is not needed.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the property.
 	 * @param pType
@@ -90,7 +89,7 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 	/**
 	 * Constructs a <code>CIMProperty</code> to be used in instances. For a
 	 * <code>CIMClass</code>, <code>CIMClassProperty</code> shall be used.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the property.
 	 * @param pType
@@ -105,8 +104,14 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 	 * @param pOriginClass
 	 *            The class in which this property was defined or overridden.
 	 */
-	public CIMProperty(String pName, CIMDataType pType, E pValue, boolean pKey,
-			boolean pPropagated, String pOriginClass) {
+	public CIMProperty(
+		String pName,
+		CIMDataType pType,
+		E pValue,
+		boolean pKey,
+		boolean pPropagated,
+		String pOriginClass
+	) {
 		super(pName, pType, pValue);
 		this.iKey = pKey;
 		this.iPropagated = pPropagated;
@@ -118,7 +123,7 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMProperty</code> that represents the same name, type and
 	 * value as this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare with.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -129,15 +134,16 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 		if (!(pObj instanceof CIMProperty)) return false;
 		if (!super.equals(pObj)) return false;
 		CIMProperty<?> that = (CIMProperty<?>) pObj;
-		return this.iKey == that.iKey
-				&& this.iPropagated == that.iPropagated
-				&& (this.iOriginClass == null ? that.iOriginClass == null : this.iOriginClass
-						.equalsIgnoreCase(that.iOriginClass));
+		return (
+			this.iKey == that.iKey &&
+			this.iPropagated == that.iPropagated &&
+			(this.iOriginClass == null ? that.iOriginClass == null : this.iOriginClass.equalsIgnoreCase(that.iOriginClass))
+		);
 	}
 
 	/**
 	 * Returns the class in which this property was defined or overridden.
-	 * 
+	 *
 	 * @return Name of class where this property was defined.
 	 */
 	public String getOriginClass() {
@@ -146,7 +152,7 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 
 	/**
 	 * Convenience method for determining if this property is a Key.
-	 * 
+	 *
 	 * @return <code>true</code> if this property is a key.
 	 */
 	public boolean isKey() {
@@ -157,11 +163,10 @@ public class CIMProperty<E> extends CIMValuedElement<E> {
 	 * Determines if this property is Propagated. When this property is part of
 	 * a class, this value designates that the class origin value is the same as
 	 * the class name.
-	 * 
+	 *
 	 * @return <code>true</code> if this property is propagated.
 	 */
 	public boolean isPropagated() {
 		return this.iPropagated;
 	}
-
 }

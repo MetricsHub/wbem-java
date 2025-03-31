@@ -48,13 +48,13 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMEnumQualifierTypesOp
- * 
+ *
  */
 public class CIMEnumQualifierTypesOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 */
 	public CIMEnumQualifierTypesOp(CIMObjectPath pObjectName) {

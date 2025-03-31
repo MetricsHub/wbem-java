@@ -49,10 +49,9 @@ import org.metricshub.wbem.javax.wbem.WBEMException;
 
 /**
  * Class CIMError is required for IndicationHandling and CIM-XML parsing.
- * 
+ *
  */
 public class CIMError {
-
 	private int iStatusCode;
 
 	private String iDescription;
@@ -68,7 +67,7 @@ public class CIMError {
 
 	/**
 	 * Construct a CIMError object from the given WBEMException.
-	 * 
+	 *
 	 * @param pEx
 	 */
 	public CIMError(WBEMException pEx) {
@@ -77,7 +76,7 @@ public class CIMError {
 
 	/**
 	 * Construct a CIMError object with the specified status code.
-	 * 
+	 *
 	 * @param pStatus
 	 *            The status code
 	 */
@@ -87,7 +86,7 @@ public class CIMError {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStatus
 	 * @param pMsg
 	 */
@@ -97,7 +96,7 @@ public class CIMError {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStatus
 	 * @param pMsg
 	 * @param pInstances
@@ -110,7 +109,7 @@ public class CIMError {
 
 	/**
 	 * Gets the status code.
-	 * 
+	 *
 	 * @return The status code
 	 */
 	public int getCode() {
@@ -119,7 +118,7 @@ public class CIMError {
 
 	/**
 	 * Gets the description associated with this status.
-	 * 
+	 *
 	 * @return The description
 	 */
 	public String getDescription() {
@@ -128,7 +127,7 @@ public class CIMError {
 
 	/**
 	 * getCIMInstances
-	 * 
+	 *
 	 * @return CIMInstance[]
 	 */
 	public CIMInstance[] getCIMInstances() {
@@ -137,19 +136,19 @@ public class CIMError {
 
 	/**
 	 * Specifies the status code.
-	 * 
+	 *
 	 * @param pStatus
 	 */
 	public void setCode(int pStatus) {
-		if (pStatus > WBEMException.CIM_ERR_SERVER_IS_SHUTTING_DOWN
-				|| pStatus < WBEMException.CIM_ERR_FAILED) throw new IllegalArgumentException(
-				"invalid error code");
+		if (
+			pStatus > WBEMException.CIM_ERR_SERVER_IS_SHUTTING_DOWN || pStatus < WBEMException.CIM_ERR_FAILED
+		) throw new IllegalArgumentException("invalid error code");
 		this.iStatusCode = pStatus;
 	}
 
 	/**
 	 * Specifies the description associated to this status.
-	 * 
+	 *
 	 * @param pDescription
 	 */
 	public void setDescription(String pDescription) {
@@ -158,7 +157,7 @@ public class CIMError {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -168,7 +167,7 @@ public class CIMError {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -177,15 +176,16 @@ public class CIMError {
 
 		CIMError that = (CIMError) o;
 
-		if (this.iStatusCode == that.iStatusCode
-				&& (this.iDescription == null ? that.iDescription == null : this.iDescription
-						.equals(that.iDescription))) return true;
+		if (
+			this.iStatusCode == that.iStatusCode &&
+			(this.iDescription == null ? that.iDescription == null : this.iDescription.equals(that.iDescription))
+		) return true;
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

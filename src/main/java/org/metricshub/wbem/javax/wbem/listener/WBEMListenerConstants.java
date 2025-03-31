@@ -46,7 +46,6 @@ package org.metricshub.wbem.javax.wbem.listener;
  * property value is attempted to be set.
  */
 public class WBEMListenerConstants {
-
 	/**
 	 * Use this property to set the list of ciphers the listener will support.
 	 * Setting this value to null will use the default set of ciphers provided

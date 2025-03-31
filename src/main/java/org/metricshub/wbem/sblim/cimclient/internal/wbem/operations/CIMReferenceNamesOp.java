@@ -48,17 +48,16 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMReferenceNamesOp
- * 
+ *
  */
 public class CIMReferenceNamesOp extends CIMOperation {
-
 	protected String iResultClass;
 
 	protected String iResultRole;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pResultClass
 	 * @param pRole
@@ -72,7 +71,7 @@ public class CIMReferenceNamesOp extends CIMOperation {
 
 	/**
 	 * Returns resultClass
-	 * 
+	 *
 	 * @return The value of resultClass.
 	 */
 	public String getResultClass() {
@@ -81,11 +80,10 @@ public class CIMReferenceNamesOp extends CIMOperation {
 
 	/**
 	 * Returns resultRole
-	 * 
+	 *
 	 * @return The value of resultRole.
 	 */
 	public String getResultRole() {
 		return this.iResultRole;
 	}
-
 }

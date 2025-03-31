@@ -50,10 +50,9 @@ package org.metricshub.wbem.sblim.slp;
  * configuration properties of the SLP package. To set a property call
  * <code>System.setProperty(name, value)</code>. Note that these properties have
  * global VM scope.
- * 
+ *
  */
 public interface SLPConfigProperties {
-
 	/**
 	 * A URL string giving the location of the SLP config file. <br />
 	 * <br />
@@ -358,7 +357,7 @@ public interface SLPConfigProperties {
 	 * Default is 10.<br />
 	 * <br />
 	 * <i>SBLIM specific extension to RFC 2614</i>
-	 * 
+	 *
 	 */
 	public static final String NET_SLP_SERVER_SOCKET_QUEUE_LENGTH = "net.slp.serverSocketQueueLength";
 
@@ -368,7 +367,7 @@ public interface SLPConfigProperties {
 	 * The default is 20000 ms. <br />
 	 * <br />
 	 * <i>SBLIM specific extension to RFC 2614</i>
-	 * 
+	 *
 	 */
 	public static final String NET_SLP_TCPTIMEOUT = "net.slp.TCPTimeout";
 
@@ -423,7 +422,7 @@ public interface SLPConfigProperties {
 	 * <br />
 	 * <code>(|(service-type=service:imap)(service-type=service:pop3))</code><br />
 	 * <br />
-	 * 
+	 *
 	 * The API library can also use unicast to contact the discovered SAs for
 	 * subsequent requests for these service types, to optimize network access.<br />
 	 * <br />
@@ -455,5 +454,4 @@ public interface SLPConfigProperties {
 	 * <i>Not evaluated by SBLIM SLP client</i>
 	 */
 	public static final String NET_SLP_TRC_LEVEL = "net.slp.trc.level";
-
 }

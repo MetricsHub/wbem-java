@@ -54,13 +54,19 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMDataType;
+import org.metricshub.wbem.javax.cim.CIMDateTime;
 import org.metricshub.wbem.javax.cim.CIMDateTimeAbsolute;
 import org.metricshub.wbem.javax.cim.CIMDateTimeInterval;
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.UnsignedInteger16;
+import org.metricshub.wbem.javax.cim.UnsignedInteger32;
+import org.metricshub.wbem.javax.cim.UnsignedInteger64;
+import org.metricshub.wbem.javax.cim.UnsignedInteger8;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.ClassNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.InstanceNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.Node;
@@ -69,14 +75,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.ValueNode;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 import org.metricshub.wbem.sblim.cimclient.internal.util.Util;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
-import org.metricshub.wbem.javax.cim.CIMDateTime;
-import org.metricshub.wbem.javax.cim.UnsignedInteger16;
-import org.metricshub.wbem.javax.cim.UnsignedInteger32;
-import org.metricshub.wbem.javax.cim.UnsignedInteger64;
-import org.metricshub.wbem.javax.cim.UnsignedInteger8;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.SAXException;
 
 /**
@@ -87,30 +85,30 @@ public class CIMObjectFactory {
 
 	/**
 	 * getEmbbeddedObjectA
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueArrayNode
 	 * @param pSession
 	 * @return CIMInstance[], CIMClass[], String[] or null
 	 * @throws SAXException
 	 */
-	public static Object[] getEmbeddedObjA(CIMDataType pType, ValueArrayNode pValueArrayNode,
-			SAXSession pSession) throws SAXException {
+	public static Object[] getEmbeddedObjA(CIMDataType pType, ValueArrayNode pValueArrayNode, SAXSession pSession)
+		throws SAXException {
 		if (pValueArrayNode == null) return null;
 		return getEmbeddedObjA(pType, (String[]) pValueArrayNode.getValue(), pSession);
 	}
 
 	/**
 	 * getEmbeddedObjectA
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueStrA
 	 * @param pSession
 	 * @return CIMInstance[], CIMClass[], String[] or null
 	 * @throws SAXException
 	 */
-	public static Object[] getEmbeddedObjA(CIMDataType pType, String[] pValueStrA,
-			SAXSession pSession) throws SAXException {
+	public static Object[] getEmbeddedObjA(CIMDataType pType, String[] pValueStrA, SAXSession pSession)
+		throws SAXException {
 		embeddedObjTypeCheck(pType);
 		if (pValueStrA == null || pValueStrA.length == 0) return null;
 		CIMDataType type = null;
@@ -122,35 +120,36 @@ public class CIMObjectFactory {
 			} else {
 				CIMDataType type2 = getCIMObjScalarType(obj, false);
 				if (type2 != null && type != type2) throw new SAXException(
-						"Embedded Object array contains both Instance and Class objects. "
-								+ "This is not handled!");
+					"Embedded Object array contains both Instance and Class objects. " + "This is not handled!"
+				);
 			}
 			objAL.add(obj);
 		}
 		if (type == CIMDataType.OBJECT_T) {
 			return objAL.toArray(EMPTY_INST_A);
-		} else if (type == CIMDataType.CLASS_T) { return objAL.toArray(EMPTY_CLASS_A); }
+		} else if (type == CIMDataType.CLASS_T) {
+			return objAL.toArray(EMPTY_CLASS_A);
+		}
 		return objAL.toArray(EMPTY_STR_A);
 	}
 
 	/**
 	 * getEmbeddedObject
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueStr
 	 * @param pSession
 	 * @return CIMInstance, CIMClass or null
 	 * @throws SAXException
 	 */
-	public static Object getEmbeddedObj(CIMDataType pType, String pValueStr, SAXSession pSession)
-			throws SAXException {
+	public static Object getEmbeddedObj(CIMDataType pType, String pValueStr, SAXSession pSession) throws SAXException {
 		embeddedObjTypeCheck(pType);
 		return parseEmbeddedObj(pValueStr, pSession);
 	}
 
 	/**
 	 * getEmbeddedObj
-	 * 
+	 *
 	 * @param pType
 	 * @param pValObj
 	 * @param pSession
@@ -158,9 +157,10 @@ public class CIMObjectFactory {
 	 *         String[] or null
 	 * @throws SAXException
 	 */
-	public static Object getEmbeddedObj(CIMDataType pType, Object pValObj, SAXSession pSession)
-			throws SAXException {
-		if (pValObj instanceof String) { return getEmbeddedObj(pType, (String) pValObj, pSession); }
+	public static Object getEmbeddedObj(CIMDataType pType, Object pValObj, SAXSession pSession) throws SAXException {
+		if (pValObj instanceof String) {
+			return getEmbeddedObj(pType, (String) pValObj, pSession);
+		}
 		return getEmbeddedObjA(pType, (String[]) pValObj, pSession);
 	}
 
@@ -178,7 +178,7 @@ public class CIMObjectFactory {
 
 	/**
 	 * getObject
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueStr
 	 * @return Object
@@ -197,7 +197,7 @@ public class CIMObjectFactory {
 
 	/**
 	 * getObject
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueNode
 	 * @return Object
@@ -210,43 +210,42 @@ public class CIMObjectFactory {
 
 	/**
 	 * getObject
-	 * 
+	 *
 	 * @param pType
 	 * @param pValueArrayNode
 	 * @return Object
 	 * @throws SAXException
 	 */
-	public static Object getObject(CIMDataType pType, ValueArrayNode pValueArrayNode)
-			throws SAXException {
+	public static Object getObject(CIMDataType pType, ValueArrayNode pValueArrayNode) throws SAXException {
 		if (pValueArrayNode == null) return null;
 		ArrayList<Object> objAL = new ArrayList<Object>(pValueArrayNode.size());
-		for (int i = 0; i < pValueArrayNode.size(); i++)
-			objAL.add(getObject(pType, (String) pValueArrayNode.elementAt(i)));
+		for (int i = 0; i < pValueArrayNode.size(); i++) objAL.add(getObject(pType, (String) pValueArrayNode.elementAt(i)));
 		return getObjectArray(pType, objAL);
 	}
 
 	/**
 	 * getCIMObjType
-	 * 
+	 *
 	 * @param pObj
 	 * @param pNullToString
 	 * @return CIMDataType OBJECT_T, CLASS_T, STRING_T
 	 * @throws SAXException
 	 */
-	public static CIMDataType getCIMObjScalarType(Object pObj, boolean pNullToString)
-			throws SAXException {
+	public static CIMDataType getCIMObjScalarType(Object pObj, boolean pNullToString) throws SAXException {
 		if (pObj == null) return pNullToString ? CIMDataType.STRING_T : null;
 		if (pObj instanceof CIMInstance) {
 			return CIMDataType.OBJECT_T;
 		} else if (pObj instanceof CIMClass) {
 			return CIMDataType.CLASS_T;
-		} else if (pObj instanceof String) { return CIMDataType.STRING_T; }
+		} else if (pObj instanceof String) {
+			return CIMDataType.STRING_T;
+		}
 		throw new SAXException(pObj.getClass().getName() + " is not a CIMObject!");
 	}
 
 	/**
 	 * getCIMObjType
-	 * 
+	 *
 	 * @param pObj
 	 * @return CIMDataType OBJECT_T, OBJECT_ARRAY_T
 	 * @throws SAXException
@@ -257,7 +256,7 @@ public class CIMObjectFactory {
 
 	/**
 	 * getCIMObjArrayType
-	 * 
+	 *
 	 * @param pObj
 	 * @return CIMDataType: OBJECT_ARRAY_T, CLASS_T array, STRING_ARRAY_T
 	 * @throws SAXException
@@ -268,27 +267,28 @@ public class CIMObjectFactory {
 
 	/**
 	 * getArrayCIMObjType
-	 * 
+	 *
 	 * @param pObj
 	 * @param pNullToString
 	 * @return CIMDataType: OBJECT_ARRAY_T, CLASS_T array, STRING_ARRAY_T or
 	 *         null
 	 * @throws SAXException
 	 */
-	public static CIMDataType getCIMObjArrayType(Object pObj, boolean pNullToString)
-			throws SAXException {
+	public static CIMDataType getCIMObjArrayType(Object pObj, boolean pNullToString) throws SAXException {
 		if (pObj == null) return pNullToString ? CIMDataType.STRING_ARRAY_T : null;
 		if (pObj instanceof CIMInstance[]) {
 			return CIMDataType.OBJECT_ARRAY_T;
 		} else if (pObj instanceof CIMClass[]) {
 			return CIMDataType.CLASS_ARRAY_T;
-		} else if (pObj instanceof String[]) { return CIMDataType.STRING_ARRAY_T; }
+		} else if (pObj instanceof String[]) {
+			return CIMDataType.STRING_ARRAY_T;
+		}
 		throw new SAXException(pObj.getClass().getName() + " is not a CIMObject array!");
 	}
 
 	/**
 	 * getType
-	 * 
+	 *
 	 * @param pTypeStr
 	 * @return CIMDataType
 	 * @throws SAXException
@@ -297,8 +297,7 @@ public class CIMObjectFactory {
 		if (pTypeStr == null) return null;
 		createTypeStrMap();
 		CIMDataType type = cTypeStrMap.get(pTypeStr);
-		if (type == null && !cTypeStrMap.containsKey(pTypeStr)) throw new SAXException(pTypeStr
-				+ " is invalid PARAMTYPE!");
+		if (type == null && !cTypeStrMap.containsKey(pTypeStr)) throw new SAXException(pTypeStr + " is invalid PARAMTYPE!");
 		return type;
 	}
 
@@ -338,11 +337,11 @@ public class CIMObjectFactory {
 
 	private static void embeddedObjTypeCheck(CIMDataType pType) throws SAXException {
 		if (pType.getType() != CIMDataType.STRING) throw new SAXException(
-				"TYPE attribute should be 'string' for EmbeddedObjects!");
+			"TYPE attribute should be 'string' for EmbeddedObjects!"
+		);
 	}
 
-	private static Object parseEmbeddedObj(String pValueStr, SAXSession pSession)
-			throws SAXException {
+	private static Object parseEmbeddedObj(String pValueStr, SAXSession pSession) throws SAXException {
 		if (pValueStr == null || pValueStr.length() == 0) return null;
 		XMLDefaultHandlerImpl ourHandler = new XMLDefaultHandlerImpl(pSession, true);
 		// XML String of embedded Object is parsed by the SAX parser
@@ -356,15 +355,18 @@ public class CIMObjectFactory {
 			throw new SAXException("Exception occurred during embedded object parsing!", e);
 		}
 		Node node = ourHandler.getRootNode();
-		if (node instanceof InstanceNode) { return ((InstanceNode) node).getCIMInstance(); }
-		if (node instanceof ClassNode) { return ((ClassNode) node).getCIMClass(); }
-		throw new SAXException(node.getNodeName()
-				+ " root element is unexpected for Embedded Object XML String!");
+		if (node instanceof InstanceNode) {
+			return ((InstanceNode) node).getCIMInstance();
+		}
+		if (node instanceof ClassNode) {
+			return ((ClassNode) node).getCIMClass();
+		}
+		throw new SAXException(node.getNodeName() + " root element is unexpected for Embedded Object XML String!");
 	}
 
 	private static HashMap<String, CIMDataType> cTypeStrMap;
 
-	private synchronized static void createTypeStrMap() {
+	private static synchronized void createTypeStrMap() {
 		if (cTypeStrMap != null) return;
 		cTypeStrMap = new HashMap<String, CIMDataType>();
 		cTypeStrMap.put(MOF.DT_UINT8, CIMDataType.UINT8_T);
@@ -385,10 +387,9 @@ public class CIMObjectFactory {
 	}
 
 	private interface ValueFactory {
-
 		/**
 		 * make
-		 * 
+		 *
 		 * @param pStr
 		 * @return Object
 		 */
@@ -396,7 +397,7 @@ public class CIMObjectFactory {
 
 		/**
 		 * make
-		 * 
+		 *
 		 * @param pAL
 		 * @return Object[]
 		 */
@@ -409,182 +410,229 @@ public class CIMObjectFactory {
 		cValFactoryA[pTypeCode] = pFactory;
 	}
 
-	private synchronized static void createValFactoryA() {
+	private static synchronized void createValFactoryA() {
 		if (cValFactoryA != null) return;
 		cValFactoryA = new ValueFactory[64];
 		// unsigned integers
-		putFactory(CIMDataType.UINT8, new ValueFactory() {
+		putFactory(
+			CIMDataType.UINT8,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				return new UnsignedInteger8(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_UINT8_A);
-			}
-		});
-		putFactory(CIMDataType.UINT16, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new UnsignedInteger16(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_UINT16_A);
-			}
-		});
-		putFactory(CIMDataType.UINT32, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new UnsignedInteger32(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_UINT32_A);
-			}
-		});
-		putFactory(CIMDataType.UINT64, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new UnsignedInteger64(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_UINT64_A);
-			}
-		});
-		// signed integers
-		putFactory(CIMDataType.SINT8, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new Byte(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_BYTE_A);
-			}
-		});
-		putFactory(CIMDataType.SINT16, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new Short(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_SHORT_A);
-			}
-		});
-		putFactory(CIMDataType.SINT32, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new Integer(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_INT_A);
-			}
-		});
-		putFactory(CIMDataType.SINT64, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new Long(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_LONG_A);
-			}
-		});
-		// floats
-		putFactory(CIMDataType.REAL32, new ValueFactory() {
-
-			public Object make(String pStr) {
-				return new Float(pStr);
-			}
-
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_FLOAT_A);
-			}
-		});
-		putFactory(CIMDataType.REAL64, new ValueFactory() {
-
-			public Object make(String pStr) {
-				if (WBEMConfiguration.getGlobalConfiguration().verifyJavaLangDoubleStrings()) {
-					if (Util.isBadDoubleString(pStr)) throw new IllegalArgumentException(
-							"Double value string hangs older JVMs!\n" + pStr);
+				public Object make(String pStr) {
+					return new UnsignedInteger8(pStr);
 				}
-				return new Double(pStr);
-			}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_DOUBLE_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_UINT8_A);
+				}
 			}
-		});
+		);
+		putFactory(
+			CIMDataType.UINT16,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new UnsignedInteger16(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_UINT16_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.UINT32,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new UnsignedInteger32(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_UINT32_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.UINT64,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new UnsignedInteger64(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_UINT64_A);
+				}
+			}
+		);
+		// signed integers
+		putFactory(
+			CIMDataType.SINT8,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new Byte(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_BYTE_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.SINT16,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new Short(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_SHORT_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.SINT32,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new Integer(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_INT_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.SINT64,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new Long(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_LONG_A);
+				}
+			}
+		);
+		// floats
+		putFactory(
+			CIMDataType.REAL32,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					return new Float(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_FLOAT_A);
+				}
+			}
+		);
+		putFactory(
+			CIMDataType.REAL64,
+			new ValueFactory() {
+
+				public Object make(String pStr) {
+					if (WBEMConfiguration.getGlobalConfiguration().verifyJavaLangDoubleStrings()) {
+						if (Util.isBadDoubleString(pStr)) throw new IllegalArgumentException(
+							"Double value string hangs older JVMs!\n" + pStr
+						);
+					}
+					return new Double(pStr);
+				}
+
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_DOUBLE_A);
+				}
+			}
+		);
 		// char
-		putFactory(CIMDataType.CHAR16, new ValueFactory() {
+		putFactory(
+			CIMDataType.CHAR16,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				if (pStr == null || pStr.length() == 0) throw new IllegalArgumentException(
-						"Cannot make Character from empty String!");
-				return Character.valueOf(pStr.charAt(0));
-			}
+				public Object make(String pStr) {
+					if (pStr == null || pStr.length() == 0) throw new IllegalArgumentException(
+						"Cannot make Character from empty String!"
+					);
+					return Character.valueOf(pStr.charAt(0));
+				}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_CHAR_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_CHAR_A);
+				}
 			}
-		});
+		);
 		// string
-		putFactory(CIMDataType.STRING, new ValueFactory() {
+		putFactory(
+			CIMDataType.STRING,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				return pStr;
-			}
+				public Object make(String pStr) {
+					return pStr;
+				}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_STR_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_STR_A);
+				}
 			}
-		});
+		);
 		// boolean
-		putFactory(CIMDataType.BOOLEAN, new ValueFactory() {
+		putFactory(
+			CIMDataType.BOOLEAN,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				return Boolean.valueOf(pStr);
-			}
+				public Object make(String pStr) {
+					return Boolean.valueOf(pStr);
+				}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_BOOL_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_BOOL_A);
+				}
 			}
-		});
+		);
 		// datetime
-		putFactory(CIMDataType.DATETIME, new ValueFactory() {
+		putFactory(
+			CIMDataType.DATETIME,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				try {
-					return new CIMDateTimeAbsolute(pStr);
-				} catch (IllegalArgumentException eA) {
+				public Object make(String pStr) {
 					try {
-						return new CIMDateTimeInterval(pStr);
-					} catch (IllegalArgumentException eI) {
-						throw new IllegalArgumentException("CIMDataTimeAbsolute:" + eA.getMessage()
-								+ "\nCIMDateTimeInterval:" + eI.getMessage());
+						return new CIMDateTimeAbsolute(pStr);
+					} catch (IllegalArgumentException eA) {
+						try {
+							return new CIMDateTimeInterval(pStr);
+						} catch (IllegalArgumentException eI) {
+							throw new IllegalArgumentException(
+								"CIMDataTimeAbsolute:" + eA.getMessage() + "\nCIMDateTimeInterval:" + eI.getMessage()
+							);
+						}
 					}
 				}
-			}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_DT_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_DT_A);
+				}
 			}
-		});
+		);
 		// reference
-		putFactory(CIMDataType.REFERENCE, new ValueFactory() {
+		putFactory(
+			CIMDataType.REFERENCE,
+			new ValueFactory() {
 
-			public Object make(String pStr) {
-				return new CIMObjectPath(pStr);
-			}
+				public Object make(String pStr) {
+					return new CIMObjectPath(pStr);
+				}
 
-			public Object[] make(ArrayList<Object> pAL) {
-				return pAL.toArray(EMPTY_OP_A);
+				public Object[] make(ArrayList<Object> pAL) {
+					return pAL.toArray(EMPTY_OP_A);
+				}
 			}
-		});
+		);
 	}
-
 }

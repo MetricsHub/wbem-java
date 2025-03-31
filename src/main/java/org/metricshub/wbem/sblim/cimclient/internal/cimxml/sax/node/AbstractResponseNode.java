@@ -47,11 +47,10 @@ public abstract class AbstractResponseNode extends AbstractMessageNode {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractResponseNode(String pNameEnum) {
 		super(pNameEnum);
 	}
-
 }

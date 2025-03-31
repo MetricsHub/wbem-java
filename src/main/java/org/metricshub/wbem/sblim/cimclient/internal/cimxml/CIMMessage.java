@@ -46,14 +46,12 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml;
  */
 
 import java.util.Hashtable;
-
 import org.w3c.dom.Document;
 
 /**
  * Class CIMMessage is used by the CIM-XML DOM parser.
  */
 public class CIMMessage {
-
 	protected Document iDoc;
 
 	protected Hashtable<?, ?> iElements;
@@ -74,11 +72,13 @@ public class CIMMessage {
 
 	protected boolean iIsRequest = false;
 
-	protected CIMMessage() { /**/}
+	protected CIMMessage() {
+		/**/
+	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pCimVersion
 	 * @param pDtdVersion
 	 * @param pId
@@ -93,7 +93,7 @@ public class CIMMessage {
 
 	/**
 	 * getCIMVersion
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getCIMVersion() {
@@ -102,7 +102,7 @@ public class CIMMessage {
 
 	/**
 	 * getDTDVersion
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getDTDVersion() {
@@ -111,7 +111,7 @@ public class CIMMessage {
 
 	/**
 	 * isCIMOperation
-	 * 
+	 *
 	 * @return String
 	 */
 	public boolean isCIMOperation() {
@@ -120,7 +120,7 @@ public class CIMMessage {
 
 	/**
 	 * isCIMExport
-	 * 
+	 *
 	 * @return String
 	 */
 	public boolean isCIMExport() {
@@ -129,7 +129,7 @@ public class CIMMessage {
 
 	/**
 	 * setId
-	 * 
+	 *
 	 * @param pId
 	 */
 	public void setId(String pId) {
@@ -138,21 +138,19 @@ public class CIMMessage {
 
 	/**
 	 * setMethod
-	 * 
+	 *
 	 * @param pMethod
 	 */
 	public void setMethod(String pMethod) {
-
 		this.iMethod = pMethod;
-		this.iIsCIMExport = (pMethod.toUpperCase().endsWith("EXPREQ") || pMethod.toUpperCase()
-				.endsWith("EXPRSP"));
+		this.iIsCIMExport = (pMethod.toUpperCase().endsWith("EXPREQ") || pMethod.toUpperCase().endsWith("EXPRSP"));
 		this.iIsRequest = (pMethod.toUpperCase().endsWith("REQ"));
 		this.iIsSimple = pMethod.toUpperCase().startsWith("SIMPLE");
 	}
 
 	/**
 	 * setCIMVersion
-	 * 
+	 *
 	 * @param pCimVersion
 	 */
 	public void setCIMVersion(String pCimVersion) {
@@ -161,7 +159,7 @@ public class CIMMessage {
 
 	/**
 	 * setDTDVersion
-	 * 
+	 *
 	 * @param pDtdVersion
 	 */
 	public void setDTDVersion(String pDtdVersion) {
@@ -170,7 +168,7 @@ public class CIMMessage {
 
 	/**
 	 * setIsRequest
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void setIsRequest(boolean pValue) {
@@ -179,7 +177,7 @@ public class CIMMessage {
 
 	/**
 	 * getId
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getId() {
@@ -188,7 +186,7 @@ public class CIMMessage {
 
 	/**
 	 * getProtocolVersion
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getProtocolVersion() {

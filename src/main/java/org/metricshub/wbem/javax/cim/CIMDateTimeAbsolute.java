@@ -54,7 +54,6 @@ package org.metricshub.wbem.javax.cim;
  */
 
 import java.util.Calendar;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cim.DTStringReader;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.DTStringWriter;
 
@@ -81,7 +80,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.cim.DTStringWriter;
  * significant must be replaced with asterisk characters.
  */
 public class CIMDateTimeAbsolute extends CIMDateTime {
-
 	private static final long serialVersionUID = 7556792806296945178l;
 
 	private int iYear, iMonth, iDay, iHour, iMin, iSec, iUSec, iUtc;
@@ -101,7 +99,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	/**
 	 * Create a <code>CIMDateTimeAbsolute</code> object using a
 	 * <code>Calendar</code> object.
-	 * 
+	 *
 	 * @param pCalendar
 	 *            A <code>Calendar</code> object used to initialize this object.
 	 * @throws IllegalArgumentException
@@ -110,13 +108,14 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	public CIMDateTimeAbsolute(Calendar pCalendar) throws IllegalArgumentException {
 		if (pCalendar == null) throw new IllegalArgumentException("Null Calendar is not allowed!");
 		if (pCalendar.get(Calendar.YEAR) > 9999) throw new IllegalArgumentException(
-				"The year field cannot be greater than 9999!");
+			"The year field cannot be greater than 9999!"
+		);
 		set(pCalendar);
 	}
 
 	/**
 	 * Creates a <code>CIMDateTimeAbsolute</code> object using a string.
-	 * 
+	 *
 	 * @param pDateTime
 	 *            A string in the format of yyyyMMddHHmmss.SSSSSSsutc.
 	 * @throws IllegalArgumentException
@@ -135,8 +134,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 		this.iUSec = reader.readAndCheck(6, "microSeconds", 0, 999999, true);
 		char sign = reader.read();
 		if (sign != '+' && sign != '-') {
-			String msg = "Illegal character '" + sign + "' at position " + reader.getPos()
-					+ "! '+' or '-' is expected.";
+			String msg = "Illegal character '" + sign + "' at position " + reader.getPos() + "! '+' or '-' is expected.";
 			throw new IllegalArgumentException(msg);
 		}
 		this.iUtc = reader.read(3, "utc", true);
@@ -145,8 +143,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 		} else if (sign == '-') {
 			this.iUtc = -this.iUtc;
 		}
-		if (reader.read() != 0) throw new IllegalArgumentException("Extra character at the end of "
-				+ pDateTime + " !");
+		if (reader.read() != 0) throw new IllegalArgumentException("Extra character at the end of " + pDateTime + " !");
 		this.iStr = pDateTime;
 	}
 
@@ -154,7 +151,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	 * Compares the <code>CIMDateTimeAbsolute</code> object with this one. If
 	 * either date has "Not Significant" fields then we can only compare the
 	 * significant fields.
-	 * 
+	 *
 	 * @param pDateTime
 	 *            The <code>CIMDateTimeAbsolute</code> to be compared with this
 	 *            one.
@@ -166,8 +163,9 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	 */
 	public int compareTo(CIMDateTime pDateTime) throws IllegalArgumentException {
 		if (!(pDateTime instanceof CIMDateTimeAbsolute)) {
-			String msg = "pDateTime must be a CIMDateTimeAbsolute instance while it is a "
-					+ (pDateTime == null ? "null!" : pDateTime.getClass().getName() + " instance!");
+			String msg =
+				"pDateTime must be a CIMDateTimeAbsolute instance while it is a " +
+				(pDateTime == null ? "null!" : pDateTime.getClass().getName() + " instance!");
 			throw new IllegalArgumentException(msg);
 		}
 
@@ -186,7 +184,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Gets the internal string representation of the date/time object.
-	 * 
+	 *
 	 * @return The internal representation of the date/time object.
 	 */
 	@Override
@@ -202,14 +200,13 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 		dTWriter.write(2, this.iSec);
 		dTWriter.write('.');
 		dTWriter.write(6, this.iUSec);
-		if (this.iUnsignificantUtc) dTWriter.write("+***");
-		else dTWriter.writeSigned(3, this.iUtc);
+		if (this.iUnsignificantUtc) dTWriter.write("+***"); else dTWriter.writeSigned(3, this.iUtc);
 		return this.iStr = dTWriter.toString();
 	}
 
 	/**
 	 * Returns day value of this date.
-	 * 
+	 *
 	 * @return If day field "not significant" this returns -1, otherwise returns
 	 *         day of this date.
 	 */
@@ -219,7 +216,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns hour value of this date.
-	 * 
+	 *
 	 * @return If hour field "not significant" this returns -1, otherwise
 	 *         returns hour of this date.
 	 */
@@ -229,7 +226,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns microsecond value of this date.
-	 * 
+	 *
 	 * @return If microsecond field "not significant" this returns -1, otherwise
 	 *         returns microseconds of this date.
 	 */
@@ -239,7 +236,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns minute value of this date.
-	 * 
+	 *
 	 * @return If minute field "not significant" this returns -1, otherwise
 	 *         returns minute of this date.
 	 */
@@ -249,7 +246,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns month value of this date.
-	 * 
+	 *
 	 * @return If month field "not significant" this returns -1, otherwise
 	 *         returns the month of this date.
 	 */
@@ -259,7 +256,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns second value of this date.
-	 * 
+	 *
 	 * @return If second field "not significant" this returns -1, otherwise
 	 *         returns second of this date.
 	 */
@@ -269,7 +266,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns UTC offset value of this date.
-	 * 
+	 *
 	 * @return UTC offset of this date.
 	 */
 	public int getUTCOffset() {
@@ -278,7 +275,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns year value of this Date.
-	 * 
+	 *
 	 * @return If year field "not significant" this returns -1, otherwise
 	 *         returns the year of this date.
 	 */
@@ -288,7 +285,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Returns the hash code for this object.
-	 * 
+	 *
 	 * @return A hash code value for this object.
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -303,7 +300,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	 * for debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return String representation of this datetime.
 	 */
 	@Override
@@ -311,13 +308,12 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 		return getDateTimeString();
 	}
 
-	private static final int YEAR = 1, MONTH = 2, DAY = 4, HOUR = 8, MIN = 16, SEC = 32, USEC = 64,
-			UTC = 128;
+	private static final int YEAR = 1, MONTH = 2, DAY = 4, HOUR = 8, MIN = 16, SEC = 32, USEC = 64, UTC = 128;
 
 	/**
 	 * Get mask of this <code>CIMDateTimeAbsolute</code> where bit is set if the
 	 * corresponding field is significant or clear if it is not significant.
-	 * 
+	 *
 	 * @return Mask of significant fields in datetime object.
 	 */
 	private int getMask() {
@@ -335,7 +331,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 
 	/**
 	 * Get value of a field based on mask.
-	 * 
+	 *
 	 * @param pMask
 	 *            Mask of significant fields.
 	 * @param pField
@@ -353,7 +349,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	/**
 	 * Get total microseconds of <code>CIMDateTimeAbsolute</code> object where
 	 * only significant fields are used in calculation.
-	 * 
+	 *
 	 * @param pMask
 	 *            Mask of significant fields.
 	 * @return Total microseconds of significant fields in datetime.
@@ -380,7 +376,7 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 	/**
 	 * Initializes this <code>CIMDateTimeAbsolute</code> object from the
 	 * <code>Calendar</code> passed in.
-	 * 
+	 *
 	 * @param pCal
 	 *            Calendar object.
 	 */
@@ -398,5 +394,4 @@ public class CIMDateTimeAbsolute extends CIMDateTime {
 			this.iUtc = pCal.get(Calendar.ZONE_OFFSET) / 60000;
 		}
 	}
-
 }

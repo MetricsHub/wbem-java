@@ -42,7 +42,6 @@ package org.metricshub.wbem.javax.wbem.listener;
  */
 
 import java.util.EventListener;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 
 //Sync'd against JSR48 1.0.0 javadoc (build 1.5.0_10) on Wed Jan 20 02:20:59 EST 2010
@@ -51,10 +50,9 @@ import org.metricshub.wbem.javax.cim.CIMInstance;
  * indications. See the <code>WBEMListenerFactory</code> class for an example.
  */
 public interface IndicationListener extends EventListener {
-
 	/**
 	 * Called when an indication has been received by the listener
-	 * 
+	 *
 	 * @param pIndicationURL
 	 *            The URL to which the indication was posted. For example if the
 	 *            indication was delivered over the https protocol to the
@@ -64,5 +62,4 @@ public interface IndicationListener extends EventListener {
 	 *            The indication received.
 	 */
 	public void indicationOccured(String pIndicationURL, CIMInstance pIndication);
-
 }

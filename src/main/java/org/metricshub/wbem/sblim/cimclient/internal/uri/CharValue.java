@@ -43,21 +43,19 @@ package org.metricshub.wbem.sblim.cimclient.internal.uri;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 
 /**
  * Class CharValue parses character value.
  */
 public class CharValue extends Value implements QuotedValue {
-
 	private char iChar;
 
 	private static final Pattern pat = Pattern.compile("\\\\x([0-9a-fA-F]+)");
 
 	/**
 	 * charValue = // example: 'a' '\x32'
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pThrow
 	 * @return <code>Value</code> or <code>null</code> if parsing is failed and
@@ -120,7 +118,7 @@ public class CharValue extends Value implements QuotedValue {
 
 	/**
 	 * Parses a char16 value.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return Value or null if parsing failed.
 	 */
@@ -134,7 +132,7 @@ public class CharValue extends Value implements QuotedValue {
 
 	/**
 	 * getChar
-	 * 
+	 *
 	 * @return char
 	 */
 	public char get() {
@@ -143,7 +141,7 @@ public class CharValue extends Value implements QuotedValue {
 
 	/**
 	 * getCharacter
-	 * 
+	 *
 	 * @return Character
 	 */
 	public Character getCharacter() {
@@ -155,7 +153,9 @@ public class CharValue extends Value implements QuotedValue {
 	 */
 	@Override
 	public String toString() {
-		if (this.iChar < 32) { return "\\x" + (int) this.iChar; }
+		if (this.iChar < 32) {
+			return "\\x" + (int) this.iChar;
+		}
 		return Character.toString(this.iChar);
 	}
 
@@ -173,5 +173,4 @@ public class CharValue extends Value implements QuotedValue {
 	public String getTypeInfo() {
 		return MOF.DT_CHAR16;
 	}
-
 }

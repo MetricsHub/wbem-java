@@ -53,10 +53,9 @@ import java.io.OutputStreamWriter;
 
 /**
  * Class ASCIIPrintStream implement a stream with ASCII charset
- * 
+ *
  */
 public class ASCIIPrintStream extends FilterOutputStream {
-
 	private boolean iAutoFlush = false;
 
 	private Exception iTrouble = null;
@@ -71,7 +70,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 */
@@ -82,7 +81,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 * @param pAutoFlush
@@ -96,7 +95,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 * @param pAutoFlush
@@ -118,15 +117,14 @@ public class ASCIIPrintStream extends FilterOutputStream {
 		char charArray[] = new char[stringLength];
 		byte asciiArray[] = new byte[stringLength];
 		str.getChars(0, stringLength, charArray, 0);
-		for (int i = 0; i < stringLength; i++)
-			asciiArray[i] = charArray[i] >= '\u0100' ? 63 : (byte) charArray[i];
+		for (int i = 0; i < stringLength; i++) asciiArray[i] = charArray[i] >= '\u0100' ? 63 : (byte) charArray[i];
 
 		write(asciiArray, 0, stringLength);
 	}
 
 	/**
 	 * Prints a boolean value
-	 * 
+	 *
 	 * @param pValue
 	 *            The value
 	 */
@@ -136,7 +134,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a single character
-	 * 
+	 *
 	 * @param c
 	 *            The character
 	 */
@@ -146,7 +144,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints an integer value
-	 * 
+	 *
 	 * @param i
 	 *            The value
 	 */
@@ -156,7 +154,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a long value
-	 * 
+	 *
 	 * @param l
 	 *            The value
 	 */
@@ -166,7 +164,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a float value
-	 * 
+	 *
 	 * @param f
 	 *            The value
 	 */
@@ -176,7 +174,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a double value
-	 * 
+	 *
 	 * @param d
 	 *            The value
 	 */
@@ -186,7 +184,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a character array
-	 * 
+	 *
 	 * @param pArray
 	 *            The array
 	 */
@@ -196,7 +194,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints a string
-	 * 
+	 *
 	 * @param s
 	 *            The string
 	 */
@@ -206,7 +204,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * Prints an object
-	 * 
+	 *
 	 * @param pObj
 	 *            The object
 	 */
@@ -223,7 +221,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param flag
 	 */
 	public void println(boolean flag) {
@@ -235,7 +233,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param c
 	 */
 	public void println(char c) {
@@ -247,7 +245,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param i
 	 */
 	public void println(int i) {
@@ -259,7 +257,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param l
 	 */
 	public void println(long l) {
@@ -271,7 +269,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param f
 	 */
 	public void println(float f) {
@@ -283,7 +281,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param d
 	 */
 	public void println(double d) {
@@ -295,7 +293,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param ac
 	 */
 	public void println(char ac[]) {
@@ -307,7 +305,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param s
 	 */
 	public void println(String s) {
@@ -319,7 +317,7 @@ public class ASCIIPrintStream extends FilterOutputStream {
 
 	/**
 	 * println
-	 * 
+	 *
 	 * @param obj
 	 */
 	public void println(Object obj) {
@@ -376,12 +374,12 @@ public class ASCIIPrintStream extends FilterOutputStream {
 	}
 
 	protected void setError() {
-	// trouble = x;
+		// trouble = x;
 	}
 
 	/**
 	 * Returns the last exception caught
-	 * 
+	 *
 	 * @return The exception
 	 */
 	public Exception checkError() {

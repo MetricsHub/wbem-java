@@ -88,10 +88,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.cim.DTStringWriter;
  * For example, if an interval of 1 day, 13 hours, 23 minutes, 12 seconds, and
  * 125 milliseconds was measured with a precision of 1 millisecond, the format
  * would be: 00000001132312.125***:000.
- * 
+ *
  */
 public class CIMDateTimeInterval extends CIMDateTime {
-
 	private static final long serialVersionUID = -7362881414085831668l;
 
 	private int iDays, iHours, iMinutes, iSeconds, iUSeconds;
@@ -104,21 +103,26 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	private int iUnsignificantUSecDigits;
 
-	private static final int MAX_DAY = 99999999, MAX_HOUR = 23, MAX_MIN = 59, MAX_SEC = 59,
-			MAX_MILLISEC = 999, MAX_MICROSEC = 999999;
+	private static final int MAX_DAY = 99999999, MAX_HOUR = 23, MAX_MIN = 59, MAX_SEC = 59, MAX_MILLISEC =
+		999, MAX_MICROSEC = 999999;
 
-	private static final long MAX_INTERVAL = ((((long) MAX_DAY * 24 * 60 * 60)
-			+ ((long) MAX_HOUR * 60 * 60) + ((long) MAX_MIN * 60) + MAX_SEC) * 1000)
-			+ MAX_MILLISEC;
+	private static final long MAX_INTERVAL =
+		((((long) MAX_DAY * 24 * 60 * 60) + ((long) MAX_HOUR * 60 * 60) + ((long) MAX_MIN * 60) + MAX_SEC) * 1000) +
+		MAX_MILLISEC;
 
-	private static final long MILLISEC_ACCURACY_DIV = 1000,
-			SEC_ACCURACY_DIV = 1000 * MILLISEC_ACCURACY_DIV,
-			MIN_ACCURACY_DIV = 60 * SEC_ACCURACY_DIV, HOUR_ACCURACY_DIV = 60 * MIN_ACCURACY_DIV,
-			DAY_ACCURACY_DIV = 24 * HOUR_ACCURACY_DIV,
-			NO_ACCURACY_DIV = 100000000 * DAY_ACCURACY_DIV;
+	private static final long MILLISEC_ACCURACY_DIV = 1000, SEC_ACCURACY_DIV =
+		1000 * MILLISEC_ACCURACY_DIV, MIN_ACCURACY_DIV = 60 * SEC_ACCURACY_DIV, HOUR_ACCURACY_DIV =
+		60 * MIN_ACCURACY_DIV, DAY_ACCURACY_DIV = 24 * HOUR_ACCURACY_DIV, NO_ACCURACY_DIV = 100000000 * DAY_ACCURACY_DIV;
 
-	private static final long[] USEC_ACCURACY_DIV_A = { 1, 10, 100, MILLISEC_ACCURACY_DIV, 10000,
-			100000, SEC_ACCURACY_DIV };
+	private static final long[] USEC_ACCURACY_DIV_A = {
+		1,
+		10,
+		100,
+		MILLISEC_ACCURACY_DIV,
+		10000,
+		100000,
+		SEC_ACCURACY_DIV
+	};
 
 	private long iAccuracyDivisor = 1;
 
@@ -127,7 +131,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 * of the interval (day, hours, minutes, seconds and microseconds). Any
 	 * property that has a -1 will make that field "not significant" (i.e. that
 	 * field has asterisks in the datetime string).
-	 * 
+	 *
 	 * @param pDays
 	 *            Number of days in the interval (-1 - 99999999).
 	 * @param pHours
@@ -142,7 +146,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 *             If any value is not valid.
 	 */
 	public CIMDateTimeInterval(int pDays, int pHours, int pMinutes, int pSeconds, int pMicroseconds)
-			throws IllegalArgumentException {
+		throws IllegalArgumentException {
 		boolean notSignificant = checkLimits("pDays", pDays, 0, MAX_DAY, false);
 		if (notSignificant) this.iAccuracyDivisor = NO_ACCURACY_DIV;
 		notSignificant = checkLimits("pHours", pHours, 0, MAX_HOUR, notSignificant);
@@ -151,8 +155,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		if (notSignificant && this.iAccuracyDivisor == 1) this.iAccuracyDivisor = HOUR_ACCURACY_DIV;
 		notSignificant = checkLimits("pSeconds", pSeconds, 0, MAX_SEC, notSignificant);
 		if (notSignificant && this.iAccuracyDivisor == 1) this.iAccuracyDivisor = MIN_ACCURACY_DIV;
-		notSignificant = checkLimits("pMicroseconds", pMicroseconds, 0, MAX_MICROSEC,
-				notSignificant);
+		notSignificant = checkLimits("pMicroseconds", pMicroseconds, 0, MAX_MICROSEC, notSignificant);
 		if (notSignificant) {
 			this.iUnsignificantUSecDigits = 6;
 			if (this.iAccuracyDivisor == 1) this.iAccuracyDivisor = USEC_ACCURACY_DIV_A[this.iUnsignificantUSecDigits];
@@ -166,24 +169,45 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		this.iSeconds = pSeconds;
 		this.iUSeconds = pMicroseconds;
 
-		debug("CIMDateTimeInterval(" + pDays + "," + pHours + "," + pMinutes + "," + pSeconds + ","
-				+ pMicroseconds + "): days=" + this.iDays + ", hours=" + this.iHours + ", mins="
-				+ this.iMinutes + ", secs=" + this.iSeconds + ", usecs=" + this.iUSeconds
-				+ ", acc div=" + this.iAccuracyDivisor + ", unsig digits="
-				+ this.iUnsignificantUSecDigits);
+		debug(
+			"CIMDateTimeInterval(" +
+			pDays +
+			"," +
+			pHours +
+			"," +
+			pMinutes +
+			"," +
+			pSeconds +
+			"," +
+			pMicroseconds +
+			"): days=" +
+			this.iDays +
+			", hours=" +
+			this.iHours +
+			", mins=" +
+			this.iMinutes +
+			", secs=" +
+			this.iSeconds +
+			", usecs=" +
+			this.iUSeconds +
+			", acc div=" +
+			this.iAccuracyDivisor +
+			", unsig digits=" +
+			this.iUnsignificantUSecDigits
+		);
 	}
 
 	/**
 	 * Constructs a <code>CIMDateTimeInterval</code> using a milliseconds value.
-	 * 
+	 *
 	 * @param pMilliseconds
 	 *            Number of milliseconds in the interval (0 - 8639999999999999).
 	 * @throws IllegalArgumentException
 	 */
 	public CIMDateTimeInterval(long pMilliseconds) throws IllegalArgumentException {
 		if (pMilliseconds < 0 || pMilliseconds > MAX_INTERVAL) throw new IllegalArgumentException(
-				"pMilliseconds must be between 0 and " + MAX_INTERVAL + ". " + pMilliseconds
-						+ " is illegal!");
+			"pMilliseconds must be between 0 and " + MAX_INTERVAL + ". " + pMilliseconds + " is illegal!"
+		);
 		long totalUSecs = pMilliseconds * 1000;
 		long totalSecs = pMilliseconds / 1000;
 		long totalMins = totalSecs / 60;
@@ -202,26 +226,39 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		this.iTotalMicrosCalced = true;
 		this.iTotalMicros = pMilliseconds * 1000;
 
-		debug("CIMDateTimeInterval(" + pMilliseconds + "): days=" + this.iDays + ", hours="
-				+ this.iHours + ", mins=" + this.iMinutes + ", secs=" + this.iSeconds + ", usecs="
-				+ this.iUSeconds + ", acc div=" + this.iAccuracyDivisor + ", unsig digits="
-				+ this.iUnsignificantUSecDigits);
+		debug(
+			"CIMDateTimeInterval(" +
+			pMilliseconds +
+			"): days=" +
+			this.iDays +
+			", hours=" +
+			this.iHours +
+			", mins=" +
+			this.iMinutes +
+			", secs=" +
+			this.iSeconds +
+			", usecs=" +
+			this.iUSeconds +
+			", acc div=" +
+			this.iAccuracyDivisor +
+			", unsig digits=" +
+			this.iUnsignificantUSecDigits
+		);
 	}
 
 	/**
 	 * Creates a <code>CIMDateTimeInterval</code> object using a string.
-	 * 
+	 *
 	 * @param pIntervalString
 	 *            A string in the format of ddddddddHHMMSS.mmmmmm:000.
 	 * @throws IllegalArgumentException
 	 *             If string is not in the correct format or <code>null</code>.
 	 */
 	public CIMDateTimeInterval(String pIntervalString) throws IllegalArgumentException {
-		if (pIntervalString == null) throw new IllegalArgumentException(
-				"Null IntervalString is not allowed!");
-		if (pIntervalString.length() != LENGTH) throw new IllegalArgumentException("Length of "
-				+ pIntervalString + " must be " + LENGTH + ", " + pIntervalString.length()
-				+ " is not valid!");
+		if (pIntervalString == null) throw new IllegalArgumentException("Null IntervalString is not allowed!");
+		if (pIntervalString.length() != LENGTH) throw new IllegalArgumentException(
+			"Length of " + pIntervalString + " must be " + LENGTH + ", " + pIntervalString.length() + " is not valid!"
+		);
 		String intervalStr = setAccuracy(pIntervalString);
 		DTStringReader dtReader = new DTStringReader(intervalStr);
 		this.iDays = dtReader.readAndCheck(8, "days", 0, MAX_DAY, true);
@@ -234,22 +271,35 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		dtReader.read(':');
 		int zeros = dtReader.read(3, "zeros", false);
 		if (zeros != 0) {
-			String msg = "In " + pIntervalString
-					+ " the last 3 characters after ':' must be zeros!";
+			String msg = "In " + pIntervalString + " the last 3 characters after ':' must be zeros!";
 			throw new IllegalArgumentException(msg);
 		}
 
-		debug("CIMDateTimeInterval(\"" + pIntervalString + "\"): days=" + this.iDays + ", hours="
-				+ this.iHours + ", mins=" + this.iMinutes + ", secs=" + this.iSeconds + ", usecs="
-				+ this.iUSeconds + ", acc div=" + this.iAccuracyDivisor + ", unsig digits="
-				+ this.iUnsignificantUSecDigits);
+		debug(
+			"CIMDateTimeInterval(\"" +
+			pIntervalString +
+			"\"): days=" +
+			this.iDays +
+			", hours=" +
+			this.iHours +
+			", mins=" +
+			this.iMinutes +
+			", secs=" +
+			this.iSeconds +
+			", usecs=" +
+			this.iUSeconds +
+			", acc div=" +
+			this.iAccuracyDivisor +
+			", unsig digits=" +
+			this.iUnsignificantUSecDigits
+		);
 	}
 
 	/**
 	 * Compares the <code>CIMDateTimeInterval</code> object with this one. If
 	 * either interval has "Not Significant" fields then we only compare the
 	 * significant fields.
-	 * 
+	 *
 	 * @param pObj
 	 *            The <code>CIMDateTimeInterval</code> to be compared with this
 	 *            one.
@@ -261,14 +311,16 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 */
 	public int compareTo(CIMDateTime pObj) throws IllegalArgumentException {
 		if (!(pObj instanceof CIMDateTimeInterval)) {
-			String msg = "This method requires a CIMDateTimeInterval instance, while it has received a "
-					+ (pObj == null ? "null!" : pObj.getClass().getName() + " instance!");
+			String msg =
+				"This method requires a CIMDateTimeInterval instance, while it has received a " +
+				(pObj == null ? "null!" : pObj.getClass().getName() + " instance!");
 			throw new IllegalArgumentException(msg);
 		}
 		CIMDateTimeInterval that = (CIMDateTimeInterval) pObj;
 		long accuracyDivisor = Math.max(this.iAccuracyDivisor, that.iAccuracyDivisor);
-		debug("this.acDiv=" + this.iAccuracyDivisor + ", that.acDiv=" + that.iAccuracyDivisor
-				+ ", acDiv=" + accuracyDivisor);
+		debug(
+			"this.acDiv=" + this.iAccuracyDivisor + ", that.acDiv=" + that.iAccuracyDivisor + ", acDiv=" + accuracyDivisor
+		);
 		Long thisMicros = Long.valueOf(calcMicros(accuracyDivisor));
 		Long thatMicros = Long.valueOf(that.calcMicros(accuracyDivisor));
 		debug("thisUs=" + thisMicros + ", thatUs=" + thatMicros);
@@ -277,7 +329,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Gets the internal string representation of this object.
-	 * 
+	 *
 	 * @return The internal representation of the
 	 *         <code>CIMDateTimeInterval</code> object.
 	 */
@@ -291,15 +343,14 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		dtWriter.write(2, this.iMinutes);
 		dtWriter.write(2, this.iSeconds);
 		dtWriter.write('.');
-		dtWriter.writeUSec(this.iUSeconds / (int) this.iAccuracyDivisor,
-				this.iUnsignificantUSecDigits);
+		dtWriter.writeUSec(this.iUSeconds / (int) this.iAccuracyDivisor, this.iUnsignificantUSecDigits);
 		dtWriter.write(":000");
 		return dtWriter.toString();
 	}
 
 	/**
 	 * Returns days value of this interval.
-	 * 
+	 *
 	 * @return If days field "not significant" this returns -1, otherwise
 	 *         returns number of days in the interval.
 	 */
@@ -309,7 +360,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns hours value of this interval.
-	 * 
+	 *
 	 * @return If hours field "not significant" this returns -1, otherwise
 	 *         returns number of hours in the interval.
 	 */
@@ -319,7 +370,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns microseconds value of this interval.
-	 * 
+	 *
 	 * @return If microseconds field "not significant" this returns -1,
 	 *         otherwise returns number of microseconds in the interval.
 	 */
@@ -329,7 +380,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns minutes value of this interval.
-	 * 
+	 *
 	 * @return If minutes field "not significant" this returns -1, otherwise
 	 *         returns number of minutes in the interval.
 	 */
@@ -339,7 +390,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns seconds value of this interval.
-	 * 
+	 *
 	 * @return If seconds field "not significant" this returns -1, otherwise
 	 *         returns number of seconds in the interval.
 	 */
@@ -349,7 +400,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns the total length of the interval in milliseconds.
-	 * 
+	 *
 	 * @return The length of the interval in milliseconds.
 	 */
 	public long getTotalMilliseconds() {
@@ -358,7 +409,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Returns the hash code for this object.
-	 * 
+	 *
 	 * @return A hash code value for this object.
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -373,7 +424,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 * for debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return String representation of this datetime.
 	 */
 	@Override
@@ -383,12 +434,12 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	// ddddddddHHMMSS.mmmmmm:000
 
-	private static final int DAY_START_IDX = 0, HOUR_START_IDX = 8, MIN_START_IDX = 10,
-			SEC_START_IDX = 12, DOT_IDX = 14, USEC_START_IDX = 15, UTC_START_IDX = 21, LENGTH = 25;
+	private static final int DAY_START_IDX = 0, HOUR_START_IDX = 8, MIN_START_IDX = 10, SEC_START_IDX = 12, DOT_IDX =
+		14, USEC_START_IDX = 15, UTC_START_IDX = 21, LENGTH = 25;
 
 	/**
 	 * Checks the granularity of the <code>CIMDateTimeAbsolute</code> precision.
-	 * 
+	 *
 	 * @param pIdx
 	 *            Index of first asterisk in datetime string.
 	 * @param pFieldName
@@ -404,31 +455,30 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 *             If field is not completely significant or completely
 	 *             unsignificant (mix of asterisks and digits).
 	 */
-	private boolean checkGranularity(int pIdx, String pFieldName, int pFieldStartIdx,
-			int pNextStartIdx) throws IllegalArgumentException {
+	private boolean checkGranularity(int pIdx, String pFieldName, int pFieldStartIdx, int pNextStartIdx)
+		throws IllegalArgumentException {
 		if (pIdx > pFieldStartIdx && pIdx < pNextStartIdx) throw new IllegalArgumentException(
-				"Partial unsignificant digits are not allowed for field " + pFieldName + " in "
-						+ this.iStr + "!");
+			"Partial unsignificant digits are not allowed for field " + pFieldName + " in " + this.iStr + "!"
+		);
 		return pIdx == pFieldStartIdx;
 	}
 
 	/**
 	 * Find index of first asterisk within string.
-	 * 
+	 *
 	 * @param pIvStr
 	 *            Time interval string.
 	 * @return Index of first asterisk or -1 if asterisk does not exist.
 	 */
 	private static int findStar(String pIvStr) {
-		for (int i = 0; i < UTC_START_IDX; i++)
-			if (pIvStr.charAt(i) == '*') return i;
+		for (int i = 0; i < UTC_START_IDX; i++) if (pIvStr.charAt(i) == '*') return i;
 		return -1;
 	}
 
 	/**
 	 * Verify that all characters in the string after the starting index are
 	 * asterisks.
-	 * 
+	 *
 	 * @param pIvStr
 	 *            Time interval string.
 	 * @param pStartIdx
@@ -437,16 +487,21 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	private static void checkStars(String pIvStr, int pStartIdx) {
 		for (int i = pStartIdx; i < UTC_START_IDX; i++) {
 			char ch = pIvStr.charAt(i);
-			if (i != DOT_IDX && ch != '*') throw new IllegalArgumentException("In " + pIvStr
-					+ " every digit character after the first '*' character must " + "be '*', '"
-					+ ch + "' is invalid!");
+			if (i != DOT_IDX && ch != '*') throw new IllegalArgumentException(
+				"In " +
+				pIvStr +
+				" every digit character after the first '*' character must " +
+				"be '*', '" +
+				ch +
+				"' is invalid!"
+			);
 		}
 	}
 
 	/**
 	 * Determines the accuracy (precision) of the interval string and replaces
 	 * all asterisks in microsecond field with zeros.
-	 * 
+	 *
 	 * @param pIntervalStr
 	 *            Time interval string.
 	 * @return Corrected time interval string with <code>iAccuracyDivisor</code>
@@ -482,7 +537,8 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		for (int i = startIdx; i < UTC_START_IDX; i++) {
 			if (i == DOT_IDX) continue;
 			if (this.iStr.charAt(i) != '*') throw new IllegalArgumentException(
-					"All remaining digits must be marked as unsignificant in " + this.iStr + " !");
+				"All remaining digits must be marked as unsignificant in " + this.iStr + " !"
+			);
 			buf[i] = '0';
 		}
 		return new String(buf);
@@ -490,7 +546,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 
 	/**
 	 * Get total microseconds of <code>CIMDateTimeInterval</code> object.
-	 * 
+	 *
 	 * @return Total microseconds of time interval.
 	 */
 	private long getTotalMicros() {
@@ -503,16 +559,27 @@ public class CIMDateTimeInterval extends CIMDateTime {
 		if (this.iMinutes > 0) this.iTotalMicros += MIN_ACCURACY_DIV * this.iMinutes;
 		if (this.iHours > 0) this.iTotalMicros += HOUR_ACCURACY_DIV * this.iHours;
 		if (this.iDays > 0) this.iTotalMicros += DAY_ACCURACY_DIV * this.iDays;
-		debug("days=" + this.iDays + " ,hours=" + this.iHours + " ,mins=" + this.iMinutes
-				+ ", secs=" + this.iSeconds + ", usecs=" + this.iUSeconds + ", totalMicros="
-				+ this.iTotalMicros);
+		debug(
+			"days=" +
+			this.iDays +
+			" ,hours=" +
+			this.iHours +
+			" ,mins=" +
+			this.iMinutes +
+			", secs=" +
+			this.iSeconds +
+			", usecs=" +
+			this.iUSeconds +
+			", totalMicros=" +
+			this.iTotalMicros
+		);
 		return this.iTotalMicros;
 	}
 
 	/**
 	 * Calculates microseconds of <code>CIMDateTimeInterval</code> object taking
 	 * accuracy (precision) into consideration.
-	 * 
+	 *
 	 * @param pAccuracyDivisor
 	 *            Accuracy divisor of time interval.
 	 * @return Total microseconds of time interval rounded down to precision.
@@ -526,7 +593,7 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 * Checks validity of time interval field, making sure value is between
 	 * minimum and maximum values and is not significant if following an
 	 * unsignifcant field.
-	 * 
+	 *
 	 * @param pName
 	 *            Name of field.
 	 * @param pValue
@@ -541,23 +608,25 @@ public class CIMDateTimeInterval extends CIMDateTime {
 	 *         otherwise.
 	 * @throws IllegalArgumentException
 	 */
-	private static boolean checkLimits(String pName, int pValue, int pLow, int pHigh,
-			boolean pNotSignificant) throws IllegalArgumentException {
+	private static boolean checkLimits(String pName, int pValue, int pLow, int pHigh, boolean pNotSignificant)
+		throws IllegalArgumentException {
 		if (pValue == -1) return true;
 		if (pNotSignificant) throw new IllegalArgumentException(
-				"Not significant fields must be followed by not significant fields!");
-		if (pValue < pLow || pValue > pHigh) throw new IllegalArgumentException(pName
-				+ " must be between " + pLow + " and " + pHigh + ". " + pValue + " is invalid!");
+			"Not significant fields must be followed by not significant fields!"
+		);
+		if (pValue < pLow || pValue > pHigh) throw new IllegalArgumentException(
+			pName + " must be between " + pLow + " and " + pHigh + ". " + pValue + " is invalid!"
+		);
 		return false;
 	}
 
 	/**
 	 * Prints debug message.
-	 * 
+	 *
 	 * @param pMsg
 	 *            Debug message.
 	 */
 	private static void debug(String pMsg) {
-	// System.out.println(pMsg);
+		// System.out.println(pMsg);
 	}
 }

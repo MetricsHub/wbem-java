@@ -53,36 +53,37 @@ import org.metricshub.wbem.sblim.cimclient.internal.wbem.WBEMClientCIMXML;
  * This class defines the functionality of a <code>WBEMClient</code> factory,
  * which is used to retrieve a <code>WBEMClient</code> for a specified protocol.
  * An example of how to use the factory is included below.
- * 
+ *
  * <pre>
  *   ...
  *   WBEMClient cc = null;
- *   
+ *
  *   try {
  *     cc = WBEMClientFactory.getClient(WBEMClientConstants.PROTOCOL_CIMXML);
  *   } catch (Exception e) {
  *     System.out.println(&quot;Received error when trying to retrieve client handle&quot;);
  *     System.exit(-1);
  *   }
- *   
- *   // initialize the client 
+ *
+ *   // initialize the client
  *   cc.initialize(cns, s, null);
  *   ...
  * </pre>
  */
 
 public class WBEMClientFactory extends Object {
-
 	private static final String[] cProtocols = { WBEMClientConstants.PROTOCOL_CIMXML };
 
 	/**
 	 *
 	 */
-	public WBEMClientFactory() { /**/}
+	public WBEMClientFactory() {
+		/**/
+	}
 
 	/**
 	 * Get a <code>WBEMClient</code> for a protocol.
-	 * 
+	 *
 	 * @param pProtocol
 	 *            The protocol name (e.g. "CIM-XML").
 	 * @return The <code>WBEMClient</code> implementation for the protocol
@@ -95,19 +96,19 @@ public class WBEMClientFactory extends Object {
 	 *             If the protocol implementation could not be loaded.
 	 */
 	public static WBEMClient getClient(String pProtocol) throws WBEMException {
-
-		if (WBEMClientConstants.PROTOCOL_CIMXML.equalsIgnoreCase(pProtocol)) { return new WBEMClientCIMXML(); }
+		if (WBEMClientConstants.PROTOCOL_CIMXML.equalsIgnoreCase(pProtocol)) {
+			return new WBEMClientCIMXML();
+		}
 
 		throw new IllegalArgumentException("\"" + pProtocol + "\" is not a supported protocol");
 	}
 
 	/**
 	 * Get the names of the supported protocols.
-	 * 
+	 *
 	 * @return A string array of the supported protocols.
 	 */
 	public static String[] getSupportedProtocols() {
 		return cProtocols;
 	}
-
 }

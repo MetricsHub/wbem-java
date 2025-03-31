@@ -47,7 +47,7 @@ public abstract class AbstractPathNode extends Node implements ObjectPathIf, Val
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractPathNode(String pNameEnum) {
@@ -61,5 +61,4 @@ public abstract class AbstractPathNode extends Node implements ObjectPathIf, Val
 	public Object getValue() {
 		return getCIMObjectPath();
 	}
-
 }

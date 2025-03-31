@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * ELEMENT LOCALCLASSPATH (LOCALNAMESPACEPATH, CLASSNAME)
  */
 public class LocalClassPathNode extends AbstractObjectPathNode {
-
 	// LOCALNAMESPACEPATH
 	private boolean iHasLocalNameSpacePath, iHasClassName;
 
@@ -91,20 +90,23 @@ public class LocalClassPathNode extends AbstractObjectPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == LOCALNAMESPACEPATH) {
 			if (this.iHasLocalNameSpacePath) throw new SAXException(
-					"LOCALCLASSPATH node already has a LOCALNAMESPACEPATH child node!");
+				"LOCALCLASSPATH node already has a LOCALNAMESPACEPATH child node!"
+			);
 		} else if (pNodeNameEnum == CLASSNAME) {
-			if (this.iHasClassName) throw new SAXException(
-					"LOCALCLASSPATH node already has a CLASSNAME child node!");
-		} else throw new SAXException("LOCALCLASSPATH node cannot have " + pNodeNameEnum
-				+ " child node!"
-				+ " It can have LOCALNAMESPACEPATH and CLASSNAME child nodes only!");
+			if (this.iHasClassName) throw new SAXException("LOCALCLASSPATH node already has a CLASSNAME child node!");
+		} else throw new SAXException(
+			"LOCALCLASSPATH node cannot have " +
+			pNodeNameEnum +
+			" child node!" +
+			" It can have LOCALNAMESPACEPATH and CLASSNAME child nodes only!"
+		);
 	}
 
 	@Override
@@ -121,13 +123,12 @@ public class LocalClassPathNode extends AbstractObjectPathNode {
 	@Override
 	public void testCompletness() throws SAXException {
 		if (!this.iHasLocalNameSpacePath) throw new SAXException(
-				"LOCALNAMESPACE child node is mandatory for LOCALCLASSPATH node!");
-		if (!this.iHasClassName) throw new SAXException(
-				"CLASSNAME child node is mandatory for LOCALCLASSPATH node!");
+			"LOCALNAMESPACE child node is mandatory for LOCALCLASSPATH node!"
+		);
+		if (!this.iHasClassName) throw new SAXException("CLASSNAME child node is mandatory for LOCALCLASSPATH node!");
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
 		return LocalPathBuilder.build(this.iLocalPath, this.iClassNameStr, this.iNameSpaceStr);
 	}
-
 }

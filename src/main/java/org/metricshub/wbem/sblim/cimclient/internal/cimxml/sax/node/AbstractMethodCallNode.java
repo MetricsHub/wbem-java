@@ -48,7 +48,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMElementSorter;
@@ -61,14 +60,13 @@ import org.xml.sax.SAXException;
  * ELEMENT IMETHODCALL (LOCALNAMESPACEPATH, IPARAMVALUE*)
  * ATTLIST IMETHODCALL
  *   %CIMName;
- *   
+ *
  * ELEMENT METHODCALL ((LOCALINSTANCEPATH | LOCALCLASSPATH), PARAMVALUE*)
  * ATTLIST METHODCALL
  *   %CIMName;
  * </pre>
  */
 public abstract class AbstractMethodCallNode extends Node implements NonVolatileIf, ObjectPathIf {
-
 	private String iName;
 
 	protected CIMObjectPath iPath;
@@ -85,7 +83,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractMethodCallNode(String pNameEnum) {
@@ -107,7 +105,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 	 * @param pChild
 	 */
 	public void addChild(Node pChild) {
-	// nothing to do
+		// nothing to do
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	protected abstract void testSpecChild(String pNodeNameEnum) throws SAXException;
@@ -137,7 +135,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String, name of the called method
 	 */
 	public String getName() {
@@ -152,7 +150,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * getCIMArguments
-	 * 
+	 *
 	 * @return CIMArgument[]
 	 */
 	public CIMArgument<?>[] getCIMArguments() {
@@ -163,7 +161,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * getArgumentCount
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getArgumentCount() {
@@ -173,7 +171,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * getArgument
-	 * 
+	 *
 	 * @param pName
 	 * @return CIMArgument
 	 */
@@ -184,7 +182,7 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	/**
 	 * getArgument
-	 * 
+	 *
 	 * @param pIdx
 	 * @return CIMArgument
 	 */
@@ -195,12 +193,10 @@ public abstract class AbstractMethodCallNode extends Node implements NonVolatile
 
 	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer("Name: " + getName() + "\nPath: " + getCIMObjectPath()
-				+ "\nParamValues:\n");
+		StringBuffer buf = new StringBuffer("Name: " + getName() + "\nPath: " + getCIMObjectPath() + "\nParamValues:\n");
 		for (int i = 0; i < getArgumentCount(); i++) {
 			buf.append("  " + getArgument(i) + "\n");
 		}
 		return buf.toString();
 	}
-
 }

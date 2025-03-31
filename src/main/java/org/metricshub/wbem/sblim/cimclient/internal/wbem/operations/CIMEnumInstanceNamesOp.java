@@ -48,13 +48,13 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMEnumInstanceNamesOp
- * 
+ *
  */
 public class CIMEnumInstanceNamesOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 */
 	public CIMEnumInstanceNamesOp(CIMObjectPath objectName) {

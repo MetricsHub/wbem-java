@@ -43,21 +43,20 @@ package org.metricshub.wbem.sblim.cimclient.internal.uri;
  */
 
 import java.util.regex.Pattern;
-
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
 
 /**
  * <pre>
  *    untypedNamespacePath	=	namespacePath
- *   
+ *
  *    untypedClassPath		=	namespacePath &quot;:&quot; className
- *    
+ *
  *    untypedInstancePath	=	namespacePath &quot;:&quot; className &quot;.&quot; key_value_pairs
- *    
+ *
  *    typedNamespacePath	=	namespacePath &quot;/(namespace)&quot;
- *   
+ *
  *    typedClassPath		=	namespacePath &quot;/(class)&quot; className
- *   
+ *
  *    typedInstancePath	= 	namespacePath &quot;/(instance)&quot; className &quot;.&quot; typed_key_value_pairs
  * </pre>
  */
@@ -65,7 +64,7 @@ public class URI {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pUri
 	 * @return URI
 	 * @throws IllegalArgumentException
@@ -82,8 +81,7 @@ public class URI {
 		boolean typed = uriType != null;
 		if (uriStr.length() == 0) {
 			if (typed && uriType != NAMESPACE) {
-				String msg = uriType + " excepted but " + NAMESPACE + " found!\n"
-						+ uriStr.markPosition();
+				String msg = uriType + " excepted but " + NAMESPACE + " found!\n" + uriStr.markPosition();
 				throw new IllegalArgumentException(msg);
 			}
 			return new URI(nsPath, uriType, null, null);
@@ -95,8 +93,7 @@ public class URI {
 		String className = parseClassName(uriStr, typed);
 		if (uriStr.length() == 0) {
 			if (typed && uriType != CLASS) {
-				String msg = uriType + " expected but " + CLASS + " found!\n"
-						+ uriStr.markPosition();
+				String msg = uriType + " expected but " + CLASS + " found!\n" + uriStr.markPosition();
 				throw new IllegalArgumentException(msg);
 			}
 			return new URI(nsPath, uriType, className, null);
@@ -107,16 +104,16 @@ public class URI {
 
 	/**
 	 * <pre>
-	 *  referenceValue			=	[ namespaceName &quot;:&quot; ] className &quot;.&quot; 
+	 *  referenceValue			=	[ namespaceName &quot;:&quot; ] className &quot;.&quot;
 	 * 								untyped_key_value_pairs
-	 * 
+	 *
 	 *  typed_reference_value		=	&quot;(reference)&quot; &quot;\&quot;&quot; typedReferenceValue &quot;\&quot;&quot;
-	 *  
+	 *
 	 *  // according to Alexander we have to support instance references only
 	 *  typedReferenceValue	=	[ namespaceName ] &quot;/(instance)&quot; className &quot;.&quot;
 	 *  							typed_key_value_pairs
 	 * </pre>
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pTyped
 	 * @return URI
@@ -143,14 +140,12 @@ public class URI {
 		if (uriStr.length() == 0) {
 			if (pTyped) return new URI(null, className, null, pTyped);
 			// untyped reference can be instance reference only
-			String msg = "Untyped reference can be instance reference only!\n"
-					+ uriStr.markPosition();
+			String msg = "Untyped reference can be instance reference only!\n" + uriStr.markPosition();
 			throw new IllegalArgumentException(msg);
 		}
 		KeyValuePairs keyValuePairs = parseKeyValuePairs(uriStr, pTyped);
 		if (keyValuePairs == null) {
-			String msg = "Property reference must contain key-value pairs!\n"
-					+ uriStr.markPosition();
+			String msg = "Property reference must contain key-value pairs!\n" + uriStr.markPosition();
 			throw new IllegalArgumentException(msg);
 		}
 		pUriStr.set(uriStr);
@@ -159,7 +154,7 @@ public class URI {
 
 	/**
 	 * getNamespaceType
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getNamespaceType() {
@@ -168,7 +163,7 @@ public class URI {
 
 	/**
 	 * getNamespaceName
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getNamespaceName() {
@@ -177,7 +172,7 @@ public class URI {
 
 	/**
 	 * getUserInfo
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getUserInfo() {
@@ -186,7 +181,7 @@ public class URI {
 
 	/**
 	 * getHost Userinfo is attached if exists.
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getHost() {
@@ -198,7 +193,7 @@ public class URI {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getPort() {
@@ -207,7 +202,7 @@ public class URI {
 
 	/**
 	 * getClassName
-	 * 
+	 *
 	 * @return String or null if not set
 	 */
 	public String getClassName() {
@@ -216,7 +211,7 @@ public class URI {
 
 	/**
 	 * getKeyValuePairs
-	 * 
+	 *
 	 * @return KeyValuePairs or null if not set
 	 */
 	public KeyValuePairs getKeyValuePairs() {
@@ -230,8 +225,7 @@ public class URI {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		if (this.iNamespacePath != null) {
-			if (this.iIsRef) buf.append(getNamespaceName());
-			else buf.append(this.iNamespacePath.toString());
+			if (this.iIsRef) buf.append(getNamespaceName()); else buf.append(this.iNamespacePath.toString());
 		}
 		if (this.iUriType != null) buf.append("/(" + this.iUriType + ")");
 		if (this.iClassName != null) {
@@ -250,14 +244,13 @@ public class URI {
 
 	/**
 	 * Constructor for URI paths.
-	 * 
+	 *
 	 * @param pNamespacePath
 	 * @param pUriType
 	 * @param pClassName
 	 * @param pKeyValuePairs
 	 */
-	private URI(NamespacePath pNamespacePath, String pUriType, String pClassName,
-			KeyValuePairs pKeyValuePairs) {
+	private URI(NamespacePath pNamespacePath, String pUriType, String pClassName, KeyValuePairs pKeyValuePairs) {
 		this.iNamespacePath = pNamespacePath;
 		this.iUriType = pUriType;
 		this.iClassName = pClassName;
@@ -267,14 +260,13 @@ public class URI {
 
 	/**
 	 * Constructor for reference property values.
-	 * 
+	 *
 	 * @param pNamespaceName
 	 * @param pClassName
 	 * @param pKeyValuePairs
 	 * @param pTyped
 	 */
-	private URI(String pNamespaceName, String pClassName, KeyValuePairs pKeyValuePairs,
-			boolean pTyped) {
+	private URI(String pNamespaceName, String pClassName, KeyValuePairs pKeyValuePairs, boolean pTyped) {
 		if (pNamespaceName == null && pClassName == null) {
 			String msg = "pNamespaceName or pClassName must be set!";
 			throw new IllegalArgumentException(msg);
@@ -285,9 +277,8 @@ public class URI {
 		}
 		this.iNamespacePath = pNamespaceName == null ? null : new NamespacePath(pNamespaceName);
 		if (pTyped) {
-			if (pKeyValuePairs != null) this.iUriType = INSTANCE;
-			else if (pClassName != null) this.iUriType = CLASS;
-			else this.iUriType = NAMESPACE;
+			if (pKeyValuePairs != null) this.iUriType = INSTANCE; else if (pClassName != null) this.iUriType =
+				CLASS; else this.iUriType = NAMESPACE;
 		} else this.iUriType = null;
 		this.iClassName = pClassName;
 		this.iKeyValuePairs = pKeyValuePairs;
@@ -307,12 +298,11 @@ public class URI {
 
 	private boolean iIsRef;
 
-	private static final String NAMESPACE = MOF.NAMESPACE, CLASS = MOF.CLASS,
-			INSTANCE = MOF.INSTANCE;
+	private static final String NAMESPACE = MOF.NAMESPACE, CLASS = MOF.CLASS, INSTANCE = MOF.INSTANCE;
 
 	/**
 	 * uriType = "/(" ( "namespace" / "class" / "instance" ) ")"
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return NAMESPACE | CLASS | INSTANCE
 	 */
@@ -321,10 +311,8 @@ public class URI {
 		if (!uriStr.cutStarting("/(")) return null;
 		String typeStr = uriStr.removeTill(')', true, true);
 		if (typeStr == null) return null;
-		if (typeStr.equalsIgnoreCase(NAMESPACE)) typeStr = NAMESPACE;
-		else if (typeStr.equalsIgnoreCase(CLASS)) typeStr = CLASS;
-		else if (typeStr.equalsIgnoreCase(INSTANCE)) typeStr = INSTANCE;
-		else return null;
+		if (typeStr.equalsIgnoreCase(NAMESPACE)) typeStr = NAMESPACE; else if (typeStr.equalsIgnoreCase(CLASS)) typeStr =
+			CLASS; else if (typeStr.equalsIgnoreCase(INSTANCE)) typeStr = INSTANCE; else return null;
 		pUriStr.set(uriStr);
 		return typeStr;
 	}
@@ -342,8 +330,7 @@ public class URI {
 	/**
 	 * @param pTyped
 	 */
-	private static String parseClassName(URIString pUriStr, boolean pTyped)
-			throws IllegalArgumentException {
+	private static String parseClassName(URIString pUriStr, boolean pTyped) throws IllegalArgumentException {
 		if (!pUriStr.matchAndCut(PAT, 1)) {
 			String msg = "className expected!\n" + pUriStr.markPosition();
 			throw new IllegalArgumentException(msg);
@@ -352,8 +339,7 @@ public class URI {
 		return className;
 	}
 
-	private static KeyValuePairs parseKeyValuePairs(URIString pUriStr, boolean pTyped)
-			throws IllegalArgumentException {
+	private static KeyValuePairs parseKeyValuePairs(URIString pUriStr, boolean pTyped) throws IllegalArgumentException {
 		if (!pUriStr.cutStarting('.')) {
 			String msg = "'.' expected!\n" + pUriStr.markPosition();
 			throw new IllegalArgumentException(msg);
@@ -365,5 +351,4 @@ public class URI {
 		}
 		return keyValuePairs;
 	}
-
 }

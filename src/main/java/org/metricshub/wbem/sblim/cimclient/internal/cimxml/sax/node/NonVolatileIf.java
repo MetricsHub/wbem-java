@@ -45,13 +45,11 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  * IRETURNVALUE)
  */
 public interface NonVolatileIf {
-
 	/**
 	 * Have to be called by SAX's DefaultHandler.startElement() after
 	 * testChild() call.
-	 * 
+	 *
 	 * @param pChild
 	 */
 	public abstract void addChild(Node pChild);
-
 }

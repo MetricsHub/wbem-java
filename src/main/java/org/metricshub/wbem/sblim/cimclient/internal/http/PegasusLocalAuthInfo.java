@@ -52,7 +52,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.Messages;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
@@ -61,7 +60,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
  * Implements OpenPegasus local authentication
  */
 public class PegasusLocalAuthInfo extends AuthorizationInfo {
-
 	private boolean iChallenged = false;
 
 	/**
@@ -73,7 +71,7 @@ public class PegasusLocalAuthInfo extends AuthorizationInfo {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.internal.http.AuthorizationInfo#updateAuthenticationInfo
 	 * (org.sblim.cimclient.internal.http.Challenge, java.net.URI,
@@ -86,40 +84,36 @@ public class PegasusLocalAuthInfo extends AuthorizationInfo {
 	 * @param requestMethod
 	 */
 	@Override
-	public void updateAuthenticationInfo(Challenge challenge, String authenticate, URI url,
-			String requestMethod) {
+	public void updateAuthenticationInfo(Challenge challenge, String authenticate, URI url, String requestMethod) {
 		this.iChallenged = true;
 		this.iResponse = authenticate;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-
 		if (this.iChallenged && this.iResponse != null && this.iResponse.startsWith("Local ")) {
-
 			String fileName = "";
 			BufferedReader in = null;
 
 			try {
-
 				fileName = this.iResponse.substring(7, this.iResponse.length() - 1);
 
-				if (fileName.length() == 0) throw new IOException(
-						"No local authorization file specified");
+				if (fileName.length() == 0) throw new IOException("No local authorization file specified");
 
 				File authorizationFile = new File(fileName);
 
-				if (!authorizationFile.canRead()) throw new IOException(
-						"Local authorization file not accessible");
+				if (!authorizationFile.canRead()) throw new IOException("Local authorization file not accessible");
 
-				in = WBEMConstants.Z_OS.equals(System.getProperty(WBEMConstants.OS_NAME)) ? new BufferedReader(
-						new InputStreamReader(new FileInputStream(authorizationFile),
-								WBEMConstants.ISO_8859_1))
+				in =
+					WBEMConstants.Z_OS.equals(System.getProperty(WBEMConstants.OS_NAME))
+						? new BufferedReader(
+							new InputStreamReader(new FileInputStream(authorizationFile), WBEMConstants.ISO_8859_1)
+						)
 						: new BufferedReader(new FileReader(authorizationFile));
 
 				StringBuffer buffer = new StringBuffer();
@@ -141,19 +135,18 @@ public class PegasusLocalAuthInfo extends AuthorizationInfo {
 				header.append('"');
 
 				return header.toString();
-
 			} catch (IOException e) {
 				LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
-				logger.trace(Level.FINER,
-						"Exception while reading OpenPegasus local authorization file", e);
+				logger.trace(Level.FINER, "Exception while reading OpenPegasus local authorization file", e);
 				logger.message(Messages.HTTP_PEGASUS_LOCAL_AUTH_READ, fileName);
 			} finally {
 				if (in != null) {
 					try {
 						in.close();
 					} catch (IOException e) {
-						LogAndTraceBroker.getBroker().trace(Level.FINER,
-								"Exception while closing OpenPegasus local authorization file", e);
+						LogAndTraceBroker
+							.getBroker()
+							.trace(Level.FINER, "Exception while closing OpenPegasus local authorization file", e);
 					}
 				}
 			}
@@ -176,5 +169,4 @@ public class PegasusLocalAuthInfo extends AuthorizationInfo {
 	public boolean isKeptAlive() {
 		return true;
 	}
-
 }

@@ -48,17 +48,16 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem.operations;
 
 /**
  * CIMDeleteNameSpaceOp
- * 
+ *
  */
 public class CIMDeleteNameSpaceOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNamespace
 	 */
 	public CIMDeleteNameSpaceOp(String pNamespace) {
 		this.iNameSpace = pNamespace;
 	}
-
 }

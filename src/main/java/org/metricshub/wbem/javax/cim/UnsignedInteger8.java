@@ -57,7 +57,6 @@ package org.metricshub.wbem.javax.cim;
  * >DSP004</a>).
  */
 public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteger8> {
-
 	private static final long serialVersionUID = 4392496278679167896L;
 
 	/**
@@ -75,7 +74,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Sets the value of this integer object if it falls within the range of
 	 * minimum and maximum values.
-	 * 
+	 *
 	 * @param pValue
 	 *            The integer.
 	 * @throws NumberFormatException
@@ -92,7 +91,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Constructs an unsigned 8-bit integer object for the specified short
 	 * value. Only the lower 8 bits are considered.
-	 * 
+	 *
 	 * @param pValue
 	 *            The short to be represented as an unsigned 8-bit integer
 	 *            object.
@@ -106,7 +105,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Constructs an unsigned 8-bit integer object for the specified string.
 	 * Only the lower 8 bits are considered.
-	 * 
+	 *
 	 * @param pValue
 	 *            The string to be represented as an unsigned 8-bit integer.
 	 * @throws NumberFormatException
@@ -123,7 +122,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	 * Compares this object with the specified object for order. Returns a
 	 * negative integer, zero, or a positive integer as this object is less
 	 * than, equal to, or greater than the specified object.
-	 * 
+	 *
 	 * @param pOther
 	 *            The Object to be compared.
 	 * @return A negative integer, zero, or a positive integer as this object is
@@ -135,8 +134,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	 *             If value is <code>null</code>.
 	 */
 	public int compareTo(UnsignedInteger8 pOther) {
-		if (pOther == null) throw new IllegalArgumentException(
-				"Other UnsignedInteger8 cannot be null!");
+		if (pOther == null) throw new IllegalArgumentException("Other UnsignedInteger8 cannot be null!");
 		UnsignedInteger8 that = pOther;
 		int d = this.iValue - that.iValue;
 		if (d == 0) return 0;
@@ -148,7 +146,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	 * and only if the argument is not null and is an
 	 * <code>UnsignedInteger8</code> object that represents the same value as
 	 * this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -162,7 +160,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 
 	/**
 	 * Returns the value of this unsigned integer object as a <code>byte</code>.
-	 * 
+	 *
 	 * @return The <code>byte</code> value of this unsigned integer object.
 	 */
 	@Override
@@ -173,7 +171,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Returns the value of this unsigned integer object as a
 	 * <code>double</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>double</code>.
 	 */
 	@Override
@@ -184,7 +182,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Returns the value of this unsigned integer object as a <code>float</code>
 	 * .
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>float</code>.
 	 */
 	@Override
@@ -194,7 +192,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 
 	/**
 	 * Computes the hash code for this unsigned integer object.
-	 * 
+	 *
 	 * @return The integer representing the hash code for this unsigned integer
 	 *         object.
 	 */
@@ -205,7 +203,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 
 	/**
 	 * Returns the value of this unsigned integer object as an <code>int</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as an <code>int</code>.
 	 */
 	@Override
@@ -215,7 +213,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 
 	/**
 	 * Returns the value of this unsigned integer object as a <code>long</code>.
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>long</code>.
 	 */
 	@Override
@@ -226,7 +224,7 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 	/**
 	 * Returns the value of this unsigned integer object as a <code>short</code>
 	 * .
-	 * 
+	 *
 	 * @return Value of this unsigned integer object as a <code>short</code>.
 	 */
 	@Override
@@ -236,12 +234,11 @@ public class UnsignedInteger8 extends Number implements Comparable<UnsignedInteg
 
 	/**
 	 * Returns the text representation of this unsigned integer object.
-	 * 
+	 *
 	 * @return Text representation of this unsigned integer.
 	 */
 	@Override
 	public String toString() {
 		return Short.toString(this.iValue);
 	}
-
 }

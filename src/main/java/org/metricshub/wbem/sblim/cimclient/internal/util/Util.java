@@ -52,7 +52,7 @@ public class Util {
 
 	/**
 	 * Quotes the passed string.
-	 * 
+	 *
 	 * @param pStr
 	 * @return the quoted string
 	 */
@@ -75,15 +75,13 @@ public class Util {
 	 * loop. The range is defined as (<code>lowBadDouble</code>,
 	 * <code>hiBadDouble</code>).
 	 */
-	private static final BigDecimal lowBadDouble = new BigDecimal(
-			"2.225073858507201136057409796709131975934E-308");
+	private static final BigDecimal lowBadDouble = new BigDecimal("2.225073858507201136057409796709131975934E-308");
 
-	private static final BigDecimal hiBadDouble = new BigDecimal(
-			"2.225073858507201259573821257020768020078E-308");
+	private static final BigDecimal hiBadDouble = new BigDecimal("2.225073858507201259573821257020768020078E-308");
 
 	/**
 	 * isBadDoubleString checks if passed string could hang JVM.
-	 * 
+	 *
 	 * @param s
 	 *            A string to be converted to a Double.
 	 * @return <code>true</code> if double is in range of bad values,
@@ -104,7 +102,7 @@ public class Util {
 	 * <code>pArray = {"A", "B", "C", "D", "E", "F", "G"}</code> and
 	 * <code>pIgnoreElements = "D,E,B"</code> then this method returns
 	 * <code>{"A", "C", "F", "G"}</code>.
-	 * 
+	 *
 	 * @param pArray
 	 *            Original string array.
 	 * @param pIgnoreElements
@@ -114,8 +112,7 @@ public class Util {
 	public static String[] getFilteredStringArray(String[] pArray, String pIgnoreElements) {
 		int i, j;
 
-		if (pArray == null || pArray.length == 0 || pIgnoreElements == null
-				|| pIgnoreElements.length() == 0) return pArray;
+		if (pArray == null || pArray.length == 0 || pIgnoreElements == null || pIgnoreElements.length() == 0) return pArray;
 
 		Vector<String> vecIgnore = new Vector<String>();
 		StringTokenizer strtok = new StringTokenizer(pIgnoreElements, ",");
@@ -128,8 +125,7 @@ public class Util {
 
 		Vector<String> vecNew = new Vector<String>();
 		for (i = 0; i < pArray.length; i++) {
-			for (j = 0; j < vecIgnore.size(); j++)
-				if (pArray[i].equalsIgnoreCase(vecIgnore.elementAt(j))) break;
+			for (j = 0; j < vecIgnore.size(); j++) if (pArray[i].equalsIgnoreCase(vecIgnore.elementAt(j))) break;
 			if (j >= vecIgnore.size()) vecNew.add(pArray[i]);
 		}
 

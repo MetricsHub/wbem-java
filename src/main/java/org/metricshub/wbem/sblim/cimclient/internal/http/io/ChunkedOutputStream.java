@@ -50,10 +50,9 @@ import java.io.OutputStream;
 
 /**
  * Class ChunkedOutputStream implements an output stream for chunked messages
- * 
+ *
  */
 public class ChunkedOutputStream extends OutputStream {
-
 	DataOutputStream iOs;
 
 	byte[] iBuffer;
@@ -62,7 +61,7 @@ public class ChunkedOutputStream extends OutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream to create this one upon
 	 * @param pBufferLength
@@ -100,8 +99,7 @@ public class ChunkedOutputStream extends OutputStream {
 	public void write(byte source[], int offset, int len) throws IOException {
 		int copied = 0;
 		while (len > 0) {
-			int total = (this.iBuffer.length - this.iUsed < len) ? (this.iBuffer.length - this.iUsed)
-					: len;
+			int total = (this.iBuffer.length - this.iUsed < len) ? (this.iBuffer.length - this.iUsed) : len;
 			if (total > 0) {
 				System.arraycopy(source, copied, this.iBuffer, this.iUsed, total);
 				len -= total;
@@ -117,5 +115,4 @@ public class ChunkedOutputStream extends OutputStream {
 		if (this.iBuffer.length == this.iUsed) flush();
 		this.iBuffer[this.iUsed++] = (byte) (0xFF & i);
 	}
-
 }

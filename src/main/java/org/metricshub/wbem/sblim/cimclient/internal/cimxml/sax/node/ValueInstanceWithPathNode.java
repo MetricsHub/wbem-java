@@ -50,9 +50,9 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT VALUE.INSTANCEWITHPATH (INSTANCEPATH, INSTANCE)
- * 
+ *
  * ELEMENT INSTANCEPATH (NAMESPACEPATH,INSTANCENAME)
- *    
+ *
  * ELEMENT INSTANCE (QUALIFIER*, (PROPERTY | PROPERTY.ARRAY | PROPERTY.REFERENCE)*)
  * ATTLIST INSTANCE
  *   %ClassName;
@@ -60,7 +60,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ValueInstanceWithPathNode extends AbstractScalarValueNode {
-
 	// INSTANCEPATH
 	private CIMObjectPath iCIMInstPath;
 
@@ -90,20 +89,21 @@ public class ValueInstanceWithPathNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == INSTANCEPATH) {
 			if (this.iCIMInstPath != null) throw new SAXException(
-					"VALUE.INSTANCEWITHPATH node can have only one INSTANCEPATH node, but another one was found!");
+				"VALUE.INSTANCEWITHPATH node can have only one INSTANCEPATH node, but another one was found!"
+			);
 		} else if (pNodeNameEnum == INSTANCE) {
 			if (this.iCIMInstance != null) throw new SAXException(
-					"VALUE.INSTANCEWITHPATH node can have only one INSTANCE node, but another one was found!");
+				"VALUE.INSTANCEWITHPATH node can have only one INSTANCE node, but another one was found!"
+			);
 		} else {
-			throw new SAXException("VALUE.INSTANCEWITHPATH node cannot have " + pNodeNameEnum
-					+ " child node!");
+			throw new SAXException("VALUE.INSTANCEWITHPATH node cannot have " + pNodeNameEnum + " child node!");
 		}
 	}
 
@@ -119,9 +119,11 @@ public class ValueInstanceWithPathNode extends AbstractScalarValueNode {
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iCIMInstPath == null) throw new SAXException(
-				"VALUE.INSTANCEWITHPATH node must have an INSTANCEPATH child node!");
+			"VALUE.INSTANCEWITHPATH node must have an INSTANCEPATH child node!"
+		);
 		if (this.iCIMInstance == null) throw new SAXException(
-				"VALUE.INSTANCEWITHPATH node must have an INSTANCE child node!");
+			"VALUE.INSTANCEWITHPATH node must have an INSTANCE child node!"
+		);
 	}
 
 	/**
@@ -133,14 +135,16 @@ public class ValueInstanceWithPathNode extends AbstractScalarValueNode {
 		 * INSTANCENAME contains the key properties only, INSTANCE contains
 		 * non-key properties too.
 		 */
-		if (WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()) return CIMHelper
-				.CIMInstanceWithSynchonizedNumericKeyDataTypes(this.iCIMInstPath, this.iCIMInstance
-						.getProperties());
+		if (
+			WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()
+		) return CIMHelper.CIMInstanceWithSynchonizedNumericKeyDataTypes(
+			this.iCIMInstPath,
+			this.iCIMInstance.getProperties()
+		);
 		return new CIMInstance(this.iCIMInstPath, this.iCIMInstance.getProperties());
 	}
 
 	public CIMDataType getType() {
 		return CIMDataType.OBJECT_T;
 	}
-
 }

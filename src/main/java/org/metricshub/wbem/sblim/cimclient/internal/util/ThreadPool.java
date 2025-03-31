@@ -54,22 +54,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class ThreadPool implements a pool that manages threads and executes
  * submitted tasks using this threads.
- * 
+ *
  */
 public class ThreadPool {
 
 	/**
 	 * Class Worker implements a worker thread used by the thread pool
-	 * 
+	 *
 	 */
 	private static class Worker extends Thread {
-
 		private volatile boolean iAlive;
 
 		private final ThreadPool iPool;
@@ -80,7 +78,7 @@ public class ThreadPool {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pool
 		 *            The owning pool
 		 * @param name
@@ -110,7 +108,7 @@ public class ThreadPool {
 
 		/**
 		 * Waits for a new task execute
-		 * 
+		 *
 		 * @return The task or <code>null</code>
 		 * @throws InterruptedException
 		 */
@@ -138,8 +136,7 @@ public class ThreadPool {
 						try {
 							tsk.run();
 						} catch (Throwable t) {
-							LogAndTraceBroker.getBroker().trace(Level.FINE,
-									"Exception while executing task from thread pool", t);
+							LogAndTraceBroker.getBroker().trace(Level.FINE, "Exception while executing task from thread pool", t);
 						}
 						this.iPool.taskCompleted();
 					}
@@ -176,7 +173,7 @@ public class ThreadPool {
 
 	/**
 	 * Ctor
-	 * 
+	 *
 	 * @param pMinPoolSize
 	 *            The minimal pool size. The pool will always keep at least this
 	 *            number of worker threads alive even in no load situations.
@@ -194,8 +191,14 @@ public class ThreadPool {
 	 * @param pWorkerName
 	 *            The name to use for worker threads
 	 */
-	public ThreadPool(int pMinPoolSize, int pMaxPoolSize, int pToleratedBacklog,
-			long pToleratedIdle, ThreadGroup pGroup, String pWorkerName) {
+	public ThreadPool(
+		int pMinPoolSize,
+		int pMaxPoolSize,
+		int pToleratedBacklog,
+		long pToleratedIdle,
+		ThreadGroup pGroup,
+		String pWorkerName
+	) {
 		this.iGroup = pGroup != null ? pGroup : new ThreadGroup("TreadPool Group");
 		this.iMinPoolSize = pMinPoolSize;
 		this.iMaxPoolSize = pMaxPoolSize;
@@ -206,7 +209,7 @@ public class ThreadPool {
 
 	/**
 	 * Submits a task for execution
-	 * 
+	 *
 	 * @param task
 	 *            The task
 	 * @return <code>true</code> if the task was executed or enqueued,
@@ -223,15 +226,15 @@ public class ThreadPool {
 
 		boolean added = this.iQueue.offer(task);
 
-		if (totalIdle > 0) { return added; }
+		if (totalIdle > 0) {
+			return added;
+		}
 
 		// is maximal pool size reached ?
-		boolean mayCreateWorker = (this.iMaxPoolSize == -1)
-				|| (this.iThreadPool.size() < this.iMaxPoolSize);
+		boolean mayCreateWorker = (this.iMaxPoolSize == -1) || (this.iThreadPool.size() < this.iMaxPoolSize);
 		// create a new worker when backlog exceeds toleration level or we
 		// have no workers at all
-		if (mayCreateWorker
-				&& ((this.iQueue.size() > this.iToleratedBacklog) || this.iThreadPool.size() == 0)) {
+		if (mayCreateWorker && ((this.iQueue.size() > this.iToleratedBacklog) || this.iThreadPool.size() == 0)) {
 			createWorker();
 		}
 		return added;
@@ -239,7 +242,7 @@ public class ThreadPool {
 
 	/**
 	 * Creates a new worker thread
-	 * 
+	 *
 	 */
 	private synchronized void createWorker() {
 		Worker worker = new Worker(this, this.iWorkerName + getID());
@@ -250,7 +253,7 @@ public class ThreadPool {
 
 	/**
 	 * Removes a worker from the pool.
-	 * 
+	 *
 	 * @param worker
 	 *            The worker
 	 */
@@ -270,7 +273,7 @@ public class ThreadPool {
 
 	/**
 	 * Gets the associated thread group
-	 * 
+	 *
 	 * @return The thread group
 	 */
 	protected ThreadGroup getGroup() {
@@ -281,7 +284,7 @@ public class ThreadPool {
 	 * Get a new task. If no task was available during the timeout period the
 	 * calling worker might be killed if more than the minimum number of workers
 	 * exist
-	 * 
+	 *
 	 * @param worker
 	 *            The worker asking for a new task
 	 * @return The next available task from the queue. If no task is available
@@ -334,12 +337,11 @@ public class ThreadPool {
 
 	/**
 	 * Generates an &quot;unique&quot; id for a worker thread
-	 * 
+	 *
 	 * @return The id
 	 */
 	private String getID() {
 		if (++this.iCntr >= 10000) this.iCntr = 1;
 		return String.valueOf(this.iCntr);
 	}
-
 }

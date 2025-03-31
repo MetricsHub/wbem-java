@@ -43,13 +43,12 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  * ValueIf should be implemented by Nodes which are able to return JSR48 value
  * objects. (like: CIMDataTime, Integer, String, CIMClass, CIMInstance,
  * UnsignetInteger8, ...)
- * 
+ *
  */
 public interface ValueIf {
-
 	/**
 	 * getValue
-	 * 
+	 *
 	 * @return if type is unknown it returns a String
 	 */
 	public Object getValue();

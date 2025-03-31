@@ -53,13 +53,12 @@ import java.util.Enumeration;
  * particular service location attribute definition from the service template.
  * This information is primarily for GUI tools. Programmatic attribute
  * verification should be done through the ServiceLocationAttributeVerifier.
- * 
+ *
  */
 public interface ServiceLocationAttributeDescriptor {
-
 	/**
 	 * Return a String containing the attribute's id.
-	 * 
+	 *
 	 * @return The id
 	 */
 	public abstract String getId();
@@ -94,14 +93,14 @@ public interface ServiceLocationAttributeDescriptor {
 	 * <td>"" (empty string)</td>
 	 * </tr>
 	 * </table>
-	 * 
+	 *
 	 * @return The Java type
 	 */
 	public abstract String getValueType();
 
 	/**
 	 * Return a String containing the attribute's help text.
-	 * 
+	 *
 	 * @return The description
 	 */
 	public abstract String getDescription();
@@ -110,7 +109,7 @@ public interface ServiceLocationAttributeDescriptor {
 	 * Return an Enumeration of allowed values for the attribute type. For
 	 * keyword attributes returns null. For no allowed values (i.e.
 	 * unrestricted) returns an empty Enumeration.
-	 * 
+	 *
 	 * @return The allowed values
 	 */
 	public abstract Enumeration<?> getAllowedValues();
@@ -119,7 +118,7 @@ public interface ServiceLocationAttributeDescriptor {
 	 * Return an Enumeration of default values for the attribute type. For
 	 * keyword attributes returns null. For no allowed values (i.e.
 	 * unrestricted) returns an empty Enumeration.
-	 * 
+	 *
 	 * @return The default values
 	 */
 	public abstract Enumeration<?> getDefaultValues();
@@ -127,38 +126,37 @@ public interface ServiceLocationAttributeDescriptor {
 	/**
 	 * Returns true if the "X" flag is set, indicating that the attribute should
 	 * be included in an any Locator.findServices() request search filter.
-	 * 
+	 *
 	 * @return <code>true</code> if "X" is set, <code>false</code> otherwise
 	 */
 	public abstract boolean getRequiresExplicitMatch();
 
 	/**
 	 * Returns true if the "M" flag is set.
-	 * 
+	 *
 	 * @return <code>true</code> if "M" is set, <code>false</code> otherwise
 	 */
 	public abstract boolean getIsMultivalued();
 
 	/**
 	 * Returns true if the "O"" flag is set.
-	 * 
+	 *
 	 * @return <code>true</code> if "O" is set, <code>false</code> otherwise
 	 */
 	public abstract boolean getIsOptional();
 
 	/**
 	 * Returns true if the "L" flag is set.
-	 * 
+	 *
 	 * @return <code>true</code> if "L" is set, <code>false</code> otherwise
 	 */
 	public abstract boolean getIsLiteral();
 
 	/**
 	 * Returns true if the attribute is a keyword attribute.
-	 * 
+	 *
 	 * @return <code>true</code> if the attribute is a keyword,
 	 *         <code>false</code> otherwise
 	 */
 	public abstract boolean getIsKeyword();
-
 }

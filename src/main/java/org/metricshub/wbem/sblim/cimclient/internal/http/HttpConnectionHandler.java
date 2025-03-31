@@ -58,9 +58,7 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.net.ssl.SSLSocket;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
@@ -69,10 +67,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 /**
  * Class HttpConnectionHandler is responsible for handling an incoming
  * connection
- * 
+ *
  */
 public class HttpConnectionHandler {
-
 	/**
 	 * MAJOR_VERSION
 	 */
@@ -95,7 +92,7 @@ public class HttpConnectionHandler {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHandler
 	 *            The content handler
 	 * @param pProperties
@@ -126,22 +123,23 @@ public class HttpConnectionHandler {
 					this.iBlockedIPs.append(pSuspectIP);
 					newIP = true;
 				}
-				if (newIP) LogAndTraceBroker.getBroker().trace(
+				if (newIP) LogAndTraceBroker
+					.getBroker()
+					.trace(
 						Level.WARNING,
-						"Maximum allowable timeouts exceeded, all future connections ignored from "
-								+ pSuspectIP);
+						"Maximum allowable timeouts exceeded, all future connections ignored from " + pSuspectIP
+					);
 			}
 		}
 	}
 
 	private synchronized boolean isBlockedIP(Socket socket) {
-		return (this.iBlockedIPs != null && this.iBlockedIPs.indexOf(socket.getInetAddress()
-				.getHostAddress()) != -1);
+		return (this.iBlockedIPs != null && this.iBlockedIPs.indexOf(socket.getInetAddress().getHostAddress()) != -1);
 	}
 
 	/**
 	 * Handles the incoming connection and forwards to the content handler
-	 * 
+	 *
 	 * @param socket
 	 *            The socket of the connection
 	 */
@@ -149,10 +147,9 @@ public class HttpConnectionHandler {
 		InputStream is = null;
 		OutputStream os = null;
 		if (isBlockedIP(socket)) {
-			LogAndTraceBroker.getBroker().trace(
-					Level.FINEST,
-					"Incoming connection ignored from blocked IP "
-							+ socket.getInetAddress().getHostAddress());
+			LogAndTraceBroker
+				.getBroker()
+				.trace(Level.FINEST, "Incoming connection ignored from blocked IP " + socket.getInetAddress().getHostAddress());
 		} else try {
 			is = socket.getInputStream();
 			os = socket.getOutputStream();
@@ -163,14 +160,12 @@ public class HttpConnectionHandler {
 				boolean chunk = reader.isChunkSupported();
 
 				HttpServerMethod readerMethod = reader.getMethod();
-				if (readerMethod.getMethodName().equals("POST")
-						|| readerMethod.getMethodName().equals("M-POST")) {
+				if (readerMethod.getMethodName().equals("POST") || readerMethod.getMethodName().equals("M-POST")) {
 					// TODO: validate authorization
 
 					MessageWriter writer = new MessageWriter(os, persistent, chunk);
 					try {
-						StringBuilder localURL = new StringBuilder(
-								socket instanceof SSLSocket ? "https://" : "http://");
+						StringBuilder localURL = new StringBuilder(socket instanceof SSLSocket ? "https://" : "http://");
 						InetAddress localAddress = socket.getLocalAddress();
 						if (localAddress != null) {
 							localURL.append(localAddress.getHostAddress());
@@ -182,16 +177,28 @@ public class HttpConnectionHandler {
 						}
 
 						// 17931
-						this.iHandler.handleContent(reader, writer, socket.getInetAddress(),
-								localURL.toString());
-						writer.setMethod(new HttpServerMethod(readerMethod.getMajorVersion(),
-								readerMethod.getMinorVersion(), 200, "OK"));
+						this.iHandler.handleContent(reader, writer, socket.getInetAddress(), localURL.toString());
+						writer.setMethod(
+							new HttpServerMethod(readerMethod.getMajorVersion(), readerMethod.getMinorVersion(), 200, "OK")
+						);
 					} catch (HttpException e) {
-						writer.setMethod(new HttpServerMethod(readerMethod.getMajorVersion(),
-								readerMethod.getMinorVersion(), e.getStatus(), e.getMessage()));
+						writer.setMethod(
+							new HttpServerMethod(
+								readerMethod.getMajorVersion(),
+								readerMethod.getMinorVersion(),
+								e.getStatus(),
+								e.getMessage()
+							)
+						);
 					} catch (Throwable t) {
-						writer.setMethod(new HttpServerMethod(readerMethod.getMajorVersion(),
-								readerMethod.getMinorVersion(), 501, "Not Implemented"));
+						writer.setMethod(
+							new HttpServerMethod(
+								readerMethod.getMajorVersion(),
+								readerMethod.getMinorVersion(),
+								501,
+								"Not Implemented"
+							)
+						);
 						// TODO: define the correct error description
 						writer.reset();
 						// TODO: report an specific error
@@ -200,8 +207,9 @@ public class HttpConnectionHandler {
 						try {
 							writer.close();
 						} catch (IOException e) {
-							LogAndTraceBroker.getBroker().trace(Level.FINER,
-									"Exception while closing output stream from server socket", e);
+							LogAndTraceBroker
+								.getBroker()
+								.trace(Level.FINER, "Exception while closing output stream from server socket", e);
 						}
 					}
 				} else {
@@ -211,14 +219,16 @@ public class HttpConnectionHandler {
 					writer.setHeader(header);
 					// header.addField("Connection", persistent?
 					// "Keep-Alive","close");
-					writer.setMethod(new HttpServerMethod(readerMethod.getMajorVersion(),
-							readerMethod.getMinorVersion(), 501, "Not Implemented"));
+					writer.setMethod(
+						new HttpServerMethod(readerMethod.getMajorVersion(), readerMethod.getMinorVersion(), 501, "Not Implemented")
+					);
 					writeError(writer.getOutputStream(), "", "");
 					try {
 						writer.close();
 					} catch (IOException e) {
-						LogAndTraceBroker.getBroker().trace(Level.FINER,
-								"Exception while closing output stream from server socket", e);
+						LogAndTraceBroker
+							.getBroker()
+							.trace(Level.FINER, "Exception while closing output stream from server socket", e);
 					}
 				}
 
@@ -226,25 +236,25 @@ public class HttpConnectionHandler {
 				try {
 					reader.close();
 				} catch (IOException e) {
-					LogAndTraceBroker.getBroker().trace(Level.FINER,
-							"Exception while closing input stream from server socket", e);
+					LogAndTraceBroker
+						.getBroker()
+						.trace(Level.FINER, "Exception while closing input stream from server socket", e);
 				}
 			} while (true);
 		} catch (IOException e) {
-			LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"Exception while reading from server socket", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while reading from server socket", e);
 
-			if (e instanceof SocketTimeoutException
-					|| WBEMConstants.INDICATION_DOS_EXCEPTION_MESSAGE.equalsIgnoreCase(e
-							.getMessage())) {
+			if (
+				e instanceof SocketTimeoutException ||
+				WBEMConstants.INDICATION_DOS_EXCEPTION_MESSAGE.equalsIgnoreCase(e.getMessage())
+			) {
 				addSuspectIP(socket.getInetAddress().getHostAddress());
 			}
 		}
 		try {
 			socket.close();
 		} catch (IOException e) {
-			LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"Exception while closing server socket", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while closing server socket", e);
 		}
 	}
 
@@ -256,14 +266,12 @@ public class HttpConnectionHandler {
 	}
 
 	private void writeError(ASCIIPrintStream dos, String title, String body) {
-		dos.print("<HTML> <HEAD> <TITLE>" + title + "</TITLE></HEAD><BODY>" + body
-				+ "</BODY></HTML>");
-
+		dos.print("<HTML> <HEAD> <TITLE>" + title + "</TITLE></HEAD><BODY>" + body + "</BODY></HTML>");
 	}
 
 	/**
 	 * Get the IPs blocked by the listener associated with the specified port.
-	 * 
+	 *
 	 * @return The comma-separated list of blocked IPs.
 	 */
 	public synchronized String getBlockedIPs() {
@@ -273,12 +281,11 @@ public class HttpConnectionHandler {
 	/**
 	 * Set the IPs to be blocked by the listener associated with the specified
 	 * port.
-	 * 
+	 *
 	 * @param pIPs
 	 *            The comma-separated list of blocked IPs.
 	 */
 	public synchronized void setBlockedIPs(String pIPs) {
-		this.iBlockedIPs = (pIPs == null || pIPs.trim().length() == 0) ? null : new StringBuilder(
-				pIPs);
+		this.iBlockedIPs = (pIPs == null || pIPs.trim().length() == 0) ? null : new StringBuilder(pIPs);
 	}
 }

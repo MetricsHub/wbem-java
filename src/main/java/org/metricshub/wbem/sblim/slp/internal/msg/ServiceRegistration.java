@@ -44,10 +44,9 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
-import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceURL;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -67,10 +66,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  */
 /**
  * ServiceRegistration message
- * 
+ *
  */
 public class ServiceRegistration extends SLPMessage {
-
 	private ServiceURL iServURL;
 
 	private List<String> iScopeList;
@@ -81,24 +79,28 @@ public class ServiceRegistration extends SLPMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		ServiceURL url = pInStr.readURL();
 		pInStr.readServiceType(); // FIXME reading dummy SrvType. Correct?
-		return new ServiceRegistration(pHdr, url, pInStr.readStringList(), pInStr
-				.readAttributeList(), pInStr.readAuthBlockList());
+		return new ServiceRegistration(
+			pHdr,
+			url,
+			pInStr.readStringList(),
+			pInStr.readAttributeList(),
+			pInStr.readAuthBlockList()
+		);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pServURL
 	 * @param pScopeList
 	 *            - list of scope strings
@@ -106,15 +108,19 @@ public class ServiceRegistration extends SLPMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pAuthBlockList
 	 */
-	public ServiceRegistration(ServiceURL pServURL, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList, List<?> pAuthBlockList) {
+	public ServiceRegistration(
+		ServiceURL pServURL,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<?> pAuthBlockList
+	) {
 		super(SRV_REG);
 		init(pServURL, pScopeList, pAttrList, pAuthBlockList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pServURL
 	 * @param pScopeList
@@ -123,15 +129,20 @@ public class ServiceRegistration extends SLPMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pAuthBlockList
 	 */
-	public ServiceRegistration(String pLangTag, ServiceURL pServURL, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList, List<?> pAuthBlockList) {
+	public ServiceRegistration(
+		String pLangTag,
+		ServiceURL pServURL,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<?> pAuthBlockList
+	) {
 		super(SRV_REG, pLangTag);
 		init(pServURL, pScopeList, pAttrList, pAuthBlockList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pServURL
 	 * @param pScopeList
@@ -140,15 +151,20 @@ public class ServiceRegistration extends SLPMessage {
 	 *            - list of ServiceLocationAttributes
 	 * @param pAuthBlockList
 	 */
-	public ServiceRegistration(MsgHeader pHeader, ServiceURL pServURL, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList, List<?> pAuthBlockList) {
+	public ServiceRegistration(
+		MsgHeader pHeader,
+		ServiceURL pServURL,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<?> pAuthBlockList
+	) {
 		super(pHeader);
 		init(pServURL, pScopeList, pAttrList, pAuthBlockList);
 	}
 
 	/**
 	 * getServiceURL
-	 * 
+	 *
 	 * @return ServiceURL
 	 */
 	public ServiceURL getServiceURL() {
@@ -157,7 +173,7 @@ public class ServiceRegistration extends SLPMessage {
 
 	/**
 	 * getScopeList
-	 * 
+	 *
 	 * @return List
 	 */
 	public List<String> getScopeList() {
@@ -166,7 +182,7 @@ public class ServiceRegistration extends SLPMessage {
 
 	/**
 	 * getAttributeList
-	 * 
+	 *
 	 * @return List
 	 */
 	public List<ServiceLocationAttribute> getAttributeList() {
@@ -178,18 +194,24 @@ public class ServiceRegistration extends SLPMessage {
 	 */
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
-		return pOutStr.write(this.iServURL) && pOutStr.write(this.iServURL.getServiceType())
-				&& pOutStr.writeStringList(this.iScopeList)
-				&& pOutStr.writeAttributeList(this.iAttrList)
-				&& pOutStr.writeAuthBlockList(this.iAuthBlockList);
+		return (
+			pOutStr.write(this.iServURL) &&
+			pOutStr.write(this.iServURL.getServiceType()) &&
+			pOutStr.writeStringList(this.iScopeList) &&
+			pOutStr.writeAttributeList(this.iAttrList) &&
+			pOutStr.writeAuthBlockList(this.iAuthBlockList)
+		);
 	}
 
-	private void init(ServiceURL pServURL, List<String> pScopeList,
-			List<ServiceLocationAttribute> pAttrList, List<?> pAuthBlockList) {
+	private void init(
+		ServiceURL pServURL,
+		List<String> pScopeList,
+		List<ServiceLocationAttribute> pAttrList,
+		List<?> pAuthBlockList
+	) {
 		this.iServURL = pServURL;
 		this.iScopeList = pScopeList;
 		this.iAttrList = pAttrList;
 		this.iAuthBlockList = pAuthBlockList;
 	}
-
 }

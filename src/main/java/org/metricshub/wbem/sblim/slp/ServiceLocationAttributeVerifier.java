@@ -55,42 +55,41 @@ import java.util.Vector;
  * ServiceLocationAttribute object matches a template for a particular service
  * type. Clients obtain ServiceLocationAttributeVerifier objects for specific
  * SLP service types through the TemplateRegistry.
- * 
- * 
+ *
+ *
  */
 public interface ServiceLocationAttributeVerifier {
-
 	/**
 	 * Returns the SLP service type for which this is the verifier.
-	 * 
+	 *
 	 * @return The service type
 	 */
 	public abstract ServiceType getServiceType();
 
 	/**
 	 * Return the language locale of the template.
-	 * 
+	 *
 	 * @return The locale
 	 */
 	public abstract Locale getLocale();
 
 	/**
 	 * Return the template version number identifier.
-	 * 
+	 *
 	 * @return The version
 	 */
 	public abstract String getVersion();
 
 	/**
 	 * Return the URL syntax expression for the service: URL.
-	 * 
+	 *
 	 * @return The url syntax
 	 */
 	public abstract String getURLSyntax();
 
 	/**
 	 * Return the descriptive help text for the template.
-	 * 
+	 *
 	 * @return The description
 	 */
 	public abstract String getDescription();
@@ -101,7 +100,7 @@ public interface ServiceLocationAttributeVerifier {
 	 * This method is primarily for GUI tools to display attribute information.
 	 * Programmatic verification of attributes should use the verifyAttribute()
 	 * method.
-	 * 
+	 *
 	 * @param pAttributeId
 	 *            The attribute id
 	 * @return The descriptor
@@ -115,7 +114,7 @@ public interface ServiceLocationAttributeVerifier {
 	 * method is primarily for GUI tools to display attribute information.
 	 * Programmatic verification of attributes should use the verifyAttribute()
 	 * method.
-	 * 
+	 *
 	 * @return Enumeration of attribute descriptors
 	 */
 	public abstract Enumeration<?> getAttributeDescriptors();
@@ -124,15 +123,14 @@ public interface ServiceLocationAttributeVerifier {
 	 * Verify that the attribute matches the template definition. If the
 	 * attribute doesn't match, ServiceLocationException is thrown with the
 	 * error code as ServiceLocationException.PARSE_ERROR.
-	 * 
+	 *
 	 * @param pAttribute
 	 *            The ServiceLocationAttribute object to be verified.
 	 * @throws ServiceLocationException
 	 *             if validation failed
-	 * 
+	 *
 	 */
-	public abstract void verifyAttribute(ServiceLocationAttribute pAttribute)
-			throws ServiceLocationException;
+	public abstract void verifyAttribute(ServiceLocationAttribute pAttribute) throws ServiceLocationException;
 
 	/**
 	 * Verify that the Vector of ServiceLocationAttribute objects matches the
@@ -140,14 +138,12 @@ public interface ServiceLocationAttributeVerifier {
 	 * attributes, and all attributes must match their template definitions. If
 	 * the attributes don't match, ServiceLocationException is thrown with the
 	 * error code as ServiceLocationException.PARSE_ERROR
-	 * 
+	 *
 	 * @param pAttributeVector
 	 *            A Vector of ServiceLocationAttribute objects for the
 	 *            registration.
 	 * @throws ServiceLocationException
 	 *             if attributes don't match
 	 */
-	public abstract void verifyRegistration(Vector<?> pAttributeVector)
-			throws ServiceLocationException;
-
+	public abstract void verifyRegistration(Vector<?> pAttributeVector) throws ServiceLocationException;
 }

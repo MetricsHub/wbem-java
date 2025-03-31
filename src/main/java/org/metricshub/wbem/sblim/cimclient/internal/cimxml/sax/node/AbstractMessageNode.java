@@ -49,7 +49,7 @@ public abstract class AbstractMessageNode extends Node implements NonVolatileIf 
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractMessageNode(String pNameEnum) {
@@ -61,7 +61,6 @@ public abstract class AbstractMessageNode extends Node implements NonVolatileIf 
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// not needed
+		// not needed
 	}
-
 }

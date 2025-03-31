@@ -61,8 +61,8 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT QUALIFIER.DECLARATION (SCOPE?, (VALUE | VALUE.ARRAY)?)
- * ATTLIST QUALIFIER.DECLARATION 
- * 	%CIMName;               
+ * ATTLIST QUALIFIER.DECLARATION
+ * 	%CIMName;
  * 	%CIMType;               #REQUIRED
  * 	ISARRAY    (true|false) #IMPLIED
  * 	%ArraySize;
@@ -70,7 +70,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class QualiDeclNode extends Node implements TypedIf, ValueIf {
-
 	// child nodes
 	// SCOPE
 	private boolean iHasScope;
@@ -98,7 +97,7 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -111,7 +110,7 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 
 	/**
 	 * getFlavor
-	 * 
+	 *
 	 * @return int - CIMFlavor bitset
 	 */
 	public int getFlavor() {
@@ -137,35 +136,42 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == VALUE || pNodeNameEnum == VALUE_ARRAY) {
-			if (this.iValueNodeName != null) throw new SAXException("Cannot add " + pNodeNameEnum
-					+ " node, this " + getNodeName() + " node has already got a "
-					+ this.iValueNodeName + " node!");
+			if (this.iValueNodeName != null) throw new SAXException(
+				"Cannot add " +
+				pNodeNameEnum +
+				" node, this " +
+				getNodeName() +
+				" node has already got a " +
+				this.iValueNodeName +
+				" node!"
+			);
 		} else if (pNodeNameEnum == SCOPE) {
-			if (this.iHasScope) throw new SAXException("Cannot add " + pNodeNameEnum
-					+ " node, this " + getNodeName() + " node has already got one!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iHasScope) throw new SAXException(
+				"Cannot add " + pNodeNameEnum + " node, this " + getNodeName() + " node has already got one!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	/**
 	 * Required to handle the output XML of some non-standard CIMOMs like SVC
 	 * which adds the TYPE attribute to the sub VALUE or VALUE.ARRAY XML
 	 * element.
-	 * 
+	 *
 	 * @param pTypedIf
 	 * @throws SAXException
 	 */
 	private void setType(TypedIf pTypedIf) throws SAXException {
 		if (this.iType != null) return;
 		this.iType = pTypedIf.getType();
-		if (this.iType == null) throw new SAXException("Unknown type for Qualifier declaration in "
-				+ getNodeName() + " node!");
+		if (this.iType == null) throw new SAXException(
+			"Unknown type for Qualifier declaration in " + getNodeName() + " node!"
+		);
 	}
 
 	@Override
@@ -180,8 +186,7 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 				setType(valAChild);
 				this.iValue = CIMObjectFactory.getObject(this.iType, valAChild);
 				// making array type
-				if (!this.iType.isArray()) this.iType = CIMHelper.UnboundedArrayDataType(this.iType
-						.getType());
+				if (!this.iType.isArray()) this.iType = CIMHelper.UnboundedArrayDataType(this.iType.getType());
 			} else if (pChild instanceof ValueNode) {
 				ValueNode valChild = (ValueNode) pChild;
 				setType(valChild);
@@ -190,18 +195,18 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 				this.iValue = null;
 			}
 		}
-
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iType == null) throw new SAXException("Unknown type for Qualifier declaration in "
-				+ getNodeName() + " node!");
+		if (this.iType == null) throw new SAXException(
+			"Unknown type for Qualifier declaration in " + getNodeName() + " node!"
+		);
 	}
 
 	/**
 	 * getCIMQualifierType
-	 * 
+	 *
 	 * @return CIMQualifierType
 	 */
 	public CIMQualifierType<Object> getCIMQualifierType() {
@@ -209,12 +214,16 @@ public class QualiDeclNode extends Node implements TypedIf, ValueIf {
 		 * CIMQualifierType( CIMObjectPath pPath, CIMDataType pType, Object
 		 * pValue, int pScope, int pFlavor )
 		 */
-		return new CIMQualifierType<Object>(new CIMObjectPath(null, null, null, null, this.iName,
-				null), this.iType, this.iValue, this.iScope, this.iFlavor);
+		return new CIMQualifierType<Object>(
+			new CIMObjectPath(null, null, null, null, this.iName, null),
+			this.iType,
+			this.iValue,
+			this.iScope,
+			this.iFlavor
+		);
 	}
 
 	public Object getValue() {
 		return getCIMQualifierType();
 	}
-
 }

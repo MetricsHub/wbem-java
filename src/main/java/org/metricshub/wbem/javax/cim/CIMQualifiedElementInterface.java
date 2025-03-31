@@ -48,10 +48,9 @@ package org.metricshub.wbem.javax.cim;
  * CIM Parameters are all CIM Elements that have qualifiers.
  */
 public interface CIMQualifiedElementInterface {
-
 	/**
 	 * Get a qualifier by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the qualifier.
 	 * @return The Qualifier at index <code>pIndex</code>.
@@ -60,7 +59,7 @@ public interface CIMQualifiedElementInterface {
 
 	/**
 	 * Gets a qualifier by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist, otherwise
@@ -70,21 +69,21 @@ public interface CIMQualifiedElementInterface {
 
 	/**
 	 * Get the number of qualifiers defined for this CIM Element.
-	 * 
+	 *
 	 * @return The number of qualifiers.
 	 */
 	public int getQualifierCount();
 
 	/**
 	 * Returns the list of qualifiers for this class.
-	 * 
+	 *
 	 * @return Qualifiers for this class.
 	 */
 	public CIMQualifier<?>[] getQualifiers();
 
 	/**
 	 * Gets a qualifier value by name.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier to get.
 	 * @return <code>null</code> if the qualifier does not exist or value is
@@ -96,7 +95,7 @@ public interface CIMQualifiedElementInterface {
 	/**
 	 * Checks whether the specified qualifier is one of the qualifiers in this
 	 * CIM element.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @return <code>true</code> if the qualifier exists in this CIM element,
@@ -109,7 +108,7 @@ public interface CIMQualifiedElementInterface {
 	 * for this property with the specified value. This method will return
 	 * <code>false</code> if the qualifier is not applied or if the value does
 	 * not match.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the qualifier.
 	 * @param pValue
@@ -118,5 +117,4 @@ public interface CIMQualifiedElementInterface {
 	 *         otherwise <code>false</code>.
 	 */
 	public boolean hasQualifierValue(String pName, Object pValue);
-
 }

@@ -50,7 +50,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMQualifier;
 import org.metricshub.wbem.sblim.cimclient.GenericExts;
@@ -61,7 +60,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMQualifiedElementInter
  * elements.
  */
 public class QualifiedNodeHandler {
-
 	private static final Boolean TRUE = Boolean.TRUE;
 
 	private ArrayList<CIMQualifier<?>> iQualiAL;
@@ -74,7 +72,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * init
-	 * 
+	 *
 	 * @param pQNH
 	 *            - if it's null it returns with a new instance otherwise it
 	 *            inits and returns pQNH
@@ -97,7 +95,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * addQualifierNode
-	 * 
+	 *
 	 * @param pNode
 	 * @return false if pNode is not instance of QualifierNode
 	 */
@@ -116,8 +114,9 @@ public class QualifiedNodeHandler {
 				} else if ("ASSOCIATION".equalsIgnoreCase(quali.getName())) {
 					this.iHasAssocQuali = true;
 				}
-			} else if (CIMDataType.STRING_T.equals(quali.getDataType())
-					&& "EMBEDDEDINSTANCE".equalsIgnoreCase(quali.getName())) {
+			} else if (
+				CIMDataType.STRING_T.equals(quali.getDataType()) && "EMBEDDEDINSTANCE".equalsIgnoreCase(quali.getName())
+			) {
 				this.iHasEmbInstQuali = true;
 			}
 			this.iQualiAL.add(quali);
@@ -127,7 +126,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * getQualis
-	 * 
+	 *
 	 * @return CIMQualifier[]
 	 */
 	public CIMQualifier<?>[] getQualis() {
@@ -136,7 +135,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * getQualis
-	 * 
+	 *
 	 * @param pIncludeEmbObj
 	 * @return CIMQualifier[]
 	 */
@@ -147,7 +146,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * isKeyed
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isKeyed() {
@@ -156,7 +155,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * isAssociation
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isAssociation() {
@@ -165,7 +164,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * isEmbeddedObject
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isEmbeddedObject() {
@@ -174,7 +173,7 @@ public class QualifiedNodeHandler {
 
 	/**
 	 * isEmbeddedInstance
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isEmbeddedInstance() {
@@ -189,9 +188,8 @@ public class QualifiedNodeHandler {
 			this.iQualiImpl = new CIMQualifiedElementInterfaceImpl(null);
 			return;
 		}
-		this.iQualiImpl = new CIMQualifiedElementInterfaceImpl(this.iQualiAL.toArray(EMPTY_QA),
-				this.iHasKeyQuali, pIncludeEmbObj);
+		this.iQualiImpl =
+			new CIMQualifiedElementInterfaceImpl(this.iQualiAL.toArray(EMPTY_QA), this.iHasKeyQuali, pIncludeEmbObj);
 		this.iQualiAL = null;
 	}
-
 }

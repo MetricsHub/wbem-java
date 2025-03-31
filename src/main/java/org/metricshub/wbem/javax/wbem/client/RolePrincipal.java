@@ -52,14 +52,13 @@ import java.security.Principal;
  * information for which the role is used to authenticate.
  */
 public class RolePrincipal extends Object implements Principal {
-
 	private String iRole;
 
 	private String iHost;
 
 	/**
 	 * This constructor accepts the role name.
-	 * 
+	 *
 	 * @param pRole
 	 *            The role name.
 	 */
@@ -69,7 +68,7 @@ public class RolePrincipal extends Object implements Principal {
 
 	/**
 	 * This constructor accepts the role name and host name.
-	 * 
+	 *
 	 * @param pRole
 	 *            The role name.
 	 * @param pHost
@@ -85,7 +84,7 @@ public class RolePrincipal extends Object implements Principal {
 	 * same principal as this object. The principals are equal if the specified
 	 * object is an instance of <code>RolePrincipal</code> and the user name and
 	 * host name are the same.
-	 * 
+	 *
 	 * @param pObj
 	 *            The Principal to compare for equality.
 	 * @return <code>true</code> if they are equal, otherwise <code>false</code>
@@ -95,14 +94,15 @@ public class RolePrincipal extends Object implements Principal {
 	public boolean equals(Object pObj) {
 		if (!(pObj instanceof RolePrincipal)) return false;
 		RolePrincipal that = (RolePrincipal) pObj;
-		return (this.iRole == null ? that.iRole == null : this.iRole.equalsIgnoreCase(that.iRole))
-				&& (this.iHost == null ? that.iHost == null : this.iHost
-						.equalsIgnoreCase(that.iHost));
+		return (
+			(this.iRole == null ? that.iRole == null : this.iRole.equalsIgnoreCase(that.iRole)) &&
+			(this.iHost == null ? that.iHost == null : this.iHost.equalsIgnoreCase(that.iHost))
+		);
 	}
 
 	/**
 	 * Get the host for which the principal uses to authenticate.
-	 * 
+	 *
 	 * @return The host name.
 	 */
 	public String getHostName() {
@@ -112,7 +112,7 @@ public class RolePrincipal extends Object implements Principal {
 	/**
 	 * Return the name of this principal identity; that is, return the login
 	 * name.
-	 * 
+	 *
 	 * @return The name of this principal identity.
 	 * @see java.security.Principal#getName()
 	 */
@@ -123,7 +123,7 @@ public class RolePrincipal extends Object implements Principal {
 	/**
 	 * The <code>hashCode()</code> method returns an integer hash code to
 	 * represent this principal.
-	 * 
+	 *
 	 * @return An integer hash code representing the principal.
 	 */
 	@Override
@@ -135,12 +135,11 @@ public class RolePrincipal extends Object implements Principal {
 	 * The <code>toString()</code> method returns a string representation of the
 	 * principal suitable for displaying in messages. It should not be used for
 	 * making authorization checks.
-	 * 
+	 *
 	 * @return A printable string form of the role principal.
 	 */
 	@Override
 	public String toString() {
 		return this.iRole;
 	}
-
 }

@@ -47,12 +47,11 @@ import org.metricshub.wbem.javax.cim.CIMProperty;
  * Class LocalPathBuilder helps CIM-XML parsers to build local CIMObjectPathes.
  */
 public class LocalPathBuilder {
-
 	private CIMObjectPath iBasePath;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pBasePath
 	 */
 	public LocalPathBuilder(CIMObjectPath pBasePath) {
@@ -61,7 +60,7 @@ public class LocalPathBuilder {
 
 	/**
 	 * getBasePath
-	 * 
+	 *
 	 * @return CIMObjectPath
 	 */
 	public CIMObjectPath getBasePath() {
@@ -70,7 +69,7 @@ public class LocalPathBuilder {
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pObjPathStr
 	 * @return CIMObjectPath
 	 */
@@ -80,7 +79,7 @@ public class LocalPathBuilder {
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pObjName
 	 * @param pNameSpace
 	 * @return CIMObjectPath
@@ -91,7 +90,7 @@ public class LocalPathBuilder {
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pObjName
 	 * @param pNameSpace
 	 * @param pKeys
@@ -103,21 +102,20 @@ public class LocalPathBuilder {
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pHost
 	 * @param pNameSpace
 	 * @param pObjName
 	 * @param pKeys
 	 * @return CIMObjectPath
 	 */
-	public CIMObjectPath build(String pHost, String pNameSpace, String pObjName,
-			CIMProperty<?>[] pKeys) {
+	public CIMObjectPath build(String pHost, String pNameSpace, String pObjName, CIMProperty<?>[] pKeys) {
 		return build(this.iBasePath, pHost, pNameSpace, pObjName, pKeys);
 	}
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pScheme
 	 * @param pHost
 	 * @param pPort
@@ -126,27 +124,40 @@ public class LocalPathBuilder {
 	 * @param pKeys
 	 * @return CIMObjectPath
 	 */
-	public CIMObjectPath build(String pScheme, String pHost, String pPort, String pNameSpace,
-			String pObjName, CIMProperty<?>[] pKeys) {
+	public CIMObjectPath build(
+		String pScheme,
+		String pHost,
+		String pPort,
+		String pNameSpace,
+		String pObjName,
+		CIMProperty<?>[] pKeys
+	) {
 		return build(this.iBasePath, pScheme, pHost, pPort, pNameSpace, pObjName, pKeys);
 	}
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pBasePath
 	 * @param pObjPathStr
 	 * @return CIMObjectPath
 	 */
 	public static CIMObjectPath build(CIMObjectPath pBasePath, String pObjPathStr) {
 		CIMObjectPath path = new CIMObjectPath(pObjPathStr);
-		return build(pBasePath, path.getScheme(), path.getHost(), path.getPort(), path
-				.getNamespace(), path.getObjectName(), path.getKeys());
+		return build(
+			pBasePath,
+			path.getScheme(),
+			path.getHost(),
+			path.getPort(),
+			path.getNamespace(),
+			path.getObjectName(),
+			path.getKeys()
+		);
 	}
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pBasePath
 	 * @param pObjName
 	 * @param pNameSpace
@@ -158,21 +169,25 @@ public class LocalPathBuilder {
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pBasePath
 	 * @param pObjName
 	 * @param pNameSpace
 	 * @param pKeys
 	 * @return CIMObjectPath
 	 */
-	public static CIMObjectPath build(CIMObjectPath pBasePath, String pObjName, String pNameSpace,
-			CIMProperty<?>[] pKeys) {
+	public static CIMObjectPath build(
+		CIMObjectPath pBasePath,
+		String pObjName,
+		String pNameSpace,
+		CIMProperty<?>[] pKeys
+	) {
 		return build(pBasePath, null, null, null, pNameSpace, pObjName, pKeys);
 	}
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pBasePath
 	 * @param pHost
 	 * @param pNameSpace
@@ -180,14 +195,19 @@ public class LocalPathBuilder {
 	 * @param pKeys
 	 * @return CIMObjectPath
 	 */
-	public static CIMObjectPath build(CIMObjectPath pBasePath, String pHost, String pNameSpace,
-			String pObjName, CIMProperty<?>[] pKeys) {
+	public static CIMObjectPath build(
+		CIMObjectPath pBasePath,
+		String pHost,
+		String pNameSpace,
+		String pObjName,
+		CIMProperty<?>[] pKeys
+	) {
 		return build(pBasePath, null, pHost, null, pNameSpace, pObjName, pKeys);
 	}
 
 	/**
 	 * build
-	 * 
+	 *
 	 * @param pBasePath
 	 * @param pScheme
 	 * @param pHost
@@ -197,16 +217,24 @@ public class LocalPathBuilder {
 	 * @param pKeys
 	 * @return CIMObjectPath
 	 */
-	public static CIMObjectPath build(CIMObjectPath pBasePath, String pScheme, String pHost,
-			String pPort, String pNameSpace, String pObjName, CIMProperty<?>[] pKeys) {
-		if (pBasePath == null) return new CIMObjectPath(pScheme, pHost, pPort, pNameSpace,
-				pObjName, pKeys);
-		return new CIMObjectPath(pScheme == null ? pBasePath.getScheme() : pScheme,
-				pHost == null ? pBasePath.getHost() : pHost, pPort == null ? pBasePath.getPort()
-						: pPort, pNameSpace == null ? pBasePath.getNamespace() : pNameSpace,
-				pObjName == null ? pBasePath.getObjectName() : pObjName, pKeys // local
-		// objectpath shouldn't contain keys
+	public static CIMObjectPath build(
+		CIMObjectPath pBasePath,
+		String pScheme,
+		String pHost,
+		String pPort,
+		String pNameSpace,
+		String pObjName,
+		CIMProperty<?>[] pKeys
+	) {
+		if (pBasePath == null) return new CIMObjectPath(pScheme, pHost, pPort, pNameSpace, pObjName, pKeys);
+		return new CIMObjectPath(
+			pScheme == null ? pBasePath.getScheme() : pScheme,
+			pHost == null ? pBasePath.getHost() : pHost,
+			pPort == null ? pBasePath.getPort() : pPort,
+			pNameSpace == null ? pBasePath.getNamespace() : pNameSpace,
+			pObjName == null ? pBasePath.getObjectName() : pObjName,
+			pKeys // local
+			// objectpath shouldn't contain keys
 		);
 	}
-
 }

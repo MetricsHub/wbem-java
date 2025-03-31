@@ -47,7 +47,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMInstance;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
@@ -63,7 +62,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ErrorNode extends Node implements ErrorIf {
-
 	private int iCode;
 
 	private String iDesc;
@@ -84,13 +82,11 @@ public class ErrorNode extends Node implements ErrorIf {
 	public void init(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iCIMInstAL = null;
 		String code = pAttribs.getValue("CODE");
-		if (code == null) throw new SAXException(getNodeName()
-				+ " node must have a CODE attribute!");
+		if (code == null) throw new SAXException(getNodeName() + " node must have a CODE attribute!");
 		try {
 			this.iCode = Integer.parseInt(code);
 		} catch (NumberFormatException e) {
-			throw new SAXException("Failed to parse CODE attribute in " + getNodeName() + " node!",
-					e);
+			throw new SAXException("Failed to parse CODE attribute in " + getNodeName() + " node!", e);
 		}
 		this.iDesc = pAttribs.getValue("DESCRIPTION");
 	}
@@ -100,13 +96,14 @@ public class ErrorNode extends Node implements ErrorIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != INSTANCE) throw new SAXException(getNodeName() + " node cannot have "
-				+ pNodeNameEnum + " child node!");
+		if (pNodeNameEnum != INSTANCE) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
@@ -117,15 +114,15 @@ public class ErrorNode extends Node implements ErrorIf {
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child nodes
+		// no mandatory child nodes
 	}
 
 	private static final CIMInstance[] EMPTY_IA = new CIMInstance[0];
 
 	public CIMError getCIMError() {
-		if (this.iCIMInstAL != null) { return new CIMError(this.iCode, this.iDesc, this.iCIMInstAL
-				.toArray(EMPTY_IA)); }
+		if (this.iCIMInstAL != null) {
+			return new CIMError(this.iCode, this.iDesc, this.iCIMInstAL.toArray(EMPTY_IA));
+		}
 		return new CIMError(this.iCode, this.iDesc);
 	}
-
 }

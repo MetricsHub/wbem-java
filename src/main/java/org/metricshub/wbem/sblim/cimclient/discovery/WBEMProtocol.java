@@ -43,19 +43,18 @@ package org.metricshub.wbem.sblim.cimclient.discovery;
 /**
  * Class WBEMProtocol encapsulates a transport/presentation protocol pair. E.g.
  * "HTTPS/CIM-XML"
- * 
+ *
  * <code>iTransport != null<br />iPresentation != null</code>
  * @since 2.0.2
  */
 public class WBEMProtocol {
-
 	private String iTransport;
 
 	private String iPresentation;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pTransport
 	 *            The transport protocol (e.g. HTTP, HTTPS, RMI)
 	 * @param pPresentation
@@ -68,7 +67,7 @@ public class WBEMProtocol {
 
 	/**
 	 * Returns the presentation protocol (e.g. CIM-XML)
-	 * 
+	 *
 	 * @return The value.
 	 */
 	public String getPresentation() {
@@ -77,7 +76,7 @@ public class WBEMProtocol {
 
 	/**
 	 * Sets the presentation protocol
-	 * 
+	 *
 	 * @param pPresentation
 	 *            The new value (e.g. CIM-XML)
 	 */
@@ -87,7 +86,7 @@ public class WBEMProtocol {
 
 	/**
 	 * Returns transport protocol (e.g. HTTP)
-	 * 
+	 *
 	 * @return The value.
 	 */
 	public String getTransport() {
@@ -96,7 +95,7 @@ public class WBEMProtocol {
 
 	/**
 	 * Sets the transport protocol
-	 * 
+	 *
 	 * @param pTransport
 	 *            The new value (e.g. HTTP).
 	 */
@@ -106,22 +105,21 @@ public class WBEMProtocol {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object pObj) {
 		if (pObj instanceof WBEMProtocol) {
 			WBEMProtocol that = (WBEMProtocol) pObj;
-			return (this.iTransport.equals(that.iTransport))
-					&& (this.iPresentation.equals(that.iPresentation));
+			return (this.iTransport.equals(that.iTransport)) && (this.iPresentation.equals(that.iPresentation));
 		}
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -131,12 +129,11 @@ public class WBEMProtocol {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return this.iTransport + "/" + this.iPresentation;
 	}
-
 }

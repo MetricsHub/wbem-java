@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * ELEMENT LOCALNAMESPACEPATH (NAMESPACE+)
  */
 public class LocalNameSpacePathNode extends AbstractPathNode {
-
 	private StringBuffer iNameSpaceStrBuf;
 
 	private String iNameSpaceStr;
@@ -89,14 +88,14 @@ public class LocalNameSpacePathNode extends AbstractPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != NAMESPACE) throw new SAXException(getNodeName()
-				+ " node can have NAMESPACE child node only! " + pNodeNameEnum
-				+ " child node is invalid!");
+		if (pNodeNameEnum != NAMESPACE) throw new SAXException(
+			getNodeName() + " node can have NAMESPACE child node only! " + pNodeNameEnum + " child node is invalid!"
+		);
 	}
 
 	@Override
@@ -112,27 +111,30 @@ public class LocalNameSpacePathNode extends AbstractPathNode {
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iNameSpaceStrBuf == null) {
-			if (WBEMConfiguration.getGlobalConfiguration().allowEmptyLocalNameSpacePath()
-					&& this.iLocalPath != null && this.iLocalPath.getNamespace() != null) return;
-			throw new SAXException(getNodeName()
-					+ " node must have at least one NAMESPACE child node!");
+			if (
+				WBEMConfiguration.getGlobalConfiguration().allowEmptyLocalNameSpacePath() &&
+				this.iLocalPath != null &&
+				this.iLocalPath.getNamespace() != null
+			) return;
+			throw new SAXException(getNodeName() + " node must have at least one NAMESPACE child node!");
 		}
 	}
 
 	/**
 	 * getNameSpace
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getNameSpace() {
 		if (this.iNameSpaceStr != null) return this.iNameSpaceStr;
-		return this.iNameSpaceStr = (this.iNameSpaceStrBuf == null ? this.iLocalPath.getNamespace()
-				: this.iNameSpaceStrBuf.toString());
+		return (
+			this.iNameSpaceStr =
+				(this.iNameSpaceStrBuf == null ? this.iLocalPath.getNamespace() : this.iNameSpaceStrBuf.toString())
+		);
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
 		if (this.iNameSpacePath != null) return this.iNameSpacePath;
 		return this.iNameSpacePath = new CIMObjectPath(null, null, null, getNameSpace(), null, null);
 	}
-
 }

@@ -50,7 +50,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.sblim.cimclient.GenericExts;
@@ -62,7 +61,6 @@ import org.xml.sax.SAXException;
  * ELEMENT VALUE.REFARRAY (VALUE.REFERENCE|VALUE.NULL)*
  */
 public class ValueRefArrayNode extends AbstractArrayValueNode {
-
 	private ArrayList<CIMObjectPath> iCIMObjPathAL;
 
 	/**
@@ -87,28 +85,27 @@ public class ValueRefArrayNode extends AbstractArrayValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum != VALUE_REFERENCE && pNodeNameEnum != VALUE_NULL) throw new SAXException(
-				getNodeName()
-						+ " node child node can be VALUE.REFERENCE or VALUE.NULL only while it is "
-						+ pNodeNameEnum + "!");
+			getNodeName() + " node child node can be VALUE.REFERENCE or VALUE.NULL only while it is " + pNodeNameEnum + "!"
+		);
 	}
 
 	@Override
 	public void childParsed(Node pChild) {
 		if (this.iCIMObjPathAL == null) this.iCIMObjPathAL = new ArrayList<CIMObjectPath>();
-		if (pChild instanceof ValueReferenceNode) this.iCIMObjPathAL
-				.add(((ValueReferenceNode) pChild).getCIMObjectPath());
-		else if (pChild instanceof ValueNullNode) this.iCIMObjPathAL.add(null);
+		if (pChild instanceof ValueReferenceNode) this.iCIMObjPathAL.add(
+				((ValueReferenceNode) pChild).getCIMObjectPath()
+			); else if (pChild instanceof ValueNullNode) this.iCIMObjPathAL.add(null);
 	}
 
 	@Override
 	public void testCompletness() {
-	// child nodes are not mandatory
+		// child nodes are not mandatory
 	}
 
 	/**
@@ -136,5 +133,4 @@ public class ValueRefArrayNode extends AbstractArrayValueNode {
 	public Object getValue() {
 		return size() == 0 ? null : this.iCIMObjPathAL.toArray(EMPTY_OPA);
 	}
-
 }

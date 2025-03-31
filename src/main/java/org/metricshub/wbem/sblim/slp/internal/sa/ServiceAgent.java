@@ -51,15 +51,18 @@ import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
-
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.internal.IPv6MulticastAddressFactory;
+import org.metricshub.wbem.sblim.slp.internal.Net;
 import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
 import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.AttributeReply;
 import org.metricshub.wbem.sblim.slp.internal.msg.AttributeRequest;
+import org.metricshub.wbem.sblim.slp.internal.msg.FunctionIDs;
 import org.metricshub.wbem.sblim.slp.internal.msg.MsgFactory;
+import org.metricshub.wbem.sblim.slp.internal.msg.ReplyMessage;
 import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
 import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceAcknowledgment;
@@ -68,20 +71,14 @@ import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRegistration;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceReply;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRequest;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceTypeReply;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
-import org.metricshub.wbem.sblim.slp.internal.Net;
-import org.metricshub.wbem.sblim.slp.internal.msg.FunctionIDs;
-import org.metricshub.wbem.sblim.slp.internal.msg.ReplyMessage;
 
 /**
  * ServiceAgent
- * 
+ *
  */
 public class ServiceAgent implements FunctionIDs {
-
-	private boolean iUseV4 = Net.hasIPv4() && SLPConfig.getGlobalCfg().useIPv4(), iUseV6 = Net
-			.hasIPv6()
-			&& SLPConfig.getGlobalCfg().useIPv6();
+	private boolean iUseV4 = Net.hasIPv4() && SLPConfig.getGlobalCfg().useIPv4(), iUseV6 =
+		Net.hasIPv6() && SLPConfig.getGlobalCfg().useIPv6();
 
 	boolean iStarted;
 
@@ -97,7 +94,7 @@ public class ServiceAgent implements FunctionIDs {
 
 	/**
 	 * main
-	 * 
+	 *
 	 * @param pArgs
 	 * @throws IOException
 	 */
@@ -120,7 +117,7 @@ public class ServiceAgent implements FunctionIDs {
 
 	/**
 	 * setSkipFirstRequest
-	 * 
+	 *
 	 * @param pValue
 	 */
 	public void setSkipFirstRequest(boolean pValue) {
@@ -129,7 +126,7 @@ public class ServiceAgent implements FunctionIDs {
 
 	/**
 	 * start
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void start() throws IOException {
@@ -149,8 +146,7 @@ public class ServiceAgent implements FunctionIDs {
 		// join multicast groups
 		if (this.iUseV4) this.iDGThread.joinGroup(SLPConfig.getMulticastAddress());
 		if (this.iUseV6) {
-			this.iDGThread.joinGroup(IPv6MulticastAddressFactory
-					.getSrvLocAddress(SLPDefaults.IPV6_MULTICAST_SCOPE));
+			this.iDGThread.joinGroup(IPv6MulticastAddressFactory.getSrvLocAddress(SLPDefaults.IPV6_MULTICAST_SCOPE));
 		}
 	}
 
@@ -164,12 +160,11 @@ public class ServiceAgent implements FunctionIDs {
 			this.iDGThread.stop();
 		}
 		this.iStarted = false;
-
 	}
 
 	/**
 	 * processMessage
-	 * 
+	 *
 	 * @param pDGSock
 	 * @param pPacket
 	 */
@@ -209,8 +204,7 @@ public class ServiceAgent implements FunctionIDs {
 		if (reply != null) {
 			try {
 				TRC.debug("sending response");
-				pDGSock.send(new DatagramPacket(reply, reply.length, pPacket.getAddress(), pPacket
-						.getPort()));
+				pDGSock.send(new DatagramPacket(reply, reply.length, pPacket.getAddress(), pPacket.getPort()));
 			} catch (IOException e) {
 				TRC.error(e);
 			}
@@ -219,7 +213,7 @@ public class ServiceAgent implements FunctionIDs {
 
 	/**
 	 * processMessage
-	 * 
+	 *
 	 * @param pStreamSock
 	 */
 	public void processMessage(Socket pStreamSock) {
@@ -262,8 +256,9 @@ public class ServiceAgent implements FunctionIDs {
 	 */
 	private SLPMessage makeReply(SLPMessage pRequest) throws ServiceLocationException {
 		try {
-			SLPMessage msg = pRequest instanceof RequestMessage ? makeReply4Request((RequestMessage) pRequest)
-					: makeReply4Others(pRequest);
+			SLPMessage msg = pRequest instanceof RequestMessage
+				? makeReply4Request((RequestMessage) pRequest)
+				: makeReply4Others(pRequest);
 			if (msg != null) msg.setXID(pRequest.getXID());
 			return msg;
 		} catch (UnknownHostException e) {
@@ -273,7 +268,6 @@ public class ServiceAgent implements FunctionIDs {
 			TRC.error(e);
 			throw new ServiceLocationException(ServiceLocationException.NETWORK_ERROR);
 		}
-
 	}
 
 	private ReplyMessage makeReply4Request(RequestMessage pRequest) {
@@ -283,15 +277,13 @@ public class ServiceAgent implements FunctionIDs {
 			case SRV_RQST:
 				ServiceRequest srvRqst = (ServiceRequest) pRequest;
 				if (SLPDefaults.DA_SERVICE_TYPE.equals(srvRqst.getServiceType())) return null;
-				List<ServiceURL> urlList = this.iSrvTable.getServiceURLs(srvRqst.getServiceType(),
-						scopes);
+				List<ServiceURL> urlList = this.iSrvTable.getServiceURLs(srvRqst.getServiceType(), scopes);
 				TRC.debug("srvReply : " + urlList);
 				replyMsg = new ServiceReply(0, urlList);
 				break;
 			case ATTR_RQST:
 				AttributeRequest attrRqst = (AttributeRequest) pRequest;
-				replyMsg = new AttributeReply(0, this.iSrvTable.getAttributes(attrRqst
-						.getServiceURL(), scopes));
+				replyMsg = new AttributeReply(0, this.iSrvTable.getAttributes(attrRqst.getServiceURL(), scopes));
 				break;
 			case SRV_TYPE_RQST:
 				// ServiceTypeRequest srvTypeRqst =
@@ -308,8 +300,7 @@ public class ServiceAgent implements FunctionIDs {
 		switch (pRequest.getFunctionID()) {
 			case SRV_REG:
 				ServiceRegistration srvReg = (ServiceRegistration) pRequest;
-				this.iSrvTable.add(srvReg.getServiceURL(), srvReg.getAttributeList(), srvReg
-						.getScopeList());
+				this.iSrvTable.add(srvReg.getServiceURL(), srvReg.getAttributeList(), srvReg.getScopeList());
 				return new ServiceAcknowledgment(0);
 			case SRV_DEREG:
 				ServiceDeregistration srvDereg = (ServiceDeregistration) pRequest;
@@ -357,5 +348,4 @@ public class ServiceAgent implements FunctionIDs {
 			return null;
 		}
 	}
-
 }

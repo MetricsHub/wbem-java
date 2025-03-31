@@ -46,15 +46,13 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml;
  */
 
 import java.util.Vector;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * Class CIMRequest is used by the CIM-XML DOM parser.
- * 
+ *
  */
 public class CIMRequest extends CIMMessage {
-
 	protected Vector<CIMRequest> iRequests = new Vector<CIMRequest>(0);
 
 	protected Vector<Object> iParamValue = new Vector<Object>(0);
@@ -68,11 +66,13 @@ public class CIMRequest extends CIMMessage {
 	/**
 	 * Ctor.
 	 */
-	public CIMRequest() { /**/}
+	public CIMRequest() {
+		/**/
+	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pCimVersion
 	 * @param pDtdVersion
 	 * @param pId
@@ -84,17 +84,16 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * addParamValue
-	 * 
+	 *
 	 * @param v
 	 */
 	public void addParamValue(Object v) {
-		if (v instanceof Vector) this.iParamValue.addAll((Vector<?>) v);
-		else this.iParamValue.add(v);
+		if (v instanceof Vector) this.iParamValue.addAll((Vector<?>) v); else this.iParamValue.add(v);
 	}
 
 	/**
 	 * addRequest
-	 * 
+	 *
 	 * @param request
 	 */
 	public void addRequest(CIMRequest request) {
@@ -103,7 +102,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * getMethodName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getMethodName() {
@@ -112,7 +111,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * getNameSpace
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getNameSpace() {
@@ -121,7 +120,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * getObjectPath
-	 * 
+	 *
 	 * @return String
 	 */
 	public CIMObjectPath getObjectPath() {
@@ -130,7 +129,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * getParamValue
-	 * 
+	 *
 	 * @return String
 	 */
 	public Vector<Object> getParamValue() {
@@ -139,7 +138,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * setMethodName
-	 * 
+	 *
 	 * @param methodName
 	 */
 	public void setMethodName(String methodName) {
@@ -148,7 +147,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * setNameSpace
-	 * 
+	 *
 	 * @param namespace
 	 */
 	public void setNameSpace(String namespace) {
@@ -157,7 +156,7 @@ public class CIMRequest extends CIMMessage {
 
 	/**
 	 * setObjectPath
-	 * 
+	 *
 	 * @param path
 	 */
 	public void setObjectPath(CIMObjectPath path) {

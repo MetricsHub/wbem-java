@@ -51,15 +51,13 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * debug -> FINEST info -> INFO warning -> WARNING error -> SEVERE
- * 
+ *
  */
 public class TRC {
-
 	private static PrintStream cOut;
 
 	private static Level cLevel = SLPConfig.getGlobalCfg().getTraceLevel();
@@ -74,7 +72,7 @@ public class TRC {
 
 	/**
 	 * setLevel
-	 * 
+	 *
 	 * @param pLevel
 	 */
 	public static void setLevel(Level pLevel) {
@@ -83,7 +81,7 @@ public class TRC {
 
 	/**
 	 * setConsolLog
-	 * 
+	 *
 	 * @param pOutStr
 	 */
 	public static void setOutput(OutputStream pOutStr) {
@@ -92,7 +90,7 @@ public class TRC {
 
 	/**
 	 * setOutputStream
-	 * 
+	 *
 	 * @param pOutStr
 	 */
 	public static void setOutput(PrintStream pOutStr) {
@@ -101,7 +99,7 @@ public class TRC {
 
 	/**
 	 * setPatterns
-	 * 
+	 *
 	 * @param pDenyPatterns
 	 * @param pAllowPatterns
 	 */
@@ -121,7 +119,7 @@ public class TRC {
 
 	/**
 	 * debug
-	 * 
+	 *
 	 * @param pMsg
 	 */
 	public static void debug(String pMsg) {
@@ -130,7 +128,7 @@ public class TRC {
 
 	/**
 	 * debug
-	 * 
+	 *
 	 * @param pMsg
 	 * @param pEx
 	 */
@@ -141,7 +139,7 @@ public class TRC {
 
 	/**
 	 * info
-	 * 
+	 *
 	 * @param pMsg
 	 */
 	public static void info(String pMsg) {
@@ -150,7 +148,7 @@ public class TRC {
 
 	/**
 	 * info
-	 * 
+	 *
 	 * @param pMsg
 	 * @param pEx
 	 */
@@ -161,7 +159,7 @@ public class TRC {
 
 	/**
 	 * warning
-	 * 
+	 *
 	 * @param pMsg
 	 */
 	public static void warning(String pMsg) {
@@ -170,7 +168,7 @@ public class TRC {
 
 	/**
 	 * warning
-	 * 
+	 *
 	 * @param pMsg
 	 * @param pEx
 	 */
@@ -181,7 +179,7 @@ public class TRC {
 
 	/**
 	 * error
-	 * 
+	 *
 	 * @param pMsg
 	 */
 	public static void error(String pMsg) {
@@ -190,7 +188,7 @@ public class TRC {
 
 	/**
 	 * error
-	 * 
+	 *
 	 * @param pEx
 	 */
 	public static void error(Exception pEx) {
@@ -199,7 +197,7 @@ public class TRC {
 
 	/**
 	 * error
-	 * 
+	 *
 	 * @param pMsg
 	 * @param pEx
 	 */
@@ -230,9 +228,17 @@ public class TRC {
 		StackTraceElement location = getLocation();
 		String fnStr = getFunctionStr(location);
 		if (deny(fnStr) && !allow(fnStr)) return;
-		StringBuffer buf = new StringBuffer('[' + pLevel.toString() + ' '
-				+ Thread.currentThread().getName() + ' ' + getDate() + ' '
-				+ getLocationStr(location) + "]\n");
+		StringBuffer buf = new StringBuffer(
+			'[' +
+			pLevel.toString() +
+			' ' +
+			Thread.currentThread().getName() +
+			' ' +
+			getDate() +
+			' ' +
+			getLocationStr(location) +
+			"]\n"
+		);
 		if (pMsg != null) buf.append(pMsg + '\n');
 		if (pEx != null) {
 			StringWriter writer = new StringWriter();
@@ -274,28 +280,35 @@ public class TRC {
 		char[] cA = new char[len];
 		int paddingDigits = pDigits - str.length();
 		int dIdx = 0;
-		while (dIdx < paddingDigits)
-			cA[dIdx++] = '0';
+		while (dIdx < paddingDigits) cA[dIdx++] = '0';
 		int sIdx = 0;
-		while (dIdx < len)
-			cA[dIdx++] = str.charAt(sIdx++);
+		while (dIdx < len) cA[dIdx++] = str.charAt(sIdx++);
 		return new String(cA);
 	}
 
 	/**
 	 * getDate
-	 * 
+	 *
 	 * @return String
 	 */
 	private static String getDate() {
 		long millis = new Date().getTime();
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(millis);
-		return Integer.toString(cal.get(Calendar.YEAR)) + '.' + pad(2, cal.get(Calendar.MONTH) + 1)
-				+ '.' + pad(2, cal.get(Calendar.DAY_OF_MONTH)) + ' '
-				+ pad(2, cal.get(Calendar.HOUR_OF_DAY)) + ':' + pad(2, cal.get(Calendar.MINUTE))
-				+ ':' + pad(2, cal.get(Calendar.SECOND)) + ' '
-				+ pad(3, cal.get(Calendar.MILLISECOND));
+		return (
+			Integer.toString(cal.get(Calendar.YEAR)) +
+			'.' +
+			pad(2, cal.get(Calendar.MONTH) + 1) +
+			'.' +
+			pad(2, cal.get(Calendar.DAY_OF_MONTH)) +
+			' ' +
+			pad(2, cal.get(Calendar.HOUR_OF_DAY)) +
+			':' +
+			pad(2, cal.get(Calendar.MINUTE)) +
+			':' +
+			pad(2, cal.get(Calendar.SECOND)) +
+			' ' +
+			pad(3, cal.get(Calendar.MILLISECOND))
+		);
 	}
-
 }

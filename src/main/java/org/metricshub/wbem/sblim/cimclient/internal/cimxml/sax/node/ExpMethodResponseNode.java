@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ExpMethodResponseNode extends Node implements ErrorIf, RetValPipeIf, NonVolatileIf {
-
 	private String iName;
 
 	private ErrorNode iErrorNode;
@@ -72,8 +71,8 @@ public class ExpMethodResponseNode extends Node implements ErrorIf, RetValPipeIf
 	}
 
 	public void addChild(Node pChild) {
-		if (pChild instanceof ErrorNode) this.iErrorNode = (ErrorNode) pChild;
-		else this.iRetValNode = (IReturnValueNode) pChild;
+		if (pChild instanceof ErrorNode) this.iErrorNode = (ErrorNode) pChild; else this.iRetValNode =
+			(IReturnValueNode) pChild;
 	}
 
 	/**
@@ -91,21 +90,24 @@ public class ExpMethodResponseNode extends Node implements ErrorIf, RetValPipeIf
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == ERROR || pNodeNameEnum == IRETURNVALUE) {
 			Node node;
-			if (this.iErrorNode != null) node = this.iErrorNode;
-			else if (this.iRetValNode != null) node = this.iRetValNode;
-			else node = null;
-			if (node != null) throw new SAXException(pNodeNameEnum + " child node is invalid for "
-					+ getNodeName() + " node, since it already has a " + node.getNodeName()
-					+ " child node!");
-		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			if (this.iErrorNode != null) node = this.iErrorNode; else if (this.iRetValNode != null) node =
+				this.iRetValNode; else node = null;
+			if (node != null) throw new SAXException(
+				pNodeNameEnum +
+				" child node is invalid for " +
+				getNodeName() +
+				" node, since it already has a " +
+				node.getNodeName() +
+				" child node!"
+			);
+		} else throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	/**
@@ -113,12 +115,12 @@ public class ExpMethodResponseNode extends Node implements ErrorIf, RetValPipeIf
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do yet
+		// nothing to do yet
 	}
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child nodes
+		// no mandatory child nodes
 	}
 
 	public CIMError getCIMError() {
@@ -135,7 +137,7 @@ public class ExpMethodResponseNode extends Node implements ErrorIf, RetValPipeIf
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {

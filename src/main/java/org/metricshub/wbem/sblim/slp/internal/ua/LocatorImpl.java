@@ -45,7 +45,7 @@ import java.net.InetAddress;
 import java.util.Locale;
 import java.util.SortedSet;
 import java.util.Vector;
-
+import org.metricshub.wbem.sblim.slp.Locator;
 import org.metricshub.wbem.sblim.slp.ServiceLocationEnumeration;
 import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceURL;
@@ -54,22 +54,20 @@ import org.metricshub.wbem.sblim.slp.internal.TRC;
 import org.metricshub.wbem.sblim.slp.internal.msg.AttributeRequest;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceRequest;
 import org.metricshub.wbem.sblim.slp.internal.msg.ServiceTypeRequest;
-import org.metricshub.wbem.sblim.slp.Locator;
 import org.metricshub.wbem.sblim.slp.internal.msg.Util;
 
 /**
  * LocatorImpl
- * 
+ *
  */
 public class LocatorImpl implements Locator {
-
 	private Locale iLocale;
 
 	private String iLangTag;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLocale
 	 */
 	public LocatorImpl(Locale pLocale) {
@@ -78,48 +76,89 @@ public class LocatorImpl implements Locator {
 		TRC.debug("created, langTag=" + this.iLangTag);
 	}
 
-	public ServiceLocationEnumeration findAttributes(ServiceURL pURL, Vector<String> pScopes,
-			Vector<String> pAttributeIds) {
+	public ServiceLocationEnumeration findAttributes(
+		ServiceURL pURL,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds
+	) {
 		return findAttributes(pURL, pScopes, pAttributeIds, null);
 	}
 
-	public ServiceLocationEnumeration findAttributes(ServiceURL pURL, Vector<String> pScopes,
-			Vector<String> pAttributeIds, Vector<InetAddress> pDirectoryAgents) {
-		return new SLEnumerationImpl(new AttributeRequest(this.iLangTag, (SortedSet<String>) null,
-				pURL.toString(), getScopes(pScopes), pAttributeIds, null), pDirectoryAgents);
+	public ServiceLocationEnumeration findAttributes(
+		ServiceURL pURL,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds,
+		Vector<InetAddress> pDirectoryAgents
+	) {
+		return new SLEnumerationImpl(
+			new AttributeRequest(
+				this.iLangTag,
+				(SortedSet<String>) null,
+				pURL.toString(),
+				getScopes(pScopes),
+				pAttributeIds,
+				null
+			),
+			pDirectoryAgents
+		);
 	}
 
-	public ServiceLocationEnumeration findAttributes(ServiceType pType, Vector<String> pScopes,
-			Vector<String> pAttributeIds) {
+	public ServiceLocationEnumeration findAttributes(
+		ServiceType pType,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds
+	) {
 		return findAttributes(pType, pScopes, pAttributeIds, null);
 	}
 
-	public ServiceLocationEnumeration findAttributes(ServiceType pType, Vector<String> pScopes,
-			Vector<String> pAttributeIds, Vector<InetAddress> pDirectoryAgents) {
-		return new SLEnumerationImpl(new AttributeRequest(this.iLangTag, (SortedSet<String>) null,
-				pType.toString(), getScopes(pScopes), pAttributeIds, null), pDirectoryAgents);
+	public ServiceLocationEnumeration findAttributes(
+		ServiceType pType,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds,
+		Vector<InetAddress> pDirectoryAgents
+	) {
+		return new SLEnumerationImpl(
+			new AttributeRequest(
+				this.iLangTag,
+				(SortedSet<String>) null,
+				pType.toString(),
+				getScopes(pScopes),
+				pAttributeIds,
+				null
+			),
+			pDirectoryAgents
+		);
 	}
 
-	public ServiceLocationEnumeration findServiceTypes(String pNamingAuthority,
-			Vector<String> pScopes) {
+	public ServiceLocationEnumeration findServiceTypes(String pNamingAuthority, Vector<String> pScopes) {
 		return findServiceTypes(pNamingAuthority, pScopes, null);
 	}
 
-	public ServiceLocationEnumeration findServiceTypes(String pNamingAuthority,
-			Vector<String> pScopes, Vector<InetAddress> pDirectoryAgent) {
-		return new SLEnumerationImpl(new ServiceTypeRequest(this.iLangTag, null, pNamingAuthority,
-				getScopes(pScopes)), pDirectoryAgent);
+	public ServiceLocationEnumeration findServiceTypes(
+		String pNamingAuthority,
+		Vector<String> pScopes,
+		Vector<InetAddress> pDirectoryAgent
+	) {
+		return new SLEnumerationImpl(
+			new ServiceTypeRequest(this.iLangTag, null, pNamingAuthority, getScopes(pScopes)),
+			pDirectoryAgent
+		);
 	}
 
-	public ServiceLocationEnumeration findServices(ServiceType pType, Vector<String> pScopes,
-			String pSearchFilter) {
+	public ServiceLocationEnumeration findServices(ServiceType pType, Vector<String> pScopes, String pSearchFilter) {
 		return findServices(pType, pScopes, pSearchFilter, null);
 	}
 
-	public ServiceLocationEnumeration findServices(ServiceType pType, Vector<String> pScopes,
-			String pSearchFilter, Vector<InetAddress> pDirectoryAgents) {
-		return new SLEnumerationImpl(new ServiceRequest(this.iLangTag, null, pType,
-				getScopes(pScopes), pSearchFilter, null), pDirectoryAgents);
+	public ServiceLocationEnumeration findServices(
+		ServiceType pType,
+		Vector<String> pScopes,
+		String pSearchFilter,
+		Vector<InetAddress> pDirectoryAgents
+	) {
+		return new SLEnumerationImpl(
+			new ServiceRequest(this.iLangTag, null, pType, getScopes(pScopes), pSearchFilter, null),
+			pDirectoryAgents
+		);
 	}
 
 	public Locale getLocale() {
@@ -136,5 +175,4 @@ public class LocatorImpl implements Locator {
 		if (pScopes.isEmpty()) pScopes.add(SLPDefaults.DEFAULT_SCOPE);
 		return pScopes;
 	}
-
 }

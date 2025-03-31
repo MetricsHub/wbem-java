@@ -42,15 +42,13 @@ package org.metricshub.wbem.sblim.slp.internal;
  */
 
 import java.io.UnsupportedEncodingException;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * Convert
- * 
+ *
  */
 public class Convert {
-
 	/**
 	 * ATTR_RESERVED
 	 */
@@ -70,7 +68,7 @@ public class Convert {
 
 	/**
 	 * getBytes
-	 * 
+	 *
 	 * @param pStr
 	 * @return byte[]
 	 */
@@ -85,7 +83,7 @@ public class Convert {
 
 	/**
 	 * escape
-	 * 
+	 *
 	 * @param pStr
 	 * @return String
 	 */
@@ -95,7 +93,7 @@ public class Convert {
 
 	/**
 	 * escape
-	 * 
+	 *
 	 * @param pStr
 	 * @param pReservedChars
 	 * @return String
@@ -121,7 +119,7 @@ public class Convert {
 
 	/**
 	 * unescape
-	 * 
+	 *
 	 * @param pStr
 	 * @return String
 	 * @throws ServiceLocationException
@@ -136,15 +134,14 @@ public class Convert {
 			resBuf.append(pStr.subSequence(lastPos, pos)).append(ch);
 			lastPos = pos + 3;
 		}
-		if (resBuf != null && lastPos < pStr.length()) resBuf.append(pStr.substring(lastPos, pStr
-				.length()));
+		if (resBuf != null && lastPos < pStr.length()) resBuf.append(pStr.substring(lastPos, pStr.length()));
 		return resBuf == null ? pStr : resBuf.toString();
 	}
 
 	/**
 	 * The escape character is a backslash (UTF-8 0x5c) followed by the two
 	 * hexadecimal digits of the escaped character. -> Character code is ASCII.
-	 * 
+	 *
 	 * @param ch
 	 * @return String
 	 */
@@ -156,16 +153,19 @@ public class Convert {
 
 	private static char unescapeChar(String pEscSeq) throws ServiceLocationException {
 		if (pEscSeq.length() < 3) throw new ServiceLocationException(
-				ServiceLocationException.PARSE_ERROR,
-				"Escaped character must contain 2 hex digits!\n" + "pEscSeq:" + pEscSeq);
+			ServiceLocationException.PARSE_ERROR,
+			"Escaped character must contain 2 hex digits!\n" + "pEscSeq:" + pEscSeq
+		);
 		String hexStr = pEscSeq.substring(1, 3);
 		try {
 			int code = Integer.parseInt(hexStr, 16);
 			return (char) code;
 		} catch (NumberFormatException e) {
-			throw new ServiceLocationException(ServiceLocationException.PARSE_ERROR,
-					"Failed to parse hex string: " + hexStr + ", pEscSeq=" + pEscSeq + " !", e);
+			throw new ServiceLocationException(
+				ServiceLocationException.PARSE_ERROR,
+				"Failed to parse hex string: " + hexStr + ", pEscSeq=" + pEscSeq + " !",
+				e
+			);
 		}
 	}
-
 }

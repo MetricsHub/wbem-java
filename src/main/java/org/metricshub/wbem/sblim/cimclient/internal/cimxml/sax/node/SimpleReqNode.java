@@ -54,7 +54,6 @@ import org.xml.sax.SAXException;
  * ELEMENT SIMPLEREQ (CORRELATOR*, (METHODCALL | IMETHODCALL))
  */
 public class SimpleReqNode extends AbstractMessageNode {
-
 	private AbstractMethodCallNode iMethodCallNode;
 
 	/**
@@ -87,7 +86,7 @@ public class SimpleReqNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
@@ -96,25 +95,23 @@ public class SimpleReqNode extends AbstractMessageNode {
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == IMETHODCALL || pNodeNameEnum == METHODCALL) {
-			if (this.iMethodCallNode != null) throw new SAXException(
-					"SIMPLEREQ node can have only one child node!");
+			if (this.iMethodCallNode != null) throw new SAXException("SIMPLEREQ node can have only one child node!");
 		} else if (pNodeNameEnum != CORRELATOR) throw new SAXException(
-				"SIMPLEREQ node cannot have " + pNodeNameEnum + " child node!");
+			"SIMPLEREQ node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iMethodCallNode == null) throw new SAXException(
-				"SIMPLEREQ node must have a child node!");
+		if (this.iMethodCallNode == null) throw new SAXException("SIMPLEREQ node must have a child node!");
 	}
 
 	/**
 	 * getAbstractMethodCallNode
-	 * 
+	 *
 	 * @return AbstractMethodCallNode
 	 */
 	public AbstractMethodCallNode getAbstractMethodCallNode() {
 		return this.iMethodCallNode;
 	}
-
 }

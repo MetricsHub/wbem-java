@@ -41,20 +41,18 @@ package org.metricshub.wbem.sblim.cimclient.discovery;
  */
 
 import java.util.Locale;
-
-import org.metricshub.wbem.sblim.cimclient.internal.discovery.slp.DiscovererSLP;
 import org.metricshub.wbem.sblim.cimclient.discovery.Discoverer;
+import org.metricshub.wbem.sblim.cimclient.internal.discovery.slp.DiscovererSLP;
 
 /**
  * Class DiscovererFactory is responsible for creating concrete instances of the
  * Discoverer interface.
- * 
+ *
  * This class is thread-safe.
- * 
+ *
  * @since 2.0.2
  */
 public class DiscovererFactory {
-
 	/**
 	 * The Service Location Protocol (SLP)
 	 */
@@ -64,7 +62,7 @@ public class DiscovererFactory {
 
 	/**
 	 * Returns the concrete Discoverer for a given discovery protocol.
-	 * 
+	 *
 	 * @param pProtocol The discovery protocol, e.g. "SLP"
 	 * @return The corresponding discoverer
 	 * @throws IllegalArgumentException On unsupported protocols
@@ -79,7 +77,7 @@ public class DiscovererFactory {
 
 	/**
 	 * Return an array of all supported discovery protocols
-	 * 
+	 *
 	 * @return The supported protocols
 	 */
 	public static String[] getSupportedProtocols() {
@@ -87,5 +85,6 @@ public class DiscovererFactory {
 	}
 
 	private DiscovererFactory() {
-		/**/}
+		/**/
+	}
 }

@@ -73,7 +73,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.logging.Level;
-
 import javax.net.ServerSocketFactory;
 import javax.net.SocketFactory;
 import javax.net.ssl.KeyManager;
@@ -83,26 +82,24 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.Messages;
 import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConfiguration;
 
 /**
  * Class HttpSocketFactory manages socket factories
- * 
+ *
  */
 public class HttpSocketFactory {
-
 	private static HttpSocketFactory cInstance = new HttpSocketFactory();
 
 	private HttpSocketFactory() {
-	// empty
+		// empty
 	}
 
 	/**
 	 * Returns the singleton instance
-	 * 
+	 *
 	 * @return The instance
 	 */
 	public static HttpSocketFactory getInstance() {
@@ -111,21 +108,20 @@ public class HttpSocketFactory {
 
 	/**
 	 * Returns a server socket factory
-	 * 
+	 *
 	 * @param pContext
 	 *            The corresponding SSL context or <code>null</code> for
 	 *            insecure connections
-	 * 
+	 *
 	 * @return The factory
 	 */
 	public ServerSocketFactory getServerSocketFactory(SSLContext pContext) {
-		return pContext != null ? pContext.getServerSocketFactory() : ServerSocketFactory
-				.getDefault();
+		return pContext != null ? pContext.getServerSocketFactory() : ServerSocketFactory.getDefault();
 	}
 
 	/**
 	 * Returns a client socket factory
-	 * 
+	 *
 	 * @param pContext
 	 *            The SSL context or <code>null</code> for insecure connections
 	 * @return The factory
@@ -137,7 +133,7 @@ public class HttpSocketFactory {
 	/**
 	 * Returns a SSLContext for client sockets corresponding to a given set of
 	 * configuration properties
-	 * 
+	 *
 	 * @param pProperties
 	 *            The configuration to apply
 	 * @return The SSL context
@@ -149,7 +145,7 @@ public class HttpSocketFactory {
 	/**
 	 * Returns a SSLContext for server sockets corresponding to a given set of
 	 * configuration properties
-	 * 
+	 *
 	 * @param pProperties
 	 *            The configuration to apply
 	 * @return The SSL context
@@ -161,7 +157,7 @@ public class HttpSocketFactory {
 	/**
 	 * Returns a SSLContext corresponding to a given set of configuration
 	 * properties
-	 * 
+	 *
 	 * @param pProperties
 	 *            The configuration to apply
 	 * @param pIsServer
@@ -170,12 +166,10 @@ public class HttpSocketFactory {
 	 * @return The SSL context
 	 */
 	private SSLContext getSSLContext(final WBEMConfiguration pProperties, boolean pIsServer) {
-
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
-		final String provider = pIsServer ? pProperties.getSslServerSocketProvider() : pProperties
-				.getSslSocketProvider();
+		final String provider = pIsServer ? pProperties.getSslServerSocketProvider() : pProperties.getSslSocketProvider();
 		logger.trace(Level.FINER, "Loading JSSE provider:" + provider);
 
 		final Provider securityProvider;
@@ -198,30 +192,31 @@ public class HttpSocketFactory {
 
 			TrustManager[] trustManager = loadTruststore(pProperties, securityProvider, pIsServer);
 
-			String sslProtocol = pIsServer ? pProperties.getSslListenerProtocol() : pProperties
-					.getSslClientProtocol();
+			String sslProtocol = pIsServer ? pProperties.getSslListenerProtocol() : pProperties.getSslClientProtocol();
 
-			SSLContext sslContext = SSLContext.getInstance(sslProtocol != null ? sslProtocol
-					: pProperties.getSslProtocol(), securityProvider);
+			SSLContext sslContext = SSLContext.getInstance(
+				sslProtocol != null ? sslProtocol : pProperties.getSslProtocol(),
+				securityProvider
+			);
 
 			sslContext.init(keyManager, trustManager, null);
 
 			logger.exit();
 
 			return sslContext;
-
 		} catch (Exception e) {
-			logger.trace(Level.FINER, "Exception while initializing SSL context (provider:"
-					+ provider + ")", e);
+			logger.trace(Level.FINER, "Exception while initializing SSL context (provider:" + provider + ")", e);
 			logger.message(Messages.SSL_CONTEXT_INIT_FAILED);
 			logger.exit();
 			return null;
 		}
 	}
 
-	private TrustManager[] loadTruststore(final WBEMConfiguration pProperties,
-			final Provider pSecurityProvider, boolean pIsServer) {
-
+	private TrustManager[] loadTruststore(
+		final WBEMConfiguration pProperties,
+		final Provider pSecurityProvider,
+		boolean pIsServer
+	) {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
@@ -236,37 +231,39 @@ public class HttpSocketFactory {
 		final boolean clientPeerVerification = pProperties.getSslClientPeerVerification();
 		final String listenerPeerVerification = pProperties.getSslListenerPeerVerification();
 
-		logger.trace(Level.FINER, "Using SSL truststore \"" + truststorePath + "\" ("
-				+ truststoreType + "/" + trustManagerAlgorithm + ")");
+		logger.trace(
+			Level.FINER,
+			"Using SSL truststore \"" + truststorePath + "\" (" + truststoreType + "/" + trustManagerAlgorithm + ")"
+		);
 
-		if (pIsServer && listenerPeerVerification.equalsIgnoreCase("ignore")
-				|| (!pIsServer && !clientPeerVerification)) {
+		if (pIsServer && listenerPeerVerification.equalsIgnoreCase("ignore") || (!pIsServer && !clientPeerVerification)) {
 			trustManager = trustAll;
 			if (truststorePath == null || truststorePath.trim().length() == 0) {
-				logger.trace(Level.FINER, "Peer verification disabled for "
-						+ (pIsServer ? "Listener" : "Client"));
+				logger.trace(Level.FINER, "Peer verification disabled for " + (pIsServer ? "Listener" : "Client"));
 			} else {
 				logger.message(Messages.SSL_TRUSTSTORE_INACTIVE);
 			}
 		} else {
 			if (truststorePath == null || truststorePath.trim().length() == 0) {
-				logger.trace(Level.FINER, "Peer verification enabled for "
-						+ (pIsServer ? "Listener" : "Client") + " but no truststore specified!");
+				logger.trace(
+					Level.FINER,
+					"Peer verification enabled for " + (pIsServer ? "Listener" : "Client") + " but no truststore specified!"
+				);
 				logger.message(Messages.SSL_TRUSTSTORE_NULL);
 			} else {
-				logger.trace(Level.FINER, "Peer verification enabled for "
-						+ (pIsServer ? "Listener" : "Client"));
+				logger.trace(Level.FINER, "Peer verification enabled for " + (pIsServer ? "Listener" : "Client"));
 				FileInputStream fis = null;
 				try {
 					final KeyStore trustStore = KeyStore.getInstance(truststoreType);
 					fis = new FileInputStream(truststorePath);
 					trustStore.load(fis, truststorePassword);
-					final TrustManagerFactory trustManagerFactory = TrustManagerFactory
-							.getInstance(trustManagerAlgorithm, pSecurityProvider);
+					final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+						trustManagerAlgorithm,
+						pSecurityProvider
+					);
 					trustManagerFactory.init(trustStore);
 					trustManager = trustManagerFactory.getTrustManagers();
-					logger.trace(Level.FINER, "Truststore successfully loaded for "
-							+ (pIsServer ? "Listener" : "Client"));
+					logger.trace(Level.FINER, "Truststore successfully loaded for " + (pIsServer ? "Listener" : "Client"));
 				} catch (FileNotFoundException e) {
 					logger.trace(Level.FINER, "Exception while loading truststore", e);
 					logger.message(Messages.SSL_TRUSTSTORE_NOT_FOUND, truststorePath);
@@ -275,9 +272,7 @@ public class HttpSocketFactory {
 					logger.message(Messages.SSL_TRUSTSTORE_NOT_READABLE, truststorePath);
 				} catch (NoSuchAlgorithmException e) {
 					logger.trace(Level.FINER, "Exception while loading truststore", e);
-					logger
-							.message(Messages.SSL_TRUSTSTORE_INVALID_ALGORITHM,
-									trustManagerAlgorithm);
+					logger.message(Messages.SSL_TRUSTSTORE_INVALID_ALGORITHM, trustManagerAlgorithm);
 				} catch (CertificateException e) {
 					logger.trace(Level.FINER, "Exception while loading truststore", e);
 					logger.message(Messages.SSL_TRUSTSTORE_INVALID_CERT, truststorePath);
@@ -311,9 +306,11 @@ public class HttpSocketFactory {
 		return trustManager;
 	}
 
-	private KeyManager[] loadKeystore(final WBEMConfiguration pProperties,
-			final Provider pSecurityProvider, boolean pIsServer) {
-
+	private KeyManager[] loadKeystore(
+		final WBEMConfiguration pProperties,
+		final Provider pSecurityProvider,
+		boolean pIsServer
+	) {
 		final LogAndTraceBroker logger = LogAndTraceBroker.getBroker();
 		logger.entry();
 
@@ -325,16 +322,16 @@ public class HttpSocketFactory {
 		final String keystoreType = pProperties.getSslKeyStoreType();
 		final String keyManagerAlgorithm = pProperties.getSslKeyManagerAlgorithm();
 
-		logger.trace(Level.FINER, "Using SSL keystore \"" + keystorePath + "\" (" + keystoreType
-				+ "/" + keyManagerAlgorithm + ")");
+		logger.trace(
+			Level.FINER,
+			"Using SSL keystore \"" + keystorePath + "\" (" + keystoreType + "/" + keyManagerAlgorithm + ")"
+		);
 
 		if (keystorePath == null || keystorePath.trim().length() == 0) {
-			logger.trace(Level.FINER, "Keystore not specified for "
-					+ (pIsServer ? "Listener" : "Client"));
+			logger.trace(Level.FINER, "Keystore not specified for " + (pIsServer ? "Listener" : "Client"));
 			logger.message(Messages.SSL_KEYSTORE_NULL);
 		} else {
-			logger.trace(Level.FINER, "Keystore specified and activated for "
-					+ (pIsServer ? "Listener" : "Client"));
+			logger.trace(Level.FINER, "Keystore specified and activated for " + (pIsServer ? "Listener" : "Client"));
 			FileInputStream fis = null;
 			try {
 				final KeyStore keystore = KeyStore.getInstance(keystoreType);
@@ -342,11 +339,12 @@ public class HttpSocketFactory {
 				keystore.load(fis, keystorePassword);
 
 				final KeyManagerFactory keymanagerfactory = KeyManagerFactory.getInstance(
-						keyManagerAlgorithm, pSecurityProvider);
+					keyManagerAlgorithm,
+					pSecurityProvider
+				);
 				keymanagerfactory.init(keystore, keystorePassword);
 				keyManager = keymanagerfactory.getKeyManagers();
-				logger.trace(Level.FINER, "Keystore successfully loaded for "
-						+ (pIsServer ? "Listener" : "Client"));
+				logger.trace(Level.FINER, "Keystore successfully loaded for " + (pIsServer ? "Listener" : "Client"));
 			} catch (FileNotFoundException e) {
 				logger.trace(Level.FINER, "Exception while loading keystore", e);
 				logger.message(Messages.SSL_KEYSTORE_NOT_FOUND, keystorePath);
@@ -386,7 +384,6 @@ public class HttpSocketFactory {
 		logger.exit();
 		return keyManager;
 	}
-
 }
 
 class AllTrustManager implements X509TrustManager {

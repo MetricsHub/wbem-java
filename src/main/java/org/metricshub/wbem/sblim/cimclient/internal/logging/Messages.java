@@ -44,10 +44,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.logging;
 
 /**
  * Interface Messages holds the constants for the message keys.
- * 
+ *
  */
 public interface Messages {
-
 	/**
 	 * GREETING
 	 */

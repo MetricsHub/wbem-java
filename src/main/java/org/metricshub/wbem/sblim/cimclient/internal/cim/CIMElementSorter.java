@@ -44,7 +44,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cim;
 
 import java.util.Arrays;
 import java.util.Comparator;
-
 import org.metricshub.wbem.javax.cim.CIMElement;
 
 /**
@@ -52,12 +51,11 @@ import org.metricshub.wbem.javax.cim.CIMElement;
  * name in them.
  */
 public class CIMElementSorter implements Comparator<Object> {
-
 	private static final Comparator<Object> COMPARATOR = new CIMElementSorter();
 
 	/**
 	 * Sorts the passed CIMElement array, the passed array is not copied.
-	 * 
+	 *
 	 * @param pArray
 	 *            the array which will be sorted if it's not null
 	 * @return pArray
@@ -65,7 +63,7 @@ public class CIMElementSorter implements Comparator<Object> {
 	public static CIMElement[] sort(CIMElement[] pArray) {
 		if (pArray == null || pArray.length == 0) return null;
 		synchronized (pArray) {
-			Arrays.sort(pArray /* , COMPARATOR */);
+			Arrays.sort(pArray/* , COMPARATOR */);
 		}
 		return pArray;
 	}
@@ -73,7 +71,7 @@ public class CIMElementSorter implements Comparator<Object> {
 	/**
 	 * Finds CIMElement, named pName, in pArray which must be a sorted array of
 	 * CIMElements.
-	 * 
+	 *
 	 * @param pArray
 	 * @param pName
 	 * @return the CIMElement if found, otherwise null
@@ -91,7 +89,7 @@ public class CIMElementSorter implements Comparator<Object> {
 	/**
 	 * Finds the index of CIMElement, named pName, in pArray which must be a
 	 * sorted array of CIMElements.
-	 * 
+	 *
 	 * @param pArray
 	 * @param pName
 	 * @return the index, just like in case of Arrays.binarySearch()
@@ -111,11 +109,8 @@ public class CIMElementSorter implements Comparator<Object> {
 		// ebak: handling null objects
 		if (pObj0 == null) return pObj1 == null ? 0 : 1;
 		if (pObj1 == null) return -1;
-		String name0 = pObj0 instanceof CIMElement ? ((CIMElement) pObj0).getName()
-				: (String) pObj0;
-		String name1 = pObj1 instanceof CIMElement ? ((CIMElement) pObj1).getName()
-				: (String) pObj1;
+		String name0 = pObj0 instanceof CIMElement ? ((CIMElement) pObj0).getName() : (String) pObj0;
+		String name1 = pObj1 instanceof CIMElement ? ((CIMElement) pObj1).getName() : (String) pObj1;
 		return name0.compareToIgnoreCase(name1);
 	}
-
 }

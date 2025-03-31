@@ -58,14 +58,13 @@ import java.io.Serializable;
  * >DSP004</a>).
  */
 public abstract class CIMElement extends Object implements Serializable, Comparable<CIMElement> {
-
 	private static final long serialVersionUID = -3310480832682118922L;
 
 	private String iName;
 
 	/**
 	 * Creates a new CIM element with the given name.
-	 * 
+	 *
 	 * @param pName
 	 *            The string for the name of the element.
 	 * @throws IllegalArgumentException
@@ -78,7 +77,7 @@ public abstract class CIMElement extends Object implements Serializable, Compara
 
 	/**
 	 * Compares this element name to the CIMElement passed in.
-	 * 
+	 *
 	 * @param pObj
 	 *            The CIMElement to be compared.
 	 * @return A negative integer, zero, or a positive integer as this object is
@@ -95,7 +94,7 @@ public abstract class CIMElement extends Object implements Serializable, Compara
 	 * CIM element. Otherwise, it returns <code>false</code>. Useful for
 	 * comparing two CIM elements, for example, to determine whether a CIM
 	 * element exists in a Collection.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to be compared a CIM element.
 	 * @return <code>true</code> indicates the specified CIM element equals this
@@ -104,14 +103,15 @@ public abstract class CIMElement extends Object implements Serializable, Compara
 	 */
 	@Override
 	public boolean equals(Object pObj) {
-		if (pObj instanceof CIMElement) { return this.iName
-				.equalsIgnoreCase(((CIMElement) pObj).iName); }
+		if (pObj instanceof CIMElement) {
+			return this.iName.equalsIgnoreCase(((CIMElement) pObj).iName);
+		}
 		return false;
 	}
 
 	/**
 	 * Returns a string representing the name of a CIM element instance.
-	 * 
+	 *
 	 * @return The name of this CIM element.
 	 */
 	public String getName() {
@@ -122,7 +122,7 @@ public abstract class CIMElement extends Object implements Serializable, Compara
 	 * Returns a hash code value for the CIM element. This method is supported
 	 * for the benefit of hashtables such as those provided by
 	 * <code>java.util.Hashtable</code>.
-	 * 
+	 *
 	 * @return A hash code value for this CIM element.
 	 */
 	@Override
@@ -136,7 +136,7 @@ public abstract class CIMElement extends Object implements Serializable, Compara
 	 * debugging purposes. The format of the returned string may vary between
 	 * implementations. The returned string may be empty but may not be
 	 * <code>null</code>
-	 * 
+	 *
 	 * @return <code>String</code> representation of this CIM element.
 	 */
 	@Override

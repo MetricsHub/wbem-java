@@ -53,15 +53,13 @@ import java.net.HttpURLConnection;
 import java.net.SocketPermission;
 import java.net.URI;
 import java.security.Permission;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class HttpUrlConnection encapsulates a http connection
- * 
+ *
  */
 public class HttpUrlConnection extends HttpURLConnection {
-
 	private boolean iConnected;
 
 	private HttpClient iHttpClient;
@@ -74,7 +72,7 @@ public class HttpUrlConnection extends HttpURLConnection {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pUri
 	 *            The host URI
 	 * @param pHttpClientPool
@@ -82,8 +80,7 @@ public class HttpUrlConnection extends HttpURLConnection {
 	 * @param pAuthHandler
 	 *            The authentication handler
 	 */
-	public HttpUrlConnection(URI pUri, HttpClientPool pHttpClientPool,
-			AuthorizationHandler pAuthHandler) {
+	public HttpUrlConnection(URI pUri, HttpClientPool pHttpClientPool, AuthorizationHandler pAuthHandler) {
 		super(null);
 		this.iUrl = pUri;
 		this.iHttpClientPool = pHttpClientPool;
@@ -93,9 +90,15 @@ public class HttpUrlConnection extends HttpURLConnection {
 
 	@Override
 	public String toString() {
-		return "HttpUrlConnection=[url=" + this.iUrl + ",PoolSize="
-				+ this.iHttpClientPool.getNumberOfAvailableConnections() + "," + this.iAuthHandler
-				+ "]";
+		return (
+			"HttpUrlConnection=[url=" +
+			this.iUrl +
+			",PoolSize=" +
+			this.iHttpClientPool.getNumberOfAvailableConnections() +
+			"," +
+			this.iAuthHandler +
+			"]"
+		);
 	}
 
 	@Override
@@ -198,7 +201,7 @@ public class HttpUrlConnection extends HttpURLConnection {
 
 	/**
 	 * Returns the http client
-	 * 
+	 *
 	 * @return The http client
 	 */
 	public synchronized HttpClient getHttpClient() {
@@ -258,7 +261,7 @@ public class HttpUrlConnection extends HttpURLConnection {
 
 	/**
 	 * Enables/Disables the use of http 1.1
-	 * 
+	 *
 	 * @param pUse11
 	 *            If <code>true</code> http 1.1 is enabled.
 	 */

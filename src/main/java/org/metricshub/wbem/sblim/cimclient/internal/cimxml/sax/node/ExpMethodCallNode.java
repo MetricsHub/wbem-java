@@ -45,7 +45,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -59,10 +58,9 @@ import org.xml.sax.SAXException;
  */
 /**
  * Class ExpMethodCallNode is responsible for
- * 
+ *
  */
 public class ExpMethodCallNode extends Node implements NonVolatileIf {
-
 	private String iName;
 
 	private ArrayList<Node> iExpParamValNodeAList;
@@ -93,14 +91,14 @@ public class ExpMethodCallNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != EXPPARAMVALUE) throw new SAXException(getNodeName()
-				+ " node can have " + EXPPARAMVALUE + " child only! " + pNodeNameEnum
-				+ " is invalid!");
+		if (pNodeNameEnum != EXPPARAMVALUE) throw new SAXException(
+			getNodeName() + " node can have " + EXPPARAMVALUE + " child only! " + pNodeNameEnum + " is invalid!"
+		);
 	}
 
 	/**
@@ -108,22 +106,21 @@ public class ExpMethodCallNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do yet
+		// nothing to do yet
 
 	}
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child
+		// no mandatory child
 	}
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
 		return this.iName;
 	}
-
 }

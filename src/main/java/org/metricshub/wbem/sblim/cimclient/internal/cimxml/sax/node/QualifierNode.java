@@ -61,7 +61,7 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT QUALIFIER ((VALUE | VALUE.ARRAY)?)
- * ATTLIST QUALIFIER 
+ * ATTLIST QUALIFIER
  *  %CIMName;
  *  %CIMType;              #REQUIRED
  *  %Propagated;
@@ -70,7 +70,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class QualifierNode extends Node {
-
 	private String iName;
 
 	private CIMDataType iType;
@@ -111,15 +110,17 @@ public class QualifierNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iQuali != null) throw new SAXException(getNodeName()
-				+ " node can have only one VALUE or VALUE.ARRAY child node!");
+		if (this.iQuali != null) throw new SAXException(
+			getNodeName() + " node can have only one VALUE or VALUE.ARRAY child node!"
+		);
 		if (pNodeNameEnum != VALUE && pNodeNameEnum != VALUE_ARRAY) throw new SAXException(
-				pNodeNameEnum + " child node is not valid for " + getNodeName() + " node!");
+			pNodeNameEnum + " child node is not valid for " + getNodeName() + " node!"
+		);
 	}
 
 	@Override
@@ -133,8 +134,7 @@ public class QualifierNode extends Node {
 			// create array value
 			value = CIMObjectFactory.getObject(this.iType, valANode);
 			// constructs array type
-			type = this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType
-					.getType());
+			type = this.iType.isArray() ? this.iType : CIMHelper.UnboundedArrayDataType(this.iType.getType());
 		} else if (absValNode instanceof ValueNode) {
 			ValueNode valNode = (ValueNode) absValNode;
 			setType(valNode);
@@ -145,23 +145,22 @@ public class QualifierNode extends Node {
 			type = CIMDataType.STRING_T;
 			value = null;
 		}
-		this.iQuali = new CIMQualifier<Object>(this.iName, type, value, this.iFlavor,
-				this.iPropagated);
+		this.iQuali = new CIMQualifier<Object>(this.iName, type, value, this.iFlavor, this.iPropagated);
 	}
 
 	@Override
 	public void testCompletness() {
-	// child node is optional, hence commented to support
-	// servers that do not implement default value to qualifier node
-	/*
-	 * if (iQuali == null) throw new SAXException(getNodeName() + " must have a
-	 * VALUE or VALUE.ARRAY child node!");
-	 */
+		// child node is optional, hence commented to support
+		// servers that do not implement default value to qualifier node
+		/*
+		 * if (iQuali == null) throw new SAXException(getNodeName() + " must have a
+		 * VALUE or VALUE.ARRAY child node!");
+		 */
 	}
 
 	/**
 	 * getQualifier
-	 * 
+	 *
 	 * @return CIMQualifier
 	 */
 	public CIMQualifier<Object> getQualifier() {
@@ -172,15 +171,15 @@ public class QualifierNode extends Node {
 	 * Required to handle the output XML of some non-standard CIMOMs like SVC
 	 * which adds the TYPE attribute to the sub VALUE or VALUE.ARRAY XML
 	 * element.
-	 * 
+	 *
 	 * @param pTypedIf
 	 * @throws SAXException
 	 */
 	private void setType(TypedIf pTypedIf) throws SAXException {
 		if (this.iType != null) return;
 		this.iType = pTypedIf.getType();
-		if (this.iType == null) throw new SAXException("Unknown type for Qualifier declaration in "
-				+ getNodeName() + " node!");
+		if (this.iType == null) throw new SAXException(
+			"Unknown type for Qualifier declaration in " + getNodeName() + " node!"
+		);
 	}
-
 }

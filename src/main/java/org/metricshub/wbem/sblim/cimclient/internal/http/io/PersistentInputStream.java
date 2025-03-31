@@ -49,17 +49,16 @@ import java.io.InputStream;
 /**
  * Class PersistentInputStream implements an input stream for which close() can
  * be disabled.
- * 
+ *
  */
 public class PersistentInputStream extends FilterInputStream {
-
 	boolean iClosable = false;
 
 	boolean iClosed = false;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 */
@@ -69,7 +68,7 @@ public class PersistentInputStream extends FilterInputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 * @param pClosable

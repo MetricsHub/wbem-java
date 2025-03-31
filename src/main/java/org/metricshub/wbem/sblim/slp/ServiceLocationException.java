@@ -50,7 +50,6 @@ package org.metricshub.wbem.sblim.slp;
  * information.
  */
 public class ServiceLocationException extends Exception {
-
 	private static final long serialVersionUID = 6414188770647750627L;
 
 	/**
@@ -175,19 +174,37 @@ public class ServiceLocationException extends Exception {
 	 */
 	public static final short PREVIOUS_RESPONDER_OVERFLOW = 100;
 
-	private static final String[] ERROR_MESSAGES = { "OK", "LANGUAGE_NOT_SUPPORTED", "PARSE_ERROR",
-			"INVALID_REGISTRATION", "SCOPE_NOT_SUPPORTED", "AUTHENTICATION_UNKNOWN",
-			"AUTHENTICATION_ABSENT", "AUTHENTICATION_FAILED", "", "VERSION_NOT_SUPPORTED",
-			"INTERNAL_ERROR", "DA_BUSY", "OPTION_NOT_SUPPORTED", "INVALID_UPDATE",
-			"REQUEST_NOT_SUPPORTED", "REFRESH_REJECTED", "NOT_IMPLEMENTED", "NETWORK_INIT_FAILED",
-			"NETWORK_TIMED_OUT", "NETWORK_ERROR", "INTERNAL_SYSTEM_ERROR", "TYPE_ERROR",
-			"BUFFER_OVERFLOW" };
+	private static final String[] ERROR_MESSAGES = {
+		"OK",
+		"LANGUAGE_NOT_SUPPORTED",
+		"PARSE_ERROR",
+		"INVALID_REGISTRATION",
+		"SCOPE_NOT_SUPPORTED",
+		"AUTHENTICATION_UNKNOWN",
+		"AUTHENTICATION_ABSENT",
+		"AUTHENTICATION_FAILED",
+		"",
+		"VERSION_NOT_SUPPORTED",
+		"INTERNAL_ERROR",
+		"DA_BUSY",
+		"OPTION_NOT_SUPPORTED",
+		"INVALID_UPDATE",
+		"REQUEST_NOT_SUPPORTED",
+		"REFRESH_REJECTED",
+		"NOT_IMPLEMENTED",
+		"NETWORK_INIT_FAILED",
+		"NETWORK_TIMED_OUT",
+		"NETWORK_ERROR",
+		"INTERNAL_SYSTEM_ERROR",
+		"TYPE_ERROR",
+		"BUFFER_OVERFLOW"
+	};
 
 	private short iErrorCode;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 *            One of the ec constants in this class
 	 */
@@ -198,7 +215,7 @@ public class ServiceLocationException extends Exception {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 *            One of the ec constants in this class
 	 * @param pCause
@@ -211,13 +228,13 @@ public class ServiceLocationException extends Exception {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 *            One of the ec constants in this class
 	 * @param pMessage
 	 *            A more specific message
 	 * @param pCause
-	 * 
+	 *
 	 */
 	public ServiceLocationException(short pErrorCode, String pMessage, Throwable pCause) {
 		super(ERROR_MESSAGES[pErrorCode] + "(" + pMessage + ")", pCause);
@@ -226,7 +243,7 @@ public class ServiceLocationException extends Exception {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 *            One of the error code constants in this class
 	 * @param pMessage
@@ -239,7 +256,7 @@ public class ServiceLocationException extends Exception {
 	/**
 	 * Return the error code. The error code takes on one of the static field
 	 * values.
-	 * 
+	 *
 	 * @return The error code
 	 */
 	public short getErrorCode() {
@@ -248,13 +265,14 @@ public class ServiceLocationException extends Exception {
 
 	/**
 	 * Gets the message associated to this exception.
-	 * 
+	 *
 	 * @return The message
 	 */
 	@Override
 	public String getMessage() {
-		if (getCause() == null) { return super.getMessage(); }
+		if (getCause() == null) {
+			return super.getMessage();
+		}
 		return super.getMessage() + "; nested exception is: \n\t" + getCause().toString();
 	}
-
 }

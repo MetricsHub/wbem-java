@@ -56,7 +56,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class ExpParamValueNode extends Node implements NonVolatileIf {
-
 	private String iName;
 
 	private Node iChildNode;
@@ -86,15 +85,15 @@ public class ExpParamValueNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iChildNode != null) throw new SAXException(getNodeName()
-				+ " node can have only one child node!");
-		if (pNodeNameEnum != INSTANCE) throw new SAXException(getNodeName() + " node cannot have "
-				+ pNodeNameEnum + " child node!");
+		if (this.iChildNode != null) throw new SAXException(getNodeName() + " node can have only one child node!");
+		if (pNodeNameEnum != INSTANCE) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	/**
@@ -102,21 +101,20 @@ public class ExpParamValueNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do yet
+		// nothing to do yet
 	}
 
 	@Override
 	public void testCompletness() {
-	// child node is optional
+		// child node is optional
 	}
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
 		return this.iName;
 	}
-
 }

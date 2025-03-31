@@ -51,7 +51,6 @@ package org.metricshub.wbem.javax.cim;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.cim.CIMElementSorter;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
@@ -66,7 +65,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.StringSorter;
  * >DSP004</a>).
  */
 public class CIMInstance extends Object implements CIMNamedElementInterface, Serializable {
-
 	private static final long serialVersionUID = -249160087013230559L;
 
 	private static final CIMProperty<?>[] EMPTY_PROP_A = new CIMProperty[0];
@@ -78,7 +76,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	/**
 	 * Constructs a <code>CIMInstance</code> object using the name and
 	 * properties specified.
-	 * 
+	 *
 	 * @param pName
 	 *            The <code>CIMObjectPath</code> for this
 	 *            <code>CIMInstance</code>.
@@ -92,8 +90,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 *             cost of the verification. Some implementations may leave it
 	 *             up to the developer to ensure that the values match.
 	 */
-	public CIMInstance(CIMObjectPath pName, CIMProperty<?>[] pProps)
-			throws IllegalArgumentException {
+	public CIMInstance(CIMObjectPath pName, CIMProperty<?>[] pProps) throws IllegalArgumentException {
 		if (pName == null) {
 			String msg = "CIMObjectPath parameter cannot be null!";
 			// TODO: tracing
@@ -117,7 +114,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	/**
 	 * Returns a <code>CIMInstance</code> with the updated
 	 * <code>CIMObjectPath</code>.
-	 * 
+	 *
 	 * @param pPath
 	 *            The complete <code>CIMObjectPath</code> for this instance.
 	 * @return A new <code>CIMInstance</code> with the updated
@@ -130,7 +127,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	/**
 	 * Returns a <code>CIMInstance</code> with the updated values for the
 	 * properties in <code>pPropA</code>. Any new properties are ignored.
-	 * 
+	 *
 	 * @param pPropA
 	 *            The array of properties to update.
 	 * @return A new instance with the updated properties.
@@ -138,8 +135,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	public CIMInstance deriveInstance(CIMProperty<?>[] pPropA) {
 		if (pPropA == null || pPropA.length == 0) return this;
 		CIMProperty<?>[] newPropA = new CIMProperty[getPropertyCount()];
-		for (int i = 0; i < newPropA.length; i++)
-			newPropA[i] = this.iProps[i];
+		for (int i = 0; i < newPropA.length; i++) newPropA[i] = this.iProps[i];
 		for (int i = 0; i < pPropA.length; i++) {
 			CIMProperty<?> newProp = pPropA[i];
 			int idx = CIMElementSorter.findIdx(newPropA, newProp.getName());
@@ -150,16 +146,28 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 			 * the referenced class name due to derivation
 			 */
 			if (!typesEqual(oldProp, newProp)) {
-				LogAndTraceBroker.getBroker().trace(
+				LogAndTraceBroker
+					.getBroker()
+					.trace(
 						Level.FINE,
-						"CIMInstance.deriveInstance() can update only property "
-								+ "values but not property types!\n" + "original property: "
-								+ oldProp + "\nnew property: " + newProp);
+						"CIMInstance.deriveInstance() can update only property " +
+						"values but not property types!\n" +
+						"original property: " +
+						oldProp +
+						"\nnew property: " +
+						newProp
+					);
 				continue;
 			}
-			newPropA[idx] = new CIMProperty<Object>(oldProp.getName(), newProp.getDataType(),
-					newProp.getValue(), oldProp.isKey(), oldProp.isPropagated(), oldProp
-							.getOriginClass());
+			newPropA[idx] =
+				new CIMProperty<Object>(
+					oldProp.getName(),
+					newProp.getDataType(),
+					newProp.getValue(),
+					oldProp.isKey(),
+					oldProp.isPropagated(),
+					oldProp.getOriginClass()
+				);
 		}
 		return new CIMInstance(this.iObjPath, newPropA);
 	}
@@ -168,7 +176,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 * Indicates whether some other instance is equal to this one. Two
 	 * <code>CIMInstances</code> are considered equal if the names are the same.
 	 * This method does NOT compare each property value.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the specified path references the same
@@ -185,7 +193,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 * This method returns a new <code>CIMInstance</code> with properties
 	 * filtered according to the input parameters. Inclusion of class origin and
 	 * qualifiers can also be controlled.
-	 * 
+	 *
 	 * @param pLocalOnly
 	 *            Include only the properties values that were instantiated in
 	 *            this instance.
@@ -205,24 +213,30 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 *            invalid property names, they are ignored.
 	 * @return <code>CIMInstance</code> matching the input filter.
 	 */
-	public CIMInstance filterProperties(boolean pLocalOnly, boolean pIncludeClassOrigin,
-			String[] pPropertyList) {
+	public CIMInstance filterProperties(boolean pLocalOnly, boolean pIncludeClassOrigin, String[] pPropertyList) {
 		StringSorter.sort(pPropertyList);
 		ArrayList<CIMProperty<?>> propAList = new ArrayList<CIMProperty<?>>();
 		for (int i = 0; i < getPropertyCount(); i++) {
 			CIMProperty<?> prop = getProperty(i);
 			if (pLocalOnly && prop.isPropagated()) continue;
 			if (pPropertyList != null && !StringSorter.find(pPropertyList, prop.getName())) continue;
-			propAList.add(new CIMProperty<Object>(prop.getName(), prop.getDataType(), prop
-					.getValue(), prop.isKey(), prop.isPropagated(), pIncludeClassOrigin ? prop
-					.getOriginClass() : null));
+			propAList.add(
+				new CIMProperty<Object>(
+					prop.getName(),
+					prop.getDataType(),
+					prop.getValue(),
+					prop.isKey(),
+					prop.isPropagated(),
+					pIncludeClassOrigin ? prop.getOriginClass() : null
+				)
+			);
 		}
 		return new CIMInstance(this.iObjPath, propAList.toArray(EMPTY_PROP_A));
 	}
 
 	/**
 	 * Get the name of the class that instantiates this CIM instance.
-	 * 
+	 *
 	 * @return Name of class that instantiates this CIM instance.
 	 */
 	public String getClassName() {
@@ -231,7 +245,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Get the key properties for this instance.
-	 * 
+	 *
 	 * @return An array of key properties.
 	 */
 	public CIMProperty<?>[] getKeys() {
@@ -240,7 +254,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Returns the <code>CIMObjectPath</code> that represents this instance.
-	 * 
+	 *
 	 * @return The <code>CIMObjectPath</code> that represents this instance.
 	 */
 	public CIMObjectPath getObjectPath() {
@@ -249,7 +263,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Retrieve an array of the properties for this instance.
-	 * 
+	 *
 	 * @return An array of the CIM properties for this instance.
 	 */
 	public CIMProperty<?>[] getProperties() {
@@ -258,7 +272,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Get a class property by index.
-	 * 
+	 *
 	 * @param pIndex
 	 *            The index of the class property to retrieve.
 	 * @return The <code>CIMProperty</code> at the specified index.
@@ -270,7 +284,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Returns the specified property.
-	 * 
+	 *
 	 * @param pName
 	 *            The text string for the name of the property.
 	 * @return The property requested or <code>null</code> if the property does
@@ -282,7 +296,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Returns the specified <code>CIMProperty</code>.
-	 * 
+	 *
 	 * @param pName
 	 *            The string name of the property to get.
 	 * @param pOriginClass
@@ -301,7 +315,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Get the number of properties defined in this <code>CIMInstance</code>.
-	 * 
+	 *
 	 * @return The number of properties defined in the <code>CIMInstance</code>.
 	 */
 	public int getPropertyCount() {
@@ -310,7 +324,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Returns the value of a property of this CIM Instance.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @return The value for the specified property name or <code>null</code> if
@@ -325,7 +339,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 * Computes the hash code for this instance. The hash code will be the
 	 * object path of the instance not including the host or namespace
 	 * information.
-	 * 
+	 *
 	 * @return The integer representing the hash code for this object path.
 	 */
 	@Override
@@ -339,7 +353,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return String representation of this instance.
 	 */
 	@Override
@@ -349,7 +363,7 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 
 	/**
 	 * Indicates whether the data types of the two properties are equal.
-	 * 
+	 *
 	 * @param pProp0
 	 *            First property.
 	 *@param pProp1
@@ -360,7 +374,5 @@ public class CIMInstance extends Object implements CIMNamedElementInterface, Ser
 	private static boolean typesEqual(CIMProperty<?> pProp0, CIMProperty<?> pProp1) {
 		CIMDataType type0 = pProp0.getDataType(), type1 = pProp0.getDataType();
 		return type0.getType() == type1.getType() && type0.isArray() == type1.isArray();
-
 	}
-
 }

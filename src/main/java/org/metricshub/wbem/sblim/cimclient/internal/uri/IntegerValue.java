@@ -47,10 +47,9 @@ import java.util.regex.Pattern;
 
 /**
  * Class IntegerValue parses and encapsulates an integer value.
- * 
+ *
  */
 public class IntegerValue extends Value {
-
 	private BigInteger iBigValue;
 
 	private boolean iTyped;
@@ -67,7 +66,7 @@ public class IntegerValue extends Value {
 	 *      decimalValue		=	[ &quot;+&quot; | &quot;-&quot; ] ( positiveDecimalDigit *decimalDigit | &quot;0&quot; )
 	 *      hexValue			=	[ &quot;+&quot; | &quot;-&quot; ] ( &quot;0x&quot; | &quot;0X&quot; ) 1*hexDigit
 	 * </pre>
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pTyped
 	 *            - if <code>true</code> pSigned and pBitWidth will be
@@ -80,8 +79,8 @@ public class IntegerValue extends Value {
 	 * @throws IllegalArgumentException
 	 *             if parsing is failed and pThrow is true
 	 */
-	private static Value parse(URIString pUriStr, boolean pTyped, boolean pSigned, int pBitWidth,
-			boolean pThrow) throws IllegalArgumentException {
+	private static Value parse(URIString pUriStr, boolean pTyped, boolean pSigned, int pBitWidth, boolean pThrow)
+		throws IllegalArgumentException {
 		URIString savedUriStr = pUriStr.deepCopy();
 		// get the substring till the next ',' or end of uriStr
 		String valStr = pUriStr.removeTill(',');
@@ -157,7 +156,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * Parses an untyped integer value.
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return a <code>Value</code>
 	 */
@@ -167,36 +166,33 @@ public class IntegerValue extends Value {
 
 	/**
 	 * parseUnsigned
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pBitWidth
 	 * @return Value
 	 * @throws IllegalArgumentException
 	 *             if parsing failed.
 	 */
-	public static Value parseUnsigned(URIString pUriStr, int pBitWidth)
-			throws IllegalArgumentException {
+	public static Value parseUnsigned(URIString pUriStr, int pBitWidth) throws IllegalArgumentException {
 		return parse(pUriStr, true, false, pBitWidth, true);
 	}
 
 	/**
 	 * parseSigned
-	 * 
+	 *
 	 * @param pUriStr
 	 * @param pBitWidth
 	 * @return Value
 	 * @throws IllegalArgumentException
 	 *             if parsing failed.
 	 */
-	public static Value parseSigned(URIString pUriStr, int pBitWidth)
-			throws IllegalArgumentException {
+	public static Value parseSigned(URIString pUriStr, int pBitWidth) throws IllegalArgumentException {
 		return parse(pUriStr, true, true, pBitWidth, true);
 	}
 
-	private static final Pattern BIN_PAT = Pattern.compile("^((?:\\+|-)?[01]+)[bB]$"),
-			OCT_PAT = Pattern.compile("^(?:\\+|-)?0[0-7]+$"), DEC_PAT = Pattern
-					.compile("^(?:\\+|-)?[1-9][0-9]*$"), HEX_PAT = Pattern
-					.compile("^(\\+|-)?0[xX]([0-9a-fA-F]+)$");
+	private static final Pattern BIN_PAT = Pattern.compile("^((?:\\+|-)?[01]+)[bB]$"), OCT_PAT = Pattern.compile(
+		"^(?:\\+|-)?0[0-7]+$"
+	), DEC_PAT = Pattern.compile("^(?:\\+|-)?[1-9][0-9]*$"), HEX_PAT = Pattern.compile("^(\\+|-)?0[xX]([0-9a-fA-F]+)$");
 
 	private IntegerValue(String pStrVal, int pRadix, boolean pTyped, boolean pSigned, int pBitWidth) {
 		this.iBigValue = new BigInteger(pStrVal, pRadix);
@@ -205,8 +201,7 @@ public class IntegerValue extends Value {
 		this.iBitWidth = pBitWidth;
 	}
 
-	private static IntegerValue make(String pStrVal, int pRadix, boolean pTyped, boolean pSigned,
-			int pBitWidth) {
+	private static IntegerValue make(String pStrVal, int pRadix, boolean pTyped, boolean pSigned, int pBitWidth) {
 		IntegerValue val = new IntegerValue(pStrVal, pRadix, pTyped, pSigned, pBitWidth);
 		if (pTyped) {
 			if (!pSigned && val.isNegative()) {
@@ -226,7 +221,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * byteValue
-	 * 
+	 *
 	 * @return byte
 	 */
 	public byte byteValue() {
@@ -235,7 +230,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * shortValue
-	 * 
+	 *
 	 * @return short
 	 */
 	public short shortValue() {
@@ -244,7 +239,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * intValue
-	 * 
+	 *
 	 * @return int
 	 */
 	public int intValue() {
@@ -253,7 +248,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * longValue
-	 * 
+	 *
 	 * @return long
 	 */
 	public long longValue() {
@@ -262,7 +257,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * bigIntValue
-	 * 
+	 *
 	 * @return BigInteger
 	 */
 	public BigInteger bigIntValue() {
@@ -271,7 +266,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * isNegative
-	 * 
+	 *
 	 * @return <code>true</code> if the number is negative
 	 */
 	public boolean isNegative() {
@@ -280,7 +275,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * isSigned
-	 * 
+	 *
 	 * @return <code>true</code> if the number is signed integer
 	 */
 	public boolean isSigned() {
@@ -290,7 +285,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * bitLength
-	 * 
+	 *
 	 * @return the number of bits which is required for storing this integer
 	 *         value.
 	 */
@@ -302,7 +297,7 @@ public class IntegerValue extends Value {
 
 	/**
 	 * getBitWidth
-	 * 
+	 *
 	 * @return 8, 16, 32 or 64
 	 */
 	public int getBitWidth() {
@@ -329,5 +324,4 @@ public class IntegerValue extends Value {
 	public String getTypeInfo() {
 		return isSigned() ? "sint" : "uint" + getBitWidth();
 	}
-
 }

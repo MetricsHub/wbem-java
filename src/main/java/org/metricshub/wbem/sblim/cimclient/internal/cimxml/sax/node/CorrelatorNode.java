@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class CorrelatorNode extends Node implements TypedIf, ValueIf {
-
 	// private String iName;
 
 	private CIMDataType iType;
@@ -83,15 +82,15 @@ public class CorrelatorNode extends Node implements TypedIf, ValueIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != VALUE) throw new SAXException(pNodeNameEnum
-				+ " cannot be the child node of " + getNodeName() + " node!");
-		if (this.iHasValue) throw new SAXException(getNodeName()
-				+ " node can have only one child node!");
+		if (pNodeNameEnum != VALUE) throw new SAXException(
+			pNodeNameEnum + " cannot be the child node of " + getNodeName() + " node!"
+		);
+		if (this.iHasValue) throw new SAXException(getNodeName() + " node can have only one child node!");
 	}
 
 	@Override
@@ -102,8 +101,7 @@ public class CorrelatorNode extends Node implements TypedIf, ValueIf {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasValue) throw new SAXException(getNodeName()
-				+ " node must have one VALUE child node!");
+		if (!this.iHasValue) throw new SAXException(getNodeName() + " node must have one VALUE child node!");
 	}
 
 	public CIMDataType getType() {
@@ -113,5 +111,4 @@ public class CorrelatorNode extends Node implements TypedIf, ValueIf {
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

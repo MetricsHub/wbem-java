@@ -57,21 +57,20 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT VALUE.NAMEDINSTANCE (INSTANCENAME, INSTANCE)
- * 
+ *
  * ELEMENT INSTANCENAME (KEYBINDING* | KEYVALUE? | VALUE.REFERENCE?)
  * ATTLIST INSTANCENAME
  *   %ClassName;
- *   
+ *
  * ELEMENT INSTANCE (QUALIFIER*, (PROPERTY | PROPERTY.ARRAY | PROPERTY.REFERENCE)*)
  * ATTLIST INSTANCE
  *   %ClassName;
- *   xml:lang   NMTOKEN      #IMPLIED 
+ *   xml:lang   NMTOKEN      #IMPLIED
  * FIXME: Why INSTANCE has qualifiers? CIMInstance doesn't have!
  * FIXME: InstanceName and instance provides redundant information. Why?
  * </pre>
  */
 public class ValueNamedInstanceNode extends AbstractScalarValueNode {
-
 	// INSTANCENAME
 	private CIMObjectPath iCIMInstPath;
 
@@ -101,20 +100,21 @@ public class ValueNamedInstanceNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == INSTANCENAME) {
 			if (this.iCIMInstPath != null) throw new SAXException(
-					"VALUE.NAMEDINSTANCE node can have only one INSTANCENAME node, but another one was found!");
+				"VALUE.NAMEDINSTANCE node can have only one INSTANCENAME node, but another one was found!"
+			);
 		} else if (pNodeNameEnum == INSTANCE) {
 			if (this.iCIMInstance != null) throw new SAXException(
-					"VALUE.NAMEDINSTANCE node can have only one INSTANCE node, but another one was found!");
+				"VALUE.NAMEDINSTANCE node can have only one INSTANCE node, but another one was found!"
+			);
 		} else {
-			throw new SAXException("VALUE.NAMEDINSTANCE node cannot have " + pNodeNameEnum
-					+ " child node!");
+			throw new SAXException("VALUE.NAMEDINSTANCE node cannot have " + pNodeNameEnum + " child node!");
 		}
 	}
 
@@ -130,9 +130,9 @@ public class ValueNamedInstanceNode extends AbstractScalarValueNode {
 	@Override
 	public void testCompletness() throws SAXException {
 		if (this.iCIMInstPath == null) throw new SAXException(
-				"VALUE.NAMEDINSTANCE node must have an INSTANCENAME child node!");
-		if (this.iCIMInstance == null) throw new SAXException(
-				"VALUE.NAMEDINSTANCE node must have an INSTANCE child node!");
+			"VALUE.NAMEDINSTANCE node must have an INSTANCENAME child node!"
+		);
+		if (this.iCIMInstance == null) throw new SAXException("VALUE.NAMEDINSTANCE node must have an INSTANCE child node!");
 	}
 
 	/**
@@ -145,14 +145,16 @@ public class ValueNamedInstanceNode extends AbstractScalarValueNode {
 		 * INSTANCENAME contains the key properties only, INSTANCE contains the
 		 * non-key properties too.
 		 */
-		if (WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()) return CIMHelper
-				.CIMInstanceWithSynchonizedNumericKeyDataTypes(this.iCIMInstPath, this.iCIMInstance
-						.getProperties());
+		if (
+			WBEMConfiguration.getGlobalConfiguration().synchronizeNumericKeyDataTypes()
+		) return CIMHelper.CIMInstanceWithSynchonizedNumericKeyDataTypes(
+			this.iCIMInstPath,
+			this.iCIMInstance.getProperties()
+		);
 		return new CIMInstance(this.iCIMInstPath, this.iCIMInstance.getProperties());
 	}
 
 	public CIMDataType getType() {
 		return CIMDataType.OBJECT_T;
 	}
-
 }

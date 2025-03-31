@@ -48,10 +48,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * Class CIMAssociatorsOp
- * 
+ *
  */
 public class CIMAssociatorsOp extends CIMOperation {
-
 	protected String iAssociationClass;
 
 	protected String iResultClass;
@@ -68,7 +67,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pAssociationClass
 	 * @param pResultClass
@@ -78,10 +77,16 @@ public class CIMAssociatorsOp extends CIMOperation {
 	 * @param pIncludeClassOrigin
 	 * @param pPropertyList
 	 */
-	public CIMAssociatorsOp(CIMObjectPath pObjectName, String pAssociationClass,
-			String pResultClass, String pRole, String pResultRole, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) {
-
+	public CIMAssociatorsOp(
+		CIMObjectPath pObjectName,
+		String pAssociationClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	) {
 		this.iMethodCall = "Associators";
 		this.iObjectName = pObjectName;
 		this.iAssociationClass = pAssociationClass;
@@ -94,7 +99,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns the association class
-	 * 
+	 *
 	 * @return The association class
 	 */
 	public String getAssocClass() {
@@ -103,7 +108,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns if includeQualifiers is set
-	 * 
+	 *
 	 * @return The value of includeClassOrigin
 	 */
 	public boolean isIncludeClassOrigin() {
@@ -112,7 +117,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns if includeQualifiers is set
-	 * 
+	 *
 	 * @return The value of includeClassOrigin
 	 */
 	public boolean isIncludeQualifiers() {
@@ -121,7 +126,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns the property list
-	 * 
+	 *
 	 * @return The property list
 	 */
 	public String[] getPropertyList() {
@@ -130,7 +135,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns the result class
-	 * 
+	 *
 	 * @return The result class
 	 */
 	public String getResultClass() {
@@ -139,7 +144,7 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns the result role
-	 * 
+	 *
 	 * @return The result role
 	 */
 	public String getResultRole() {
@@ -148,11 +153,10 @@ public class CIMAssociatorsOp extends CIMOperation {
 
 	/**
 	 * Returns the role
-	 * 
+	 *
 	 * @return The role
 	 */
 	public String getRole() {
 		return this.iRole;
 	}
-
 }

@@ -48,13 +48,12 @@ import java.util.Comparator;
  * searching of String arrays.
  */
 public class StringSorter implements Comparator<Object> {
-
 	private static final Comparator<Object> COMPARATOR = new StringSorter();
 
 	/**
 	 * Sorts non case sensitively the passed String array, the passed array is
 	 * not copied.
-	 * 
+	 *
 	 * @param pArray
 	 *            the array which will be sorted if it's not null
 	 * @return pArray
@@ -70,7 +69,7 @@ public class StringSorter implements Comparator<Object> {
 	/**
 	 * Finds pName, in pArray which must be a non case sensitive sorted array of
 	 * Strings.
-	 * 
+	 *
 	 * @param pArray
 	 * @param pName
 	 * @return <code>true</code> if found, otherwise <code>false</code>
@@ -91,5 +90,4 @@ public class StringSorter implements Comparator<Object> {
 		String str2 = (String) pO2;
 		return str1.compareToIgnoreCase(str2);
 	}
-
 }

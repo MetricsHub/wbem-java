@@ -47,10 +47,9 @@ import java.io.StringReader;
 
 /**
  * Class DTString helps parsing CIMDateTime Strings.
- * 
+ *
  */
 public class DTStringReader {
-
 	private String iDateTimeStr;
 
 	private StringReader iReader;
@@ -61,7 +60,7 @@ public class DTStringReader {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pDateTimeStr
 	 */
 	public DTStringReader(String pDateTimeStr) {
@@ -71,7 +70,7 @@ public class DTStringReader {
 
 	/**
 	 * read
-	 * 
+	 *
 	 * @param pLen
 	 *            - number of characters to be read from the string
 	 * @param pFieldName
@@ -81,8 +80,7 @@ public class DTStringReader {
 	 * @return int
 	 * @throws IllegalArgumentException
 	 */
-	public int read(int pLen, String pFieldName, boolean pAllowUnsignificant)
-			throws IllegalArgumentException {
+	public int read(int pLen, String pFieldName, boolean pAllowUnsignificant) throws IllegalArgumentException {
 		char[] buf = new char[pLen];
 		int read;
 		try {
@@ -93,15 +91,14 @@ public class DTStringReader {
 			throw new IllegalArgumentException(msg);
 		}
 		if (read != pLen) {
-			String msg = "Length of " + pFieldName + " field should be " + pLen + " but only"
-					+ read + " characters could be read!";
+			String msg =
+				"Length of " + pFieldName + " field should be " + pLen + " but only" + read + " characters could be read!";
 			throw new IllegalArgumentException(msg);
 		}
 		// Not significant check
 		if (pAllowUnsignificant) {
 			int cnt = 0;
-			for (int i = 0; i < buf.length; i++)
-				if (buf[i] == '*') ++cnt;
+			for (int i = 0; i < buf.length; i++) if (buf[i] == '*') ++cnt;
 			if (cnt == buf.length) {
 				this.iUnsignificant = true;
 				return -1;
@@ -113,21 +110,22 @@ public class DTStringReader {
 		try {
 			res = Integer.parseInt(field);
 		} catch (NumberFormatException e) {
-			String msg = "Illegal " + pFieldName + " field \"" + field + "\" in \""
-					+ this.iDateTimeStr + "\"!";
+			String msg = "Illegal " + pFieldName + " field \"" + field + "\" in \"" + this.iDateTimeStr + "\"!";
 			throw new IllegalArgumentException(msg);
 		}
-		if (res < 0) throw new IllegalArgumentException("Negative value is not allowed for "
-				+ pFieldName + " in " + this.iDateTimeStr + "!");
+		if (res < 0) throw new IllegalArgumentException(
+			"Negative value is not allowed for " + pFieldName + " in " + this.iDateTimeStr + "!"
+		);
 		// Java 7 parseInt began allowing plus sign
 		if (field.indexOf('+') != -1) throw new IllegalArgumentException(
-				"Plus sign is not allowed for " + pFieldName + " in " + this.iDateTimeStr + "!");
+			"Plus sign is not allowed for " + pFieldName + " in " + this.iDateTimeStr + "!"
+		);
 		return res;
 	}
 
 	/**
 	 * readAndCheck
-	 * 
+	 *
 	 * @param pLen
 	 *            - number of digits to read
 	 * @param pFieldName
@@ -142,19 +140,28 @@ public class DTStringReader {
 	 * @return int
 	 * @throws IllegalArgumentException
 	 */
-	public int readAndCheck(int pLen, String pFieldName, int pMin, int pMax,
-			boolean pAllowUnsignificant) throws IllegalArgumentException {
+	public int readAndCheck(int pLen, String pFieldName, int pMin, int pMax, boolean pAllowUnsignificant)
+		throws IllegalArgumentException {
 		int val = read(pLen, pFieldName, pAllowUnsignificant);
 		if (pAllowUnsignificant && val == -1) return val;
-		if (val < pMin || val > pMax) throw new IllegalArgumentException(pFieldName
-				+ " must be between " + pMin + " and " + pMax + ", but " + val + " was read from "
-				+ this.iDateTimeStr + " !");
+		if (val < pMin || val > pMax) throw new IllegalArgumentException(
+			pFieldName +
+			" must be between " +
+			pMin +
+			" and " +
+			pMax +
+			", but " +
+			val +
+			" was read from " +
+			this.iDateTimeStr +
+			" !"
+		);
 		return val;
 	}
 
 	/**
 	 * read
-	 * 
+	 *
 	 * @return a char, 0 if failed
 	 */
 	public char read() {
@@ -172,22 +179,21 @@ public class DTStringReader {
 
 	/**
 	 * read - Throws an IllegalArgumentException if the read character is not c.
-	 * 
+	 *
 	 * @param c
 	 *            - contains the character which should be read from the String.
 	 * @throws IllegalArgumentException
 	 */
 	public void read(char c) throws IllegalArgumentException {
 		if (read() != c) {
-			String msg = "'" + c + "' expected at position " + getPos() + " in "
-					+ this.iDateTimeStr + "!";
+			String msg = "'" + c + "' expected at position " + getPos() + " in " + this.iDateTimeStr + "!";
 			throw new IllegalArgumentException(msg);
 		}
 	}
 
 	/**
 	 * getPos
-	 * 
+	 *
 	 * @return the position in the reader
 	 */
 	public int getPos() {
@@ -196,11 +202,10 @@ public class DTStringReader {
 
 	/**
 	 * isUnsignificant
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isUnsignificant() {
 		return this.iUnsignificant;
 	}
-
 }

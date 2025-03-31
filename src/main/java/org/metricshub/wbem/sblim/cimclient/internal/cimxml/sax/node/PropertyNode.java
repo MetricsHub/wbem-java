@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
 /**
  * <pre>
  * ELEMENT PROPERTY (QUALIFIER*, VALUE?)
- * ATTLIST PROPERTY 
+ * ATTLIST PROPERTY
  *   %CIMName;
  *   %ClassOrigin;
  *   %Propagated;
@@ -66,7 +66,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class PropertyNode extends AbstractPropertyNode {
-
 	private CIMDataType iType;
 
 	// VALUE element
@@ -88,8 +87,8 @@ public class PropertyNode extends AbstractPropertyNode {
 	@Override
 	protected void specificInit(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iHasTypeAttribute = (getCIMType(pAttribs, true) != null);
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				pSession, this.iQualiHandler, true);
+		this.iEmbObjHandler =
+			EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, pSession, this.iQualiHandler, true);
 		this.iHasValue = false;
 	}
 
@@ -97,7 +96,8 @@ public class PropertyNode extends AbstractPropertyNode {
 	public void childValueNodeParsed(Node pChild) throws SAXException {
 		this.iHasValue = true;
 		if (!this.iHasTypeAttribute && ((ValueNode) pChild).getType() == null) throw new SAXException(
-				"PROPERTY element missing TYPE attribute!");
+			"PROPERTY element missing TYPE attribute!"
+		);
 		this.iEmbObjHandler.addValueNode((ValueNode) pChild);
 	}
 
@@ -132,5 +132,4 @@ public class PropertyNode extends AbstractPropertyNode {
 	public Object getValue() {
 		return this.iValue;
 	}
-
 }

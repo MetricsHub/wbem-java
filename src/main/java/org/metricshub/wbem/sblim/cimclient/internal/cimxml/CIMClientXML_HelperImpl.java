@@ -80,14 +80,19 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMInstance;
+import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.cim.CIMQualifierType;
 import org.metricshub.wbem.javax.cim.CIMValuedElement;
+import org.metricshub.wbem.javax.cim.UnsignedInteger32;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.TimeStamp;
 import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
@@ -120,14 +125,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.wbem.operations.CIMSetClassO
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.operations.CIMSetInstanceOp;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.operations.CIMSetPropertyOp;
 import org.metricshub.wbem.sblim.cimclient.internal.wbem.operations.CIMSetQualifierTypeOp;
-import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
-import org.metricshub.wbem.javax.cim.CIMProperty;
-import org.metricshub.wbem.javax.cim.UnsignedInteger32;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -140,7 +137,6 @@ import org.xml.sax.SAXException;
 public class CIMClientXML_HelperImpl {
 
 	private static class Counter {
-
 		private int iCounter;
 
 		protected Counter(int pCounter) {
@@ -206,7 +202,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @throws ParserConfigurationException
 	 */
 	public CIMClientXML_HelperImpl() throws ParserConfigurationException {
@@ -216,7 +212,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * getDocumentBuilder
-	 * 
+	 *
 	 * @return DocumentBuilder
 	 */
 	public DocumentBuilder getDocumentBuilder() {
@@ -225,7 +221,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * newDocument
-	 * 
+	 *
 	 * @return Document
 	 */
 	public Document newDocument() {
@@ -234,7 +230,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pIS
 	 * @return Document
 	 * @throws IOException
@@ -247,7 +243,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * Serializes a given DOM document as (CIM-)XML to a given output stream
-	 * 
+	 *
 	 * @param pOS
 	 *            The output stream
 	 * @param pDoc
@@ -263,7 +259,7 @@ public class CIMClientXML_HelperImpl {
 	 * Serializes a given DOM document as (CIM-)XML to a given output stream.
 	 * The document is pretty wrapped and indented and surrounded with markers
 	 * for the begin and end.
-	 * 
+	 *
 	 * @param pOS
 	 *            The output stream
 	 * @param pDoc
@@ -278,7 +274,7 @@ public class CIMClientXML_HelperImpl {
 	 * Serializes a given DOM document as (CIM-)XML to a given output stream.
 	 * The document is pretty wrapped and indented and surrounded with markers
 	 * for the begin and end.
-	 * 
+	 *
 	 * @param pOS
 	 *            The output stream
 	 * @param pDoc
@@ -288,10 +284,11 @@ public class CIMClientXML_HelperImpl {
 	 *            etc.)
 	 * @throws IOException
 	 */
-	public static void dumpDocument(OutputStream pOS, Document pDoc, String pOrigin)
-			throws IOException {
+	public static void dumpDocument(OutputStream pOS, Document pDoc, String pOrigin) throws IOException {
 		// debug
-		if (pOS == null) { return; }
+		if (pOS == null) {
+			return;
+		}
 		if (pOrigin == null) pOrigin = "unknown";
 		pOS.write("<--- ".getBytes());
 		pOS.write(pOrigin.getBytes());
@@ -306,15 +303,14 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * createCIMMessage
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pRequestE
 	 * @return Element
 	 */
 	public Element createCIMMessage(Document pDoc, Element pRequestE) {
 		Element cimE = CIMXMLBuilderImpl.createCIM(pDoc);
-		Element messageE = CIMXMLBuilderImpl.createMESSAGE(pDoc, cimE, String.valueOf(getNextId()),
-				VERSION);
+		Element messageE = CIMXMLBuilderImpl.createMESSAGE(pDoc, cimE, String.valueOf(getNextId()), VERSION);
 		if (pRequestE != null) {
 			messageE.appendChild(pRequestE);
 		}
@@ -323,7 +319,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * createMultiReq
-	 * 
+	 *
 	 * @param pDoc
 	 * @return Element
 	 */
@@ -334,7 +330,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associatorNames_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pObjectName
 	 * @param pAssocClass
@@ -344,23 +340,25 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element associatorNames_request(Document pDoc, CIMObjectPath pObjectName,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole)
-			throws WBEMException {
-
+	public Element associatorNames_request(
+		Document pDoc,
+		CIMObjectPath pObjectName,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pObjectName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 		CIMProperty<?>[] keysA = pObjectName.getKeys();
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				ASSOCIATOR_NAMES);
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, ASSOCIATOR_NAMES);
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pObjectName);
 
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		Element instancenameE = CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, className);
 		for (int i = 0; i < keysA.length; i++) {
 			CIMProperty<?> prop = keysA[i];
@@ -393,15 +391,14 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associatorNames_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPathA
 	 * @return Element
 	 */
 	public static Element associatorNames_response(Document pDoc, CIMObjectPath[] pPathA) {
 		Element simpRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
-		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE,
-				"associatorNames");
+		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE, "associatorNames");
 		Element iRetValE = CIMXMLBuilderImpl.createIRETURNVALUE(pDoc, iMethRspE);
 		try {
 			for (int i = 0; i < pPathA.length; i++) {
@@ -415,7 +412,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associatorInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pObjectName
 	 * @param pAssocClass
@@ -427,24 +424,31 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element associatorInstances_request(Document pDoc, CIMObjectPath pObjectName,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public Element associatorInstances_request(
+		Document pDoc,
+		CIMObjectPath pObjectName,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pObjectName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 		CIMProperty<?>[] keysA = pObjectName.getKeys();
 
 		// Make sure keys are populated
-		if (keysA.length == 0) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"associatorInstances requires keys for the instance to be populated");
+		if (keysA.length == 0) throw new WBEMException(
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"associatorInstances requires keys for the instance to be populated"
+		);
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "Associators");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pObjectName);
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		Element instancenameE = CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, className);
 		for (int i = 0; i < keysA.length; i++) {
 			CIMProperty<?> prop = keysA[i];
@@ -472,8 +476,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pResultRole);
 		}
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -489,7 +492,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associatorClasses_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pObjectName
 	 * @param pAssocClass
@@ -502,25 +505,31 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element associatorClasses_request(Document pDoc, CIMObjectPath pObjectName,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public Element associatorClasses_request(
+		Document pDoc,
+		CIMObjectPath pObjectName,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pObjectName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		// Make sure keys are not populated
 		if (pObjectName.getKeys().length != 0) throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"Keys should not be populated for associatorClasses");
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"Keys should not be populated for associatorClasses"
+		);
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "Associators");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pObjectName);
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, className);
 
@@ -543,8 +552,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -560,7 +568,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associators_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pObjectName
 	 * @param pAssocClass
@@ -573,22 +581,27 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element associators_request(Document pDoc, CIMObjectPath pObjectName,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public Element associators_request(
+		Document pDoc,
+		CIMObjectPath pObjectName,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pObjectName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 		CIMProperty<?>[] keysA = pObjectName.getKeys();
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "Associators");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pObjectName);
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		Element instancenameE = CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, className);
 		for (int i = 0; i < keysA.length; i++) {
 			CIMProperty<?> prop = keysA[i];
@@ -620,8 +633,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -638,13 +650,12 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * associators_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pNamedElementA
 	 * @return Element
 	 */
-	public static Element associators_response(Document pDoc,
-			CIMNamedElementInterface[] pNamedElementA) {
+	public static Element associators_response(Document pDoc, CIMNamedElementInterface[] pNamedElementA) {
 		Element simpRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
 		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE, "associators");
 		Element iRetValE = CIMXMLBuilderImpl.createIRETURNVALUE(pDoc, iMethRspE);
@@ -653,8 +664,7 @@ public class CIMClientXML_HelperImpl {
 				CIMNamedElementInterface namedElement = pNamedElementA[i];
 				CIMObjectPath op = namedElement.getObjectPath();
 				String nameSpace = op == null ? null : op.getNamespace();
-				CIMXMLBuilderImpl
-						.createVALUEOBJECTWITHPATH(pDoc, iRetValE, namedElement, nameSpace);
+				CIMXMLBuilderImpl.createVALUEOBJECTWITHPATH(pDoc, iRetValE, namedElement, nameSpace);
 				/*
 				 * CIMXMLBuilderImpl.createCLASSPATH( pDoc, iRetValE,
 				 * pClassA[i].getObjectPath() );
@@ -670,22 +680,19 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumerateInstanceNames_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element enumerateInstanceNames_request(Document pDoc, CIMObjectPath pPath)
-			throws WBEMException {
+	public Element enumerateInstanceNames_request(Document pDoc, CIMObjectPath pPath) throws WBEMException {
 		// obtain data
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerateInstanceNames");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerateInstanceNames");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ClassName");
@@ -696,7 +703,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumerateInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pDeepInheritance
@@ -707,18 +714,22 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element enumerateInstances_request(Document pDoc, CIMObjectPath pPath,
-			boolean pDeepInheritance, boolean pLocalOnly, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public Element enumerateInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		boolean pDeepInheritance,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerateInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerateInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ClassName");
@@ -732,8 +743,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -748,7 +758,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * getInstance_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pName
 	 * @param pLocalOnly
@@ -758,20 +768,24 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element getInstance_request(Document pDoc, CIMObjectPath pName, boolean pLocalOnly,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
+	public Element getInstance_request(
+		Document pDoc,
+		CIMObjectPath pName,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "GetInstance");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pName);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"InstanceName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "InstanceName");
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pName);
 
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "LocalOnly");
@@ -780,8 +794,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -797,26 +810,22 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * deleteInstance_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pName
 	 * @return Element
 	 * @throws WBEMException
 	 */
 	public Element deleteInstance_request(Document pDoc, CIMObjectPath pName) throws WBEMException {
-
 		// obtain data
 		String className = pName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"DeleteInstance");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "DeleteInstance");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pName);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"InstanceName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "InstanceName");
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pName);
 
 		return simplereqE;
@@ -824,7 +833,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * getClass_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pName
 	 * @param pLocalOnly
@@ -834,14 +843,18 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element getClass_request(Document pDoc, CIMObjectPath pName, boolean pLocalOnly,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public Element getClass_request(
+		Document pDoc,
+		CIMObjectPath pName,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pName.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "GetClass");
@@ -855,8 +868,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -872,7 +884,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * createInstance_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pName
 	 * @param pInstance
@@ -880,18 +892,14 @@ public class CIMClientXML_HelperImpl {
 	 * @throws WBEMException
 	 */
 	public Element createInstance_request(Document pDoc, CIMObjectPath pName, CIMInstance pInstance)
-			throws WBEMException {
-
+		throws WBEMException {
 		String className = pInstance.getObjectPath().getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"CreateInstance");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "CreateInstance");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pName);
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"NewInstance");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "NewInstance");
 
 		CIMXMLBuilderImpl.createINSTANCE(pDoc, iparamvalueE, pInstance);
 
@@ -900,7 +908,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * invokeMethod_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pLocalPath
 	 * @param pMethodName
@@ -908,13 +916,16 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element invokeMethod_request(Document pDoc, CIMObjectPath pLocalPath,
-			String pMethodName, CIMArgument<?>[] pInArgs) throws WBEMException {
-
+	public Element invokeMethod_request(
+		Document pDoc,
+		CIMObjectPath pLocalPath,
+		String pMethodName,
+		CIMArgument<?>[] pInArgs
+	)
+		throws WBEMException {
 		// obtain data
 		String className = pLocalPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 		CIMProperty<?>[] keysA = pLocalPath.getKeys();
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
@@ -936,7 +947,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * invokeMethod_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pMethodName
 	 * @param pLocalPath
@@ -945,11 +956,15 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element invokeMethod_response(Document pDoc, String pMethodName,
-			CIMObjectPath pLocalPath, Object pRetVal, CIMArgument<?>[] pOutArgA)
-			throws WBEMException {
-		if (pMethodName == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null method name");
+	public static Element invokeMethod_response(
+		Document pDoc,
+		String pMethodName,
+		CIMObjectPath pLocalPath,
+		Object pRetVal,
+		CIMArgument<?>[] pOutArgA
+	)
+		throws WBEMException {
+		if (pMethodName == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null method name");
 		Element simpleRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
 		Element methodRspE = CIMXMLBuilderImpl.createMETHODRESPONSE(pDoc, simpleRspE, pMethodName);
 
@@ -962,8 +977,13 @@ public class CIMClientXML_HelperImpl {
 	/**
 	 * @param pLocalPath
 	 */
-	private static void buildParamValues(Document pDoc, Element pParentE, CIMObjectPath pLocalPath,
-			CIMArgument<?>[] pArgA) throws WBEMException {
+	private static void buildParamValues(
+		Document pDoc,
+		Element pParentE,
+		CIMObjectPath pLocalPath,
+		CIMArgument<?>[] pArgA
+	)
+		throws WBEMException {
 		if (pArgA == null) return;
 		for (int i = 0; i < pArgA.length; i++) {
 			CIMArgument<?> arg = pArgA[i];
@@ -991,20 +1011,17 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * createIndication_response
-	 * 
+	 *
 	 * @param error
 	 * @return Document
 	 */
 	public Document createIndication_response(CIMError error) {
-
 		// CIMXMLBuilderImpl.create XML
 		Document doc = this.iBuilder.newDocument();
 		Element cimE = CIMXMLBuilderImpl.createCIM(doc);
-		Element messageE = CIMXMLBuilderImpl.createMESSAGE(doc, cimE, String.valueOf(getNextId()),
-				"1.0");
+		Element messageE = CIMXMLBuilderImpl.createMESSAGE(doc, cimE, String.valueOf(getNextId()), "1.0");
 		Element simpleexprspE = CIMXMLBuilderImpl.createSIMPLEEXPRSP(doc, messageE);
-		Element expmethodresponseE = CIMXMLBuilderImpl.createEXPMETHODRESPONSE(doc, simpleexprspE,
-				"ExportIndication");
+		Element expmethodresponseE = CIMXMLBuilderImpl.createEXPMETHODRESPONSE(doc, simpleexprspE, "ExportIndication");
 		if (error == null) {
 			CIMXMLBuilderImpl.createIRETURNVALUE(doc, expmethodresponseE);
 		} else {
@@ -1016,18 +1033,16 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * createClass_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pClass
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element createClass_request(Document pDoc, CIMObjectPath pPath, CIMClass pClass)
-			throws WBEMException {
+	public Element createClass_request(Document pDoc, CIMObjectPath pPath, CIMClass pClass) throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "CreateClass");
@@ -1042,27 +1057,23 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * getQualifier_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pQt
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element getQualifier_request(Document pDoc, CIMObjectPath pPath, String pQt)
-			throws WBEMException {
+	public Element getQualifier_request(Document pDoc, CIMObjectPath pPath, String pQt) throws WBEMException {
 		// obtain data
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl
-				.createIMETHODCALL(pDoc, simplereqE, "GetQualifier");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "GetQualifier");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"QualifierName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "QualifierName");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pPath.getObjectName());
 
 		return simplereqE;
@@ -1071,26 +1082,23 @@ public class CIMClientXML_HelperImpl {
 	/**
 	 * createQualifierType_request : This has been replaced by
 	 * setQualifierType_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pQt
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element createQualifierType_request(Document pDoc, CIMObjectPath pPath,
-			CIMQualifierType<?> pQt) throws WBEMException {
+	public Element createQualifierType_request(Document pDoc, CIMObjectPath pPath, CIMQualifierType<?> pQt)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl
-				.createIMETHODCALL(pDoc, simplereqE, "SetQualifier");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "SetQualifier");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"QualifierDeclaration");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "QualifierDeclaration");
 		CIMXMLBuilderImpl.createQUALIFIER_DECLARATION(pDoc, iparamvalueE, pQt);
 
 		return simplereqE;
@@ -1098,7 +1106,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * deleteClass_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @return Element
@@ -1106,8 +1114,7 @@ public class CIMClientXML_HelperImpl {
 	 */
 	public Element deleteClass_request(Document pDoc, CIMObjectPath pPath) throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "DeleteClass");
@@ -1122,33 +1129,29 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * deleteQualifierType_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element deleteQualifierType_request(Document pDoc, CIMObjectPath pPath)
-			throws WBEMException {
+	public Element deleteQualifierType_request(Document pDoc, CIMObjectPath pPath) throws WBEMException {
 		// obtain data
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"DeleteQualifier");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "DeleteQualifier");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"QualifierName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "QualifierName");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pPath.getObjectName());
 		return simplereqE;
 	}
 
 	/**
 	 * enumerateClasses_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pDeepInheritance
@@ -1157,18 +1160,20 @@ public class CIMClientXML_HelperImpl {
 	 * @param pIncludeClassOrigin
 	 * @return Element
 	 */
-	public Element enumerateClasses_request(Document pDoc, CIMObjectPath pPath,
-			boolean pDeepInheritance, boolean pLocalOnly, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin) {
-
+	public Element enumerateClasses_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		boolean pDeepInheritance,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin
+	) {
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerateClasses");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerateClasses");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
-		if (pPath != null && pPath.getObjectName() != null
-				&& pPath.getObjectName().trim().length() != 0) {
+		if (pPath != null && pPath.getObjectName() != null && pPath.getObjectName().trim().length() != 0) {
 			String className = pPath.getObjectName();
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ClassName");
 			CIMXMLBuilderImpl.createCLASSNAME(pDoc, iparamvalueE, className);
@@ -1182,23 +1187,21 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 		return simplereqE;
 	}
 
 	/**
 	 * enumerateClasses_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pClA
 	 * @return Element
 	 */
 	public static Element enumerateClasses_response(Document pDoc, CIMClass[] pClA) {
 		Element simpRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
-		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE,
-				"enumerateClasses");
+		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE, "enumerateClasses");
 		Element iRetValE = CIMXMLBuilderImpl.createIRETURNVALUE(pDoc, iMethRspE);
 		try {
 			for (int i = 0; i < pClA.length; i++) {
@@ -1212,15 +1215,14 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumerateInstances_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pInstA
 	 * @return Element
 	 */
 	public static Element enumerateInstances_response(Document pDoc, CIMInstance[] pInstA) {
 		Element simpRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
-		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE,
-				"enumerateInstances");
+		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE, "enumerateInstances");
 		Element iRetValE = CIMXMLBuilderImpl.createIRETURNVALUE(pDoc, iMethRspE);
 		try {
 			for (int i = 0; i < pInstA.length; i++) {
@@ -1234,24 +1236,20 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumerateClassNames_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pDeepInheritance
 	 * @return Element
 	 */
-	public Element enumerateClassNames_request(Document pDoc, CIMObjectPath pPath,
-			boolean pDeepInheritance) {
-
+	public Element enumerateClassNames_request(Document pDoc, CIMObjectPath pPath, boolean pDeepInheritance) {
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerateClassNames");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerateClassNames");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
 
-		if (pPath != null && pPath.getObjectName() != null
-				&& pPath.getObjectName().trim().length() != 0) {
+		if (pPath != null && pPath.getObjectName() != null && pPath.getObjectName().trim().length() != 0) {
 			String className = pPath.getObjectName();
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ClassName");
 			CIMXMLBuilderImpl.createCLASSNAME(pDoc, iparamvalueE, className);
@@ -1265,26 +1263,23 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * getProperty_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pPropertyName
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element getProperty_request(Document pDoc, CIMObjectPath pPath, String pPropertyName)
-			throws WBEMException {
+	public Element getProperty_request(Document pDoc, CIMObjectPath pPath, String pPropertyName) throws WBEMException {
 		// obtain data
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "GetProperty");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"InstanceName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "InstanceName");
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
 		if (pPropertyName != null) {
@@ -1297,7 +1292,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * referenceNames_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -1305,19 +1300,16 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element referenceNames_request(Document pDoc, CIMObjectPath pPath, String pResultClass,
-			String pRole) throws WBEMException {
+	public Element referenceNames_request(Document pDoc, CIMObjectPath pPath, String pResultClass, String pRole)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"ReferenceNames");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "ReferenceNames");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		CIMXMLBuilderImpl.createOBJECTNAME(pDoc, iparamvalueE, pPath);
 
 		if (pResultClass != null) {
@@ -1334,7 +1326,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * referenceClasses_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -1345,25 +1337,30 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element referenceClasses_request(Document pDoc, CIMObjectPath pPath,
-			String pResultClass, String pRole, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) throws WBEMException {
-
+	public Element referenceClasses_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		// Make sure keys are not populated
 		if (pPath.getKeys().length != 0) throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"Keys should not be populated for referenceClasses");
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"Keys should not be populated for referenceClasses"
+		);
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "References");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		// createOBJECTNAME will internally call createINSTANCENAME but as there
 		// are no keys Element containing keys will not be populated
 		CIMXMLBuilderImpl.createOBJECTNAME(pDoc, iparamvalueE, pPath);
@@ -1380,8 +1377,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -1396,7 +1392,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * referenceInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -1406,25 +1402,29 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element referenceInstances_request(Document pDoc, CIMObjectPath pPath,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList)
-			throws WBEMException {
-
+	public Element referenceInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		// keys are required for CIMInstance
 		if (pPath.getKeys().length == 0) throw new WBEMException(
-				WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"refrenceInstances requires keys for the instance to be populated");
+			WBEMException.CIM_ERR_INVALID_PARAMETER,
+			"refrenceInstances requires keys for the instance to be populated"
+		);
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "References");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ObjectName");
 		// createOBJECTNAME will internally call createINSTANCENAME to populate
 		// Element containing keys
 		CIMXMLBuilderImpl.createOBJECTNAME(pDoc, iparamvalueE, pPath);
@@ -1438,8 +1438,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pRole);
 		}
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -1454,7 +1453,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * references_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -1465,12 +1464,18 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element references_request(Document pDoc, CIMObjectPath pPath, String pResultClass,
-			String pRole, boolean pIncludeQualifiers, boolean pIncludeClassOrigin,
-			String[] pPropertyList) throws WBEMException {
+	public Element references_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "References");
@@ -1493,8 +1498,7 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeQualifiers);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeClassOrigin");
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
@@ -1510,25 +1514,22 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * setClass_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pClass
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element setClass_request(Document pDoc, CIMObjectPath pPath, CIMClass pClass)
-			throws WBEMException {
+	public Element setClass_request(Document pDoc, CIMObjectPath pPath, CIMClass pClass) throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "ModifyClass");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"ModifiedClass");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ModifiedClass");
 		CIMXMLBuilderImpl.createCLASS(pDoc, iparamvalueE, pClass);
 
 		return simplereqE;
@@ -1536,7 +1537,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * setInstance_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pInstance
@@ -1545,19 +1546,22 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element setInstance_request(Document pDoc, CIMObjectPath pPath, CIMInstance pInstance,
-			boolean pIncludeQualifiers, String[] pPropertyList) throws WBEMException {
+	public Element setInstance_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		CIMInstance pInstance,
+		boolean pIncludeQualifiers,
+		String[] pPropertyList
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"ModifyInstance");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "ModifyInstance");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"ModifiedInstance");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "ModifiedInstance");
 		CIMXMLBuilderImpl.createVALUENAMEDINSTANCE(pDoc, iparamvalueE, pPath, pInstance);
 
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "IncludeQualifiers");
@@ -1576,7 +1580,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * setProperty_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pPropertyName
@@ -1584,18 +1588,16 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element setProperty_request(Document pDoc, CIMObjectPath pPath, String pPropertyName,
-			Object pNewValue) throws WBEMException {
+	public Element setProperty_request(Document pDoc, CIMObjectPath pPath, String pPropertyName, Object pNewValue)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "SetProperty");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"InstanceName");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "InstanceName");
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
 		if (pPropertyName != null) {
@@ -1613,28 +1615,25 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * setQualifierType_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pQt
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element setQualifierType_request(Document pDoc, CIMObjectPath pPath,
-			CIMQualifierType<?> pQt) throws WBEMException {
+	public Element setQualifierType_request(Document pDoc, CIMObjectPath pPath, CIMQualifierType<?> pQt)
+		throws WBEMException {
 		// Make sure class name exists, it is required to uniquely identify
 		// qualifier in namespace
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl
-				.createIMETHODCALL(pDoc, simplereqE, "SetQualifier");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "SetQualifier");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"QualifierDeclaration");
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "QualifierDeclaration");
 		CIMXMLBuilderImpl.createQUALIFIER_DECLARATION(pDoc, iparamvalueE, pQt);
 
 		return simplereqE;
@@ -1642,18 +1641,15 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumQualifierTypes_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element enumQualifierTypes_request(Document pDoc, CIMObjectPath pPath)
-			throws WBEMException {
-
+	public Element enumQualifierTypes_request(Document pDoc, CIMObjectPath pPath) throws WBEMException {
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerateQualifiers");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerateQualifiers");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		return simplereqE;
@@ -1661,17 +1657,16 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * enumQualifierTypes_response
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pQualiTypeA
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public static Element enumQualifierTypes_response(Document pDoc,
-			CIMQualifierType<?>[] pQualiTypeA) throws WBEMException {
+	public static Element enumQualifierTypes_response(Document pDoc, CIMQualifierType<?>[] pQualiTypeA)
+		throws WBEMException {
 		Element simpRspE = CIMXMLBuilderImpl.createSIMPLERSP(pDoc, null);
-		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE,
-				"associatorNames");
+		Element iMethRspE = CIMXMLBuilderImpl.createIMETHODRESPONSE(pDoc, simpRspE, "associatorNames");
 		Element iRetValE = CIMXMLBuilderImpl.createIRETURNVALUE(pDoc, iMethRspE);
 		for (int i = 0; i < pQualiTypeA.length; i++) {
 			CIMXMLBuilderImpl.createQUALIFIER_DECLARATION(pDoc, iRetValE, pQualiTypeA[i]);
@@ -1681,21 +1676,19 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * execQuery_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pQuery
 	 * @param pQueryLanguage
 	 * @return Element
 	 */
-	public Element execQuery_request(Document pDoc, CIMObjectPath pPath, String pQuery,
-			String pQueryLanguage) {
+	public Element execQuery_request(Document pDoc, CIMObjectPath pPath, String pQuery, String pQueryLanguage) {
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
 		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "ExecQuery");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element querylanguageE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				"QueryLanguage");
+		Element querylanguageE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "QueryLanguage");
 		CIMXMLBuilderImpl.createVALUE(pDoc, querylanguageE, pQueryLanguage);
 
 		Element queryE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, "Query");
@@ -1706,15 +1699,13 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * performBatchOperation_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pOperations
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element performBatchOperation_request(Document pDoc, Vector<CIMOperation> pOperations)
-			throws WBEMException {
-
+	public Element performBatchOperation_request(Document pDoc, Vector<CIMOperation> pOperations) throws WBEMException {
 		Element messageE = createCIMMessage(pDoc, null);
 		if (pOperations.size() > 1) {
 			Element multireqE = createMultiReq(pDoc);
@@ -1730,32 +1721,45 @@ public class CIMClientXML_HelperImpl {
 
 				if (op instanceof CIMAssociatorsOp) {
 					CIMAssociatorsOp associatorsOp = (CIMAssociatorsOp) op;
-					requestE = associators_request(pDoc, associatorsOp.getObjectName(),
-							associatorsOp.getAssocClass(), associatorsOp.getResultClass(),
-							associatorsOp.getRole(), associatorsOp.getResultRole(), associatorsOp
-									.isIncludeQualifiers(), associatorsOp.isIncludeClassOrigin(),
-							associatorsOp.getPropertyList());
+					requestE =
+						associators_request(
+							pDoc,
+							associatorsOp.getObjectName(),
+							associatorsOp.getAssocClass(),
+							associatorsOp.getResultClass(),
+							associatorsOp.getRole(),
+							associatorsOp.getResultRole(),
+							associatorsOp.isIncludeQualifiers(),
+							associatorsOp.isIncludeClassOrigin(),
+							associatorsOp.getPropertyList()
+						);
 				} else if (op instanceof CIMAssociatorNamesOp) {
 					CIMAssociatorNamesOp associatorNamesOp = (CIMAssociatorNamesOp) op;
-					requestE = associatorNames_request(pDoc, associatorNamesOp.getObjectName(),
-							associatorNamesOp.getAssocClass(), associatorNamesOp.getResultClass(),
-							associatorNamesOp.getRole(), associatorNamesOp.getResultRole());
+					requestE =
+						associatorNames_request(
+							pDoc,
+							associatorNamesOp.getObjectName(),
+							associatorNamesOp.getAssocClass(),
+							associatorNamesOp.getResultClass(),
+							associatorNamesOp.getRole(),
+							associatorNamesOp.getResultRole()
+						);
 				} else if (op instanceof CIMCreateClassOp) {
 					CIMCreateClassOp createClassOp = (CIMCreateClassOp) op;
-					requestE = createClass_request(pDoc, createClassOp.getObjectName(),
-							createClassOp.getCimClass());
+					requestE = createClass_request(pDoc, createClassOp.getObjectName(), createClassOp.getCimClass());
 				} else if (op instanceof CIMCreateInstanceOp) {
 					CIMCreateInstanceOp createInstanceOp = (CIMCreateInstanceOp) op;
-					requestE = createInstance_request(pDoc, createInstanceOp.getObjectName(),
-							createInstanceOp.getInstance());
+					requestE = createInstance_request(pDoc, createInstanceOp.getObjectName(), createInstanceOp.getInstance());
 				} else if (op instanceof CIMCreateNameSpaceOp) {
 					CIMCreateNameSpaceOp createNameSpaceOp = (CIMCreateNameSpaceOp) op;
 
 					String namespace = createNameSpaceOp.getNameSpace();
 					int j = namespace.lastIndexOf('/');
 
-					if (j < 0) throw new WBEMException(WBEMException.CIM_ERR_NOT_FOUND,
-							"Invalid namespace. Must contain at least /");
+					if (j < 0) throw new WBEMException(
+						WBEMException.CIM_ERR_NOT_FOUND,
+						"Invalid namespace. Must contain at least /"
+					);
 					String parentNs = namespace.substring(0, j);
 					namespace = namespace.substring(j + 1);
 
@@ -1768,16 +1772,23 @@ public class CIMClientXML_HelperImpl {
 					 * Vector(); v.add(prop); inst.setProperties(v);
 					 */
 
-					CIMInstance inst = new CIMInstance(new CIMObjectPath(null, null, null, null,
-							"CIM_NameSpace", null), new CIMProperty[] { new CIMProperty<String>(
-							"NameSpace", CIMDataType.STRING_T, namespace, true, false, null) });
+					CIMInstance inst = new CIMInstance(
+						new CIMObjectPath(null, null, null, null, "CIM_NameSpace", null),
+						new CIMProperty[] {
+							new CIMProperty<String>("NameSpace", CIMDataType.STRING_T, namespace, true, false, null)
+						}
+					);
 					CIMObjectPath object = new CIMObjectPath(null, null, null, parentNs, null, null);
 
 					requestE = createInstance_request(pDoc, object, inst);
 				} else if (op instanceof CIMCreateQualifierTypeOp) {
 					CIMCreateQualifierTypeOp createQualifierTypeOp = (CIMCreateQualifierTypeOp) op;
-					requestE = createQualifierType_request(pDoc, createQualifierTypeOp
-							.getObjectName(), createQualifierTypeOp.getQualifierType());
+					requestE =
+						createQualifierType_request(
+							pDoc,
+							createQualifierTypeOp.getObjectName(),
+							createQualifierTypeOp.getQualifierType()
+						);
 				} else if (op instanceof CIMDeleteClassOp) {
 					CIMDeleteClassOp deleteClassOp = (CIMDeleteClassOp) op;
 					requestE = deleteClass_request(pDoc, deleteClassOp.getObjectName());
@@ -1789,99 +1800,163 @@ public class CIMClientXML_HelperImpl {
 					requestE = deleteClass_request(pDoc, deleteQualifierTypeOp.getObjectName());
 				} else if (op instanceof CIMEnumClassesOp) {
 					CIMEnumClassesOp enumClassesOp = (CIMEnumClassesOp) op;
-					requestE = enumerateClasses_request(pDoc, enumClassesOp.getObjectName(),
-							enumClassesOp.isDeep(), enumClassesOp.isLocalOnly(), enumClassesOp
-									.isIncludeQualifiers(), enumClassesOp.isIncludeClassOrigin());
+					requestE =
+						enumerateClasses_request(
+							pDoc,
+							enumClassesOp.getObjectName(),
+							enumClassesOp.isDeep(),
+							enumClassesOp.isLocalOnly(),
+							enumClassesOp.isIncludeQualifiers(),
+							enumClassesOp.isIncludeClassOrigin()
+						);
 				} else if (op instanceof CIMEnumClassNamesOp) {
 					CIMEnumClassNamesOp enumClassNamesOp = (CIMEnumClassNamesOp) op;
-					requestE = enumerateClassNames_request(pDoc, enumClassNamesOp.getObjectName(),
-							enumClassNamesOp.isDeep());
+					requestE = enumerateClassNames_request(pDoc, enumClassNamesOp.getObjectName(), enumClassNamesOp.isDeep());
 				} else if (op instanceof CIMEnumInstanceNamesOp) {
 					CIMEnumInstanceNamesOp enumInstanceNamesOp = (CIMEnumInstanceNamesOp) op;
-					requestE = enumerateInstanceNames_request(pDoc, enumInstanceNamesOp
-							.getObjectName());
+					requestE = enumerateInstanceNames_request(pDoc, enumInstanceNamesOp.getObjectName());
 				} else if (op instanceof CIMEnumInstancesOp) {
 					CIMEnumInstancesOp enumInstancesOp = (CIMEnumInstancesOp) op;
-					requestE = enumerateInstances_request(pDoc, enumInstancesOp.getObjectName(),
-							enumInstancesOp.isDeep(), enumInstancesOp.isLocalOnly(),
-							enumInstancesOp.isIncludeQualifiers(), enumInstancesOp
-									.isIncludeClassOrigin(), enumInstancesOp.getPropertyList());
+					requestE =
+						enumerateInstances_request(
+							pDoc,
+							enumInstancesOp.getObjectName(),
+							enumInstancesOp.isDeep(),
+							enumInstancesOp.isLocalOnly(),
+							enumInstancesOp.isIncludeQualifiers(),
+							enumInstancesOp.isIncludeClassOrigin(),
+							enumInstancesOp.getPropertyList()
+						);
 				} else if (op instanceof CIMEnumNameSpaceOp) {
 					CIMEnumNameSpaceOp enumNameSpaceOp = (CIMEnumNameSpaceOp) op;
 					// ebak: here we have to set CIMObjectPath's objectname
 					// enumNameSpaceOp.getObjectName().setObjectName("CIM_NameSpace");
 					CIMObjectPath objPath = enumNameSpaceOp.getObjectName();
-					objPath = new CIMObjectPath(objPath.getScheme(), objPath.getHost(), objPath
-							.getPort(), objPath.getNamespace(), "CIM_NameSpace", objPath.getKeys());
+					objPath =
+						new CIMObjectPath(
+							objPath.getScheme(),
+							objPath.getHost(),
+							objPath.getPort(),
+							objPath.getNamespace(),
+							"CIM_NameSpace",
+							objPath.getKeys()
+						);
 					requestE = enumerateInstanceNames_request(pDoc, enumNameSpaceOp.getObjectName());
 				} else if (op instanceof CIMEnumQualifierTypesOp) {
 					CIMEnumQualifierTypesOp enumQualifierTypesOp = (CIMEnumQualifierTypesOp) op;
-					requestE = enumQualifierTypes_request(pDoc, enumQualifierTypesOp
-							.getObjectName());
+					requestE = enumQualifierTypes_request(pDoc, enumQualifierTypesOp.getObjectName());
 				} else if (op instanceof CIMExecQueryOp) {
 					CIMExecQueryOp execQueryOp = (CIMExecQueryOp) op;
-					requestE = execQuery_request(pDoc, execQueryOp.getObjectName(), execQueryOp
-							.getQuery(), execQueryOp.getQueryLanguage());
+					requestE =
+						execQuery_request(
+							pDoc,
+							execQueryOp.getObjectName(),
+							execQueryOp.getQuery(),
+							execQueryOp.getQueryLanguage()
+						);
 				} else if (op instanceof CIMGetPropertyOp) {
 					CIMGetPropertyOp getPropertyOp = (CIMGetPropertyOp) op;
-					requestE = getInstance_request(pDoc, getPropertyOp.getObjectName(), false,
-							false, false, new String[] { getPropertyOp.getPropertyName() });
-
+					requestE =
+						getInstance_request(
+							pDoc,
+							getPropertyOp.getObjectName(),
+							false,
+							false,
+							false,
+							new String[] { getPropertyOp.getPropertyName() }
+						);
 				} else if (op instanceof CIMGetClassOp) {
 					CIMGetClassOp getClassOp = (CIMGetClassOp) op;
-					requestE = getClass_request(pDoc, getClassOp.getObjectName(), getClassOp
-							.isLocalOnly(), getClassOp.isIncludeQualifiers(), getClassOp
-							.isIncludeClassOrigin(), getClassOp.getPropertyList());
+					requestE =
+						getClass_request(
+							pDoc,
+							getClassOp.getObjectName(),
+							getClassOp.isLocalOnly(),
+							getClassOp.isIncludeQualifiers(),
+							getClassOp.isIncludeClassOrigin(),
+							getClassOp.getPropertyList()
+						);
 				} else if (op instanceof CIMGetInstanceOp) {
 					CIMGetInstanceOp getInstanceOp = (CIMGetInstanceOp) op;
-					requestE = getInstance_request(pDoc, getInstanceOp.getObjectName(),
-							getInstanceOp.isLocalOnly(), getInstanceOp.isIncludeQualifiers(),
-							getInstanceOp.isIncludeClassOrigin(), getInstanceOp.getPropertyList());
+					requestE =
+						getInstance_request(
+							pDoc,
+							getInstanceOp.getObjectName(),
+							getInstanceOp.isLocalOnly(),
+							getInstanceOp.isIncludeQualifiers(),
+							getInstanceOp.isIncludeClassOrigin(),
+							getInstanceOp.getPropertyList()
+						);
 				} else if (op instanceof CIMGetQualifierTypeOp) {
 					CIMGetQualifierTypeOp getQualifierTypeOp = (CIMGetQualifierTypeOp) op;
-					requestE = getQualifier_request(pDoc, getQualifierTypeOp.getObjectName(),
-							getQualifierTypeOp.getQualifierType());
+					requestE =
+						getQualifier_request(pDoc, getQualifierTypeOp.getObjectName(), getQualifierTypeOp.getQualifierType());
 				} else if (op instanceof CIMInvokeMethodOp) {
 					CIMInvokeMethodOp invokeMethodOp = (CIMInvokeMethodOp) op;
-					requestE = invokeMethod_request(pDoc, invokeMethodOp.getObjectName(),
-							invokeMethodOp.getMethodCall(), invokeMethodOp.getInParams());
+					requestE =
+						invokeMethod_request(
+							pDoc,
+							invokeMethodOp.getObjectName(),
+							invokeMethodOp.getMethodCall(),
+							invokeMethodOp.getInParams()
+						);
 				} else if (op instanceof CIMReferenceNamesOp) {
 					CIMReferenceNamesOp referenceNamesOp = (CIMReferenceNamesOp) op;
-					requestE = referenceNames_request(pDoc, referenceNamesOp.getObjectName(),
-							referenceNamesOp.getResultClass(), referenceNamesOp.getResultRole());
+					requestE =
+						referenceNames_request(
+							pDoc,
+							referenceNamesOp.getObjectName(),
+							referenceNamesOp.getResultClass(),
+							referenceNamesOp.getResultRole()
+						);
 				} else if (op instanceof CIMReferencesOp) {
 					CIMReferencesOp referencesOp = (CIMReferencesOp) op;
-					requestE = references_request(pDoc, referencesOp.getObjectName(), referencesOp
-							.getResultClass(), referencesOp.getRole(), referencesOp
-							.isIncludeQualifiers(), referencesOp.isIncludeClassOrigin(),
-							referencesOp.getPropertyList());
+					requestE =
+						references_request(
+							pDoc,
+							referencesOp.getObjectName(),
+							referencesOp.getResultClass(),
+							referencesOp.getRole(),
+							referencesOp.isIncludeQualifiers(),
+							referencesOp.isIncludeClassOrigin(),
+							referencesOp.getPropertyList()
+						);
 				} else if (op instanceof CIMSetClassOp) {
 					CIMSetClassOp setClassOp = (CIMSetClassOp) op;
-					requestE = setClass_request(pDoc, setClassOp.getObjectName(), setClassOp
-							.getCimClass());
+					requestE = setClass_request(pDoc, setClassOp.getObjectName(), setClassOp.getCimClass());
 				} else if (op instanceof CIMSetInstanceOp) {
 					CIMSetInstanceOp setInstanceOp = (CIMSetInstanceOp) op;
-					requestE = setInstance_request(pDoc, setInstanceOp.getObjectName(),
-							setInstanceOp.getInstance(), setInstanceOp.isIncludeQualifiers(),
-							setInstanceOp.getPropertyList());
+					requestE =
+						setInstance_request(
+							pDoc,
+							setInstanceOp.getObjectName(),
+							setInstanceOp.getInstance(),
+							setInstanceOp.isIncludeQualifiers(),
+							setInstanceOp.getPropertyList()
+						);
 				} else if (op instanceof CIMSetPropertyOp) {
 					CIMSetPropertyOp setPropertyOp = (CIMSetPropertyOp) op;
-					requestE = setProperty_request(pDoc, setPropertyOp.getObjectName(),
-							setPropertyOp.getPropertyName(), setPropertyOp.getCimValue());
+					requestE =
+						setProperty_request(
+							pDoc,
+							setPropertyOp.getObjectName(),
+							setPropertyOp.getPropertyName(),
+							setPropertyOp.getCimValue()
+						);
 				} else if (op instanceof CIMSetQualifierTypeOp) {
 					CIMSetQualifierTypeOp setQualifierTypeOp = (CIMSetQualifierTypeOp) op;
-					requestE = setQualifierType_request(pDoc, setQualifierTypeOp.getObjectName(),
-							setQualifierTypeOp.getQualifierType());
+					requestE =
+						setQualifierType_request(pDoc, setQualifierTypeOp.getObjectName(), setQualifierTypeOp.getQualifierType());
 				}
 				if (requestE == null) throw new WBEMException(
-						WBEMException.CIM_ERR_INVALID_PARAMETER, "Illegal batch operation number ("
-								+ i + ") " + op.getClass());
+					WBEMException.CIM_ERR_INVALID_PARAMETER,
+					"Illegal batch operation number (" + i + ") " + op.getClass()
+				);
 				messageE.appendChild(requestE);
 			} catch (WBEMException e) {
 				throw e;
 			} catch (Exception e) {
-				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "At batch operation (" + i
-						+ ')', null, e);
+				throw new WBEMException(WBEMException.CIM_ERR_FAILED, "At batch operation (" + i + ')', null, e);
 			}
 			i++;
 		}
@@ -1891,7 +1966,7 @@ public class CIMClientXML_HelperImpl {
 	/**
 	 * Sets the message id counter to a given value. For use in units tests
 	 * only.
-	 * 
+	 *
 	 * @param pId
 	 *            The new value
 	 */
@@ -1904,7 +1979,7 @@ public class CIMClientXML_HelperImpl {
 	 * the current thread it will choose a start value randomly. Afterwards the
 	 * id is incremented by 1. Be aware that different threads will have
 	 * distinct id counters.
-	 * 
+	 *
 	 * @return The next message id
 	 */
 	private int getNextId() {
@@ -1916,7 +1991,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * pAssociatorPaths_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pAssocClass
@@ -1931,22 +2006,28 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element OpenAssociatorInstancePaths_request(Document pDoc, CIMObjectPath pPath,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pOperationTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenAssociatorInstancePaths_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenAssociatorInstancePaths");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenAssociatorInstancePaths");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				INSTANCE_NAME);
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INSTANCE_NAME);
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
 		if (pAssocClass != null) {
@@ -1966,8 +2047,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pResultRole);
 		}
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -1975,8 +2055,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -1984,8 +2063,7 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -1994,7 +2072,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * OpenAssociatorInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pAssocClass
@@ -2011,24 +2089,31 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element OpenAssociatorInstances_request
 	 * @throws WBEMException
 	 */
-	public Element OpenAssociatorInstances_request(Document pDoc, CIMObjectPath pPath,
-			String pAssocClass, String pResultClass, String pRole, String pResultRole,
-			boolean pIncludeClassOrigin, String[] pPropertyList, String pFilterQueryLanguage,
-			String pFilterQuery, UnsignedInteger32 pOperationTimeout, boolean pContinueOnError,
-			UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenAssociatorInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pAssocClass,
+		String pResultClass,
+		String pRole,
+		String pResultRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
 
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenAssociatorInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenAssociatorInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				INSTANCE_NAME);
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INSTANCE_NAME);
 		// createINSTANCENAME will take care of keyBindings
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
@@ -2048,19 +2133,16 @@ public class CIMClientXML_HelperImpl {
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, RESULT_ROLE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pResultRole);
 		}
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, PROPERTY_LIST);
 			Element valuearrayE = CIMXMLBuilderImpl.createVALUEARRAY(pDoc, iparamvalueE);
-			for (int i = 0; i < pPropertyList.length; i++)
-				CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
+			for (int i = 0; i < pPropertyList.length; i++) CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
 		}
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -2068,8 +2150,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2077,8 +2158,7 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2087,7 +2167,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * OpenEnumerateInstancePaths_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pFilterQueryLanguage
@@ -2098,25 +2178,28 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element OpenEnumerateInstancePaths_request(Document pDoc, CIMObjectPath pPath,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pOperationTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenEnumerateInstancePaths_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenEnumerateInstancePaths");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenEnumerateInstancePaths");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, CLASS_NAME);
 		CIMXMLBuilderImpl.createCLASSNAME(pDoc, iparamvalueE, className);
 
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -2124,8 +2207,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2133,8 +2215,7 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2143,7 +2224,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * OpenEnumerateInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pPropertyList
@@ -2157,18 +2238,24 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element OpenEnumerateInstances_request(Document pDoc, CIMObjectPath pPath,
-			boolean pDeepInheritance, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pOperationTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenEnumerateInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		boolean pDeepInheritance,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenEnumerateInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenEnumerateInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, CLASS_NAME);
@@ -2177,20 +2264,17 @@ public class CIMClientXML_HelperImpl {
 		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, DEEP_INHERITANCE);
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pDeepInheritance);
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, PROPERTY_LIST);
 			Element valuearrayE = CIMXMLBuilderImpl.createVALUEARRAY(pDoc, iparamvalueE);
-			for (int i = 0; i < pPropertyList.length; i++)
-				CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
+			for (int i = 0; i < pPropertyList.length; i++) CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
 		}
 
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -2198,8 +2282,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2207,8 +2290,7 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2217,60 +2299,51 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * EnumerationCount_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pEnumerationContext
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element EnumerationCount_request(Document pDoc, CIMObjectPath pPath,
-			String pEnumerationContext) throws WBEMException {
-
+	public Element EnumerationCount_request(Document pDoc, CIMObjectPath pPath, String pEnumerationContext)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"EnumerationCount");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "EnumerationCount");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		if (pEnumerationContext != null) {
-			Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					ENUMERATION_CONTEXT);
+			Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, ENUMERATION_CONTEXT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pEnumerationContext);
 		}
 
 		return simplereqE;
-
 	}
 
 	/**
 	 * CloseEnumeration_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pEnumerationContext
 	 * @return Element
 	 * @throws WBEMException
 	 */
-	public Element CloseEnumeration_request(Document pDoc, CIMObjectPath pPath,
-			String pEnumerationContext) throws WBEMException {
-
+	public Element CloseEnumeration_request(Document pDoc, CIMObjectPath pPath, String pEnumerationContext)
+		throws WBEMException {
 		String className = pPath.getObjectName();
 
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"CloseEnumeration");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "CloseEnumeration");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		if (pEnumerationContext != null) {
-			Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					ENUMERATION_CONTEXT);
+			Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, ENUMERATION_CONTEXT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pEnumerationContext);
 		}
 		return simplereqE;
@@ -2278,7 +2351,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * referencePaths_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -2291,22 +2364,26 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element referencePaths_request
 	 * @throws WBEMException
 	 */
-	public Element OpenReferenceInstancePaths_request(Document pDoc, CIMObjectPath pPath,
-			String pResultClass, String pRole, String pFilterQueryLanguage, String pFilterQuery,
-			UnsignedInteger32 pOperationTimeout, boolean pContinueOnError,
-			UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenReferenceInstancePaths_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pResultClass,
+		String pRole,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenReferenceInstancePaths");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenReferenceInstancePaths");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				INSTANCE_NAME);
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INSTANCE_NAME);
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
 		if (pResultClass != null) {
@@ -2318,8 +2395,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pRole);
 		}
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -2327,8 +2403,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2336,18 +2411,16 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
 		return simplereqE;
-
 	}
 
 	/**
 	 * references_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pResultClass
@@ -2362,22 +2435,28 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element references_request
 	 * @throws WBEMException
 	 */
-	public Element OpenReferenceInstances_request(Document pDoc, CIMObjectPath pPath,
-			String pResultClass, String pRole, boolean pIncludeClassOrigin, String[] pPropertyList,
-			String pFilterQueryLanguage, String pFilterQuery, UnsignedInteger32 pOperationTimeout,
-			boolean pContinueOnError, UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element OpenReferenceInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList,
+		String pFilterQueryLanguage,
+		String pFilterQuery,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenReferenceInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenReferenceInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
-		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				INSTANCE_NAME);
+		Element iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INSTANCE_NAME);
 		CIMXMLBuilderImpl.createINSTANCENAME(pDoc, iparamvalueE, pPath);
 
 		if (pResultClass != null) {
@@ -2389,20 +2468,17 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pRole);
 		}
 
-		iparamvalueE = CIMXMLBuilderImpl
-				.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, INCLUDE_CLASS_ORIGIN);
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pIncludeClassOrigin);
 
 		if (pPropertyList != null) {
 			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, PROPERTY_LIST);
 			Element valuearrayE = CIMXMLBuilderImpl.createVALUEARRAY(pDoc, iparamvalueE);
-			for (int i = 0; i < pPropertyList.length; i++)
-				CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
+			for (int i = 0; i < pPropertyList.length; i++) CIMXMLBuilderImpl.createVALUE(pDoc, valuearrayE, pPropertyList[i]);
 		}
 
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
 		if (pFilterQuery != null) {
@@ -2410,8 +2486,7 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2419,8 +2494,7 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2429,7 +2503,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * OpenQueryInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pFilterQuery
@@ -2442,18 +2516,23 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element OpenQueryInstances_request
 	 * @throws WBEMException
 	 */
-	public Element OpenQueryInstances_request(Document pDoc, CIMObjectPath pPath,
-			String pFilterQuery, String pFilterQueryLanguage, boolean pReturnQueryResultClass,
-			UnsignedInteger32 pOperationTimeout, boolean pContinueOnError,
-			UnsignedInteger32 pMaxObjectCount, CIMClass pQueryResultClass) throws WBEMException {
-
+	public Element OpenQueryInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pFilterQuery,
+		String pFilterQueryLanguage,
+		boolean pReturnQueryResultClass,
+		UnsignedInteger32 pOperationTimeout,
+		boolean pContinueOnError,
+		UnsignedInteger32 pMaxObjectCount,
+		CIMClass pQueryResultClass
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"OpenQueryInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "OpenQueryInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
@@ -2463,17 +2542,14 @@ public class CIMClientXML_HelperImpl {
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQuery);
 		}
 		if (pFilterQueryLanguage != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					FILTER_QUERY_LANGUAGE);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, FILTER_QUERY_LANGUAGE);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pFilterQueryLanguage);
 		}
-		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-				RETURN_QUERY_RESULT_CLASS);
+		iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, RETURN_QUERY_RESULT_CLASS);
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pReturnQueryResultClass);
 
 		if (pOperationTimeout != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					OPERATION_TIMEOUT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, OPERATION_TIMEOUT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pOperationTimeout);
 		}
 
@@ -2481,13 +2557,11 @@ public class CIMClientXML_HelperImpl {
 		CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContinueOnError);
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 		if (pQueryResultClass != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					QUERY_RESULT_CLASS);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, QUERY_RESULT_CLASS);
 			CIMXMLBuilderImpl.createCLASS(pDoc, iparamvalueE, pQueryResultClass);
 		}
 		return simplereqE;
@@ -2495,7 +2569,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * PullInstancesWithPath_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pContext
@@ -2503,29 +2577,29 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element PullInstancesWithPath_request
 	 * @throws WBEMException
 	 */
-	public Element PullInstancesWithPath_request(Document pDoc, CIMObjectPath pPath,
-			String pContext, UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element PullInstancesWithPath_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"PullInstancesWithPath");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "PullInstancesWithPath");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
 
 		if (pContext != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					ENUMERATION_CONTEXT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, ENUMERATION_CONTEXT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContext);
 		}
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2534,7 +2608,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * PullInstancePaths_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pContext
@@ -2542,30 +2616,30 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element PullInstancePaths
 	 * @throws WBEMException
 	 */
-	public Element PullInstancePaths_request(Document pDoc, CIMObjectPath pPath, String pContext,
-			UnsignedInteger32 pMaxObjectCount) throws WBEMException {
-
+	public Element PullInstancePaths_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
 
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"PullInstancePaths");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "PullInstancePaths");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
 
 		if (pContext != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					ENUMERATION_CONTEXT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, ENUMERATION_CONTEXT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContext);
 		}
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2574,7 +2648,7 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * PullInstances_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pPath
 	 * @param pContext
@@ -2582,29 +2656,30 @@ public class CIMClientXML_HelperImpl {
 	 * @return Element PullInstances_request
 	 * @throws WBEMException
 	 */
-	public Element PullInstances_request(Document pDoc, CIMObjectPath pPath, String pContext,
-			UnsignedInteger32 pMaxObjectCount) throws WBEMException {
+	public Element PullInstances_request(
+		Document pDoc,
+		CIMObjectPath pPath,
+		String pContext,
+		UnsignedInteger32 pMaxObjectCount
+	)
+		throws WBEMException {
 		String className = pPath.getObjectName();
 
-		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER,
-				"null class name");
+		if (className == null) throw new WBEMException(WBEMException.CIM_ERR_INVALID_PARAMETER, "null class name");
 
 		Element simplereqE = CIMXMLBuilderImpl.createSIMPLEREQ(pDoc);
-		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE,
-				"PullInstances");
+		Element imethodcallE = CIMXMLBuilderImpl.createIMETHODCALL(pDoc, simplereqE, "PullInstances");
 		CIMXMLBuilderImpl.createLOCALNAMESPACEPATH(pDoc, imethodcallE, pPath);
 
 		Element iparamvalueE;
 
 		if (pContext != null) {
-			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE,
-					ENUMERATION_CONTEXT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, ENUMERATION_CONTEXT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pContext);
 		}
 
 		if (pMaxObjectCount != null) {
-			iparamvalueE = CIMXMLBuilderImpl
-					.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
+			iparamvalueE = CIMXMLBuilderImpl.createIPARAMVALUE(pDoc, imethodcallE, MAX_OBJECT_COUNT);
 			CIMXMLBuilderImpl.createVALUE(pDoc, iparamvalueE, pMaxObjectCount);
 		}
 
@@ -2613,19 +2688,16 @@ public class CIMClientXML_HelperImpl {
 
 	/**
 	 * sendIndication_request
-	 * 
+	 *
 	 * @param pDoc
 	 * @param pIndication
 	 * @return Element sendIndication_request
 	 * @throws WBEMException
 	 */
-	public Element sendIndication_request(Document pDoc, CIMInstance pIndication)
-			throws WBEMException {
+	public Element sendIndication_request(Document pDoc, CIMInstance pIndication) throws WBEMException {
 		Element simpleexpreqE = CIMXMLBuilderImpl.createSIMPLEEXPREQ(pDoc);
-		Element expmethodcallE = CIMXMLBuilderImpl.createEXPMETHODCALL(pDoc, simpleexpreqE,
-				"ExportIndication");
-		Element expparamvalueE = CIMXMLBuilderImpl.createEXPPARAMVALUE(pDoc, expmethodcallE,
-				"NewIndication");
+		Element expmethodcallE = CIMXMLBuilderImpl.createEXPMETHODCALL(pDoc, simpleexpreqE, "ExportIndication");
+		Element expparamvalueE = CIMXMLBuilderImpl.createEXPPARAMVALUE(pDoc, expmethodcallE, "NewIndication");
 
 		CIMXMLBuilderImpl.createINSTANCE(pDoc, expparamvalueE, pIndication);
 

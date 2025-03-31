@@ -45,21 +45,19 @@ package org.metricshub.wbem.sblim.cimclient.internal.http.io;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpClient;
 
 /**
  * Class KeepAliveInputStream implements an input stream for connections that
  * keep iAlive after a request is completed
- * 
+ *
  */
 public class KeepAliveInputStream extends FilterInputStream {
-
 	private HttpClient iClient;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 * @param pClient

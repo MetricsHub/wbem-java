@@ -48,12 +48,11 @@ import java.util.Arrays;
  * Class DTStringWriter helps making CIMDateTime Strings.
  */
 public class DTStringWriter {
-
 	private StringBuffer iBuf = new StringBuffer();
 
 	/**
 	 * writeInt - writes an integer, the upper digits are filled with zeros
-	 * 
+	 *
 	 * @param pNum
 	 *            -1 means that asterisks have to be printed
 	 * @param pDigits
@@ -77,7 +76,7 @@ public class DTStringWriter {
 
 	/**
 	 * writeSignedInt - used for utc writing
-	 * 
+	 *
 	 * @param pNum
 	 * @param pDigits
 	 */
@@ -93,20 +92,19 @@ public class DTStringWriter {
 
 	/**
 	 * writeUSec
-	 * 
+	 *
 	 * @param pUSec
 	 * @param pUnsignificantDigits
 	 */
 	public void writeUSec(int pUSec, int pUnsignificantDigits) {
 		int digits = 6 - pUnsignificantDigits;
 		write(digits, pUSec);
-		for (int i = 0; i < pUnsignificantDigits; i++)
-			write('*');
+		for (int i = 0; i < pUnsignificantDigits; i++) write('*');
 	}
 
 	/**
 	 * writeChar
-	 * 
+	 *
 	 * @param pChar
 	 */
 	public void write(char pChar) {
@@ -115,7 +113,7 @@ public class DTStringWriter {
 
 	/**
 	 * write
-	 * 
+	 *
 	 * @param pStr
 	 */
 	public void write(String pStr) {

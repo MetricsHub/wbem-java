@@ -46,7 +46,6 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
-
 import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
 
 /**
@@ -58,7 +57,6 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationAttribute;
  * </pre>
  */
 public class DADescriptor implements Comparable<DADescriptor> {
-
 	private String iURL;
 
 	private TreeSet<String> iScopeSet;
@@ -67,15 +65,14 @@ public class DADescriptor implements Comparable<DADescriptor> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pURL
 	 * @param pScopeSet
 	 *            - set of scope Strings
 	 * @param pAttributes
 	 *            - set of ServiceLocationAttributes
 	 */
-	public DADescriptor(String pURL, TreeSet<String> pScopeSet,
-			List<ServiceLocationAttribute> pAttributes) {
+	public DADescriptor(String pURL, TreeSet<String> pScopeSet, List<ServiceLocationAttribute> pAttributes) {
 		this.iURL = pURL;
 		this.iScopeSet = pScopeSet;
 		this.iAttributes = pAttributes;
@@ -83,7 +80,7 @@ public class DADescriptor implements Comparable<DADescriptor> {
 
 	/**
 	 * getURL
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getURL() {
@@ -92,7 +89,7 @@ public class DADescriptor implements Comparable<DADescriptor> {
 
 	/**
 	 * hasScope
-	 * 
+	 *
 	 * @param pScope
 	 * @return boolean
 	 */
@@ -123,7 +120,7 @@ public class DADescriptor implements Comparable<DADescriptor> {
 	/*
 	 * hashCode has to be independent of the order of scopes and attributes
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -133,8 +130,7 @@ public class DADescriptor implements Comparable<DADescriptor> {
 			Iterator<?> itr;
 			if (this.iScopeSet != null) {
 				itr = this.iScopeSet.iterator();
-				while (itr.hasNext())
-					incHashCode(itr.next().hashCode());
+				while (itr.hasNext()) incHashCode(itr.next().hashCode());
 			}
 			if (this.iAttributes != null) {
 				itr = this.iAttributes.iterator();
@@ -142,8 +138,7 @@ public class DADescriptor implements Comparable<DADescriptor> {
 				 * iHasCode is simply incremented, because attribute order
 				 * mustn't be considered.
 				 */
-				while (itr.hasNext())
-					this.iHashCode += itr.next().hashCode();
+				while (itr.hasNext()) this.iHashCode += itr.next().hashCode();
 			}
 		}
 		return this.iHashCode;
@@ -156,13 +151,11 @@ public class DADescriptor implements Comparable<DADescriptor> {
 			Iterator<String> itr = this.iScopeSet.iterator();
 			boolean more = false;
 			while (itr.hasNext()) {
-				if (more) strBuf.append(", ");
-				else more = true;
+				if (more) strBuf.append(", "); else more = true;
 				strBuf.append(itr.next());
 			}
 		}
 
 		return strBuf.toString();
 	}
-
 }

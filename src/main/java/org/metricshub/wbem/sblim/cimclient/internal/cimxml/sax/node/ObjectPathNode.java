@@ -52,7 +52,6 @@ import org.xml.sax.SAXException;
  * ELEMENT OBJECTPATH (INSTANCEPATH | CLASSPATH)
  */
 public class ObjectPathNode extends AbstractPathNode {
-
 	// (INSTANCEPATH | CLASSPATH)
 	private CIMObjectPath iObjPath;
 
@@ -80,17 +79,21 @@ public class ObjectPathNode extends AbstractPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iObjPath != null) throw new SAXException(getNodeName()
-				+ " node can have only one INSTANCEPATH or CLASSPATH child node!" + " Additional "
-				+ pNodeNameEnum + " child node is invalid!");
+		if (this.iObjPath != null) throw new SAXException(
+			getNodeName() +
+			" node can have only one INSTANCEPATH or CLASSPATH child node!" +
+			" Additional " +
+			pNodeNameEnum +
+			" child node is invalid!"
+		);
 		if (pNodeNameEnum != CLASSPATH && pNodeNameEnum != INSTANCEPATH) throw new SAXException(
-				getNodeName() + " node child node can be CLASSPATH or INSTANCEPATH but a "
-						+ pNodeNameEnum + " node was found!");
+			getNodeName() + " node child node can be CLASSPATH or INSTANCEPATH but a " + pNodeNameEnum + " node was found!"
+		);
 	}
 
 	@Override
@@ -100,12 +103,12 @@ public class ObjectPathNode extends AbstractPathNode {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iObjPath == null) throw new SAXException(getNodeName()
-				+ " node must have a INSTANCEPATH or CLASSPATH child node!");
+		if (this.iObjPath == null) throw new SAXException(
+			getNodeName() + " node must have a INSTANCEPATH or CLASSPATH child node!"
+		);
 	}
 
 	public CIMObjectPath getCIMObjectPath() {
 		return this.iObjPath;
 	}
-
 }

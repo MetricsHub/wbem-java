@@ -44,13 +44,13 @@ import java.util.Locale;
 
 /**
  * Common handful functions can be here.
- * 
+ *
  */
 public class Util {
 
 	/**
 	 * getLangTag
-	 * 
+	 *
 	 * @param pLocale
 	 * @return String
 	 */
@@ -60,5 +60,4 @@ public class Util {
 		String lang = pLocale.getLanguage();
 		return (country != null && country.length() > 0) ? lang + "-" + country : lang;
 	}
-
 }

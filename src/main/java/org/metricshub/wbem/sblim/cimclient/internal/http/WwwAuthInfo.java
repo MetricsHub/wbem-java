@@ -66,7 +66,7 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -76,21 +76,31 @@ public class WwwAuthInfo extends AuthorizationInfo {
 		String _nc = Long.toHexString(this.iNc);
 
 		if (this.iScheme.equalsIgnoreCase("Digest")) {
-
 			if (this.iRealm == null) { // support for some ICAT CIMOMs buggy
 				// Digest authentication
 				try {
 					MessageDigest messageDigest = null;
 					messageDigest = MessageDigest.getInstance("MD5");
 
-					messageDigest.update(getBytes((this.iCredentials != null && this.iCredentials
-							.getUserName() != null) ? String.valueOf(this.iCredentials
-							.getPassword()) : "null", "UTF-8"));
+					messageDigest.update(
+						getBytes(
+							(this.iCredentials != null && this.iCredentials.getUserName() != null)
+								? String.valueOf(this.iCredentials.getPassword())
+								: "null",
+							"UTF-8"
+						)
+					);
 					String pass = HttpClient.convertToHexString(messageDigest.digest());
-					return "Digest username="
-							+ ((this.iCredentials != null && this.iCredentials.getUserName() != null) ? this.iCredentials
-									.getUserName()
-									: "null") + ", response=" + pass;
+					return (
+						"Digest username=" +
+						(
+							(this.iCredentials != null && this.iCredentials.getUserName() != null)
+								? this.iCredentials.getUserName()
+								: "null"
+						) +
+						", response=" +
+						pass
+					);
 				} catch (NoSuchAlgorithmException e) {
 					// TODO log
 					e.printStackTrace();
@@ -99,10 +109,11 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 			result.append(this.iScheme);
 			result.append(" username=\"");
-			result
-					.append((this.iCredentials != null && this.iCredentials.getUserName() != null) ? this.iCredentials
-							.getUserName()
-							: "null");
+			result.append(
+				(this.iCredentials != null && this.iCredentials.getUserName() != null)
+					? this.iCredentials.getUserName()
+					: "null"
+			);
 			result.append("\"");
 			if (this.iRealm != null) {
 				result.append(", realm=\"");
@@ -143,19 +154,20 @@ public class WwwAuthInfo extends AuthorizationInfo {
 				result.append(_nc);
 			}
 		} else if (this.iScheme.equalsIgnoreCase("Basic")) {
-
 			result.append("Basic ");
 
 			StringBuffer tmp = new StringBuffer();
-			tmp
-					.append((this.iCredentials != null && this.iCredentials.getUserName() != null) ? this.iCredentials
-							.getUserName()
-							: "null");
+			tmp.append(
+				(this.iCredentials != null && this.iCredentials.getUserName() != null)
+					? this.iCredentials.getUserName()
+					: "null"
+			);
 			tmp.append(':');
-			tmp
-					.append((this.iCredentials != null && this.iCredentials.getPassword() != null) ? String
-							.valueOf(this.iCredentials.getPassword())
-							: "null");
+			tmp.append(
+				(this.iCredentials != null && this.iCredentials.getPassword() != null)
+					? String.valueOf(this.iCredentials.getPassword())
+					: "null"
+			);
 
 			result.append(BASE64Encoder.encode(getBytes(tmp.toString(), "UTF-8")));
 		}
@@ -164,7 +176,7 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 	/**
 	 * Splits a comma-separated string into multiple substrings
-	 * 
+	 *
 	 * @param pLine
 	 *            The comma-separated string
 	 * @return The array of substrings (excluding commas)
@@ -195,7 +207,7 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.internal.http.AuthorizationInfo#updateAuthenticationInfo
 	 * (org.sblim.cimclient.internal.http.Challenge, java.net.URI,
@@ -205,15 +217,16 @@ public class WwwAuthInfo extends AuthorizationInfo {
 	 * @param authenticate
 	 */
 	@Override
-	public void updateAuthenticationInfo(Challenge challenge, String authenticate, URI url,
-			String requestMethod) throws NoSuchAlgorithmException {
-
+	public void updateAuthenticationInfo(Challenge challenge, String authenticate, URI url, String requestMethod)
+		throws NoSuchAlgorithmException {
 		setURI(url.getPath());
 		HttpHeader params = challenge.getParams();
 
 		this.iScheme = challenge.getScheme();
 
-		if (!this.iScheme.equalsIgnoreCase("Digest")) { return; }
+		if (!this.iScheme.equalsIgnoreCase("Digest")) {
+			return;
+		}
 
 		this.iRealm = params.getField("realm");
 
@@ -282,14 +295,12 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 		messageDigest.reset();
 		PasswordAuthentication credentials1 = getCredentials();
-		this.iA1 = credentials1.getUserName() + ":" + getRealm() + ":"
-				+ String.valueOf(credentials1.getPassword());
+		this.iA1 = credentials1.getUserName() + ":" + getRealm() + ":" + String.valueOf(credentials1.getPassword());
 		// System.out.println("Base:"+A1);
 		messageDigest.update(getBytes(this.iA1, "UTF-8"));
 
 		if ("md5-sess".equalsIgnoreCase(algorithm)) {
 			messageDigest.update(getBytes((":" + getNonce() + ":" + getCnonce()), "UTF-8"));
-
 		}
 
 		byte[] digest1 = messageDigest.digest();
@@ -320,18 +331,33 @@ public class WwwAuthInfo extends AuthorizationInfo {
 			messageDigest.update(getBytes((sessionKey + ":" + nonce + ":" + A2), "UTF-8"));
 		} else {
 			String _nc = Long.toHexString(challengeNc);
-			messageDigest.update(getBytes((sessionKey + ":" + nonce + ":"
-					+ "00000000".substring(_nc.length()) + _nc + ":" + getCnonce() + ":" + qop
-					+ ":" + A2), "UTF-8"));
+			messageDigest.update(
+				getBytes(
+					(
+						sessionKey +
+						":" +
+						nonce +
+						":" +
+						"00000000".substring(_nc.length()) +
+						_nc +
+						":" +
+						getCnonce() +
+						":" +
+						qop +
+						":" +
+						A2
+					),
+					"UTF-8"
+				)
+			);
 		}
 		this.iResponse = HttpClient.convertToHexString(messageDigest.digest());
-
 		// TODO handle digest-required header
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.internal.http.AuthorizationInfo#getHeaderFieldName()
 	 */
@@ -342,7 +368,7 @@ public class WwwAuthInfo extends AuthorizationInfo {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sblim.cimclient.internal.http.AuthorizationInfo#isSentOnFirstRequest
 	 * ()

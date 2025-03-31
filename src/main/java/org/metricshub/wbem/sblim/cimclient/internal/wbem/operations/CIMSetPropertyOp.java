@@ -48,17 +48,16 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMSetPropertyOp
- * 
+ *
  */
 public class CIMSetPropertyOp extends CIMOperation {
-
 	protected String iPropertyName;
 
 	protected Object iCimValue;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param propertyName
 	 * @param cimValue
@@ -72,7 +71,7 @@ public class CIMSetPropertyOp extends CIMOperation {
 
 	/**
 	 * Returns cimValue
-	 * 
+	 *
 	 * @return The value of cimValue.
 	 */
 	public Object getCimValue() {
@@ -81,11 +80,10 @@ public class CIMSetPropertyOp extends CIMOperation {
 
 	/**
 	 * Returns propertyName
-	 * 
+	 *
 	 * @return The value of propertyName.
 	 */
 	public String getPropertyName() {
 		return this.iPropertyName;
 	}
-
 }

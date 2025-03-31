@@ -47,12 +47,11 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.CIMNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.Node;
-import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.NonVolatileIf;
+import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -62,7 +61,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * for SAX and PULL style XML parsing.
  */
 public class XMLDefaultHandlerImpl extends DefaultHandler {
-
 	private Node iRootNode;
 
 	private NodeStack iNodeStack = new NodeStack();
@@ -79,12 +77,11 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 	 * NodeStack
 	 */
 	static class NodeStack {
-
 		private ArrayList<Node> iAL = new ArrayList<Node>();
 
 		/**
 		 * push
-		 * 
+		 *
 		 * @param pNode
 		 */
 		public void push(Node pNode) {
@@ -93,7 +90,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 		/**
 		 * pop
-		 * 
+		 *
 		 * @return Node
 		 */
 		public Node pop() {
@@ -103,19 +100,18 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 		/**
 		 * peek
-		 * 
+		 *
 		 * @return Node
 		 */
 		public Node peek() {
 			if (this.iAL.size() == 0) return null;
 			return this.iAL.get(this.iAL.size() - 1);
 		}
-
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pSession
 	 *            - stores common variables for the whole parsing session
 	 * @param pAnyRoot
@@ -129,7 +125,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLocalPath
 	 *            - CIMObjectPathes without local paths will be extended by this
 	 *            value
@@ -143,7 +139,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLocalPath
 	 *            - CIMObjectPathes without local paths will be extended by this
 	 *            value
@@ -164,23 +160,21 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 	 * @param localName
 	 */
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes)
-			throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		this.iStrBuf = null;
 		String nodeNameEnum = NodeFactory.getEnum(qName);
 		if (nodeNameEnum == null) {
-			LogAndTraceBroker.getBroker()
-					.trace(
-							Level.FINEST,
-							"Ignoring unrecognized starting CIM-XML element found during parsing: "
-									+ qName);
+			LogAndTraceBroker
+				.getBroker()
+				.trace(Level.FINEST, "Ignoring unrecognized starting CIM-XML element found during parsing: " + qName);
 			return;
 		}
 
 		Node parentNode = getPeekNode();
 		if (parentNode == null) {
 			if (!this.iAnyRoot && nodeNameEnum != NodeConstIf.CIM) throw new SAXException(
-					"First node of CIM-XML document must be CIM! " + nodeNameEnum + " is invalid!");
+				"First node of CIM-XML document must be CIM! " + nodeNameEnum + " is invalid!"
+			);
 		}
 		if (parentNode != null) parentNode.testChild(nodeNameEnum);
 		// let's look for a Node instance in the pool
@@ -217,8 +211,9 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		String nodeNameEnum = NodeFactory.getEnum(qName);
 		if (nodeNameEnum == null) {
-			LogAndTraceBroker.getBroker().trace(Level.FINEST,
-					"Ignoring unrecognized ending CIM-XML element found during parsing: " + qName);
+			LogAndTraceBroker
+				.getBroker()
+				.trace(Level.FINEST, "Ignoring unrecognized ending CIM-XML element found during parsing: " + qName);
 			return;
 		}
 		Node peekNode = this.iNodeStack.pop();
@@ -253,7 +248,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * getCIMNode
-	 * 
+	 *
 	 * @return CIMNode, the root Element of the parsed CIM-XML document
 	 */
 	public CIMNode getCIMNode() {
@@ -262,7 +257,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * getRootNode
-	 * 
+	 *
 	 * @return Node, the root element of the parsed CIM-XML stream
 	 */
 	public Node getRootNode() {
@@ -271,7 +266,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * getNodePoolHits
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getNodePoolHits() {
@@ -280,7 +275,7 @@ public class XMLDefaultHandlerImpl extends DefaultHandler {
 
 	/**
 	 * getNodePoolMisses
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getNodePoolMisses() {

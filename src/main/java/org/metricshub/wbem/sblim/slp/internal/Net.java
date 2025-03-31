@@ -50,15 +50,14 @@ import java.util.Enumeration;
 
 /**
  * Net
- * 
+ *
  */
 public class Net {
-
 	private static boolean cHasV6, cHasV4;
 
 	/**
 	 * hasIPv6
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public static boolean hasIPv6() {
@@ -68,7 +67,7 @@ public class Net {
 
 	/**
 	 * hasIPv4
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public static boolean hasIPv4() {
@@ -83,7 +82,7 @@ public class Net {
 		try {
 			cScanned = true;
 			Enumeration<NetworkInterface> ifaceEnum = NetworkInterface.getNetworkInterfaces();
-			ifLoop: while (ifaceEnum.hasMoreElements()) {
+			ifLoop:while (ifaceEnum.hasMoreElements()) {
 				NetworkInterface iface = ifaceEnum.nextElement();
 				Enumeration<InetAddress> addrEnum = iface.getInetAddresses();
 				while (addrEnum.hasMoreElements()) {
@@ -102,5 +101,4 @@ public class Net {
 			TRC.error(e);
 		}
 	}
-
 }

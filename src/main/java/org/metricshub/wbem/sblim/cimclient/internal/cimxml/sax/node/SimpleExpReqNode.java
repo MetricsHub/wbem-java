@@ -52,7 +52,6 @@ import org.xml.sax.SAXException;
  * ELEMENT SIMPLEEXPREQ (CORRELATOR*, EXPMETHODCALL)
  */
 public class SimpleExpReqNode extends AbstractMessageNode {
-
 	private ExpMethodCallNode iMethodCallNode;
 
 	/**
@@ -85,22 +84,20 @@ public class SimpleExpReqNode extends AbstractMessageNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (pNodeNameEnum == EXPMETHODCALL) {
-			if (this.iMethodCallNode != null) throw new SAXException(getNodeName()
-					+ " node can have only one child node!");
-		} else if (pNodeNameEnum != CORRELATOR) throw new SAXException(getNodeName()
-				+ " node cannot have " + pNodeNameEnum + " child node!");
+			if (this.iMethodCallNode != null) throw new SAXException(getNodeName() + " node can have only one child node!");
+		} else if (pNodeNameEnum != CORRELATOR) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iMethodCallNode == null) throw new SAXException(getNodeName()
-				+ " node must have a child node!");
+		if (this.iMethodCallNode == null) throw new SAXException(getNodeName() + " node must have a child node!");
 	}
-
 }

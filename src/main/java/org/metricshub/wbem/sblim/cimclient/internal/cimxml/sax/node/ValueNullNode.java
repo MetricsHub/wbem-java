@@ -65,7 +65,7 @@ public class ValueNullNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void init(Attributes pAttribs, SAXSession pSession) {
-	// no attributes
+		// no attributes
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class ValueNullNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
@@ -89,12 +89,12 @@ public class ValueNullNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// no child
+		// no child
 	}
 
 	@Override
 	public void testCompletness() {
-	// nothing to test
+		// nothing to test
 	}
 
 	/**
@@ -109,5 +109,4 @@ public class ValueNullNode extends AbstractScalarValueNode {
 		// type is unknown
 		return null;
 	}
-
 }

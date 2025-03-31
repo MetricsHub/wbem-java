@@ -45,12 +45,10 @@ import org.metricshub.wbem.sblim.cimclient.internal.wbem.CIMError;
  * This interface is implemented by Nodes which can provide CIMError info.
  */
 public interface ErrorIf {
-
 	/**
 	 * getCIMError
-	 * 
+	 *
 	 * @return CIMError
 	 */
 	public CIMError getCIMError();
-
 }

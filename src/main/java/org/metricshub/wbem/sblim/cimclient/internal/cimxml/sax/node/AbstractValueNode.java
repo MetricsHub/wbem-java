@@ -48,11 +48,10 @@ public abstract class AbstractValueNode extends Node implements TypedIf, ValueIf
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractValueNode(String pNameEnum) {
 		super(pNameEnum);
 	}
-
 }

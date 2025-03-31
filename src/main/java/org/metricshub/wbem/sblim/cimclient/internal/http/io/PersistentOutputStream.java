@@ -51,14 +51,13 @@ import java.io.OutputStream;
  * can be disabled.
  */
 public class PersistentOutputStream extends FilterOutputStream {
-
 	boolean iClosable = false;
 
 	boolean iClosed = false;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 */
@@ -68,7 +67,7 @@ public class PersistentOutputStream extends FilterOutputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The underlying stream
 	 * @param pClosable

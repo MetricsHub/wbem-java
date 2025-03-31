@@ -69,7 +69,7 @@ import java.io.Serializable;
  * <li>utc - is the offset from UTC in minutes (using the sign indicated by s).
  * It is ignored for a time interval.</li>
  * </ul>
- * 
+ *
  * For example, the absolute datetime for Monday, May 25, 1998, at 1:30 PM EST
  * would be represented as: 19980525133015.000000-300. Values must be
  * zero-padded so that the entire string is always the same 25-character length.
@@ -81,29 +81,28 @@ import java.io.Serializable;
  * is always used for interval properties.
  */
 public abstract class CIMDateTime extends Object implements Serializable, Comparable<CIMDateTime> {
-
 	private static final long serialVersionUID = 3424668043014662166L;
 
 	/**
 	 * Creates a <code>CIMDateTime</code> object using a string.
-	 * 
+	 *
 	 * @param pDateString
 	 *            A string in the format of yyyyMMddHHmmss.SSSSSSsutc.
 	 * @throws IllegalArgumentException
 	 *             If string is not in the correct format.
 	 */
 	public CIMDateTime(String pDateString) throws IllegalArgumentException {
-	// FIXME: what to do here?
+		// FIXME: what to do here?
 	}
 
 	protected CIMDateTime() {
-	// FIXME: what to do here?
+		// FIXME: what to do here?
 	}
 
 	/**
 	 * Determines whether the <code>CIMDateTime</code> that is passed in is
 	 * equal to the current <code>CIMDateTime</code> object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The CIMDateTime object to compare to.
 	 * @return <code>true</code> if this CIMDateTime object is equal to the one
@@ -118,7 +117,7 @@ public abstract class CIMDateTime extends Object implements Serializable, Compar
 
 	/**
 	 * Gets the internal string representation of this object.
-	 * 
+	 *
 	 * @return The internal representation of the <code>CIMDateTime</code>
 	 *         object.
 	 */
@@ -126,7 +125,7 @@ public abstract class CIMDateTime extends Object implements Serializable, Compar
 
 	/**
 	 * Returns the hash code for this object.
-	 * 
+	 *
 	 * @return A hash code value for this object.
 	 * @see java.lang.Object#hashCode()
 	 */

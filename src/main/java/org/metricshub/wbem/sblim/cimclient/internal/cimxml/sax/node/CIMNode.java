@@ -80,11 +80,13 @@ public class CIMNode extends Node implements NonVolatileIf {
 	@Override
 	public void init(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iCimVersion = pAttribs.getValue("CIMVERSION");
-		if (this.iCimVersion == null) { throw new SAXException(
-				"CIMVERSION attribute is mandatory for " + getNodeName() + " node!"); }
+		if (this.iCimVersion == null) {
+			throw new SAXException("CIMVERSION attribute is mandatory for " + getNodeName() + " node!");
+		}
 		this.iDtdVersion = pAttribs.getValue("DTDVERSION");
-		if (this.iDtdVersion == null) { throw new SAXException(
-				"DTDVERSION attribute is mandatory for " + getNodeName() + " node!"); }
+		if (this.iDtdVersion == null) {
+			throw new SAXException("DTDVERSION attribute is mandatory for " + getNodeName() + " node!");
+		}
 		this.iContent = null;
 	}
 
@@ -103,15 +105,15 @@ public class CIMNode extends Node implements NonVolatileIf {
 			throw new SAXException(msg);
 		}
 		if (pNodeNameEnum == MESSAGE) return;
-		String msg = (pNodeNameEnum == DECLARATION) ? "DECLARATION child node not supported by CIM node!"
-				: pNodeNameEnum + " cannot be a child node of CIM node!";
+		String msg = (pNodeNameEnum == DECLARATION)
+			? "DECLARATION child node not supported by CIM node!"
+			: pNodeNameEnum + " cannot be a child node of CIM node!";
 		throw new SAXException(msg);
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iContent == null) throw new SAXException(
-				"CIM node must have a MESSAGE or a DECLARATION child!");
+		if (this.iContent == null) throw new SAXException("CIM node must have a MESSAGE or a DECLARATION child!");
 	}
 
 	/**
@@ -119,12 +121,12 @@ public class CIMNode extends Node implements NonVolatileIf {
 	 */
 	@Override
 	public void childParsed(Node pChild) {
-	// nothing to do here
+		// nothing to do here
 	}
 
 	/**
 	 * getCimVersion
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getCimVersion() {
@@ -133,7 +135,7 @@ public class CIMNode extends Node implements NonVolatileIf {
 
 	/**
 	 * getDtdVersion
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getDtdVersion() {
@@ -142,13 +144,12 @@ public class CIMNode extends Node implements NonVolatileIf {
 
 	/**
 	 * getMessageNode
-	 * 
+	 *
 	 * @return MessageNode or null
 	 */
 	public MessageNode getMessageNode() {
 		return (this.iContent instanceof MessageNode) ? (MessageNode) this.iContent : null;
 	}
-
 	// not implemented yet
 	// public DeclarationNode getDeclarationNode() {}
 

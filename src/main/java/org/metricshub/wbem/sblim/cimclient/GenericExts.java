@@ -50,10 +50,10 @@ public class GenericExts {
 	/**
 	 * initArrayList : If arrayList is null then it will return the new
 	 * arrayList of same type if it is not null then it will clear the arrayList
-	 * 
+	 *
 	 * @param <T>
 	 *            : Type Parameter
-	 * 
+	 *
 	 * @param pAL
 	 *            : ArrayList to be initialized
 	 * @return ArrayList : initialized ArrayList
@@ -68,10 +68,10 @@ public class GenericExts {
 	 * initArrayList : If arrayList is null then it will return the new
 	 * arrayList of same type if it is not null then it will return the same
 	 * arrayList
-	 * 
+	 *
 	 * @param <T>
 	 *            : Type Parameter
-	 * 
+	 *
 	 * @param pAL
 	 *            : ArrayList to be initialized
 	 * @return ArrayList : initialized ArrayList
@@ -84,20 +84,19 @@ public class GenericExts {
 	/**
 	 * cloneVector : Generic deep copy of the vector. If original vector is null
 	 * then return value will also be null.
-	 * 
+	 *
 	 * @param <T>
 	 *            : Type of vector
-	 * 
+	 *
 	 * @param oldVec
 	 *            : The original vector.
-	 * 
+	 *
 	 * @return Vector&lt;T&gt; : Deep copy of original vector.
 	 */
 	public static synchronized <T> Vector<T> cloneVector(Vector<T> oldVec) {
 		if (oldVec == null) return null;
 		Vector<T> newVec = new Vector<T>(oldVec.size());
-		for (T obj : oldVec)
-			newVec.add(obj);
+		for (T obj : oldVec) newVec.add(obj);
 		return newVec;
 	}
 }

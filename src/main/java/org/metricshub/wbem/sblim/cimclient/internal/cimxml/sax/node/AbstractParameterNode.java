@@ -55,7 +55,6 @@ import org.xml.sax.SAXException;
  * ParameterNode, ParameterRefArrayNode and ParameterReferenceNode classes.
  */
 public abstract class AbstractParameterNode extends Node implements TypedIf {
-
 	private String iName;
 
 	protected QualifiedNodeHandler iQualiHandler;
@@ -64,7 +63,7 @@ public abstract class AbstractParameterNode extends Node implements TypedIf {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractParameterNode(String pNameEnum) {
@@ -83,8 +82,9 @@ public abstract class AbstractParameterNode extends Node implements TypedIf {
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (pNodeNameEnum != QUALIFIER) throw new SAXException(getNodeName() + " cannot have "
-				+ pNodeNameEnum + " child node!");
+		if (pNodeNameEnum != QUALIFIER) throw new SAXException(
+			getNodeName() + " cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	@Override
@@ -97,27 +97,29 @@ public abstract class AbstractParameterNode extends Node implements TypedIf {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	/**
 	 * getCIMParameter
-	 * 
+	 *
 	 * @return CIMParameter
 	 */
 	public CIMParameter<Object> getCIMParameter() {
 		/*
 		 * CIMParameter(String name, CIMDataType type, CIMQualifier[]
 		 * qualifiers)
-		 * 
+		 *
 		 * Not dealing with embedded object is faster. Here we don't have to do
 		 * anything with embedded object qualifier, since parameter doesn't have
 		 * value.
-		 * 
+		 *
 		 * Strict embObj type parsing requires different behavior.
 		 */
-		return new CIMParameter<Object>(this.iName, getType(), this.iQualiHandler
-				.getQualis(!this.iSession.strictEmbObjParsing()));
+		return new CIMParameter<Object>(
+			this.iName,
+			getType(),
+			this.iQualiHandler.getQualis(!this.iSession.strictEmbObjParsing())
+		);
 	}
-
 }

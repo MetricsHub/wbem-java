@@ -48,10 +48,9 @@ import java.io.IOException;
 
 /**
  * Class CIMXMLParseException is used by the CIM-XML DOM parser.
- * 
+ *
  */
 public class CIMXMLParseException extends IOException {
-
 	private static final long serialVersionUID = 1237082621297618586L;
 
 	/**
@@ -63,7 +62,7 @@ public class CIMXMLParseException extends IOException {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param reason
 	 */
 	public CIMXMLParseException(String reason) {

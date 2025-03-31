@@ -52,10 +52,9 @@ import java.io.IOException;
  * listen for indications.
  */
 public interface WBEMListener {
-
 	/**
 	 * Add a new listener using the specified port.
-	 * 
+	 *
 	 * @param pListener
 	 *            The Indication Listener that will be called when an indication
 	 *            is received.
@@ -67,12 +66,11 @@ public interface WBEMListener {
 	 * @throws IOException
 	 *             If the port is already in use.
 	 */
-	public int addListener(IndicationListener pListener, int pPort, String pTransport)
-			throws IOException;
+	public int addListener(IndicationListener pListener, int pPort, String pTransport) throws IOException;
 
 	/**
 	 * Add a new listener using the specified port.
-	 * 
+	 *
 	 * @param pListener
 	 *            The Indication Listener that will be called when an indication
 	 *            is received.
@@ -87,12 +85,12 @@ public interface WBEMListener {
 	 * @throws IOException
 	 *             If the port is already in use.
 	 */
-	public int addListener(IndicationListener pListener, int pPort, String pTransport,
-			String localAddr) throws IOException;
+	public int addListener(IndicationListener pListener, int pPort, String pTransport, String localAddr)
+		throws IOException;
 
 	/**
 	 * Get a property value.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the property.
 	 * @return The value of the property.
@@ -101,7 +99,7 @@ public interface WBEMListener {
 
 	/**
 	 * Remove the listener associated with the specified port.
-	 * 
+	 *
 	 * @param pPort
 	 *            The port.
 	 */
@@ -109,7 +107,7 @@ public interface WBEMListener {
 
 	/**
 	 * Set a property for the WBEM Listener.
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the property.
 	 * @param pValue
@@ -118,5 +116,4 @@ public interface WBEMListener {
 	 *             If the name is not a supported property name.
 	 */
 	public void setProperty(String pName, String pValue);
-
 }

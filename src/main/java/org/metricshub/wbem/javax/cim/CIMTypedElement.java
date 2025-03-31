@@ -51,7 +51,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * element that contains just the data type, but no value.
  */
 public abstract class CIMTypedElement extends CIMElement {
-
 	private static final long serialVersionUID = -8839964536590822815L;
 
 	private CIMDataType iType;
@@ -59,7 +58,7 @@ public abstract class CIMTypedElement extends CIMElement {
 	/**
 	 * Constructs a <code>CIMTypedElement</code> with the given name and data
 	 * type.
-	 * 
+	 *
 	 * @param pName
 	 *            Name of the element.
 	 * @param pType
@@ -75,7 +74,7 @@ public abstract class CIMTypedElement extends CIMElement {
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMTypedElement</code> that represents the same name and
 	 * type as this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare with.
 	 * @return <code>true</code> if the objects are the same; <code>false</code>
@@ -91,7 +90,7 @@ public abstract class CIMTypedElement extends CIMElement {
 
 	/**
 	 * Returns the <code>CIMDataType</code> for this CIM Element.
-	 * 
+	 *
 	 * @return <code>CIMDataType</code> of this CIM element.
 	 */
 	public CIMDataType getDataType() {
@@ -102,7 +101,7 @@ public abstract class CIMTypedElement extends CIMElement {
 	 * Returns a hash code value for the CIM typed element. This method is
 	 * supported for the benefit of hashtables such as those provided by
 	 * <code>java.util.Hashtable</code>.
-	 * 
+	 *
 	 * @return A hash code value for this CIM typed element.
 	 */
 	@Override
@@ -115,7 +114,7 @@ public abstract class CIMTypedElement extends CIMElement {
 	 * method is intended to be used only for debugging purposes, and the format
 	 * of the returned string may vary between implementations. The returned
 	 * string may be empty but may not be <code>null</code>.
-	 * 
+	 *
 	 * @return String representation of this element.
 	 */
 	@Override

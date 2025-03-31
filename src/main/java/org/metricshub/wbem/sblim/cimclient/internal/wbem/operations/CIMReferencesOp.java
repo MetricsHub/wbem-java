@@ -48,10 +48,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMReferencesOp
- * 
+ *
  */
 public class CIMReferencesOp extends CIMOperation {
-
 	protected String iResultClass;
 
 	protected String iRole;
@@ -64,7 +63,7 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pResultClass
 	 * @param pRole
@@ -72,8 +71,14 @@ public class CIMReferencesOp extends CIMOperation {
 	 * @param pIncludeClassOrigin
 	 * @param pPropertyList
 	 */
-	public CIMReferencesOp(CIMObjectPath pObjectName, String pResultClass, String pRole,
-			boolean pIncludeQualifiers, boolean pIncludeClassOrigin, String[] pPropertyList) {
+	public CIMReferencesOp(
+		CIMObjectPath pObjectName,
+		String pResultClass,
+		String pRole,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	) {
 		this.iMethodCall = "References";
 		this.iObjectName = pObjectName;
 		this.iResultClass = pResultClass;
@@ -84,7 +89,7 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Returns includeClassOrigin
-	 * 
+	 *
 	 * @return The value of includeClassOrigin.
 	 */
 	public boolean isIncludeClassOrigin() {
@@ -93,7 +98,7 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Returns includeQualifiers
-	 * 
+	 *
 	 * @return The value of includeQualifiers.
 	 */
 	public boolean isIncludeQualifiers() {
@@ -102,7 +107,7 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Returns propertyList
-	 * 
+	 *
 	 * @return The value of propertyList.
 	 */
 	public String[] getPropertyList() {
@@ -111,7 +116,7 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Returns resultClass
-	 * 
+	 *
 	 * @return The value of resultClass.
 	 */
 	public String getResultClass() {
@@ -120,11 +125,10 @@ public class CIMReferencesOp extends CIMOperation {
 
 	/**
 	 * Returns role
-	 * 
+	 *
 	 * @return The value of role.
 	 */
 	public String getRole() {
 		return this.iRole;
 	}
-
 }

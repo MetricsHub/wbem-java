@@ -47,9 +47,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceURL;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -63,25 +62,23 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  */
 /**
  * ServiceReply message
- * 
+ *
  */
 public class ServiceReply extends ReplyMessage {
-
 	private List<ServiceURL> iURLEntries;
 
 	private List<Exception> iURLExceptions;
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		int errorCode = pInStr.read16();
 		ArrayList<Exception> urlExceptions = new ArrayList<Exception>();
 		List<ServiceURL> urlEntries = pInStr.readUrlList(urlExceptions);
@@ -90,7 +87,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 * @param pURLEntries
 	 *            - list of ServiceURLs
@@ -102,7 +99,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pErrorCode
 	 * @param pURLEntries
@@ -110,8 +107,7 @@ public class ServiceReply extends ReplyMessage {
 	 * @param pURLExceptions
 	 *            - list of URL Exceptions
 	 */
-	public ServiceReply(String pLangTag, int pErrorCode, List<ServiceURL> pURLEntries,
-			List<Exception> pURLExceptions) {
+	public ServiceReply(String pLangTag, int pErrorCode, List<ServiceURL> pURLEntries, List<Exception> pURLExceptions) {
 		super(SRV_RPLY, pLangTag, pErrorCode);
 		this.iURLEntries = pURLEntries;
 		this.iURLExceptions = pURLExceptions;
@@ -119,7 +115,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 * @param pURLEntries
@@ -127,8 +123,7 @@ public class ServiceReply extends ReplyMessage {
 	 * @param pURLExceptions
 	 *            - list of URL Exceptions
 	 */
-	public ServiceReply(MsgHeader pHeader, int pErrorCode, List<ServiceURL> pURLEntries,
-			List<Exception> pURLExceptions) {
+	public ServiceReply(MsgHeader pHeader, int pErrorCode, List<ServiceURL> pURLEntries, List<Exception> pURLExceptions) {
 		super(pHeader, pErrorCode);
 		this.iURLEntries = pURLEntries;
 		this.iURLExceptions = pURLExceptions;
@@ -136,7 +131,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * getResultIterator
-	 * 
+	 *
 	 * @return iterator of URL Exception list
 	 */
 	@Override
@@ -146,7 +141,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * getExceptionIterator
-	 * 
+	 *
 	 * @return iterator of URL Exception list
 	 */
 	@Override
@@ -156,7 +151,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * getURLEntries
-	 * 
+	 *
 	 * @return list of ServiceURLs
 	 */
 	public List<ServiceURL> getURLEntries() {
@@ -165,7 +160,7 @@ public class ServiceReply extends ReplyMessage {
 
 	/**
 	 * getURLExceptions
-	 * 
+	 *
 	 * @return list of URL Exceptions
 	 */
 	public List<Exception> getURLExceptions() {
@@ -179,5 +174,4 @@ public class ServiceReply extends ReplyMessage {
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
 		return pOutStr.write16(getErrorCode()) && pOutStr.writeURLList(this.iURLEntries);
 	}
-
 }

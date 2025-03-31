@@ -62,7 +62,6 @@ import org.metricshub.wbem.javax.cim.UnsignedInteger8;
  * representations in common.
  */
 public class CIMOctetString {
-
 	private UnsignedInteger8 iBytes[];
 
 	private String iASCIIString;
@@ -75,7 +74,7 @@ public class CIMOctetString {
 
 	/**
 	 * Constructs a <code>CIMOctetString</code> from the given byte array.
-	 * 
+	 *
 	 * @param pBytes
 	 *            Byte array representation of octet string.
 	 * @throws IllegalArgumentException
@@ -83,37 +82,40 @@ public class CIMOctetString {
 	public CIMOctetString(UnsignedInteger8 pBytes[]) throws IllegalArgumentException {
 		// Minimum (empty) byte array is { 0x00 0x00 0x00 0x04 }
 		if (pBytes == null || pBytes.length < 4) throw new IllegalArgumentException(
-				"Array of bytes must contain at least four bytes");
+			"Array of bytes must contain at least four bytes"
+		);
 
 		// Verify there are no null entries in byte array
-		for (int i = pBytes.length - 1; i >= 0; i--)
-			if (pBytes[i] == null) throw new IllegalArgumentException(
-					"Array of bytes must not contain any null bytes");
+		for (int i = pBytes.length - 1; i >= 0; i--) if (pBytes[i] == null) throw new IllegalArgumentException(
+			"Array of bytes must not contain any null bytes"
+		);
 
 		// Calculate length
-		this.iLength = pBytes[3].byteValue() + (pBytes[2].byteValue() * 0x100)
-				+ (pBytes[1].byteValue() * 0x10000) + (pBytes[0].byteValue() * 0x1000000);
+		this.iLength =
+			pBytes[3].byteValue() +
+			(pBytes[2].byteValue() * 0x100) +
+			(pBytes[1].byteValue() * 0x10000) +
+			(pBytes[0].byteValue() * 0x1000000);
 
 		// Verify calculated length matches actual length
 		if (this.iLength != pBytes.length) throw new IllegalArgumentException(
-				"Array of bytes contains invalid length: found " + this.iLength + ", expected "
-						+ pBytes.length);
+			"Array of bytes contains invalid length: found " + this.iLength + ", expected " + pBytes.length
+		);
 
 		// Save byte array in new object
 		this.iBytes = new UnsignedInteger8[this.iLength];
-		for (int i = this.iLength - 1; i >= 0; i--)
-			this.iBytes[i] = pBytes[i];
+		for (int i = this.iLength - 1; i >= 0; i--) this.iBytes[i] = pBytes[i];
 	}
 
 	/**
 	 * Constructs a <code>CIMOctetString</code> from the given string.
-	 * 
+	 *
 	 * @param pString
 	 *            String representation of octet string.
 	 * @param pIsHex
 	 *            <code>true</code> if string is hexadecimal string,
 	 *            <code>false</code> if string is ASCII string.
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 */
 	public CIMOctetString(String pString, boolean pIsHex) throws IllegalArgumentException {
@@ -122,32 +124,38 @@ public class CIMOctetString {
 		if (pIsHex) {
 			// Minimum (empty) hexadecimal string is "0x00000004"
 			if (pString.length() < 10) throw new IllegalArgumentException(
-					"Hexadecimal string must contain \"0x\" and at least four pairs of hex digits");
+				"Hexadecimal string must contain \"0x\" and at least four pairs of hex digits"
+			);
 
 			// Verify hexadecimal string starts with "0x"
 			if (pString.charAt(0) != '0' || pString.charAt(1) != 'x') throw new IllegalArgumentException(
-					"Hexadecimal string must begin with \"0x\"");
+				"Hexadecimal string must begin with \"0x\""
+			);
 
 			// Calculate length
 			try {
 				this.iLength = Integer.parseInt(pString.substring(2, 10), 16);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(
-						"Hexadecimal string length could not be parsed: " + e.toString());
+				throw new IllegalArgumentException("Hexadecimal string length could not be parsed: " + e.toString());
 			}
 
 			// Verify calculated length matches actual length
 			if ((this.iLength * 2) + 2 != pString.length()) throw new IllegalArgumentException(
-					"Hexadecimal string contains invalid length: found " + this.iLength
-							+ ", expected " + ((pString.length() - 2 / 2)));
+				"Hexadecimal string contains invalid length: found " +
+				this.iLength +
+				", expected " +
+				((pString.length() - 2 / 2))
+			);
 
 			// Verify remainder of hexadecimal string contains only hexadecimal
 			// digits
 			for (int i = pString.length() - 1; i >= 10; i--) {
 				char ch = pString.charAt(i);
-				if (!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'))) throw new IllegalArgumentException(
-						"Hexadecimal string could not be parsed, invalid character \'" + ch
-								+ "\' at index " + i);
+				if (
+					!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'))
+				) throw new IllegalArgumentException(
+					"Hexadecimal string could not be parsed, invalid character \'" + ch + "\' at index " + i
+				);
 			}
 
 			// Save hexadecimal string in new object
@@ -169,10 +177,10 @@ public class CIMOctetString {
 	 * are equal. If the octet strings have no representations in common, this
 	 * method will build the missing one, starting with byte array and then
 	 * hexadecmial string.
-	 * 
+	 *
 	 * NOTE: The ASCII string representation is only considered if both octet
 	 * strings were constructed with an ASCII string.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to be compared a CIM element.
 	 * @return <code>true</code> if the specified CIM octet string equals this
@@ -191,8 +199,9 @@ public class CIMOctetString {
 
 		// Verify byte arrays match if both non-null
 		if (this.iBytes != null && that.iBytes != null) {
-			for (int i = this.iLength - 1; i >= 0; i--)
-				if (this.iBytes[i].byteValue() != that.iBytes[i].byteValue()) return false;
+			for (int i = this.iLength - 1; i >= 0; i--) if (
+				this.iBytes[i].byteValue() != that.iBytes[i].byteValue()
+			) return false;
 			numCompares++;
 		}
 
@@ -203,8 +212,7 @@ public class CIMOctetString {
 		}
 
 		// Verify ASCII strings match if both non-null
-		if (this.iASCIIString != null && that.iASCIIString != null
-				&& this.iReplacementChar == that.iReplacementChar) {
+		if (this.iASCIIString != null && that.iASCIIString != null && this.iReplacementChar == that.iReplacementChar) {
 			if (!this.iASCIIString.equalsIgnoreCase(that.iASCIIString)) return false;
 			numCompares++;
 		}
@@ -218,8 +226,9 @@ public class CIMOctetString {
 		if (this.iBytes != null && that.iBytes == null) {
 			that.getBytes();
 			if (this.iBytes != null && that.iBytes != null) {
-				for (int i = this.iLength - 1; i >= 0; i--)
-					if (this.iBytes[i].byteValue() != that.iBytes[i].byteValue()) return false;
+				for (int i = this.iLength - 1; i >= 0; i--) if (
+					this.iBytes[i].byteValue() != that.iBytes[i].byteValue()
+				) return false;
 				numCompares++;
 			}
 		}
@@ -230,8 +239,9 @@ public class CIMOctetString {
 		if (this.iBytes == null && that.iBytes != null) {
 			getBytes();
 			if (this.iBytes != null && that.iBytes != null) {
-				for (int i = this.iLength - 1; i >= 0; i--)
-					if (this.iBytes[i].byteValue() != that.iBytes[i].byteValue()) return false;
+				for (int i = this.iLength - 1; i >= 0; i--) if (
+					this.iBytes[i].byteValue() != that.iBytes[i].byteValue()
+				) return false;
 				numCompares++;
 			}
 		}
@@ -269,7 +279,7 @@ public class CIMOctetString {
 	 * characters replaced by <code>pReplacementChar</code>. If the ASCII string
 	 * has not yet been created, it is created from the byte array or
 	 * hexadecimal string.
-	 * 
+	 *
 	 * @param pReplacementChar
 	 *            Replacement character for non-printable characters which must
 	 *            be between 0x20 and 0x7E, inclusive.
@@ -281,7 +291,8 @@ public class CIMOctetString {
 
 		// Verify replacement character is printable
 		if (pReplacementChar <= 0x1F || pReplacementChar >= 0x7F) throw new IllegalArgumentException(
-				"Replacement character not printable");
+			"Replacement character not printable"
+		);
 
 		// If we already did this once, return previous string
 		if (this.iASCIIString != null && this.iReplacementChar == pReplacementChar) return this.iASCIIString;
@@ -291,14 +302,12 @@ public class CIMOctetString {
 		if (this.iBytes != null) {
 			for (int i = 4; i < this.iBytes.length; i++) {
 				char ch = (char) this.iBytes[i].byteValue();
-				if (ch <= 0x1F || ch >= 0x7F) str.append(pReplacementChar);
-				else str.append(ch);
+				if (ch <= 0x1F || ch >= 0x7F) str.append(pReplacementChar); else str.append(ch);
 			}
 		} else /* (this.iHexString != null) */{
 			for (int i = 10; i < this.iHexString.length(); i += 2) {
 				char ch = (char) Integer.parseInt(this.iHexString.substring(i, i + 2), 16);
-				if (ch <= 0x1F || ch >= 0x7F) str.append(pReplacementChar);
-				else str.append(ch);
+				if (ch <= 0x1F || ch >= 0x7F) str.append(pReplacementChar); else str.append(ch);
 			}
 		}
 
@@ -314,7 +323,7 @@ public class CIMOctetString {
 	 * Returns byte array representation of octet string. If the byte array has
 	 * not yet been created, it is created from the hexadecimal string or ASCII
 	 * string.
-	 * 
+	 *
 	 * @return Byte array representation of octet string.
 	 */
 	public synchronized UnsignedInteger8[] getBytes() {
@@ -333,7 +342,7 @@ public class CIMOctetString {
 	 * Returns hexadecimal string representation of octet string. If the
 	 * hexadecimal string has not yet been created, it is created from the byte
 	 * array or ASCII string.
-	 * 
+	 *
 	 * @return Hexadecimal string representation of octet string.
 	 */
 	public synchronized String getHexString() {
@@ -350,7 +359,7 @@ public class CIMOctetString {
 
 	/**
 	 * Returns hash code value for octet string.
-	 * 
+	 *
 	 * @return Hash code value for octet string.
 	 */
 	@Override
@@ -361,7 +370,7 @@ public class CIMOctetString {
 	/**
 	 * Returns length of octet string, where length is number of octets plus
 	 * four.
-	 * 
+	 *
 	 * @return Length of octet string.
 	 */
 	public int length() {
@@ -370,7 +379,7 @@ public class CIMOctetString {
 
 	/**
 	 * Returns string representation of octet string.
-	 * 
+	 *
 	 * @return String representation of octet string.
 	 */
 	@Override
@@ -384,8 +393,7 @@ public class CIMOctetString {
 
 		// Append length
 		String len = Integer.toHexString(this.iLength);
-		for (int i = 8 - len.length(); i > 0; i--)
-			str.append('0');
+		for (int i = 8 - len.length(); i > 0; i--) str.append('0');
 		str.append(len);
 
 		// Append string
@@ -397,7 +405,6 @@ public class CIMOctetString {
 
 		// Save hexadecimal string in new object
 		this.iHexString = new String(str);
-
 		// debug("convertBytesToHexString: from {" + toBytesString() + "} to \""
 		// + this.iHexString + "\"");
 	}
@@ -412,12 +419,10 @@ public class CIMOctetString {
 			try {
 				s = Short.parseShort(this.iHexString.substring(idxStr, idxStr + 2), 16);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Hex string length could not be parsed: "
-						+ e.toString());
+				throw new IllegalArgumentException("Hex string length could not be parsed: " + e.toString());
 			}
 			this.iBytes[idxByte] = new UnsignedInteger8(s);
 		}
-
 		// debug("convertHexStringToBytes: from \"" + this.iHexString +
 		// "\" to {" + toBytesString() + "}");
 	}
@@ -433,9 +438,8 @@ public class CIMOctetString {
 		this.iBytes[3] = new UnsignedInteger8((short) (this.iLength & 0xFF));
 
 		// Convert each character in ASCII string to byte
-		for (int idxStr = 0, idxByte = 4; idxStr < this.iASCIIString.length(); idxStr++, idxByte++)
-			this.iBytes[idxByte] = new UnsignedInteger8((short) (this.iASCIIString.charAt(idxStr)));
-
+		for (int idxStr = 0, idxByte = 4; idxStr < this.iASCIIString.length(); idxStr++, idxByte++) this.iBytes[idxByte] =
+			new UnsignedInteger8((short) (this.iASCIIString.charAt(idxStr)));
 		// debug("convertASCIIStringToBytes: from \"" + this.iASCIIString +
 		// "\" to {" + toBytesString() + "}");
 	}
@@ -446,8 +450,7 @@ public class CIMOctetString {
 
 		// Append length
 		String len = Integer.toHexString(this.iLength);
-		for (int i = 8 - len.length(); i > 0; i--)
-			str.append('0');
+		for (int i = 8 - len.length(); i > 0; i--) str.append('0');
 		str.append(len);
 
 		// Append string
@@ -459,11 +462,9 @@ public class CIMOctetString {
 
 		// Save hexadecimal string in new object
 		this.iHexString = new String(str);
-
 		// debug("convertASCIIStringToHexString: from \"" + this.iASCIIString +
 		// "\" to \"" + this.iHexString + "\"");
 	}
-
 	// private String toBytesString() {
 	// StringBuilder str = new StringBuilder();
 	//

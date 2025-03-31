@@ -22,9 +22,6 @@
 
 package org.metricshub.wbem.sblim.slp.internal.msg;
 
-import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
-import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
-
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * WBEM Java Client
@@ -46,13 +43,14 @@ import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
  */
 
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.internal.SLPConfig;
+import org.metricshub.wbem.sblim.slp.internal.SLPDefaults;
 
 /**
  * SLPMessage
- * 
+ *
  */
 public abstract class SLPMessage implements FunctionIDs {
-
 	// cache it for instance lifetime, do not parse always
 	private final int iMaxDatagramSize = SLPConfig.getGlobalCfg().getMTU();
 
@@ -60,7 +58,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 */
 	public SLPMessage(int pFunctionID) {
@@ -69,18 +67,17 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pFunctionID
 	 * @param pLangTag
 	 */
 	public SLPMessage(int pFunctionID, String pLangTag) {
-		this(new MsgHeader(MsgHeader.VERSION, pFunctionID, pLangTag, false, pFunctionID == SRV_REG,
-				false, 0));
+		this(new MsgHeader(MsgHeader.VERSION, pFunctionID, pLangTag, false, pFunctionID == SRV_REG, false, 0));
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 */
 	public SLPMessage(MsgHeader pHeader) {
@@ -89,7 +86,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * getHeader
-	 * 
+	 *
 	 * @return MsgHeader
 	 */
 	public MsgHeader getHeader() {
@@ -98,7 +95,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * getVersion
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getVersion() {
@@ -107,7 +104,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * getFunctionID
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getFunctionID() {
@@ -116,7 +113,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * getLangTag
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getLangTag() {
@@ -125,7 +122,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * overflows
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean overflows() {
@@ -134,7 +131,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * fresh
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean fresh() {
@@ -143,7 +140,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * multicast
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean multicast() {
@@ -152,7 +149,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * getXID
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getXID() {
@@ -169,7 +166,7 @@ public abstract class SLPMessage implements FunctionIDs {
 
 	/**
 	 * serialize
-	 * 
+	 *
 	 * @param pSetMulticastFlag
 	 * @param pDatagramLimited
 	 * @param pKeepXID
@@ -177,13 +174,13 @@ public abstract class SLPMessage implements FunctionIDs {
 	 * @throws ServiceLocationException
 	 */
 	public byte[] serialize(boolean pSetMulticastFlag, boolean pDatagramLimited, boolean pKeepXID)
-			throws ServiceLocationException {
+		throws ServiceLocationException {
 		return serialize(pSetMulticastFlag, pDatagramLimited, pKeepXID, null);
 	}
 
 	/**
 	 * serialize
-	 * 
+	 *
 	 * @param pSetMulticastFlag
 	 * @param pDatagramLimited
 	 * @param pKeepXID
@@ -193,14 +190,19 @@ public abstract class SLPMessage implements FunctionIDs {
 	 * @return byte[]
 	 * @throws ServiceLocationException
 	 */
-	public byte[] serialize(boolean pSetMulticastFlag, boolean pDatagramLimited, boolean pKeepXID,
-			SerializeOption pOption) throws ServiceLocationException {
-		SLPOutputStream bodyOutStr = new SLPOutputStream(pDatagramLimited ? this.iMaxDatagramSize
-				- this.iHeader.getSize() : -1);
+	public byte[] serialize(
+		boolean pSetMulticastFlag,
+		boolean pDatagramLimited,
+		boolean pKeepXID,
+		SerializeOption pOption
+	)
+		throws ServiceLocationException {
+		SLPOutputStream bodyOutStr = new SLPOutputStream(
+			pDatagramLimited ? this.iMaxDatagramSize - this.iHeader.getSize() : -1
+		);
 		boolean fit = serializeBody(bodyOutStr, pOption);
 		byte[] bodyBytes = bodyOutStr.toByteArray();
-		byte[] headerBytes = this.iHeader.serialize(bodyBytes.length, !fit, pSetMulticastFlag,
-				pKeepXID);
+		byte[] headerBytes = this.iHeader.serialize(bodyBytes.length, !fit, pSetMulticastFlag, pKeepXID);
 		byte[] bytes = new byte[headerBytes.length + bodyBytes.length];
 		System.arraycopy(headerBytes, 0, bytes, 0, headerBytes.length);
 		System.arraycopy(bodyBytes, 0, bytes, headerBytes.length, bodyBytes.length);
@@ -212,11 +214,10 @@ public abstract class SLPMessage implements FunctionIDs {
 	 *         limit)
 	 */
 	protected abstract boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption)
-			throws ServiceLocationException;
+		throws ServiceLocationException;
 
 	@Override
 	public String toString() {
 		return super.toString() + " " + getXID();
 	}
-
 }

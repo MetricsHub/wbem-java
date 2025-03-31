@@ -46,9 +46,9 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import org.metricshub.wbem.javax.cim.CIMClassProperty;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.javax.cim.CIMQualifier;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * PropertyReferenceNode classes.
  */
 public abstract class AbstractPropertyNode extends Node implements TypedIf, ValueIf {
-
 	// common attributes
 	private String iName;
 
@@ -69,7 +68,7 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pNameEnum
 	 */
 	public AbstractPropertyNode(String pNameEnum) {
@@ -78,15 +77,14 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 
 	/**
 	 * hasValue
-	 * 
+	 *
 	 * @return true if it has a value child node
 	 */
 	protected abstract boolean hasValueNode();
 
 	protected abstract void childValueNodeParsed(Node pChild) throws SAXException;
 
-	protected abstract void specificInit(Attributes pAttribs, SAXSession pSession)
-			throws SAXException;
+	protected abstract void specificInit(Attributes pAttribs, SAXSession pSession) throws SAXException;
 
 	protected abstract String getChildValueNodeNameEnum();
 
@@ -103,10 +101,12 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		String valueNodeNameEnum = getChildValueNodeNameEnum();
 		if (pNodeNameEnum == valueNodeNameEnum) {
-			if (hasValueNode()) throw new SAXException(getNodeName() + " node can have only one "
-					+ valueNodeNameEnum + " child node!");
-		} else if (pNodeNameEnum != QUALIFIER) throw new SAXException(getNodeName()
-				+ " node cannot have " + pNodeNameEnum + " child node!");
+			if (hasValueNode()) throw new SAXException(
+				getNodeName() + " node can have only one " + valueNodeNameEnum + " child node!"
+			);
+		} else if (pNodeNameEnum != QUALIFIER) throw new SAXException(
+			getNodeName() + " node cannot have " + pNodeNameEnum + " child node!"
+		);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 
 	/**
 	 * getCIMProperty
-	 * 
+	 *
 	 * @return CIMProperty
 	 */
 	public CIMProperty<Object> getCIMProperty() {
@@ -139,13 +139,19 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 		 * CIMProperty( String name, CIMDataType type, Object value, boolean
 		 * key, boolean propagated, String originClass )
 		 */
-		return new CIMProperty<Object>(this.iName, getType(), getValue(), this.iQualiHandler
-				.isKeyed(), this.iPropagated, this.iClassOrigin);
+		return new CIMProperty<Object>(
+			this.iName,
+			getType(),
+			getValue(),
+			this.iQualiHandler.isKeyed(),
+			this.iPropagated,
+			this.iClassOrigin
+		);
 	}
 
 	/**
 	 * getCIMClassProperty
-	 * 
+	 *
 	 * @return CIMClassProperty
 	 */
 	public CIMClassProperty<Object> getCIMClassProperty() {
@@ -154,8 +160,14 @@ public abstract class AbstractPropertyNode extends Node implements TypedIf, Valu
 		 * CIMQualifier[] pQualifiers, boolean pKey, boolean propagated, String
 		 * originClass) );
 		 */
-		return new CIMClassProperty<Object>(this.iName, getType(), getValue(), getQualis(),
-				this.iQualiHandler.isKeyed(), this.iPropagated, this.iClassOrigin);
+		return new CIMClassProperty<Object>(
+			this.iName,
+			getType(),
+			getValue(),
+			getQualis(),
+			this.iQualiHandler.isKeyed(),
+			this.iPropagated,
+			this.iClassOrigin
+		);
 	}
-
 }

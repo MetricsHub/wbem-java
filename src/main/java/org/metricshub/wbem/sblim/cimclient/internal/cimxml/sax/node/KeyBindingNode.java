@@ -45,8 +45,8 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import org.metricshub.wbem.javax.cim.CIMDataType;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.javax.cim.CIMProperty;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -54,7 +54,6 @@ import org.xml.sax.SAXException;
  * ELEMENT KEYBINDING (KEYVALUE | VALUE.REFERENCE) ATTLIST KEYBINDING %CIMName;
  */
 public class KeyBindingNode extends Node {
-
 	private String iName;
 
 	// child element
@@ -86,15 +85,15 @@ public class KeyBindingNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
 		if (this.iHasChild) throw new SAXException("KEYBINDING node can only have one child node!");
 		if (pNodeNameEnum != KEYVALUE && pNodeNameEnum != VALUE_REFERENCE) throw new SAXException(
-				"KEYBINDING node's child node can be KEYVALUE or VALUE_REFERENCE but not "
-						+ pNodeNameEnum);
+			"KEYBINDING node's child node can be KEYVALUE or VALUE_REFERENCE but not " + pNodeNameEnum
+		);
 	}
 
 	@Override
@@ -107,13 +106,12 @@ public class KeyBindingNode extends Node {
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (!this.iHasChild) throw new SAXException(
-				"KEYBINDING node must have a KEYVALUE or VALUE_REFERENCE child node!");
+		if (!this.iHasChild) throw new SAXException("KEYBINDING node must have a KEYVALUE or VALUE_REFERENCE child node!");
 	}
 
 	/**
 	 * getCIMProperty
-	 * 
+	 *
 	 * @return CIMProperty
 	 */
 	public CIMProperty<Object> getCIMProperty() {
@@ -123,5 +121,4 @@ public class KeyBindingNode extends Node {
 		// )
 		return new CIMProperty<Object>(this.iName, this.iType, this.iValue, true, false, null);
 	}
-
 }

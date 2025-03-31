@@ -53,7 +53,6 @@ import java.util.Properties;
  * product name, etc. of the Java CIM Client
  */
 public class CIMVersion {
-
 	private static String PRODUCT_NAME = "n/a";
 
 	private static String VERSION = "n/a";
@@ -92,7 +91,7 @@ public class CIMVersion {
 
 	/**
 	 * Gets the build date
-	 * 
+	 *
 	 * @return The build date
 	 */
 	public static String getBuildDate() {
@@ -101,7 +100,7 @@ public class CIMVersion {
 
 	/**
 	 * Gets the build time
-	 * 
+	 *
 	 * @return The build time
 	 */
 	public static String getBuildTime() {
@@ -110,7 +109,7 @@ public class CIMVersion {
 
 	/**
 	 * Gets the copyright statement
-	 * 
+	 *
 	 * @return THe copyright
 	 */
 	public static String getCopyright() {
@@ -119,7 +118,7 @@ public class CIMVersion {
 
 	/**
 	 * Gets the product name
-	 * 
+	 *
 	 * @return The product name
 	 */
 	public static String getProductName() {
@@ -128,7 +127,7 @@ public class CIMVersion {
 
 	/**
 	 * Gets the version
-	 * 
+	 *
 	 * @return The version
 	 */
 	public static String getVersion() {
@@ -137,7 +136,7 @@ public class CIMVersion {
 
 	/**
 	 * toString
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -147,7 +146,7 @@ public class CIMVersion {
 
 	/**
 	 * main
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {

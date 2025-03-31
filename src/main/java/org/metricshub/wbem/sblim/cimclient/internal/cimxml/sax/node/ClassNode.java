@@ -47,7 +47,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMClassProperty;
 import org.metricshub.wbem.javax.cim.CIMMethod;
@@ -62,12 +61,11 @@ import org.xml.sax.SAXException;
  * <pre>
  * ELEMENT CLASS (QUALIFIER*, (PROPERTY | PROPERTY.ARRAY | PROPERTY.REFERENCE)*, METHOD*)
  * ATTLIST CLASS
- * %CIMName; 
+ * %CIMName;
  * %SuperClass;
  * </pre>
  */
 public class ClassNode extends AbstractObjectNode {
-
 	private String iName;
 
 	private String iSuperClass;
@@ -103,18 +101,15 @@ public class ClassNode extends AbstractObjectNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { QUALIFIER, PROPERTY, PROPERTY_ARRAY,
-			PROPERTY_REFERENCE, METHOD };
+	private static final String[] ALLOWED_CHILDREN = { QUALIFIER, PROPERTY, PROPERTY_ARRAY, PROPERTY_REFERENCE, METHOD };
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (ALLOWED_CHILDREN[i] == pNodeNameEnum) return;
-		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (ALLOWED_CHILDREN[i] == pNodeNameEnum) return;
+		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -133,12 +128,12 @@ public class ClassNode extends AbstractObjectNode {
 
 	@Override
 	public void testCompletness() {
-	// all child nodes are optional
+		// all child nodes are optional
 	}
 
 	/**
 	 * getCIMClass
-	 * 
+	 *
 	 * @return CIMClass
 	 */
 	public CIMClass getCIMClass() {
@@ -148,10 +143,15 @@ public class ClassNode extends AbstractObjectNode {
 		 * CIMClassProperty[] props, CIMMethod[] pMethods, boolean
 		 * pIsAssociation, boolean pIsKeyed )
 		 */
-		return new CIMClass(LocalPathBuilder.build(this.iLocalPath, this.iName, null),
-				this.iSuperClass, this.iQualiHandler.getQualis(), this.iCIMClassPropAL
-						.toArray(EMPTY_PA), this.iCIMMethodAL.toArray(EMPTY_MA), this.iQualiHandler
-						.isAssociation(), this.iKeyed);
+		return new CIMClass(
+			LocalPathBuilder.build(this.iLocalPath, this.iName, null),
+			this.iSuperClass,
+			this.iQualiHandler.getQualis(),
+			this.iCIMClassPropAL.toArray(EMPTY_PA),
+			this.iCIMMethodAL.toArray(EMPTY_MA),
+			this.iQualiHandler.isAssociation(),
+			this.iKeyed
+		);
 	}
 
 	private static final CIMMethod<?>[] EMPTY_MA = new CIMMethod[0];
@@ -160,14 +160,20 @@ public class ClassNode extends AbstractObjectNode {
 
 	/**
 	 * getCIMClass
-	 * 
+	 *
 	 * @param pObjPath
 	 * @return CIMClass with the provided object path
 	 */
 	public CIMClass getCIMClass(CIMObjectPath pObjPath) {
-		return new CIMClass(pObjPath, this.iSuperClass, this.iQualiHandler.getQualis(),
-				this.iCIMClassPropAL.toArray(EMPTY_PA), this.iCIMMethodAL.toArray(EMPTY_MA),
-				this.iQualiHandler.isAssociation(), this.iKeyed);
+		return new CIMClass(
+			pObjPath,
+			this.iSuperClass,
+			this.iQualiHandler.getQualis(),
+			this.iCIMClassPropAL.toArray(EMPTY_PA),
+			this.iCIMMethodAL.toArray(EMPTY_MA),
+			this.iQualiHandler.isAssociation(),
+			this.iKeyed
+		);
 	}
 
 	/**
@@ -177,5 +183,4 @@ public class ClassNode extends AbstractObjectNode {
 	public Object getValue() {
 		return getCIMClass();
 	}
-
 }

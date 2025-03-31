@@ -47,10 +47,9 @@ import java.util.logging.LogRecord;
 
 /**
  * Class LogFormatter implements the formatting algorithm for our console log.
- * 
+ *
  */
 public class LogFormatter extends Formatter {
-
 	private final String iLineSeparator = System.getProperty("line.separator");
 
 	/**
@@ -62,7 +61,7 @@ public class LogFormatter extends Formatter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
 	@Override

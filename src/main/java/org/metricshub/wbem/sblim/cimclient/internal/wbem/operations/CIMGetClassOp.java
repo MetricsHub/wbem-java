@@ -49,10 +49,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMGetClassOp
- * 
+ *
  */
 public class CIMGetClassOp extends CIMSingleResultOperation {
-
 	protected boolean iLocalOnly;
 
 	protected boolean iIncludeQualifiers;
@@ -63,16 +62,20 @@ public class CIMGetClassOp extends CIMSingleResultOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pLocalOnly
 	 * @param pIncludeQualifiers
 	 * @param pIncludeClassOrigin
 	 * @param pPropertyList
 	 */
-	public CIMGetClassOp(CIMObjectPath pObjectName, boolean pLocalOnly, boolean pIncludeQualifiers,
-			boolean pIncludeClassOrigin, String[] pPropertyList) {
-
+	public CIMGetClassOp(
+		CIMObjectPath pObjectName,
+		boolean pLocalOnly,
+		boolean pIncludeQualifiers,
+		boolean pIncludeClassOrigin,
+		String[] pPropertyList
+	) {
 		this.iMethodCall = "GetClass";
 		this.iObjectName = pObjectName;
 		this.iLocalOnly = pLocalOnly;
@@ -82,7 +85,7 @@ public class CIMGetClassOp extends CIMSingleResultOperation {
 
 	/**
 	 * Returns includeClassOrigin
-	 * 
+	 *
 	 * @return The value of includeClassOrigin.
 	 */
 	public boolean isIncludeClassOrigin() {
@@ -91,7 +94,7 @@ public class CIMGetClassOp extends CIMSingleResultOperation {
 
 	/**
 	 * Returns includeQualifiers
-	 * 
+	 *
 	 * @return The value of includeQualifiers.
 	 */
 	public boolean isIncludeQualifiers() {
@@ -100,7 +103,7 @@ public class CIMGetClassOp extends CIMSingleResultOperation {
 
 	/**
 	 * Returns localOnly
-	 * 
+	 *
 	 * @return The value of localOnly.
 	 */
 	public boolean isLocalOnly() {
@@ -109,11 +112,10 @@ public class CIMGetClassOp extends CIMSingleResultOperation {
 
 	/**
 	 * Returns propertyList
-	 * 
+	 *
 	 * @return The value of propertyList.
 	 */
 	public String[] getPropertyList() {
 		return this.iPropertyList;
 	}
-
 }

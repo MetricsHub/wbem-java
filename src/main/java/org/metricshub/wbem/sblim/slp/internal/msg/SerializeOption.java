@@ -43,10 +43,9 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 /**
  * Inherited classes of SerializeOption provide additional serialization
  * parameters for the inherited SLPMessage classes.
- * 
+ *
  */
 public abstract class SerializeOption {
-
 	/*
 	 * Inherited classes add the methods.
 	 */

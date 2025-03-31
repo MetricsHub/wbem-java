@@ -55,7 +55,7 @@ import java.util.Locale;
  * that clients of the Advertiser are not required to verify attributes before
  * registering (though they may get a TYPE_ERROR if the implementation supports
  * type checking and there is a mismatch with the template).
- * 
+ *
  */
 public abstract class TemplateRegistry {
 
@@ -63,9 +63,9 @@ public abstract class TemplateRegistry {
 	 * Returns the distinguished TemplateRegistry object for performing
 	 * operations on and with service templates. Returns null if the
 	 * implementation doesn't support TemplateRegistry functionality.
-	 * 
+	 *
 	 * <b>Not yet implemented</b>
-	 * 
+	 *
 	 * @return The template registry
 	 */
 	public static TemplateRegistry getTemplateRegistry() {
@@ -74,7 +74,7 @@ public abstract class TemplateRegistry {
 
 	/**
 	 * Register the service template with the template registry.
-	 * 
+	 *
 	 * @param pType
 	 *            The service type.
 	 * @param pDocumentURL
@@ -87,12 +87,12 @@ public abstract class TemplateRegistry {
 	 *            The version number identifier of template document.
 	 * @throws ServiceLocationException
 	 */
-	public abstract void registerServiceTemplate(ServiceType pType, String pDocumentURL,
-			Locale pLocale, String pVersion) throws ServiceLocationException;
+	public abstract void registerServiceTemplate(ServiceType pType, String pDocumentURL, Locale pLocale, String pVersion)
+		throws ServiceLocationException;
 
 	/**
 	 * Deregister the template for the service type.
-	 * 
+	 *
 	 * @param pType
 	 *            The service type.
 	 * @param pLocale
@@ -103,12 +103,12 @@ public abstract class TemplateRegistry {
 	 *            the latest version.
 	 * @throws ServiceLocationException
 	 */
-	public abstract void deregisterServiceTemplate(ServiceType pType, Locale pLocale,
-			String pVersion) throws ServiceLocationException;
+	public abstract void deregisterServiceTemplate(ServiceType pType, Locale pLocale, String pVersion)
+		throws ServiceLocationException;
 
 	/**
 	 * Returns the URL for the template document.
-	 * 
+	 *
 	 * @param pType
 	 *            The service type.
 	 * @param pLocale
@@ -121,14 +121,14 @@ public abstract class TemplateRegistry {
 	 * @throws ServiceLocationException
 	 */
 	public abstract String findTemplateURL(ServiceType pType, Locale pLocale, String pVersion)
-			throws ServiceLocationException;
+		throws ServiceLocationException;
 
 	/**
 	 * Reads the template document URL and returns an attribute verifier for the
 	 * service type. The attribute verifier can be used for verifying that
 	 * registration attributes match the template, and for introspection on the
 	 * template definition.
-	 * 
+	 *
 	 * @param pDocumentURL
 	 *            A String containing the template document's URL. May not be
 	 *            the empty string.
@@ -136,6 +136,5 @@ public abstract class TemplateRegistry {
 	 * @throws ServiceLocationException
 	 */
 	public abstract ServiceLocationAttributeVerifier attributeVerifier(String pDocumentURL)
-			throws ServiceLocationException;
-
+		throws ServiceLocationException;
 }

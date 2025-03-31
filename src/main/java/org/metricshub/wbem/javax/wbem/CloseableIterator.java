@@ -55,12 +55,11 @@ import java.util.Iterator;
  * throw runtime exceptions, if a consumer receives a runtime exception for one
  * of these methods they must call <code>getWBEMException()</code> to get the
  * actual <code>WBEMException</code>.
- * 
+ *
  * @param <E>
  *            Type parameter.
  */
 public interface CloseableIterator<E> extends Iterator<E> {
-
 	/**
 	 * Closes the <code>Iterator</code>. This allows the underlying
 	 * implementation to do any cleanup and disconnect from any source that it
@@ -72,9 +71,8 @@ public interface CloseableIterator<E> extends Iterator<E> {
 	 * If <code>next()</code> or <code>hasNext()</code> throws a
 	 * <code>RuntimeException</code>, this method must be called to get the
 	 * <code>WBEMException</code>.
-	 * 
+	 *
 	 * @return The <code>WBEMException</code> or null if one was not thrown.
 	 */
 	public WBEMException getWBEMException();
-
 }

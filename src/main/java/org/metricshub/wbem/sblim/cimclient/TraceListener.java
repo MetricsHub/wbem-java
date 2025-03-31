@@ -46,14 +46,13 @@ import java.util.logging.Level;
 /**
  * The interface TraceListener must be implemented if you want to attach your
  * own logging framework to the CIM Client.
- * 
+ *
  * @see LogAndTraceManager
  */
 public interface TraceListener {
-
 	/**
 	 * Receive a trace message.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the message level identifiers, e.g. FINE
 	 * @param pOrigin
@@ -66,7 +65,7 @@ public interface TraceListener {
 
 	/**
 	 * Receive a trace message.
-	 * 
+	 *
 	 * @param pLevel
 	 *            One of the message level identifiers, e.g. SEVERE
 	 * @param pOrigin
@@ -77,5 +76,4 @@ public interface TraceListener {
 	 *            The throwable associated with the message
 	 */
 	public void trace(Level pLevel, StackTraceElement pOrigin, String pMessage, Throwable pThrown);
-
 }

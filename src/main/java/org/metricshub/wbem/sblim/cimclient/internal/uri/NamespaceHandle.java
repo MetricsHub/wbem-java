@@ -52,7 +52,7 @@ public class NamespaceHandle {
 	/**
 	 * Factory method which tries to build a <code>NamespaceHandle</code> from
 	 * the passed <code>pUriStr</code>
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return a <code>NamespaceHandle</code> or <code>null</code> in case of
 	 *         failure
@@ -67,7 +67,9 @@ public class NamespaceHandle {
 		} else {
 			auth = null;
 		}
-		if (!uriStr.cutStarting('/')) { return null; }
+		if (!uriStr.cutStarting('/')) {
+			return null;
+		}
 		String nsName = parseNamespaceName(uriStr);
 		// namespaceName is optimal
 		pUriStr.set(uriStr);
@@ -85,7 +87,7 @@ public class NamespaceHandle {
 
 	/**
 	 * Constructs a NamespaceHandle with namespace name only.
-	 * 
+	 *
 	 * @param pNamespaceName
 	 */
 	public NamespaceHandle(String pNamespaceName) {
@@ -98,13 +100,12 @@ public class NamespaceHandle {
 	 */
 	@Override
 	public String toString() {
-		return (this.iAuth == null ? "" : "//" + this.iAuth.toString()) + "/"
-				+ (this.iNsName == null ? "" : this.iNsName);
+		return (this.iAuth == null ? "" : "//" + this.iAuth.toString()) + "/" + (this.iNsName == null ? "" : this.iNsName);
 	}
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -113,7 +114,7 @@ public class NamespaceHandle {
 
 	/**
 	 * getUserInfo
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getUserInfo() {
@@ -122,7 +123,7 @@ public class NamespaceHandle {
 
 	/**
 	 * getHost
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getHost() {
@@ -131,7 +132,7 @@ public class NamespaceHandle {
 
 	/**
 	 * getPort
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getPort() {
@@ -140,12 +141,11 @@ public class NamespaceHandle {
 
 	private static final String IDENTIFIER = "[A-Za-z][0-9A-Za-z\\._-]*";
 
-	private static final Pattern NAMESPACENAME_PAT = Pattern.compile("^(" + IDENTIFIER + "(/"
-			+ IDENTIFIER + ")*).*");
+	private static final Pattern NAMESPACENAME_PAT = Pattern.compile("^(" + IDENTIFIER + "(/" + IDENTIFIER + ")*).*");
 
 	/**
 	 * <code>IDENTIFIER *("/"IDENTIFIER)</code>
-	 * 
+	 *
 	 * @param pUriStr
 	 * @return <code>String</code> containing the namespace name or
 	 *         <code>null</code> if failed.
@@ -154,5 +154,4 @@ public class NamespaceHandle {
 		if (!pUriStr.matchAndCut(NAMESPACENAME_PAT, 1)) return null;
 		return pUriStr.group(1);
 	}
-
 }

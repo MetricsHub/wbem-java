@@ -62,7 +62,6 @@ import org.metricshub.wbem.javax.cim.CIMInstance;
  * </ul>
  */
 public class WBEMException extends Exception {
-
 	private static final long serialVersionUID = 1224653110826327234L;
 
 	/**
@@ -221,35 +220,36 @@ public class WBEMException extends Exception {
 	public static final int CIM_ERR_SERVER_LIMITS_EXCEEDED = 27;
 
 	private static final String[] MESSAGES = new String[] {
-	/* 00 */"SUCCESS",
-	/* 01 */"CIM_ERR_FAILED",
-	/* 02 */"CIM_ERR_ACCESS_DENIED",
-	/* 03 */"CIM_ERR_INVALID_NAMESPACE",
-	/* 04 */"CIM_ERR_INVALID_PARAMETER",
-	/* 05 */"CIM_ERR_INVALID_CLASS",
-	/* 06 */"CIM_ERR_NOT_FOUND",
-	/* 07 */"CIM_ERR_NOT_SUPPORTED",
-	/* 08 */"CIM_ERR_CLASS_HAS_CHILDREN",
-	/* 09 */"CIM_ERR_CLASS_HAS_INSTANCES",
-	/* 10 */"CIM_ERR_INVALID_SUPERCLASS",
-	/* 11 */"CIM_ERR_ALREADY_EXISTS",
-	/* 12 */"CIM_ERR_NO_SUCH_PROPERTY",
-	/* 13 */null,
-	/* 14 */"CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED",
-	/* 15 */"CIM_ERR_INVALID_QUERY",
-	/* 16 */"CIM_ERR_METHOD_NOT_AVAILABLE",
-	/* 17 */"CIM_ERR_METHOD_NOT_FOUND",
-	/* 18 */null,
-	/* 19 */"CIM_ERR_INVALID_RESPONSE_DESTINATION",
-	/* 20 */"CIM_ERR_NAMESPACE_NOT_EMPTY",
-	/* 21 */"CIM_ERR_INVALID_ENUMERATION_CONTEXT",
-	/* 22 */"CIM_ERR_INVALID_OPERATION_TIMEOUT",
-	/* 23 */"CIM_ERR_PULL_HAS_BEEN_ABANDONED",
-	/* 24 */"CIM_ERR_PULL_CANNOT_BE_ABANDONED",
-	/* 25 */"CIM_ERR_FILTERED_ENUMERATION_NOT_SUPPORTED",
-	/* 26 */"CIM_ERR_CONTINUATION_ON_ERROR_NOT_SUPPORTED",
-	/* 27 */"CIM_ERR_SERVER_LIMITS_EXCEEDED",
-	/* 28 */"CIM_ERR_SERVER_IS_SHUTTING_DOWN" };
+		/* 00 */"SUCCESS",
+		/* 01 */"CIM_ERR_FAILED",
+		/* 02 */"CIM_ERR_ACCESS_DENIED",
+		/* 03 */"CIM_ERR_INVALID_NAMESPACE",
+		/* 04 */"CIM_ERR_INVALID_PARAMETER",
+		/* 05 */"CIM_ERR_INVALID_CLASS",
+		/* 06 */"CIM_ERR_NOT_FOUND",
+		/* 07 */"CIM_ERR_NOT_SUPPORTED",
+		/* 08 */"CIM_ERR_CLASS_HAS_CHILDREN",
+		/* 09 */"CIM_ERR_CLASS_HAS_INSTANCES",
+		/* 10 */"CIM_ERR_INVALID_SUPERCLASS",
+		/* 11 */"CIM_ERR_ALREADY_EXISTS",
+		/* 12 */"CIM_ERR_NO_SUCH_PROPERTY",
+		/* 13 */null,
+		/* 14 */"CIM_ERR_QUERY_LANGUAGE_NOT_SUPPORTED",
+		/* 15 */"CIM_ERR_INVALID_QUERY",
+		/* 16 */"CIM_ERR_METHOD_NOT_AVAILABLE",
+		/* 17 */"CIM_ERR_METHOD_NOT_FOUND",
+		/* 18 */null,
+		/* 19 */"CIM_ERR_INVALID_RESPONSE_DESTINATION",
+		/* 20 */"CIM_ERR_NAMESPACE_NOT_EMPTY",
+		/* 21 */"CIM_ERR_INVALID_ENUMERATION_CONTEXT",
+		/* 22 */"CIM_ERR_INVALID_OPERATION_TIMEOUT",
+		/* 23 */"CIM_ERR_PULL_HAS_BEEN_ABANDONED",
+		/* 24 */"CIM_ERR_PULL_CANNOT_BE_ABANDONED",
+		/* 25 */"CIM_ERR_FILTERED_ENUMERATION_NOT_SUPPORTED",
+		/* 26 */"CIM_ERR_CONTINUATION_ON_ERROR_NOT_SUPPORTED",
+		/* 27 */"CIM_ERR_SERVER_LIMITS_EXCEEDED",
+		/* 28 */"CIM_ERR_SERVER_IS_SHUTTING_DOWN"
+	};
 
 	private int iErrorID;
 
@@ -258,7 +258,7 @@ public class WBEMException extends Exception {
 	/**
 	 * Constructs a new exception using the specified ID. The detailed message
 	 * will be <code>null</code>.
-	 * 
+	 *
 	 * @param pID
 	 *            The Error ID to use.
 	 * @throws IllegalArgumentException
@@ -270,7 +270,7 @@ public class WBEMException extends Exception {
 
 	/**
 	 * Constructs a new exception using the specified ID and detailed message.
-	 * 
+	 *
 	 * @param pID
 	 *            The error ID.
 	 * @param pMessage
@@ -285,7 +285,7 @@ public class WBEMException extends Exception {
 	/**
 	 * Constructs a new exception using the specified ID, detailed message and
 	 * CIM_Error instances.
-	 * 
+	 *
 	 * @param pID
 	 *            The error ID.
 	 * @param pMessage
@@ -302,7 +302,7 @@ public class WBEMException extends Exception {
 	/**
 	 * Constructs a new exception using the specified ID, detailed message,
 	 * CIM_Error instances and cause.
-	 * 
+	 *
 	 * @param pID
 	 *            The error ID.
 	 * @param pMessage
@@ -324,7 +324,7 @@ public class WBEMException extends Exception {
 	/**
 	 * Constructs a new exception using the specified detailed message. The
 	 * <code>ID</code> will be <code>CIM_ERR_FAILED</code>.
-	 * 
+	 *
 	 * @param pMessage
 	 *            The detailed message.
 	 */
@@ -334,7 +334,7 @@ public class WBEMException extends Exception {
 
 	/**
 	 * Get the CIM Error Instances.
-	 * 
+	 *
 	 * @return Any CIM Error instances associated with this exception;
 	 *         <code>null</code> if none.
 	 */
@@ -344,7 +344,7 @@ public class WBEMException extends Exception {
 
 	/**
 	 * Returns the ID of the error.
-	 * 
+	 *
 	 * @return The ID of the error.
 	 */
 	public int getID() {
@@ -353,18 +353,17 @@ public class WBEMException extends Exception {
 
 	/**
 	 * Prints out the ID and the optional detailed message.
-	 * 
+	 *
 	 * @return A <code>String</code> representation of the exception.
 	 */
 	@Override
 	public String toString() {
-		return "WBEMException: " + getCIMMessage()
-				+ (super.getMessage() != null ? " (" + super.getMessage() + ")" : "");
+		return "WBEMException: " + getCIMMessage() + (super.getMessage() != null ? " (" + super.getMessage() + ")" : "");
 	}
 
 	/**
 	 * Returns a string representation of the exception ID.
-	 * 
+	 *
 	 * @return A <code>String</code> representation of the exception ID.
 	 */
 	private String getCIMMessage() {
@@ -373,10 +372,10 @@ public class WBEMException extends Exception {
 
 	/**
 	 * Returns validity of error ID.
-	 * 
+	 *
 	 * @param pID
 	 *            The error ID.
-	 * 
+	 *
 	 * @return <code>true</code> if error ID is valid, <code>false</code>
 	 *         otherwise.
 	 */

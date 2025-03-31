@@ -46,11 +46,10 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
+import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.LocalPathBuilder;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
-import org.metricshub.wbem.javax.cim.CIMProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -63,7 +62,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class InstanceNameNode extends AbstractPathNode {
-
 	private String iClassName;
 
 	private ArrayList<CIMProperty<?>> iCIMPropAL;
@@ -92,46 +90,53 @@ public class InstanceNameNode extends AbstractPathNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	private static final String[] ALLOWED_CHILDREN = { KEYBINDING, KEYVALUE, VALUE_REFERENCE };
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (ALLOWED_CHILDREN[i] == pNodeNameEnum) {
-				if (this.iNodeName != null && this.iNodeName != pNodeNameEnum) throw new SAXException(
-						getNodeName() + " node cannot have " + pNodeNameEnum
-								+ " child node, it already has a " + this.iNodeName + "!");
-				if (pNodeNameEnum != KEYBINDING) {
-					if (this.iNodeName != null) throw new SAXException(getNodeName()
-							+ " node can have only one " + pNodeNameEnum + " child node!");
-				}
-				this.iNodeName = pNodeNameEnum;
-				return;
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (ALLOWED_CHILDREN[i] == pNodeNameEnum) {
+			if (this.iNodeName != null && this.iNodeName != pNodeNameEnum) throw new SAXException(
+				getNodeName() + " node cannot have " + pNodeNameEnum + " child node, it already has a " + this.iNodeName + "!"
+			);
+			if (pNodeNameEnum != KEYBINDING) {
+				if (this.iNodeName != null) throw new SAXException(
+					getNodeName() + " node can have only one " + pNodeNameEnum + " child node!"
+				);
 			}
-		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+			this.iNodeName = pNodeNameEnum;
+			return;
+		}
+		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
 	public void childParsed(Node pChild) {
 		if (this.iCIMPropAL == null) this.iCIMPropAL = new ArrayList<CIMProperty<?>>();
-		if (pChild instanceof KeyBindingNode) this.iCIMPropAL.add(((KeyBindingNode) pChild)
-				.getCIMProperty());
-		else this.iCIMPropAL.add(new CIMProperty<Object>("", ((AbstractScalarValueNode) pChild)
-				.getType(), ((AbstractScalarValueNode) pChild).getValue(), true, false, null));
+		if (pChild instanceof KeyBindingNode) this.iCIMPropAL.add(
+				((KeyBindingNode) pChild).getCIMProperty()
+			); else this.iCIMPropAL.add(
+				new CIMProperty<Object>(
+					"",
+					((AbstractScalarValueNode) pChild).getType(),
+					((AbstractScalarValueNode) pChild).getValue(),
+					true,
+					false,
+					null
+				)
+			);
 	}
 
 	@Override
 	public void testCompletness() {
-	// no mandatory child nodes
+		// no mandatory child nodes
 	}
 
 	/**
 	 * getClassName
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getClassName() {
@@ -142,7 +147,7 @@ public class InstanceNameNode extends AbstractPathNode {
 
 	/**
 	 * getKeys
-	 * 
+	 *
 	 * @return CIMProperty[]
 	 */
 	public CIMProperty<?>[] getKeys() {
@@ -157,5 +162,4 @@ public class InstanceNameNode extends AbstractPathNode {
 		 */
 		return LocalPathBuilder.build(this.iLocalPath, this.iClassName, null, getKeys());
 	}
-
 }

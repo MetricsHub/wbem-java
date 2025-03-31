@@ -45,9 +45,8 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 
 import java.io.IOException;
 import java.util.List;
-
-import org.metricshub.wbem.sblim.slp.ServiceURL;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceURL;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -70,10 +69,9 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * ServiceDeregistration message
- * 
+ *
  */
 public class ServiceDeregistration extends SLPMessage {
-
 	private List<String> iScopeList;
 
 	private ServiceURL iURL;
@@ -82,22 +80,20 @@ public class ServiceDeregistration extends SLPMessage {
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
-		return new ServiceDeregistration(pHdr, pInStr.readStringList(), pInStr.readURL(), pInStr
-				.readStringList());
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
+		return new ServiceDeregistration(pHdr, pInStr.readStringList(), pInStr.readURL(), pInStr.readStringList());
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pScopeList
 	 *            - list of scope strings
 	 * @param pURL
@@ -110,37 +106,35 @@ public class ServiceDeregistration extends SLPMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pScopeList
 	 *            - list of scope strings
 	 * @param pURL
 	 * @param pTagList
 	 */
-	public ServiceDeregistration(String pLangTag, List<String> pScopeList, ServiceURL pURL,
-			List<String> pTagList) {
+	public ServiceDeregistration(String pLangTag, List<String> pScopeList, ServiceURL pURL, List<String> pTagList) {
 		super(SRV_DEREG, pLangTag);
 		init(pScopeList, pURL, pTagList);
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pScopeList
 	 *            - list of scope strings
 	 * @param pURL
 	 * @param pTagList
 	 */
-	public ServiceDeregistration(MsgHeader pHeader, List<String> pScopeList, ServiceURL pURL,
-			List<String> pTagList) {
+	public ServiceDeregistration(MsgHeader pHeader, List<String> pScopeList, ServiceURL pURL, List<String> pTagList) {
 		super(pHeader);
 		init(pScopeList, pURL, pTagList);
 	}
 
 	/**
 	 * getServiceURL
-	 * 
+	 *
 	 * @return ServiceURL
 	 */
 	public ServiceURL getServiceURL() {
@@ -152,8 +146,9 @@ public class ServiceDeregistration extends SLPMessage {
 	 */
 	@Override
 	protected boolean serializeBody(SLPOutputStream pOutStr, SerializeOption pOption) {
-		return pOutStr.writeStringList(this.iScopeList) && pOutStr.write(this.iURL)
-				&& pOutStr.writeStringList(this.iTagList);
+		return (
+			pOutStr.writeStringList(this.iScopeList) && pOutStr.write(this.iURL) && pOutStr.writeStringList(this.iTagList)
+		);
 	}
 
 	private void init(List<String> pScopeList, ServiceURL pURL, List<String> pTagList) {
@@ -161,5 +156,4 @@ public class ServiceDeregistration extends SLPMessage {
 		this.iURL = pURL;
 		this.iTagList = pTagList;
 	}
-
 }

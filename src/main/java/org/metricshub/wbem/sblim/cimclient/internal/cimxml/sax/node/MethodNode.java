@@ -49,7 +49,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
  */
 
 import java.util.ArrayList;
-
 import org.metricshub.wbem.javax.cim.CIMDataType;
 import org.metricshub.wbem.javax.cim.CIMMethod;
 import org.metricshub.wbem.javax.cim.CIMParameter;
@@ -60,7 +59,7 @@ import org.xml.sax.SAXException;
 
 /**
  * <pre>
- * 
+ *
  * ELEMENT METHOD (QUALIFIER*, (PARAMETER | PARAMETER.REFERENCE | PARAMETER.ARRAY | PARAMETER.REFARRAY)*)
  * ATTLIST METHOD
  *   %CIMName;
@@ -70,7 +69,6 @@ import org.xml.sax.SAXException;
  * </pre>
  */
 public class MethodNode extends Node {
-
 	private String iName;
 
 	private CIMDataType iType;
@@ -101,16 +99,15 @@ public class MethodNode extends Node {
 	public void init(Attributes pAttribs, SAXSession pSession) throws SAXException {
 		this.iSession = pSession;
 		this.iQualiHandler = QualifiedNodeHandler.init(this.iQualiHandler);
-		this.iEmbObjHandler = EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs,
-				this.iSession, this.iQualiHandler, true);
+		this.iEmbObjHandler =
+			EmbObjHandler.init(this.iEmbObjHandler, getNodeName(), pAttribs, this.iSession, this.iQualiHandler, true);
 
 		if (this.iCIMParamAL != null) this.iCIMParamAL.clear();
 
 		this.iName = getCIMName(pAttribs);
 
 		this.iType = getCIMType(pAttribs, true);
-		if (this.iType != null && this.iType.isArray()) throw new SAXException(
-				"METHOD node's TYPE cannot be an array!");
+		if (this.iType != null && this.iType.isArray()) throw new SAXException("METHOD node's TYPE cannot be an array!");
 		this.iClassOrigin = getClassOrigin(pAttribs);
 		this.iPropagated = getPropagated(pAttribs);
 	}
@@ -120,18 +117,21 @@ public class MethodNode extends Node {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
-	private static final String[] ALLOWED_CHILDREN = { QUALIFIER, PARAMETER, PARAMETER_REFERENCE,
-			PARAMETER_ARRAY, PARAMETER_REFARRAY };
+	private static final String[] ALLOWED_CHILDREN = {
+		QUALIFIER,
+		PARAMETER,
+		PARAMETER_REFERENCE,
+		PARAMETER_ARRAY,
+		PARAMETER_REFARRAY
+	};
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		for (int i = 0; i < ALLOWED_CHILDREN.length; i++)
-			if (pNodeNameEnum.equalsIgnoreCase(ALLOWED_CHILDREN[i])) return;
-		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum
-				+ " child node!");
+		for (int i = 0; i < ALLOWED_CHILDREN.length; i++) if (pNodeNameEnum.equalsIgnoreCase(ALLOWED_CHILDREN[i])) return;
+		throw new SAXException(getNodeName() + " node cannot have " + pNodeNameEnum + " child node!");
 	}
 
 	@Override
@@ -145,31 +145,35 @@ public class MethodNode extends Node {
 	public void testCompletness() throws SAXException {
 		this.iType = this.iEmbObjHandler.getType();
 		if (this.iType != null && this.iType.isArray()) throw new SAXException(
-				"METHOD node's TYPE attribute cannot be an array!");
+			"METHOD node's TYPE attribute cannot be an array!"
+		);
 	}
 
 	/**
 	 * getCIMMethod
-	 * 
+	 *
 	 * @return CIMMethod
 	 */
 	public CIMMethod<?> getCIMMethod() {
 		/*
 		 * CIMMethod( String name, CIMDataType type, CIMQualifier[] qualifiers,
 		 * CIMParameter[] parameters, boolean propagated, String originClass );
-		 * 
+		 *
 		 * EmbeddedObject qualifier mustn't be removed. Return type cannot be
 		 * changed.
-		 * 
+		 *
 		 * The situation changed by the introduction of the strict embedded
 		 * object type parsing.
 		 */
-		return new CIMMethod<Object>(this.iName, this.iType, this.iQualiHandler
-				.getQualis(!this.iSession.strictEmbObjParsing()), this.iCIMParamAL == null ? null
-				: (CIMParameter<?>[]) this.iCIMParamAL.toArray(EMPTY_PA), this.iPropagated,
-				this.iClassOrigin);
+		return new CIMMethod<Object>(
+			this.iName,
+			this.iType,
+			this.iQualiHandler.getQualis(!this.iSession.strictEmbObjParsing()),
+			this.iCIMParamAL == null ? null : (CIMParameter<?>[]) this.iCIMParamAL.toArray(EMPTY_PA),
+			this.iPropagated,
+			this.iClassOrigin
+		);
 	}
 
 	private static final CIMParameter<?>[] EMPTY_PA = new CIMParameter[0];
-
 }

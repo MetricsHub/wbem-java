@@ -57,10 +57,9 @@ import java.util.Vector;
  * for service types are independent of locale.
  */
 public interface Locator {
-
 	/**
 	 * Return the language locale with which this object was created.
-	 * 
+	 *
 	 * @return The locale
 	 */
 	public abstract Locale getLocale();
@@ -69,7 +68,7 @@ public interface Locator {
 	 * Returns an enumeration of ServiceType objects giving known service types
 	 * for the given scopes and given naming authority. If no service types are
 	 * found, an empty enumeration is returned.
-	 * 
+	 *
 	 * @param pNamingAuthority
 	 *            The naming authority. Use "" for the default naming authority
 	 *            and "*" for all naming authorities.
@@ -80,8 +79,8 @@ public interface Locator {
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findServiceTypes(String pNamingAuthority,
-			Vector<String> pScopes) throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findServiceTypes(String pNamingAuthority, Vector<String> pScopes)
+		throws ServiceLocationException;
 
 	/**
 	 * Returns an enumeration of ServiceType objects giving known service types
@@ -89,7 +88,7 @@ public interface Locator {
 	 * found, an empty enumeration is returned. <br />
 	 * <br />
 	 * <em>This method is not part of the RFC 2614 interface definition.</em>
-	 * 
+	 *
 	 * @param pNamingAuthority
 	 *            The naming authority. Use "" for the default naming authority
 	 *            and "*" for all naming authorities.
@@ -100,19 +99,22 @@ public interface Locator {
 	 * @param pDirectoryAgent
 	 *            A vector of InetAddress that specify the directory agents to
 	 *            look for.
-	 * 
+	 *
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findServiceTypes(String pNamingAuthority,
-			Vector<String> pScopes, Vector<InetAddress> pDirectoryAgent)
-			throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findServiceTypes(
+		String pNamingAuthority,
+		Vector<String> pScopes,
+		Vector<InetAddress> pDirectoryAgent
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * Returns a vector of ServiceURL objects for services matching the query,
 	 * and having a matching type in the given scopes. If no services are found,
 	 * an empty enumeration is returned.
-	 * 
+	 *
 	 * @param pType
 	 *            The SLP service type of the service.
 	 * @param pScopes
@@ -125,12 +127,16 @@ public interface Locator {
 	 *            scopes are returned. SLP reserved characters must be escaped
 	 *            in the query. Use ServiceLocationAttribute.escapeId() and
 	 *            ServiceLocationAttribute.escapeValue() to construct the query.
-	 * 
+	 *
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findServices(ServiceType pType,
-			Vector<String> pScopes, String pSearchFilter) throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findServices(
+		ServiceType pType,
+		Vector<String> pScopes,
+		String pSearchFilter
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * Returns a vector of ServiceURL objects for services matching the query,
@@ -138,7 +144,7 @@ public interface Locator {
 	 * an empty enumeration is returned. <br />
 	 * <br />
 	 * <em>This method is not part of the RFC 2614 interface definition.</em>
-	 * 
+	 *
 	 * @param pType
 	 *            The SLP service type of the service.
 	 * @param pScopes
@@ -154,20 +160,24 @@ public interface Locator {
 	 * @param pDirectoryAgents
 	 *            A vector of InetAddress that specify the directory agents to
 	 *            look for.
-	 * 
+	 *
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findServices(ServiceType pType,
-			Vector<String> pScopes, String pSearchFilter, Vector<InetAddress> pDirectoryAgents)
-			throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findServices(
+		ServiceType pType,
+		Vector<String> pScopes,
+		String pSearchFilter,
+		Vector<InetAddress> pDirectoryAgents
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * For the URL and scope, return a Vector of ServiceLocationAttribute
 	 * objects whose ids match the String patterns in the attributeIds Vector.
 	 * The request is made in the language locale of the Locator. If no
 	 * attributes match, an empty enumeration is returned.
-	 * 
+	 *
 	 * @param URL
 	 *            The URL for which the attributes are desired.
 	 * @param scopes
@@ -183,8 +193,12 @@ public interface Locator {
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findAttributes(ServiceURL URL,
-			Vector<String> scopes, Vector<String> attributeIds) throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findAttributes(
+		ServiceURL URL,
+		Vector<String> scopes,
+		Vector<String> attributeIds
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * For the URL and scope, return a Vector of ServiceLocationAttribute
@@ -193,7 +207,7 @@ public interface Locator {
 	 * attributes match, an empty enumeration is returned. <br />
 	 * <br />
 	 * <em>This method is not part of the RFC 2614 interface definition.</em>
-	 * 
+	 *
 	 * @param pURL
 	 *            The URL for which the attributes are desired.
 	 * @param pScopes
@@ -211,18 +225,22 @@ public interface Locator {
 	 *            look for.
 	 * @return The enumeration
 	 * @throws ServiceLocationException
-	 * 
+	 *
 	 */
-	public abstract ServiceLocationEnumeration findAttributes(ServiceURL pURL,
-			Vector<String> pScopes, Vector<String> pAttributeIds,
-			Vector<InetAddress> pDirectoryAgents) throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findAttributes(
+		ServiceURL pURL,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds,
+		Vector<InetAddress> pDirectoryAgents
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * For the type and scope, return a Vector of all ServiceLocationAttribute
 	 * objects whose ids match the String patterns in the attributeIds Vector
 	 * regardless of the Locator's locale. The request is made independent of
 	 * language locale. If no attributes are found, an empty vector is returned.
-	 * 
+	 *
 	 * @param pType
 	 *            The service type.
 	 * @param pScopes
@@ -239,8 +257,12 @@ public interface Locator {
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findAttributes(ServiceType pType,
-			Vector<String> pScopes, Vector<String> pAttributeIds) throws ServiceLocationException;
+	public abstract ServiceLocationEnumeration findAttributes(
+		ServiceType pType,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds
+	)
+		throws ServiceLocationException;
 
 	/**
 	 * For the type and scope, return a Vector of all ServiceLocationAttribute
@@ -249,7 +271,7 @@ public interface Locator {
 	 * language locale. If no attributes are found, an empty vector is returned. <br />
 	 * <br />
 	 * <em>This method is not part of the RFC 2614 interface definition.</em>
-	 * 
+	 *
 	 * @param pType
 	 *            The service type.
 	 * @param pScopes
@@ -269,8 +291,11 @@ public interface Locator {
 	 * @return The enumeration
 	 * @throws ServiceLocationException
 	 */
-	public abstract ServiceLocationEnumeration findAttributes(ServiceType pType,
-			Vector<String> pScopes, Vector<String> pAttributeIds,
-			Vector<InetAddress> pDirectoryAgents) throws ServiceLocationException;
-
+	public abstract ServiceLocationEnumeration findAttributes(
+		ServiceType pType,
+		Vector<String> pScopes,
+		Vector<String> pAttributeIds,
+		Vector<InetAddress> pDirectoryAgents
+	)
+		throws ServiceLocationException;
 }

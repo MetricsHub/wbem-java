@@ -57,10 +57,9 @@ import java.util.NoSuchElementException;
  * unconcerned with SLP exceptions (this method will never ever throw one).
  */
 public interface ServiceLocationEnumeration extends Enumeration<Object> {
-
 	/**
 	 * Return the next value or block until it becomes available.
-	 * 
+	 *
 	 * @return The next value
 	 * @throws ServiceLocationException
 	 *             Thrown if the SLP operation encounters an error.
@@ -72,11 +71,11 @@ public interface ServiceLocationEnumeration extends Enumeration<Object> {
 	/**
 	 * @return next Object in Exception table
 	 * @throws NoSuchElementException
-	 * 
+	 *
 	 *             This in internal implementation to get list of all exceptions
 	 *             thrown/caught by parser This can throw RuntimeExceptions.
 	 *             They can be ignored or used for analysis.
-	 * 
+	 *
 	 *             use hasNextException to check whether there exists another
 	 *             element in Exception table
 	 */
@@ -84,7 +83,7 @@ public interface ServiceLocationEnumeration extends Enumeration<Object> {
 
 	/**
 	 * @return true if there exists another element in Exception table
-	 * 
+	 *
 	 */
 	public abstract boolean hasMoreExceptions();
 }

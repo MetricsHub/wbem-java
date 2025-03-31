@@ -49,10 +49,9 @@ import org.metricshub.wbem.javax.wbem.WBEMException;
 
 /**
  * CIMOperation
- * 
+ *
  */
 public abstract class CIMOperation {
-
 	protected CIMObjectPath iObjectName;
 
 	protected String iNameSpace;
@@ -63,7 +62,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Returns the object name
-	 * 
+	 *
 	 * @return The object name
 	 */
 	public CIMObjectPath getObjectName() {
@@ -72,7 +71,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Returns the namespace
-	 * 
+	 *
 	 * @return The namespace
 	 */
 	public String getNameSpace() {
@@ -81,7 +80,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Sets the namespace
-	 * 
+	 *
 	 * @param pNamespace
 	 *            The namespace
 	 */
@@ -91,7 +90,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Returns the method call
-	 * 
+	 *
 	 * @return The method call
 	 */
 	public String getMethodCall() {
@@ -100,7 +99,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Returns if an (uncaught) exception occurred
-	 * 
+	 *
 	 * @return <code>true</code> if an (uncaught) exception occurred,
 	 *         <code>false</code> otherwise
 	 */
@@ -110,7 +109,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Returns the result of the operation
-	 * 
+	 *
 	 * @return The result
 	 * @throws WBEMException
 	 */
@@ -121,7 +120,7 @@ public abstract class CIMOperation {
 
 	/**
 	 * Sets the operation result
-	 * 
+	 *
 	 * @param pResult
 	 *            The result
 	 */

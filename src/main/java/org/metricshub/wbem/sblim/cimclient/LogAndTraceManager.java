@@ -45,22 +45,20 @@ package org.metricshub.wbem.sblim.cimclient;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
-
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class LogAndTraceManager provides the means to register/unregister log and
  * trace listeners. It is the entry point for application that want to redirect
  * the CIM Client's log and trace messages into their own logging framework.
- * 
+ *
  */
 public class LogAndTraceManager {
-
 	private static LogAndTraceManager cManager = new LogAndTraceManager();
 
 	/**
 	 * Returns the singleton instance of the manager.
-	 * 
+	 *
 	 * @return The manager
 	 */
 	public static LogAndTraceManager getManager() {
@@ -74,7 +72,7 @@ public class LogAndTraceManager {
 	/**
 	 * Adds a listener for log messages. The listener will be notified of any
 	 * log event.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -85,7 +83,7 @@ public class LogAndTraceManager {
 	/**
 	 * Remove a listener. This listener will not be notified of log events
 	 * anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -104,7 +102,7 @@ public class LogAndTraceManager {
 	/**
 	 * Gets the registered log listeners including the internal console and file
 	 * loggers.
-	 * 
+	 *
 	 * @return An unmodifiable list of listeners
 	 */
 	public List<LogListener> getLogListeners() {
@@ -114,7 +112,7 @@ public class LogAndTraceManager {
 	/**
 	 * Adds a listener for log messages. The listener will be notified of any
 	 * trace event.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -125,7 +123,7 @@ public class LogAndTraceManager {
 	/**
 	 * Removes a listener. This listener will not be notified of trace events
 	 * anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -144,7 +142,7 @@ public class LogAndTraceManager {
 	/**
 	 * Gets the registered trace listeners including the internal console and
 	 * file loggers.
-	 * 
+	 *
 	 * @return A unmodifiable list of listeners
 	 */
 	public List<TraceListener> getTraceListeners() {
@@ -154,7 +152,7 @@ public class LogAndTraceManager {
 	/**
 	 * Adds a listener for CIM-XML trace messages. The listener will be notified
 	 * of any CIM-XML trace event.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -165,7 +163,7 @@ public class LogAndTraceManager {
 	/**
 	 * Removes a CIM-XML trace listener. This listener will not be notified of
 	 * CIM-XML trace events anymore.
-	 * 
+	 *
 	 * @param pListener
 	 *            The listener
 	 */
@@ -182,12 +180,11 @@ public class LogAndTraceManager {
 
 	/**
 	 * Gets the registered CIM-XML trace listeners.
-	 * 
+	 *
 	 * @return A unmodifiable list of listeners
 	 */
 	public List<CIMXMLTraceListener> getCIMXMLTraceListeners() {
-		return Collections
-				.unmodifiableList(LogAndTraceBroker.getBroker().getCIMXMLTraceListeners());
+		return Collections.unmodifiableList(LogAndTraceBroker.getBroker().getCIMXMLTraceListeners());
 	}
 
 	/**
@@ -195,7 +192,7 @@ public class LogAndTraceManager {
 	 * <code>null</code> means that tracing is effectively disabled. Otherwise
 	 * the CIM-XML tracing can be activated either globally or per-connection
 	 * via the &quot;sblim.wbem.cimxmlTracing&quot; configuration property.
-	 * 
+	 *
 	 * @return The CIM-XML trace stream
 	 */
 	public OutputStream getXmlTraceStream() {
@@ -207,12 +204,11 @@ public class LogAndTraceManager {
 	 * <code>null</code> means that tracing is effectively disabled. Otherwise
 	 * the CIM-XML tracing can be activated either globally or per-connection
 	 * via the &quot;sblim.wbem.cimxmlTracing&quot; configuration property.
-	 * 
+	 *
 	 * @param pStream
 	 *            The CIM-XML trace stream
 	 */
 	public void setXmlTraceStream(OutputStream pStream) {
 		LogAndTraceBroker.getBroker().setXmlTraceStream(pStream);
 	}
-
 }

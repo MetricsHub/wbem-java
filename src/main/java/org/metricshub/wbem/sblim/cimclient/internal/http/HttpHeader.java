@@ -70,7 +70,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ASCIIPrintStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
@@ -80,10 +79,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.WBEMConstants;
 
 /**
  * Class HttpHeader represents a http header block
- * 
+ *
  */
 public class HttpHeader {
-
 	private static BitSet cDontNeedEncoding;
 
 	private static final String HEX_STR = "0123456789ABCDEF";
@@ -108,7 +106,6 @@ public class HttpHeader {
 		cDontNeedEncoding.set('/');
 		cDontNeedEncoding.set('.');
 		cDontNeedEncoding.set('*');
-
 	}
 
 	private Hashtable<HeaderEntry, String> iFields = new Hashtable<HeaderEntry, String>();
@@ -117,12 +114,12 @@ public class HttpHeader {
 	 * Ctor.
 	 */
 	public HttpHeader() {
-	// empty
+		// empty
 	}
 
 	/**
 	 * Ctor. Parses the header from an input stream
-	 * 
+	 *
 	 * @param pReader
 	 *            The input stream
 	 * @throws IOException
@@ -133,7 +130,7 @@ public class HttpHeader {
 
 	/**
 	 * Ctor. Parses the header from an input stream
-	 * 
+	 *
 	 * @param pReader
 	 *            The input stream
 	 * @param pTimeout
@@ -146,8 +143,9 @@ public class HttpHeader {
 		// TODO: this needs to be optimized!!!
 		while (((line = HttpMethod.readLine(pReader)) != null) && (line.length() > 0)) {
 			// get the header
-			if (pTimeout > 0 && (System.currentTimeMillis() - timeStart > pTimeout)) { throw new IOException(
-					WBEMConstants.INDICATION_DOS_EXCEPTION_MESSAGE); }
+			if (pTimeout > 0 && (System.currentTimeMillis() - timeStart > pTimeout)) {
+				throw new IOException(WBEMConstants.INDICATION_DOS_EXCEPTION_MESSAGE);
+			}
 			try {
 				int separator;
 				if ((separator = line.indexOf(':')) > -1) {
@@ -157,8 +155,7 @@ public class HttpHeader {
 
 					// Ignore prefix-match from HTTP extension (RFC 2774), it'll
 					// look like "nn-"
-					if (line.indexOf('-') == 2 && Character.isDigit(line.charAt(0))
-							&& Character.isDigit(line.charAt(1))) {
+					if (line.indexOf('-') == 2 && Character.isDigit(line.charAt(0)) && Character.isDigit(line.charAt(1))) {
 						headerStartIndex = 3;
 					}
 
@@ -166,15 +163,15 @@ public class HttpHeader {
 					value = line.substring(separator + 1);
 					// TODO validate header and value, they must not be empty
 					// entries
-					if (value.length() > 0 && value.startsWith(" ")) addParsedField(header, value
-							.substring(1));
-					else addParsedField(header, value);
+					if (value.length() > 0 && value.startsWith(" ")) addParsedField(
+						header,
+						value.substring(1)
+					); else addParsedField(header, value);
 				} else {
 					LogAndTraceBroker.getBroker().message(Messages.HTTP_INVALID_HEADER, line);
 				}
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINER,
-						"Exception while parsing http header", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while parsing http header", e);
 				LogAndTraceBroker.getBroker().message(Messages.HTTP_INVALID_HEADER, line);
 			}
 		}
@@ -184,7 +181,7 @@ public class HttpHeader {
 	/**
 	 * Adds a header field for client output (this means duplicate header
 	 * entries are replaced)
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the header field
 	 * @param pValue
@@ -203,7 +200,7 @@ public class HttpHeader {
 	/**
 	 * Adds a header field from parsed server input (this means duplicate header
 	 * entries are appended in comma-separated list as defined by RFC 2616)
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the header field
 	 * @param pValue
@@ -238,7 +235,7 @@ public class HttpHeader {
 
 	/**
 	 * Return an iterator over the header fields
-	 * 
+	 *
 	 * @return The iterator
 	 */
 	public Iterator<Entry<HeaderEntry, String>> iterator() {
@@ -247,7 +244,7 @@ public class HttpHeader {
 
 	/**
 	 * Parses a line from a header block
-	 * 
+	 *
 	 * @param pLine
 	 *            The line
 	 * @return The http header
@@ -272,8 +269,7 @@ public class HttpHeader {
 					// something goes wrong. no separator found
 				}
 				prev = next + 1;
-				while (Character.isSpaceChar(pLine.charAt(prev)))
-					prev++;
+				while (Character.isSpaceChar(pLine.charAt(prev))) prev++;
 				next = pLine.indexOf(',', prev);
 			}
 			String hdr = pLine.substring(prev);
@@ -303,7 +299,7 @@ public class HttpHeader {
 
 	/**
 	 * Removes a field from the header
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the field
 	 */
@@ -313,7 +309,7 @@ public class HttpHeader {
 
 	/**
 	 * Returns a field from the header
-	 * 
+	 *
 	 * @param pName
 	 *            The name of the field
 	 * @return The value
@@ -324,12 +320,11 @@ public class HttpHeader {
 
 	/**
 	 * Writes a header block to a stream
-	 * 
+	 *
 	 * @param pWriter
 	 *            The stream
 	 */
 	public void write(ASCIIPrintStream pWriter) {
-
 		Iterator<Entry<HeaderEntry, String>> iterator = this.iFields.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<HeaderEntry, String> entry = iterator.next();
@@ -343,7 +338,7 @@ public class HttpHeader {
 
 	/**
 	 * Encodes raw data
-	 * 
+	 *
 	 * @param pData
 	 *            The raw data
 	 * @return The encoded data
@@ -351,19 +346,17 @@ public class HttpHeader {
 	public static synchronized String encode(byte[] pData) {
 		String str = null;
 		try {
-			if (cDfltEncName == null) cDfltEncName = (String) AccessController
-					.doPrivileged(new GetProperty("file.encoding"));
+			if (cDfltEncName == null) cDfltEncName = (String) AccessController.doPrivileged(new GetProperty("file.encoding"));
 			str = encode(pData, cDfltEncName);
 		} catch (UnsupportedEncodingException e) {
-			LogAndTraceBroker.getBroker().trace(Level.FINER,
-					"Exception while encoding http header data", e);
+			LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while encoding http header data", e);
 		}
 		return str;
 	}
 
 	/**
 	 * Encodes raw data for a given character set
-	 * 
+	 *
 	 * @param pData
 	 *            The raw data
 	 * @param pEnc
@@ -372,7 +365,6 @@ public class HttpHeader {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static String encode(byte[] pData, String pEnc) throws UnsupportedEncodingException {
-
 		int maxBytesPerChar = 10;
 		// BufferedWriter validates encoding
 		ByteArrayOutputStream buf = new ByteArrayOutputStream(maxBytesPerChar);
@@ -399,7 +391,7 @@ public class HttpHeader {
 
 	/**
 	 * Encodes a given string for a given character set
-	 * 
+	 *
 	 * @param pData
 	 *            The source string
 	 * @param pSourceEnc
@@ -409,25 +401,22 @@ public class HttpHeader {
 	 * @return The encoded string
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String encode(String pData, String pSourceEnc, String pTargetEnc)
-			throws UnsupportedEncodingException {
-
+	public static String encode(String pData, String pSourceEnc, String pTargetEnc) throws UnsupportedEncodingException {
 		return encode(pData.getBytes(pSourceEnc), pTargetEnc);
 	}
 
 	/**
 	 * Class HeaderEntry represents a single header field
-	 * 
+	 *
 	 */
 	public static class HeaderEntry {
-
 		String iHeader;
 
 		int iHashcode;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pName
 		 *            The name of the header field
 		 */
@@ -455,10 +444,9 @@ public class HttpHeader {
 
 	/**
 	 * Class GetProperty implements privileged access to system properties
-	 * 
+	 *
 	 */
 	private static class GetProperty implements PrivilegedAction<Object> {
-
 		String iPropertyName;
 
 		GetProperty(String propertyName) {
@@ -473,7 +461,7 @@ public class HttpHeader {
 	/**
 	 * Throws a TrailerException if it contains recognized CIM errors in http
 	 * trailer entries.
-	 * 
+	 *
 	 * @throws TrailerException
 	 */
 	public void examineTrailer() throws TrailerException {
@@ -483,7 +471,7 @@ public class HttpHeader {
 	/**
 	 * Throws a TrailerException if it contains recognized CIM errors in http
 	 * trailer entries.
-	 * 
+	 *
 	 * @param pOrigin
 	 *            The origin of the trailer (response, request, etc.)
 	 * @throws TrailerException
@@ -509,8 +497,9 @@ public class HttpHeader {
 					try {
 						code = Integer.parseInt(valStr);
 					} catch (NumberFormatException e) {
-						String msg = new String(WBEMConstants.HTTP_TRAILER_STATUS_CODE + " \""
-								+ valStr + "\" invalid, setting to CIM_ERR_FAILED");
+						String msg = new String(
+							WBEMConstants.HTTP_TRAILER_STATUS_CODE + " \"" + valStr + "\" invalid, setting to CIM_ERR_FAILED"
+						);
 						LogAndTraceBroker.getBroker().trace(Level.FINER, msg, e);
 						code = WBEMException.CIM_ERR_FAILED;
 						if (desc == null) desc = msg;
@@ -523,12 +512,13 @@ public class HttpHeader {
 				throw new Error(e);
 			}
 		}
-		if (hdrs != null && hdrs.length() > 0) LogAndTraceBroker.getBroker().trace(
-				Level.FINER,
-				(pOrigin == null ? "Unknown" : pOrigin) + " HTTP Trailer Headers= "
-						+ hdrs.toString());
+		if (hdrs != null && hdrs.length() > 0) LogAndTraceBroker
+			.getBroker()
+			.trace(Level.FINER, (pOrigin == null ? "Unknown" : pOrigin) + " HTTP Trailer Headers= " + hdrs.toString());
 		if (code > 0) {
-			if (desc != null) { throw new TrailerException(new WBEMException(code, desc)); }
+			if (desc != null) {
+				throw new TrailerException(new WBEMException(code, desc));
+			}
 			throw new TrailerException(new WBEMException(code));
 		}
 	}

@@ -51,7 +51,6 @@ package org.metricshub.wbem.sblim.cimclient.internal.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.BoundedInputStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.ChunkedInputStream;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.PersistentInputStream;
@@ -59,10 +58,9 @@ import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class MessageReader is responsible for reading http messages
- * 
+ *
  */
 public class MessageReader {
-
 	HttpHeader iHeader;
 
 	HttpServerMethod iMethod;
@@ -75,7 +73,7 @@ public class MessageReader {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The input stream
 	 * @param pTimeout
@@ -97,8 +95,7 @@ public class MessageReader {
 			try {
 				contentLength = Integer.parseInt(length);
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINER,
-						"Exception while parsing http content-length", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while parsing http content-length", e);
 			}
 		}
 		String contentType = this.iHeader.getField("Content-Type");
@@ -109,16 +106,14 @@ public class MessageReader {
 			} catch (Exception e) {
 				encoding = "UTF-8"; // TODO is this the default character
 				// encoding?
-				LogAndTraceBroker.getBroker().trace(Level.FINER,
-						"Exception while parsing http content-type", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINER, "Exception while parsing http content-type", e);
 			}
 			this.iEncoding = encoding;
 		}
 
 		this.iContent = new PersistentInputStream(pStream, isPersistentConnectionSupported());
 		if (this.iChunked) {
-			this.iContent = new ChunkedInputStream(this.iContent, this.iHeader.getField("Trailer"),
-					"Indication Request");
+			this.iContent = new ChunkedInputStream(this.iContent, this.iHeader.getField("Trailer"), "Indication Request");
 		} else if (contentLength >= 0) {
 			this.iContent = new BoundedInputStream(this.iContent, contentLength);
 		}
@@ -126,7 +121,7 @@ public class MessageReader {
 
 	/**
 	 * Returns the character encoding
-	 * 
+	 *
 	 * @return The character encoding
 	 */
 	public String getCharacterEncoding() {
@@ -135,7 +130,7 @@ public class MessageReader {
 
 	/**
 	 * Returns the http header
-	 * 
+	 *
 	 * @return The http header
 	 */
 	public HttpHeader getHeader() {
@@ -144,7 +139,7 @@ public class MessageReader {
 
 	/**
 	 * Returns the http server method
-	 * 
+	 *
 	 * @return The http server method
 	 */
 	public HttpServerMethod getMethod() {
@@ -153,7 +148,7 @@ public class MessageReader {
 
 	/**
 	 * Returns the input stream
-	 * 
+	 *
 	 * @return The input stream
 	 */
 	public InputStream getInputStream() {
@@ -162,7 +157,7 @@ public class MessageReader {
 
 	/**
 	 * Returns the persistent connection support state
-	 * 
+	 *
 	 * @return <code>true</code> if persistent connection is supported
 	 */
 	public boolean isPersistentConnectionSupported() {
@@ -177,21 +172,23 @@ public class MessageReader {
 
 	/**
 	 * Returns the chunking support state
-	 * 
+	 *
 	 * @return <code>true</code> if chunking is supported
 	 */
 	public boolean isChunkSupported() {
 		// TODO: make sure this is the correct way to test for chunk support
 		if ((this.iMethod.getMajorVersion() >= 1) && (this.iMethod.getMinorVersion() >= 1)) {
 			String TE;
-			if ((TE = this.iHeader.getField("TE")) != null && (TE.equalsIgnoreCase("trailers"))) { return true; }
+			if ((TE = this.iHeader.getField("TE")) != null && (TE.equalsIgnoreCase("trailers"))) {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	/**
 	 * Closes the stream
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void close() throws IOException {

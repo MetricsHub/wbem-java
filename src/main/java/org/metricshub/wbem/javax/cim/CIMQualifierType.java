@@ -67,7 +67,7 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * <li><code>Flavors</code> - The flavors applicable to this qualifier type.
  * Flavors describe the propagation and override rules for a qualifier.</li>
  * </ul>
- * 
+ *
  * @param <E>
  *            Type parameter.
  * @see CIMScope
@@ -75,7 +75,6 @@ import org.metricshub.wbem.sblim.cimclient.internal.util.MOF;
  * @see CIMQualifier
  */
 public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamedElementInterface {
-
 	private static final long serialVersionUID = -4563643521754840535L;
 
 	private CIMObjectPath iObjPath;
@@ -85,7 +84,7 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 	/**
 	 * Constructs a new CIM qualifier type, using the name, type of the
 	 * specified CIM qualifier type.
-	 * 
+	 *
 	 * @param pPath
 	 *            The <code>CIMObjectPath</code> of a CIM qualifier type.
 	 * @param pType
@@ -99,8 +98,8 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 	 * @throws IllegalArgumentException
 	 *             If the value/data type does not match.
 	 */
-	public CIMQualifierType(CIMObjectPath pPath, CIMDataType pType, E pValue, int pScope,
-			int pFlavor) throws IllegalArgumentException {
+	public CIMQualifierType(CIMObjectPath pPath, CIMDataType pType, E pValue, int pScope, int pFlavor)
+		throws IllegalArgumentException {
 		super(pPath == null ? null : pPath.getObjectName(), pType, pValue);
 		this.iObjPath = pPath;
 		this.iScope = pScope;
@@ -112,7 +111,7 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 	 * <code>true</code> if and only if the argument is not <code>null</code>
 	 * and is a <code>CIMQualifierType</code> object that represents the same
 	 * value as this object.
-	 * 
+	 *
 	 * @param pObj
 	 *            The object to compare.
 	 * @return <code>true</code> if the specified object it is the same as this
@@ -128,7 +127,7 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 
 	/**
 	 * Returns the flavors of this qualifier type as a <code>BitSet</code>.
-	 * 
+	 *
 	 * @return <code>BitSet</code> of flavors for this qualifier type.
 	 */
 	public int getFlavor() {
@@ -137,7 +136,7 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 
 	/**
 	 * Get the object path for this <code>CIMQualifierType</code>.
-	 * 
+	 *
 	 * @return The <code>CIMObjectPath</code> that represents this qualifier
 	 *         type.
 	 */
@@ -147,7 +146,7 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 
 	/**
 	 * Returns the scopes of this qualifier type as a bit set.
-	 * 
+	 *
 	 * @return Bit set of CIM element scopes for which this qualifier type is
 	 *         applicable.
 	 */
@@ -161,12 +160,11 @@ public class CIMQualifierType<E> extends CIMValuedElement<E> implements CIMNamed
 	 * debugging purposes, and the format of the returned string may vary
 	 * between implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return A string representation of this qualifier type.
 	 */
 	@Override
 	public String toString() {
 		return MOF.qualifierDeclaration(this);
 	}
-
 }

@@ -49,10 +49,9 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMSetInstanceOp
- * 
+ *
  */
 public class CIMSetInstanceOp extends CIMOperation {
-
 	protected CIMInstance iInstance;
 
 	protected boolean iIncludeQualifiers;
@@ -61,14 +60,18 @@ public class CIMSetInstanceOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param objectName
 	 * @param instance
 	 * @param includeQualifiers
 	 * @param propertyList
 	 */
-	public CIMSetInstanceOp(CIMObjectPath objectName, CIMInstance instance,
-			boolean includeQualifiers, String[] propertyList) {
+	public CIMSetInstanceOp(
+		CIMObjectPath objectName,
+		CIMInstance instance,
+		boolean includeQualifiers,
+		String[] propertyList
+	) {
 		this.iMethodCall = "SetInstance";
 		this.iObjectName = objectName;
 		this.iInstance = instance;
@@ -78,7 +81,7 @@ public class CIMSetInstanceOp extends CIMOperation {
 
 	/**
 	 * Returns includeQualifiers
-	 * 
+	 *
 	 * @return The value of includeQualifiers.
 	 */
 	public boolean isIncludeQualifiers() {
@@ -87,7 +90,7 @@ public class CIMSetInstanceOp extends CIMOperation {
 
 	/**
 	 * Returns instance
-	 * 
+	 *
 	 * @return The value of instance.
 	 */
 	public CIMInstance getInstance() {
@@ -96,11 +99,10 @@ public class CIMSetInstanceOp extends CIMOperation {
 
 	/**
 	 * Returns propertyList
-	 * 
+	 *
 	 * @return The value of propertyList.
 	 */
 	public String[] getPropertyList() {
 		return this.iPropertyList;
 	}
-
 }

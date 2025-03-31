@@ -49,15 +49,14 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMCreateInstanceOp
- * 
+ *
  */
 public class CIMCreateInstanceOp extends CIMOperation {
-
 	protected CIMInstance iInstance;
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 * @param pInstance
 	 */
@@ -69,11 +68,10 @@ public class CIMCreateInstanceOp extends CIMOperation {
 
 	/**
 	 * Returns the instance
-	 * 
+	 *
 	 * @return The instance
 	 */
 	public CIMInstance getInstance() {
 		return this.iInstance;
 	}
-
 }

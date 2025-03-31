@@ -48,13 +48,13 @@ import org.metricshub.wbem.javax.cim.CIMObjectPath;
 
 /**
  * CIMDeleteClassOp
- * 
+ *
  */
 public class CIMDeleteClassOp extends CIMOperation {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pObjectName
 	 */
 	public CIMDeleteClassOp(CIMObjectPath pObjectName) {

@@ -54,17 +54,15 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpHeader;
 import org.metricshub.wbem.sblim.cimclient.internal.http.HttpMethod;
 import org.metricshub.wbem.sblim.cimclient.internal.logging.LogAndTraceBroker;
 
 /**
  * Class ChunkedInputStream implements an input stream for chunked messages
- * 
+ *
  */
 public class ChunkedInputStream extends InputStream {
-
 	private InputStream iIn;
 
 	private String iTrailerFields;
@@ -83,7 +81,7 @@ public class ChunkedInputStream extends InputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream to create this one upon
 	 * @param pTrailerFields
@@ -95,7 +93,7 @@ public class ChunkedInputStream extends InputStream {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 *            The stream to create this one upon
 	 * @param pTrailerFields
@@ -136,25 +134,26 @@ public class ChunkedInputStream extends InputStream {
 			try {
 				this.iChunkSize = Long.parseLong(line, 16);
 			} catch (Exception e) {
-				LogAndTraceBroker.getBroker().trace(Level.FINER,
-						"Invalid chunk size on HTTP stream", e);
+				LogAndTraceBroker.getBroker().trace(Level.FINER, "Invalid chunk size on HTTP stream", e);
 				this.iEof = true;
 				throw new IOException("Invalid chunk size");
 			}
 		}
 		if (this.iChunkSize > 0) {
-			total = this.iIn.read(buf, off, (this.iChunkSize < len) ? (int) this.iChunkSize
-					: (int) len);
+			total = this.iIn.read(buf, off, (this.iChunkSize < len) ? (int) this.iChunkSize : (int) len);
 			if (total > 0) {
 				this.iChunkSize -= total;
 			}
 			if (total == -1) {
-				LogAndTraceBroker.getBroker().trace(
+				LogAndTraceBroker
+					.getBroker()
+					.trace(
 						Level.FINE,
-						"Unexpected EOF trying to read "
-								+ (this.iChunkSize < len ? this.iChunkSize : len)
-								+ " bytes from HTTP chunk with remaining length of "
-								+ this.iChunkSize);
+						"Unexpected EOF trying to read " +
+						(this.iChunkSize < len ? this.iChunkSize : len) +
+						" bytes from HTTP chunk with remaining length of " +
+						this.iChunkSize
+					);
 				throw new EOFException("Unexpected EOF reading chunk");
 			}
 		} else {
@@ -166,10 +165,9 @@ public class ChunkedInputStream extends InputStream {
 					// ebak: http trailers
 					this.iTrailers.examineTrailer(this.iOrigin);
 				} catch (IOException e) {
-					LogAndTraceBroker.getBroker().trace(
-							Level.FINE,
-							"Unexpected EOF reading trailer, expected fields were "
-									+ this.iTrailerFields);
+					LogAndTraceBroker
+						.getBroker()
+						.trace(Level.FINE, "Unexpected EOF reading trailer, expected fields were " + this.iTrailerFields);
 					throw new EOFException("Unexpected EOF reading trailer");
 				}
 			}
@@ -179,7 +177,7 @@ public class ChunkedInputStream extends InputStream {
 
 	/**
 	 * Return the http header trailers
-	 * 
+	 *
 	 * @return The trailers
 	 */
 	public synchronized HttpHeader getTrailers() {
@@ -194,7 +192,7 @@ public class ChunkedInputStream extends InputStream {
 
 	/**
 	 * @return int
-	 * 
+	 *
 	 */
 	@Override
 	public synchronized int available() {

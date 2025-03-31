@@ -47,21 +47,19 @@ package org.metricshub.wbem.sblim.cimclient.internal.wbem;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.metricshub.wbem.javax.cim.CIMArgument;
 import org.metricshub.wbem.javax.cim.CIMObjectPath;
 import org.metricshub.wbem.javax.wbem.CloseableIterator;
 import org.metricshub.wbem.javax.wbem.WBEMException;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.XMLDefaultHandlerImpl;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractSimpleRspNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.CIMNode;
 import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.MessageNode;
 import org.metricshub.wbem.sblim.cimclient.internal.http.io.TrailerException;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node.AbstractMessageNode;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -69,7 +67,6 @@ import org.xml.sax.SAXException;
  * CloseableIterator implementation for SAX parser.
  */
 public class CloseableIteratorSAX implements CloseableIterator<Object> {
-
 	private AbstractSimpleRspNode iAbsSimpleRspNode;
 
 	private CIMError iErr;
@@ -82,7 +79,7 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pStream
 	 * @param pPath
 	 * @throws IOException
@@ -90,8 +87,8 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 	 * @throws ParserConfigurationException
 	 * @throws WBEMException
 	 */
-	public CloseableIteratorSAX(InputStreamReader pStream, CIMObjectPath pPath) throws IOException,
-			SAXException, ParserConfigurationException, WBEMException {
+	public CloseableIteratorSAX(InputStreamReader pStream, CIMObjectPath pPath)
+		throws IOException, SAXException, ParserConfigurationException, WBEMException {
 		XMLDefaultHandlerImpl handler = new XMLDefaultHandlerImpl(pPath);
 		SAXParser saxParser = iFactory.newSAXParser();
 		try {
@@ -107,7 +104,7 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pCIMNode
 	 * @throws WBEMException
 	 */
@@ -117,11 +114,11 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 
 	private void init(CIMNode pCIMNode) throws WBEMException {
 		MessageNode msgNode = pCIMNode.getMessageNode();
-		if (msgNode == null) throw new WBEMException(
-				"CIMNode parameter must contain a message node!");
+		if (msgNode == null) throw new WBEMException("CIMNode parameter must contain a message node!");
 		AbstractMessageNode absMsgNode = msgNode.getAbstractMessageNode();
 		if (!(absMsgNode instanceof AbstractSimpleRspNode)) throw new WBEMException(
-				"Currently only AbstractSimpleRspNodes are handled!");
+			"Currently only AbstractSimpleRspNodes are handled!"
+		);
 		this.iAbsSimpleRspNode = (AbstractSimpleRspNode) absMsgNode;
 		this.iErr = this.iAbsSimpleRspNode.getCIMError();
 		this.iCIMArgAL = this.iAbsSimpleRspNode.getCIMArguments();
@@ -136,14 +133,15 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 	}
 
 	public boolean hasNext() {
-		if (this.iWBEMException != null) { throw new RuntimeException(this.iWBEMException); }
-		if (this.iErr != null) {
-			this.iWBEMException = new WBEMException(this.iErr.getCode(),
-					this.iErr.getDescription(), this.iErr.getCIMInstances());
+		if (this.iWBEMException != null) {
 			throw new RuntimeException(this.iWBEMException);
 		}
-		return this.iAbsSimpleRspNode == null ? false : this.iAbsSimpleRspNode
-				.getReturnValueCount() > 0;
+		if (this.iErr != null) {
+			this.iWBEMException =
+				new WBEMException(this.iErr.getCode(), this.iErr.getDescription(), this.iErr.getCIMInstances());
+			throw new RuntimeException(this.iWBEMException);
+		}
+		return this.iAbsSimpleRspNode == null ? false : this.iAbsSimpleRspNode.getReturnValueCount() > 0;
 	}
 
 	public Object next() {
@@ -159,10 +157,10 @@ public class CloseableIteratorSAX implements CloseableIterator<Object> {
 	}
 
 	/**
-	 * 
+	 *
 	 * getCIMArguments : returns the array of parsed parameters and their values
 	 * : String name, CIMDataType type, Object value
-	 * 
+	 *
 	 * @return CIMArgument&lt;?&gt;[]
 	 */
 

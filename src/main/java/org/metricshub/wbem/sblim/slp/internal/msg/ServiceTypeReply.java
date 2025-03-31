@@ -46,9 +46,8 @@ package org.metricshub.wbem.sblim.slp.internal.msg;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import org.metricshub.wbem.sblim.slp.ServiceType;
 import org.metricshub.wbem.sblim.slp.ServiceLocationException;
+import org.metricshub.wbem.sblim.slp.ServiceType;
 
 /*
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -62,29 +61,27 @@ import org.metricshub.wbem.sblim.slp.ServiceLocationException;
  */
 /**
  * ServiceTypeReply message
- * 
+ *
  */
 public class ServiceTypeReply extends ReplyMessage {
-
 	private List<ServiceType> iServTypeList;
 
 	/**
 	 * parse
-	 * 
+	 *
 	 * @param pHdr
 	 * @param pInStr
 	 * @return SLPMessage
 	 * @throws ServiceLocationException
 	 * @throws IOException
 	 */
-	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr)
-			throws ServiceLocationException, IOException {
+	public static SLPMessage parse(MsgHeader pHdr, SLPInputStream pInStr) throws ServiceLocationException, IOException {
 		return new ServiceTypeReply(pHdr, pInStr.read16(), pInStr.readServTypeList());
 	}
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pErrorCode
 	 * @param pServTypeList
 	 *            - list of ServiceTypes
@@ -96,7 +93,7 @@ public class ServiceTypeReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pLangTag
 	 * @param pErrorCode
 	 * @param pServTypeList
@@ -109,7 +106,7 @@ public class ServiceTypeReply extends ReplyMessage {
 
 	/**
 	 * Ctor.
-	 * 
+	 *
 	 * @param pHeader
 	 * @param pErrorCode
 	 * @param pServTypeList
@@ -138,5 +135,4 @@ public class ServiceTypeReply extends ReplyMessage {
 		// this message doesn't have exception table
 		return null;
 	}
-
 }

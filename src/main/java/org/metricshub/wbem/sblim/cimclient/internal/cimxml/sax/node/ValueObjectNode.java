@@ -48,8 +48,8 @@ package org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.node;
 
 import org.metricshub.wbem.javax.cim.CIMClass;
 import org.metricshub.wbem.javax.cim.CIMDataType;
-import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.metricshub.wbem.javax.cim.CIMNamedElementInterface;
+import org.metricshub.wbem.sblim.cimclient.internal.cimxml.sax.SAXSession;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * ELEMENT VALUE.OBJECT (CLASS | INSTANCE)
  */
 public class ValueObjectNode extends AbstractScalarValueNode {
-
 	private CIMNamedElementInterface iCIMObject;
 
 	/**
@@ -82,30 +81,29 @@ public class ValueObjectNode extends AbstractScalarValueNode {
 	 */
 	@Override
 	public void parseData(String pData) {
-	// no data
+		// no data
 	}
 
 	@Override
 	public void testChild(String pNodeNameEnum) throws SAXException {
-		if (this.iCIMObject != null) throw new SAXException("This " + getNodeName()
-				+ " node can have only one child but an additional " + pNodeNameEnum
-				+ " node found!");
+		if (this.iCIMObject != null) throw new SAXException(
+			"This " + getNodeName() + " node can have only one child but an additional " + pNodeNameEnum + " node found!"
+		);
 		if (pNodeNameEnum != CLASS && pNodeNameEnum != INSTANCE) throw new SAXException(
-				getNodeName() + " node child node can be CLASS or INSTANCE but a " + pNodeNameEnum
-						+ " node was found!");
+			getNodeName() + " node child node can be CLASS or INSTANCE but a " + pNodeNameEnum + " node was found!"
+		);
 	}
 
 	@Override
 	public void childParsed(Node pChild) {
 		AbstractObjectNode objNode = (AbstractObjectNode) pChild;
-		if (objNode instanceof ClassNode) this.iCIMObject = ((ClassNode) objNode).getCIMClass();
-		else this.iCIMObject = ((InstanceNode) objNode).getCIMInstance();
+		if (objNode instanceof ClassNode) this.iCIMObject = ((ClassNode) objNode).getCIMClass(); else this.iCIMObject =
+			((InstanceNode) objNode).getCIMInstance();
 	}
 
 	@Override
 	public void testCompletness() throws SAXException {
-		if (this.iCIMObject == null) throw new SAXException(
-				"VALUE.OBJECT node must have a CLASS or INSTANCE child node!");
+		if (this.iCIMObject == null) throw new SAXException("VALUE.OBJECT node must have a CLASS or INSTANCE child node!");
 	}
 
 	/**
@@ -120,5 +118,4 @@ public class ValueObjectNode extends AbstractScalarValueNode {
 		if (this.iCIMObject instanceof CIMClass) return CIMDataType.CLASS_T;
 		return CIMDataType.OBJECT_T;
 	}
-
 }

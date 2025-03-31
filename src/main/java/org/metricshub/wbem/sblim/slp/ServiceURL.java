@@ -54,7 +54,6 @@ import java.io.Serializable;
  * subclass of java.net.URL but can't since that class is final.
  */
 public class ServiceURL implements Serializable {
-
 	private static final long serialVersionUID = 8998115518853094365L;
 
 	/**
@@ -102,7 +101,7 @@ public class ServiceURL implements Serializable {
 
 	/**
 	 * Construct a service URL object having the specified lifetime.
-	 * 
+	 *
 	 * @param pServiceURL
 	 *            The URL as a string. Must be either a service: URL or a valid
 	 *            generic URL according to RFC 2396 [2].
@@ -112,14 +111,15 @@ public class ServiceURL implements Serializable {
 	 *            LIFETIME_PERMANENT.
 	 */
 	public ServiceURL(String pServiceURL, int pLifetime) {
-
 		if (pLifetime > LIFETIME_MAXIMUM || pLifetime < LIFETIME_PERMANENT) throw new IllegalArgumentException(
-				"lifetime:" + pLifetime);
+			"lifetime:" + pLifetime
+		);
 
 		for (int i = 0; i < pServiceURL.length(); i++) {
 			char c = pServiceURL.charAt(i);
-			if ("/:-.%_\'*()$!,+\\;@?&=[]".indexOf(c) == -1 && !Character.isLetterOrDigit(c)) { throw new IllegalArgumentException(
-					"invalid character: '" + c + "' on string \"" + pServiceURL + "\""); }
+			if ("/:-.%_\'*()$!,+\\;@?&=[]".indexOf(c) == -1 && !Character.isLetterOrDigit(c)) {
+				throw new IllegalArgumentException("invalid character: '" + c + "' on string \"" + pServiceURL + "\"");
+			}
 		}
 
 		parseURL(pServiceURL);
@@ -130,7 +130,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Returns the service type object representing the service type name of the
 	 * URL.
-	 * 
+	 *
 	 * @return The service type
 	 */
 	public ServiceType getServiceType() {
@@ -140,7 +140,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Set the service type name to the object. Ignored if the URL is a service:
 	 * URL.
-	 * 
+	 *
 	 * @param pServicetype
 	 *            The service type object.
 	 */
@@ -151,7 +151,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Get the network layer transport identifier. If the transport is IP, an
 	 * empty string, "", is returned.
-	 * 
+	 *
 	 * @return The NLT identifier
 	 */
 	public String getTransport() {
@@ -162,7 +162,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Returns the host identifier. For IP, this will be the machine name or IP
 	 * address.
-	 * 
+	 *
 	 * @return The host
 	 */
 	public String getHost() {
@@ -172,7 +172,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Returns the port number, if any. For non-IP transports, always returns
 	 * NO_PORT.
-	 * 
+	 *
 	 * @return The port
 	 */
 	public int getPort() {
@@ -181,7 +181,7 @@ public class ServiceURL implements Serializable {
 
 	/**
 	 * Returns the URL path description, if any.
-	 * 
+	 *
 	 * @return The URL path
 	 */
 	public String getURLPath() {
@@ -191,7 +191,7 @@ public class ServiceURL implements Serializable {
 	/**
 	 * Returns the service advertisement lifetime. This will be a positive int
 	 * between LIFETIME_NONE and LIFETIME_MAXIMUM.
-	 * 
+	 *
 	 * @return The lifetime
 	 */
 	public int getLifetime() {
@@ -200,9 +200,9 @@ public class ServiceURL implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
+	 *
 	 * Compares the object to the ServiceURL and returns true if the two are the
 	 * same. Two ServiceURL objects are equal if their current service types
 	 * match and they have the same host, port, transport, and URL path.
@@ -214,16 +214,19 @@ public class ServiceURL implements Serializable {
 
 		ServiceURL that = (ServiceURL) obj;
 
-		return equalObjs(this.iServiceType, that.iServiceType)
-				&& equalStrs(this.iTransport, that.iTransport) && equalStrs(this.iHost, that.iHost)
-				&& this.iPort == that.iPort;
+		return (
+			equalObjs(this.iServiceType, that.iServiceType) &&
+			equalStrs(this.iTransport, that.iTransport) &&
+			equalStrs(this.iHost, that.iHost) &&
+			this.iPort == that.iPort
+		);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
-	 * 
+	 *
 	 * Returns a formatted string with the URL. Overrides Object.toString(). The
 	 * returned URL has the original service type or URL scheme, not the current
 	 * service type.
@@ -243,9 +246,9 @@ public class ServiceURL implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
-	 * 
+	 *
 	 * Overrides Object.hashCode(). Hashes on the current service type,
 	 * transport, host, port, and URL part. !! in this case toString() must not
 	 * contain the lifeTime
@@ -263,13 +266,13 @@ public class ServiceURL implements Serializable {
 	/**
 	 * <pre>
 	 * service: URL or URL
-	 * 
+	 *
 	 * &quot;service:&quot; srvtype &quot;://&quot; addrspec
 	 * &quot;service:&quot; abstract-type &quot;:&quot; concrete-type&gt; &quot;://&quot; addrspecc
-	 * 
+	 *
 	 * addrspesc  = ( hostName / IPv4Address / IPv6Address ) [ &quot;:&quot; port ]
 	 * </pre>
-	 * 
+	 *
 	 * @param pUrlString
 	 * @throws IllegalArgumentException
 	 */
@@ -303,7 +306,8 @@ public class ServiceURL implements Serializable {
 		this.iHost = pAddrStr.substring(0, colonIdx);
 		if (colonIdx < pAddrStr.length()) {
 			if (pAddrStr.charAt(colonIdx) != ':') throw new IllegalArgumentException(
-					"':' expected in \"" + pAddrStr + "\" at position " + colonIdx + " !");
+				"':' expected in \"" + pAddrStr + "\" at position " + colonIdx + " !"
+			);
 			parsePort(pAddrStr.substring(colonIdx + 1), pAddrStr);
 		}
 	}
@@ -322,8 +326,7 @@ public class ServiceURL implements Serializable {
 		try {
 			this.iPort = Integer.parseInt(pPortStr);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Port field : " + pPortStr + " in " + pAddrStr
-					+ " is invalid!");
+			throw new IllegalArgumentException("Port field : " + pPortStr + " in " + pAddrStr + " is invalid!");
 		}
 	}
 
@@ -332,8 +335,6 @@ public class ServiceURL implements Serializable {
 	}
 
 	private static boolean equalStrs(String pThis, String pThat) {
-		return (pThis == null || pThis.length() == 0) ? (pThat == null || pThat.length() == 0)
-				: pThis.equals(pThat);
+		return (pThis == null || pThis.length() == 0) ? (pThat == null || pThat.length() == 0) : pThis.equals(pThat);
 	}
-
 }

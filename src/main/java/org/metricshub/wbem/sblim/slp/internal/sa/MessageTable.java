@@ -51,37 +51,35 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
+import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 import org.metricshub.wbem.sblim.slp.internal.msg.RequestMessage;
 import org.metricshub.wbem.sblim.slp.internal.msg.SLPMessage;
-import org.metricshub.wbem.sblim.slp.ServiceLocationException;
 
 /**
  * Keeps track of datagram messages. For requests with the same XID the same
  * responses should be returned.
- * 
+ *
  */
 public class MessageTable {
 
 	private static class RequestDescriptor implements Comparable<RequestDescriptor> {
-
 		private byte[] iSrcAddress;
 
 		private byte[] iRequest;
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pSource
 		 * @param pRequest
 		 * @throws ServiceLocationException
 		 */
-		public RequestDescriptor(InetAddress pSource, SLPMessage pRequest)
-				throws ServiceLocationException {
+		public RequestDescriptor(InetAddress pSource, SLPMessage pRequest) throws ServiceLocationException {
 			this.iSrcAddress = pSource.getAddress();
-			this.iRequest = (pRequest instanceof RequestMessage) ? ((RequestMessage) pRequest)
-					.serializeWithoutResponders(false, true, true) : pRequest.serialize(false,
-					true, true);
+			this.iRequest =
+				(pRequest instanceof RequestMessage)
+					? ((RequestMessage) pRequest).serializeWithoutResponders(false, true, true)
+					: pRequest.serialize(false, true, true);
 		}
 
 		public int compareTo(RequestDescriptor pObj) {
@@ -104,8 +102,7 @@ public class MessageTable {
 		public boolean equals(Object pObj) {
 			if (!(pObj instanceof RequestDescriptor)) return false;
 			RequestDescriptor that = (RequestDescriptor) pObj;
-			return compare(this.iSrcAddress, that.iSrcAddress) == 0
-					&& compare(this.iRequest, that.iRequest) == 0;
+			return compare(this.iSrcAddress, that.iSrcAddress) == 0 && compare(this.iRequest, that.iRequest) == 0;
 		}
 
 		@Override
@@ -115,7 +112,6 @@ public class MessageTable {
 	}
 
 	private static class TableEntry {
-
 		private long iTime;
 
 		private RequestDescriptor iReqDesc;
@@ -124,7 +120,7 @@ public class MessageTable {
 
 		/**
 		 * Ctor.
-		 * 
+		 *
 		 * @param pTime
 		 * @param pReqKey
 		 * @param pResponse
@@ -137,7 +133,7 @@ public class MessageTable {
 
 		/**
 		 * getTime
-		 * 
+		 *
 		 * @return long
 		 */
 		public long getTime() {
@@ -146,7 +142,7 @@ public class MessageTable {
 
 		/**
 		 * setTime
-		 * 
+		 *
 		 * @param pTime
 		 */
 		public void setTime(long pTime) {
@@ -155,7 +151,7 @@ public class MessageTable {
 
 		/**
 		 * getRequestDescriptor
-		 * 
+		 *
 		 * @return RequestDescriptor
 		 */
 		public RequestDescriptor getRequestDescriptor() {
@@ -164,13 +160,12 @@ public class MessageTable {
 
 		/**
 		 * getResponse
-		 * 
+		 *
 		 * @return byte[]
 		 */
 		public byte[] getResponse() {
 			return this.iResponse;
 		}
-
 	}
 
 	/**
@@ -190,14 +185,13 @@ public class MessageTable {
 
 	/**
 	 * getResponse
-	 * 
+	 *
 	 * @param pSource
 	 * @param pRequest
 	 * @return byte[]
 	 * @throws ServiceLocationException
 	 */
-	public synchronized byte[] getResponse(InetAddress pSource, SLPMessage pRequest)
-			throws ServiceLocationException {
+	public synchronized byte[] getResponse(InetAddress pSource, SLPMessage pRequest) throws ServiceLocationException {
 		long now = getSecs();
 		RequestDescriptor reqDesc = new RequestDescriptor(pSource, pRequest);
 		TableEntry entry = this.iReqMap.get(reqDesc);
@@ -209,14 +203,14 @@ public class MessageTable {
 
 	/**
 	 * addResponse
-	 * 
+	 *
 	 * @param pSource
 	 * @param pRequest
 	 * @param pRespond
 	 * @throws ServiceLocationException
 	 */
 	public synchronized void addResponse(InetAddress pSource, SLPMessage pRequest, byte[] pRespond)
-			throws ServiceLocationException {
+		throws ServiceLocationException {
 		insert(new TableEntry(getSecs(), new RequestDescriptor(pSource, pRequest), pRespond));
 		clean();
 	}
@@ -250,5 +244,4 @@ public class MessageTable {
 	private static long getSecs() {
 		return new Date().getTime() / 1000;
 	}
-
 }
