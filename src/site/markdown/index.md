@@ -1,9 +1,10 @@
 # WBEM Java Client
 
 The Web-Based Entreprise Management (WBEM) Java Client is a library that enables to:
-* Connect to a WBEM Server
-* Execute WQL (WBEM Query Language) queries such as EnumerateInstances
-It uses HTTP/HTTPS protocol for that purpose.
+
+- Connect to a WBEM Server
+- Execute WQL (WBEM Query Language) queries such as EnumerateInstances
+  It uses HTTP/HTTPS protocol for that purpose.
 
 # How to run the WBEM Client inside Java
 
@@ -24,10 +25,9 @@ When you embed the WBEM Java Client into your Java application, it's important t
 
 ### Exporting Packages with `--add-exports`
 
-Use the  `--add-exports` flag to allow modules to access the internal parsers provided by the `com.sun.org.apache.xerces` package in the `java.xml` module:
+Use the `--add-exports` flag to allow modules to access the internal parsers provided by the `com.sun.org.apache.xerces` package in the `java.xml` module:
 
 - `java.xml/com.sun.org.apache.xerces.internal.parsers`
-
 
 ### Opening Packages with `--add-opens`
 
@@ -38,7 +38,6 @@ Use the `--add-opens` flag to open the required packages in the `java.base` modu
 - `java.base/sun.net.www.protocol.http`
 - `java.base/sun.security.ssl`
 
-
 ### Example Usage
 
 When invoking the `jar` command, include the specified `--add-exports` and `--add-opens` options in the JVM arguments. For example:
@@ -48,15 +47,16 @@ java -jar --add-exports java.xml/com.sun.org.apache.xerces.internal.parsers --ad
 ```
 
 Use it as follows:
+
 ```Java
-package org.sentrysoftware.wbem;
+package org.metricshub.wbem;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.sentrysoftware.wbem.client.WbemClient;
-import org.sentrysoftware.wbem.client.WqlQuery;
-import org.sentrysoftware.wbem.javax.wbem.WBEMException;
-import org.sentrysoftware.wbem.utils.exceptions.WqlQuerySyntaxException;
+import org.metricshub.wbem.client.WbemClient;
+import org.metricshub.wbem.client.WqlQuery;
+import org.metricshub.wbem.client.exceptions.WqlQuerySyntaxException;
+import org.metricshub.wbem.javax.wbem.WBEMException;
 
 public class Main {
 

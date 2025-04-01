@@ -1,13 +1,13 @@
 # WBEM Java Client
 
-![GitHub release (with filter)](https://img.shields.io/github/v/release/sentrysoftware/wbem)
-![Build](https://img.shields.io/github/actions/workflow/status/sentrysoftware/wbem/deploy.yml)
-![GitHub top language](https://img.shields.io/github/languages/top/sentrysoftware/wbem)
-![License](https://img.shields.io/github/license/sentrysoftware/wbem)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/metricshub/wbem-java)
+![Build](https://img.shields.io/github/actions/workflow/status/metricshub/wbem-java/deploy.yml)
+![GitHub top language](https://img.shields.io/github/languages/top/metricshub/wbem-java)
+![License](https://img.shields.io/github/license/metricshub/wbem-java)
 
 This project is a fork of the excellent [Standards Based Linux Instrumentation](https://sourceforge.net/projects/sblim/) ([see also](https://sblim.sourceforge.net/wiki/index.php/Main_Page)).
 
-See **[Project Documentation](https://sentrysoftware.org/wbem)** and the [Javadoc](https://sentrysoftware.org/wbem/apidocs) for more information on how to use this library in your code.
+See **[Project Documentation](https://metricshub.org/wbem-java)** and the [Javadoc](https://metricshub.org/wbem-java/apidocs) for more information on how to use this library in your code.
 
 The Web-Based Enterprise Management (WBEM) Java Client is a library that enables to:
 * Connect to a WBEM Server
