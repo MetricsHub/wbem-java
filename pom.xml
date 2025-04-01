@@ -119,7 +119,7 @@
 						<source>${maven.compiler.target}</source>
 						<show>public</show>
 						<notimestamp>true</notimestamp>
-						<excludePackageNames>org.metricshub.wbem-java.javax.*:org.metricshub.wbem-java.sblim.*</excludePackageNames>
+						<excludePackageNames>org.metricshub.wbem.javax.*:org.metricshub.wbem.sblim.*</excludePackageNames>
 					</configuration>
 				</plugin>
 
