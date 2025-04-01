@@ -16,10 +16,10 @@
 
 	<organization>
 		<name>MetricsHub</name>
-		<url>https://metricshub.org</url>
+		<url>https://metricshub.com</url>
 	</organization>
 
-	<url>https://metricshub.org/wbem</url>
+	<url>https://metricshub.org/wbem-java</url>
 	<inceptionYear>2023</inceptionYear>
 
 	<licenses>
